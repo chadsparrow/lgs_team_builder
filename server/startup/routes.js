@@ -17,5 +17,6 @@ module.exports = function(app) {
   app.use('/api/auth', require('../routes/auth'));
   app.use('/api/notifications', require('../routes/notifications'));
   app.use('/api/emails', require('../routes/emails'));
+  app.use('/api/teams', require('../routes/teams'));
   app.use(error);
 };

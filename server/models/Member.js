@@ -135,6 +135,13 @@ const MemberSchema = new mongoose.Schema(
       },
       trim: true
     },
+    shipping_email: {
+      type: String,
+      required: function() {
+        return this.shipping_same;
+      },
+      trim: true
+    },
     timezone: {
       type: String,
       trim: true
@@ -184,33 +191,33 @@ function validateMember(member) {
       .min(5)
       .max(50)
       .required()
-      .trim(true),
+      .trim(),
     address1: Joi.string()
       .min(10)
       .required()
-      .trim(true),
+      .trim(),
     address2: Joi.string()
-      .trim(true)
+      .trim()
       .allow('', null),
     city: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     state_prov: Joi.string()
       .min(2)
       .required()
-      .trim(true),
+      .trim(),
     country: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     zip_postal: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     phone: Joi.string()
-      .required()
-      .trim(true),
+      .trim()
+      .regex(/^[0-9]{7,10}$/),
     email: Joi.string()
       .email()
-      .required({ minDomainSegments: 2 }),
+      .required(),
     password: Joi.string()
       .min(8)
       .required()
@@ -220,30 +227,35 @@ function validateMember(member) {
       .min(5)
       .max(50)
       .required()
-      .trim(true),
+      .trim(),
     shipping_address1: Joi.string()
       .min(10)
       .required()
-      .trim(true),
+      .trim(),
     shipping_address2: Joi.string()
-      .trim(true)
+      .trim()
       .allow('', null),
     shipping_city: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_state_prov: Joi.string()
       .min(2)
       .required()
-      .trim(true),
+      .trim(),
     shipping_country: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_zip_postal: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_phone: Joi.string()
+      .trim()
+      .regex(/^[0-9]{7,10}$/)
+      .required(),
+    shipping_email: Joi.string()
+      .email()
+      .trim()
       .required()
-      .trim(true)
   };
   return Joi.validate(member, schema);
 }
@@ -254,59 +266,59 @@ function validateUpdate(member) {
       .min(5)
       .max(50)
       .required()
-      .trim(true),
+      .trim(),
     address1: Joi.string()
       .min(10)
       .required()
-      .trim(true),
+      .trim(),
     address2: Joi.string()
-      .trim(true)
+      .trim()
       .allow('', null),
     city: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     state_prov: Joi.string()
       .min(2)
       .required()
-      .trim(true),
+      .trim(),
     country: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     zip_postal: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     phone: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_same: Joi.boolean(),
     shipping_name: Joi.string()
       .min(5)
       .max(50)
       .required()
-      .trim(true),
+      .trim(),
     shipping_address1: Joi.string()
       .min(10)
       .required()
-      .trim(true),
+      .trim(),
     shipping_address2: Joi.string()
-      .trim(true)
+      .trim()
       .allow('', null),
     shipping_city: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_state_prov: Joi.string()
       .min(2)
       .required()
-      .trim(true),
+      .trim(),
     shipping_country: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_zip_postal: Joi.string()
       .required()
-      .trim(true),
+      .trim(),
     shipping_phone: Joi.string()
       .required()
-      .trim(true)
+      .trim()
   };
   return Joi.validate(member, schema);
 }
