@@ -8,7 +8,7 @@ const { Member } = require('../models/Member');
 // POST /api/members
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   const member = await Member.findOne({ email: req.body.email });
   if (!member) return res.status(401).send({ msg: 'Invalid email or password.' });

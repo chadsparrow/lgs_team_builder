@@ -25,7 +25,7 @@ router.get('/me', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let recipients = [];
 
@@ -96,7 +96,7 @@ router.patch('/:id/archive', auth, async (req, res) => {
 
 router.post('/:id/reply', auth, async (req, res) => {
   const { error } = validateMessage(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let member = await Member.lookup(req.member._id);
   if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });

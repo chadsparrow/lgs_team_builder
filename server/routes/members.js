@@ -30,7 +30,7 @@ router.get('/:id', auth, async (req, res) => {
 // POST /api/members
 router.post('/register', async (req, res) => {
   const { error } = validateMember(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let member = await Member.findOne({ email: req.body.email });
   if (member) return res.status(400).send({ msg: 'Member already registered.' });
@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
 // PUT /api/members/:id
 router.put('/:id', auth, async (req, res) => {
   const { error } = validateUpdate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   const member = await Member.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
 
@@ -82,7 +82,7 @@ router.put('/:id', auth, async (req, res) => {
 // PATCH /api/members/email/:id
 router.patch('/email/:id', auth, async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let member = await Member.lookup(req.params.id);
   if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
@@ -108,7 +108,7 @@ router.patch('/email/:id', auth, async (req, res) => {
 // PATCH /api/members/password/:id
 router.patch('/password/:id', auth, async (req, res) => {
   const { error } = validatePassword(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   if (req.body.newpassword === req.body.oldpassword) return res.status(400).send({ msg: 'Please ensure new password is different.' });
 

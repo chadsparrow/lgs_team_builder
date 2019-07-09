@@ -12,7 +12,7 @@ router.get('/me', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateNotification(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
 
   for (recipient of req.body.recipients) {
     let member = await Member.lookup(recipient);
