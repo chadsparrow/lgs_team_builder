@@ -15,7 +15,7 @@ router.post('/', auth, async (req, res) => {
 
   for (recipient of req.body.recipients) {
     let member = await Member.lookup(recipient);
-    if (!member) return res.status(400).send(`Members with a given ID (${recipient}) was not found. Please try again.`);
+    if (!member) return res.status(400).send({ msg: `Members with a given ID (${recipient}) was not found. Please try again.` });
 
     const today = new Date();
     const newNotification = {
@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
   let member = await Member.lookup(req.member._id);
-  if (!member) return res.status(400).send('Member with the given ID was not found.');
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let notifications = member.notifications;
 
@@ -49,7 +49,7 @@ router.delete('/:id', auth, async (req, res) => {
 
 router.delete('/all', auth, async (req, res) => {
   let member = await Member.lookup(req.member._id);
-  if (!member) return res.status(400).send('Member with the given ID was not found.');
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   member.notifications = [];
   await member.save();

@@ -3,6 +3,7 @@ const { Team, validateTeam } = require('../models/Team');
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 // GET /api/teams
 router.get('/', auth, async (req, res) => {
@@ -13,8 +14,16 @@ router.get('/', auth, async (req, res) => {
     return res.send(teams);
   }
   teams = await Team.find({ $or: [{ manager_id: req.member._id }, { members: req.member._id }] });
-  if (teams.length == 0) return res.status(404).send('You are currently not a member to any teams');
+  if (teams.length == 0) return res.status(404).send({ msg: 'You are currently not a member to any teams' });
   return res.send(teams);
+});
+
+router.post('/', [auth, admin], async (req, res) => {
+  const { error } = validateTeam(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const team = await Team.findOne({ name: req.body.name });
+  if (team) return res.status(400).send({ msg: 'Team name already registered, Please choose another' });
 });
 
 module.exports = router;
