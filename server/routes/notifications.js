@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 // GET /api/notifcations/me
 router.get('/me', auth, async (req, res) => {
   const member = await Member.lookup(req.member._id);
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
   res.send(member.notifications);
 });
 

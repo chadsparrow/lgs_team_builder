@@ -19,6 +19,7 @@ router.get('/me', auth, async (req, res) => {
     .populate('messages.sentBy', 'name email', Member)
     .sort('-messages.date')
     .select('-__v');
+  if (emails.length == 0) return res.status(404).send({ msg: 'You have no messages.' });
   res.send(emails);
 });
 
@@ -29,13 +30,13 @@ router.post('/', auth, async (req, res) => {
   let recipients = [];
 
   let sender = await Member.lookup(req.member._id);
-  if (!sender) return res.status(400).send(`Sender with a given ID (${req.member._id}) was not found. Please try again.`);
+  if (!sender) return res.status(400).send({ msg: `Sender with a given ID (${req.member._id}) was not found. Please try again.` });
 
   recipients.push({ member: req.member._id, unread: false });
 
   req.body.recipients.forEach(async recipient => {
     let member = await Member.lookup(recipient);
-    if (!member) return res.status(400).send(`Recipient with the given ID (${recipient}) was not found. Please try again.`);
+    if (!member) return res.status(400).send({ msg: `Recipient with the given ID (${recipient}) was not found. Please try again.` });
     recipients.push({ member: recipient });
   });
 
@@ -55,10 +56,10 @@ router.post('/', auth, async (req, res) => {
 
 router.patch('/:id/tr', auth, async (req, res) => {
   let member = await Member.lookup(req.member._id);
-  if (!member) return res.status(400).send('Member with the given ID was not found.');
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send(`Email with the given ID was not found.`);
+  if (!email) return res.status(400).send({ msg: 'Email with the given ID was not found.' });
 
   email.recipients.forEach(recipient => {
     if (recipient.member == req.member._id) {
@@ -74,16 +75,16 @@ router.patch('/:id/tr', auth, async (req, res) => {
 
 router.patch('/:id/archive', auth, async (req, res) => {
   let member = await Member.lookup(req.member._id);
-  if (!member) return res.status(400).send('Member with the given ID was not found.');
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send(`Email with the given ID was not found.`);
+  if (!email) return res.status(400).send({ msg: `Email with the given ID was not found.` });
 
   email.recipients.forEach(recipient => {
     if (recipient.member == req.member._id && !recipient.archived) {
       recipient.archived = true;
     } else if (recipient.member == req.member._id && recipient.archived) {
-      return res.status(400).send('Email with the given ID is already archived.');
+      return res.status(400).send({ msg: 'Email with the given ID is already archived.' });
     }
   });
 
@@ -98,10 +99,10 @@ router.post('/:id/reply', auth, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let member = await Member.lookup(req.member._id);
-  if (!member) return res.status(400).send('Member with the given ID was not found.');
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send(`Email with the given ID was not found.`);
+  if (!email) return res.status(400).send({ msg: `Email with the given ID was not found.` });
 
   let newMessage = {
     message: req.body.message,
