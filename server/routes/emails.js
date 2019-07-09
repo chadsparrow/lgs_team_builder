@@ -111,6 +111,16 @@ router.post('/:id/reply', auth, async (req, res) => {
 
   email.messages.push(newMessage);
 
+  let resetUnread = email.recipients.map(recipient => {
+    if (recipient.member != req.member._id) {
+      recipient.unread = true;
+    }
+    recipient.archived = false;
+    return recipient;
+  });
+
+  email.recipients = resetUnread;
+
   let savedEmail = await email.save();
   let populatedEmail = await populateEmail(savedEmail);
   res.send(populatedEmail);

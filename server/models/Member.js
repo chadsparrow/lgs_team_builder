@@ -1,176 +1,178 @@
 const mongoose = require('mongoose');
-const timestamps = require('mongoose-timestamp');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-const MemberSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
-    uppercase: true,
-    trim: true
-  },
-  address1: {
-    type: String,
-    required: true,
-    minlength: 10,
-    uppercase: true,
-    trim: true
-  },
-  address2: {
-    type: String,
-    uppercase: true,
-    trim: true
-  },
-  city: {
-    type: String,
-    required: true,
-    uppercase: true,
-    trim: true
-  },
-  state_prov: {
-    type: String,
-    required: true,
-    uppercase: true,
-    minlength: 2,
-    trim: true
-  },
-  country: {
-    type: String,
-    required: true,
-    uppercase: true,
-    trim: true
-  },
-  zip_postal: {
-    type: String,
-    required: true,
-    uppercase: true,
-    minlength: 5,
-    trim: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  shipping_same: {
-    type: Boolean,
-    default: false
-  },
-  shipping_name: {
-    type: String,
-    required: function() {
-      return this.shipping_same;
+const MemberSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 5,
+      maxlength: 50,
+      uppercase: true,
+      trim: true
     },
-    minlength: 5,
-    uppercase: true,
-    trim: true
-  },
-  shipping_address1: {
-    type: String,
-    required: function() {
-      return this.shipping_same;
+    address1: {
+      type: String,
+      required: true,
+      minlength: 10,
+      uppercase: true,
+      trim: true
     },
-    minlength: 10,
-    uppercase: true,
-    trim: true
-  },
-  shipping_address2: {
-    type: String,
-    uppercase: true,
-    trim: true
-  },
-  shipping_city: {
-    type: String,
-    uppercase: true,
-    required: function() {
-      return this.shipping_same;
+    address2: {
+      type: String,
+      uppercase: true,
+      trim: true
     },
-    trim: true
-  },
-  shipping_state_prov: {
-    type: String,
-    uppercase: true,
-    required: function() {
-      return this.shipping_same;
+    city: {
+      type: String,
+      required: true,
+      uppercase: true,
+      trim: true
     },
-    minlength: 2,
-    trim: true
-  },
-  shipping_country: {
-    type: String,
-    uppercase: true,
-    required: function() {
-      return this.shipping_same;
+    state_prov: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 2,
+      trim: true
     },
-    trim: true
-  },
-  shipping_zip_postal: {
-    type: String,
-    uppercase: true,
-    required: function() {
-      return this.shipping_same;
+    country: {
+      type: String,
+      required: true,
+      uppercase: true,
+      trim: true
     },
-    minlength: 5,
-    trim: true
-  },
-  shipping_phone: {
-    type: String,
-    required: function() {
-      return this.shipping_same;
+    zip_postal: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 5,
+      trim: true
     },
-    trim: true
-  },
-  timezone: {
-    type: String,
-    trim: true
-  },
-  avatar_url: {
-    type: String,
-    default: null,
-    trim: true
-  },
-  admin: {
-    type: Boolean,
-    default: false
-  },
-  resetPasswordToken: {
-    type: String
-  },
-  resetPasswordExpires: {
-    type: Date
-  },
-  notifications: [
-    {
-      date: {
-        type: Date,
-        required: true
+    phone: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    shipping_same: {
+      type: Boolean,
+      default: false
+    },
+    shipping_name: {
+      type: String,
+      required: function() {
+        return this.shipping_same;
       },
-      message: {
-        type: String,
-        required: true,
-        trim: true
+      minlength: 5,
+      uppercase: true,
+      trim: true
+    },
+    shipping_address1: {
+      type: String,
+      required: function() {
+        return this.shipping_same;
       },
-      clickTo: {
-        type: String
+      minlength: 10,
+      uppercase: true,
+      trim: true
+    },
+    shipping_address2: {
+      type: String,
+      uppercase: true,
+      trim: true
+    },
+    shipping_city: {
+      type: String,
+      uppercase: true,
+      required: function() {
+        return this.shipping_same;
+      },
+      trim: true
+    },
+    shipping_state_prov: {
+      type: String,
+      uppercase: true,
+      required: function() {
+        return this.shipping_same;
+      },
+      minlength: 2,
+      trim: true
+    },
+    shipping_country: {
+      type: String,
+      uppercase: true,
+      required: function() {
+        return this.shipping_same;
+      },
+      trim: true
+    },
+    shipping_zip_postal: {
+      type: String,
+      uppercase: true,
+      required: function() {
+        return this.shipping_same;
+      },
+      minlength: 5,
+      trim: true
+    },
+    shipping_phone: {
+      type: String,
+      required: function() {
+        return this.shipping_same;
+      },
+      trim: true
+    },
+    timezone: {
+      type: String,
+      trim: true
+    },
+    avatar_url: {
+      type: String,
+      default: null,
+      trim: true
+    },
+    admin: {
+      type: Boolean,
+      default: false
+    },
+    resetPasswordToken: {
+      type: String
+    },
+    resetPasswordExpires: {
+      type: Date
+    },
+    notifications: [
+      {
+        date: {
+          type: Date,
+          required: true
+        },
+        message: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        clickTo: {
+          type: String
+        }
       }
-    }
-  ]
-});
+    ]
+  },
+  { timestamps: true }
+);
 
 MemberSchema.statics.lookup = function(memberId) {
   return this.findById(memberId);
@@ -353,7 +355,6 @@ MemberSchema.methods.generateAuthToken = function() {
   return token;
 };
 
-MemberSchema.plugin(timestamps);
 exports.Member = mongoose.model('members', MemberSchema);
 exports.validateMember = validateMember;
 exports.validateUpdate = validateUpdate;
