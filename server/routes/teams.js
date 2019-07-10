@@ -12,14 +12,14 @@ router.get('/', auth, async (req, res) => {
   let populatedTeams = [];
   if (req.member.admin) {
     teams = await Team.find();
-    if (teams.length == 0) return res.status(404).send({ msg: 'No Teams found.' });
+    if (teams && teams.length == 0) return res.status(404).send({ msg: 'No Teams found.' });
     for (team of teams) {
       populatedTeams.push(await populateTeam(team));
     }
     return res.send(teams);
   } else {
     teams = await Team.find({ $or: [{ manager_id: req.member._id }, { members: req.member._id }] }).select('-admin_id');
-    if (teams.length == 0) return res.status(404).send({ msg: 'You are currently not a member of any teams' });
+    if (teams && teams.length == 0) return res.status(404).send({ msg: 'You are currently not a member of any teams' });
 
     for (team of teams) {
       populatedTeams.push(await populateTeam(team));
@@ -103,34 +103,37 @@ router.put('/:id', [auth, admin], async (req, res) => {
   }
 
   if (useManagerDetails) {
-    team.contact.reference = team.manager_id;
+    team.main_contact.contact = team.manager_id;
   } else {
-    team.contact.name = contact_name;
-    team.contact.address1 = contact_address1;
-    team.contact.address2 = contact_address2;
-    team.contact.city = contact_city;
-    team.contact.state_prov = contact_state_prov;
-    team.contact.country = contact_country;
-    team.contact.zip_postal = contact_zip_postal;
-    team.contact.phone = contact_phone;
-    team.contact.email = contact_email;
+    team.main_contact.contact = null;
+    team.main_contact.name = contact_name;
+    team.main_contact.address1 = contact_address1;
+    team.main_contact.address2 = contact_address2;
+    team.main_contact.city = contact_city;
+    team.main_contact.state_prov = contact_state_prov;
+    team.main_contact.country = contact_country;
+    team.main_contact.zip_postal = contact_zip_postal;
+    team.main_contact.phone = contact_phone;
+    team.main_contact.email = contact_email;
   }
 
   if (bulk_use_above_details) {
-    if (team.contact.reference) {
-      team.bulk_shipping.contact = team.contact.reference;
+    if (team.main_contact.contact) {
+      team.bulk_shipping.contact = team.main_contact.contact;
     } else {
-      team.bulk_shipping.name = team.contact.name;
-      team.bulk_shipping.address1 = team.contact.address1;
-      team.bulk_shipping.address2 = team.contact.address2;
-      team.bulk_shipping.city = team.contact.city;
-      team.bulk_shipping.state_prov = team.contact.state_prov;
-      team.bulk_shipping.country = team.contact.country;
-      team.bulk_shipping.zip_postal = team.contact.zip_postal;
-      team.bulk_shipping.phone = team.contact.phone;
-      team.bulk_shipping.email = team.contact.email;
+      team.bulk_shipping.contact = null;
+      team.bulk_shipping.name = team.main_contact.name;
+      team.bulk_shipping.address1 = team.main_contact.address1;
+      team.bulk_shipping.address2 = team.main_contact.address2;
+      team.bulk_shipping.city = team.main_contact.city;
+      team.bulk_shipping.state_prov = team.main_contact.state_prov;
+      team.bulk_shipping.country = team.main_contact.country;
+      team.bulk_shipping.zip_postal = team.main_contact.zip_postal;
+      team.bulk_shipping.phone = team.main_contact.phone;
+      team.bulk_shipping.email = team.main_contact.email;
     }
   } else {
+    team.bulk_shipping.contact = null;
     team.bulk_shipping.name = bulk_contact_name;
     team.bulk_shipping.address1 = bulk_contact_address1;
     team.bulk_shipping.address2 = bulk_contact_address2;
@@ -153,7 +156,7 @@ function populateTeam(team) {
       { path: 'manager_id', select: 'name email' },
       { path: 'admin_id', select: 'name email' },
       { path: 'members', select: 'name email' },
-      { path: 'contact.reference', select: 'name address1 address2 city state_prov country zip_postal email phone' },
+      { path: 'main_contact.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' },
       { path: 'bulk_shipping.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' }
     ];
     const populatedTeam = await Member.populate(team, opts);

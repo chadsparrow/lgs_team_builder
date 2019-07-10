@@ -21,8 +21,8 @@ const TeamSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Member'
     },
-    contact: {
-      reference: {
+    main_contact: {
+      contact: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Member'
       },

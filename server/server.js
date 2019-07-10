@@ -14,7 +14,7 @@ const DB_HOST = config.get('database.host');
 require('./startup/db')(DB_HOST);
 
 // setup winston
-winston.add(winston.transports.DailyRotateFile, { filename: './logs/application-%DATE%.log', maxFiles: '14d' });
+winston.add(winston.transports.DailyRotateFile, { filename: './logs/teambuilder-%DATE%.log', maxFiles: '14d' });
 winston.add(winston.transports.MongoDB, { db: DB_HOST });
 
 // handle all uncaught expceptions

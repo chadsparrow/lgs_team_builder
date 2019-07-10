@@ -13,6 +13,7 @@ module.exports = function(app) {
   app.enable('trust proxy');
 
   // Load API Routes
+  app.use('/api/admins', require('../routes/admins'));
   app.use('/api/members', require('../routes/members'));
   app.use('/api/auth', require('../routes/auth'));
   app.use('/api/notifications', require('../routes/notifications'));

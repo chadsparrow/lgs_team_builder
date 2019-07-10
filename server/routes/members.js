@@ -5,11 +5,11 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
-const { Member, validateMember, validateUpdate, validateEmail, validatePassword } = require('../models/Member');
+const { Member, validateNewMember, validateUpdate, validateEmail, validatePassword } = require('../models/Member');
 
 // GET /api/members
 router.get('/', auth, async (req, res) => {
-  const members = await Member.find().select('-password -__v -updatedAt -admin -notifications');
+  const members = await Member.find().select('-password -__v -updatedAt -notifications');
   if (members && members.length === 0) return res.send({ msg: 'There are no members in the database.' });
   res.send(members);
 });
@@ -22,49 +22,84 @@ router.get('/me', auth, async (req, res) => {
 
 // GET /api/members/:id
 router.get('/:id', auth, async (req, res) => {
-  const member = await Member.lookup(req.params.id).select('-__v -password -updatedAt -admin -notifications');
+  const member = await Member.lookup(req.params.id).select('-__v -password -updatedAt -notifications');
   if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
   res.send(member);
 });
 
 // POST /api/members
 router.post('/register', async (req, res) => {
-  const { error } = validateMember(req.body);
+  const { error } = validateNewMember(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
-  let member = await Member.findOne({ email: req.body.email });
+  let {
+    name,
+    address1,
+    address2,
+    city,
+    state_prov,
+    country,
+    zip_postal,
+    phone,
+    email,
+    password,
+    shipping_same,
+    shipping_name,
+    shipping_address1,
+    shipping_address2,
+    shipping_city,
+    shipping_state_prov,
+    shipping_country,
+    shipping_zip_postal,
+    shipping_phone,
+    shipping_email
+  } = req.body;
+
+  let member = await Member.findOne({ email });
   if (member) return res.status(400).send({ msg: 'Member already registered.' });
 
-  member = new Member(
-    _.pick(req.body, [
-      'name',
-      'address1',
-      'address2',
-      'city',
-      'state_prov',
-      'country',
-      'zip_postal',
-      'phone',
-      'email',
-      'password',
-      'shipping_same',
-      'shipping_name',
-      'shipping_address1',
-      'shipping_address2',
-      'shipping_city',
-      'shipping_state_prov',
-      'shipping_country',
-      'shipping_zip_postal',
-      'shipping_phone'
-    ])
-  );
+  const newMember = new Member({
+    name,
+    address1,
+    address2,
+    city,
+    state_prov,
+    country,
+    zip_postal,
+    phone,
+    email
+  });
 
-  member.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
+  newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);
-  member.password = await bcrypt.hash(member.password, salt);
-  await member.save();
-  res.send(_.pick(member, ['_id', 'name', 'email']));
+  newMember.password = await bcrypt.hash(password, salt);
+
+  if (shipping_same) {
+    newMember.shipping_name = newMember.name;
+    newMember.shipping_address1 = newMember.address1;
+    newMember.shipping_address2 = newMember.address2;
+    newMember.shipping_city = newMember.city;
+    newMember.shipping_state_prov = newMember.state_prov;
+    newMember.shipping_country = newMember.country;
+    newMember.shipping_zip_postal = newMember.zip_postal;
+    newMember.shipping_phone = newMember.phone;
+    newMember.shipping_email = newMember.email;
+  } else {
+    newMember.shipping_name = shipping_name;
+    newMember.shipping_address1 = shipping_address1;
+    newMember.shipping_address2 = shipping_address2;
+    newMember.shipping_city = shipping_city;
+    newMember.shipping_state_prov = shipping_state_prov;
+    newMember.shipping_country = shipping_country;
+    newMember.shipping_zip_postal = shipping_zip_postal;
+    newMember.shipping_phone = shipping_phone;
+    newMember.shipping_email = shipping_email;
+  }
+
+  await newMember.save();
+
+  res.send(_.pick(newMember, ['_id', 'name', 'email']));
 });
 
 // PUT /api/members/:id
