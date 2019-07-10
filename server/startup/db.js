@@ -21,6 +21,6 @@ module.exports = async function(DB_HOST) {
     const salt = await bcrypt.genSalt(10);
     newAdmin.password = await bcrypt.hash(rootPass, salt);
     await newAdmin.save();
-    winston.info('Root admin user created.');
+    winston.info('Root Admin user created.');
   }
 };

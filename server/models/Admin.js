@@ -8,7 +8,7 @@ const AdminSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      minlength: 5,
+      minlength: 4,
       maxlength: 50,
       uppercase: true,
       trim: true
@@ -74,7 +74,7 @@ function validateNewAdmin(admin) {
   const schema = {
     name: Joi.string()
       .required()
-      .min(5)
+      .min(4)
       .max(50)
       .trim(),
     phone: Joi.string()
