@@ -83,7 +83,7 @@ function validateNewAdmin(admin) {
       .required(),
     extension: Joi.string()
       .trim()
-      .required(),
+      .allow('', null),
     office: Joi.string()
       .trim()
       .required(),

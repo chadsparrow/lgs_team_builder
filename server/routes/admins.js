@@ -14,12 +14,6 @@ router.get('/', [auth, admin], async (req, res) => {
   res.send(admins);
 });
 
-// GET /api/admins/me
-router.get('/me', [auth, admin], async (req, res) => {
-  const admin = await Admin.lookup(req.member._id).select('-password -__v -updatedAt');
-  res.send(admin);
-});
-
 // GET /api/admins/:id
 router.get('/:id', [auth, admin], async (req, res) => {
   const admin = await Admin.lookup(req.params.id).select('-password -__v -updatedAt -notifications');
@@ -27,7 +21,7 @@ router.get('/:id', [auth, admin], async (req, res) => {
   res.send(admin);
 });
 
-// POST /api/admins
+// POST /api/admins/register
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewAdmin(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
@@ -55,6 +49,29 @@ router.post('/register', [auth, admin], async (req, res) => {
   await newAdmin.save();
 
   res.send(_.pick(newAdmin, ['_id', 'name', 'email']));
+});
+
+// PATCH /api/admins/password/:id
+router.patch('/password/:id', auth, async (req, res) => {
+  const { error } = validateAdminPassword(req.body);
+  if (error) return res.status(400).send({ msg: error.details[0].message });
+
+  if (req.body.newpassword === req.body.oldpassword) return res.status(400).send({ msg: 'Please ensure new password is different.' });
+
+  let admin = await Admin.lookup(req.params.id);
+  if (!admin) return res.status(404).send({ msg: 'Admin with the given ID was not found.' });
+
+  bcrypt.compare(req.body.oldpassword, admin.password, (err, result) => {
+    if (!result) return res.status(400).send({ msg: 'Password incorrect.' });
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(req.body.newpassword, salt, async (err, hash) => {
+        admin.password = hash;
+        await admin.save();
+        res.send(_.pick(admin, ['_id', 'name', 'email']));
+      });
+    });
+  });
 });
 
 module.exports = router;

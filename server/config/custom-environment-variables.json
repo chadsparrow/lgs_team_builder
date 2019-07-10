@@ -1,6 +1,8 @@
 {
   "server": {
-    "port": "SERVER_PORT"
+    "port": "SERVER_PORT",
+    "rootUser": "MONGO_INITDB_ROOT_USERNAME",
+    "rootPass": "MONGO_INITDB_ROOT_PASSWORD"
   },
   "database": {
     "host": "DB_HOST"

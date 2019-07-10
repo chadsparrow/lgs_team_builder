@@ -5,19 +5,13 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
-const { Member, validateNewMember, validateUpdate, validateEmail, validatePassword } = require('../models/Member');
+const { Member, validateNewMember, validateUpdateMember, validateEmail, validatePassword } = require('../models/Member');
 
 // GET /api/members
 router.get('/', auth, async (req, res) => {
   const members = await Member.find().select('-password -__v -updatedAt -notifications');
   if (members && members.length === 0) return res.send({ msg: 'There are no members in the database.' });
   res.send(members);
-});
-
-// GET /api/members/me
-router.get('/me', auth, async (req, res) => {
-  const member = await Member.lookup(req.member._id).select('-password -__v -updatedAt');
-  res.send(member);
 });
 
 // GET /api/members/:id
@@ -104,7 +98,7 @@ router.post('/register', async (req, res) => {
 
 // PUT /api/members/:id
 router.put('/:id', auth, async (req, res) => {
-  const { error } = validateUpdate(req.body);
+  const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
   const member = await Member.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });

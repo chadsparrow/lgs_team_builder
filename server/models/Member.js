@@ -431,8 +431,8 @@ MemberSchema.methods.generateAuthToken = function() {
 };
 
 exports.Member = mongoose.model('members', MemberSchema);
-exports.validateNew = validateNew;
-exports.validateUpdate = validateUpdate;
+exports.validateNewMember = validateNewMember;
+exports.validateUpdateMember = validateUpdateMember;
 exports.validateEmail = validateEmail;
 exports.validatePassword = validatePassword;
 exports.validateNotification = validateNotification;
