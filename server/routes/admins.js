@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
-const { Admin, validateNewAdmin, validateAdminNotification, validateAdminPassword } = require('../models/Admin');
+const { Admin, validateNewAdmin, validateAdminPassword } = require('../models/Admin');
 
 // GET /api/admins
 router.get('/', [auth, admin], async (req, res) => {

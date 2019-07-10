@@ -122,16 +122,6 @@ function validateAdminPassword(admin) {
   return Joi.validate(admin, schema);
 }
 
-function validateAdminNotification(notification) {
-  const schema = {
-    recipients: Joi.array().items(Joi.objectId().required()),
-    message: Joi.string().required(),
-    clickTo: Joi.string().allow('', null)
-  };
-
-  return Joi.validate(notification, schema);
-}
-
 AdminSchema.statics.lookup = function(adminId) {
   return this.findById(adminId);
 };
@@ -144,4 +134,3 @@ AdminSchema.methods.generateAuthToken = function() {
 exports.Admin = mongoose.model('admins', AdminSchema);
 exports.validateNewAdmin = validateNewAdmin;
 exports.validateAdminPassword = validateAdminPassword;
-exports.validateAdminNotification = validateAdminNotification;

@@ -13,10 +13,10 @@ module.exports = async function(DB_HOST) {
     winston.info('No admin users detected - creating root user.');
     const rootPass = config.get('server.rootPass');
     const newAdmin = new Admin({
-      name: 'tbroot',
+      name: 'root',
       phone: '555-555-1212',
       office: 'AI',
-      email: 'tbroot@tbroot.com'
+      email: 'root@teambuilder.io'
     });
     const salt = await bcrypt.genSalt(10);
     newAdmin.password = await bcrypt.hash(rootPass, salt);
