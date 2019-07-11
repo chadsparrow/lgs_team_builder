@@ -101,9 +101,62 @@ router.put('/:id', auth, async (req, res) => {
   const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
-  const member = await Member.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
+  let {
+    name,
+    address1,
+    address2,
+    city,
+    state_prov,
+    country,
+    zip_postal,
+    phone,
+    shipping_same,
+    shipping_name,
+    shipping_address1,
+    shipping_address2,
+    shipping_city,
+    shipping_state_prov,
+    shipping_country,
+    shipping_zip_postal,
+    shipping_phone,
+    shipping_email
+  } = req.body;
 
-  if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
+  let member = await Member.findById(req.params.id);
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
+
+  member.name = name;
+  member.address1 = address1;
+  member.address2 = address2;
+  member.city = city;
+  member.state_prov = state_prov;
+  member.country = country;
+  member.zip_postal = zip_postal;
+  member.phone = phone;
+
+  if (shipping_same) {
+    member.shipping_name = member.name;
+    member.shipping_address1 = member.address1;
+    member.shipping_address2 = member.address2;
+    member.shipping_city = member.city;
+    member.shipping_state_prov = member.state_prov;
+    member.shipping_country = member.country;
+    member.shipping_zip_postal = member.zip_postal;
+    member.shipping_phone = member.phone;
+    member.shipping_email = member.email;
+  } else {
+    member.shipping_name = shipping_name;
+    member.shipping_address1 = shipping_address1;
+    member.shipping_address2 = shipping_address2;
+    member.shipping_city = shipping_city;
+    member.shipping_state_prov = shipping_state_prov;
+    member.shipping_country = shipping_country;
+    member.shipping_zip_postal = shipping_zip_postal;
+    member.shipping_phone = shipping_phone;
+    member.shipping_email = shipping_email;
+  }
+
+  await member.save();
 
   res.send(_.pick(member, ['_id', 'name', 'email']));
 });
