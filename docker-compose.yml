@@ -14,8 +14,6 @@ services:
       - 27018:27018
     volumes:
       - /data/storage/team-builder.mongodb:/data/db
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -32,8 +30,6 @@ services:
     volumes:
       - /data/logs/team-builder:/usr/src/app/server/logs
       - /data/logs/team-builder/npm:/root/.npm/
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - mongo
     env_file:
