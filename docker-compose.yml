@@ -21,7 +21,6 @@ services:
     env_file:
       - .env
   app:
-    command: npm run start
     image: ${LGS_DOCKER_IMAGE}
     restart: always
     working_dir: /usr/src/app/server

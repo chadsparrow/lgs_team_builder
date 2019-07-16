@@ -1,4 +1,3 @@
-//SERVER START-UP CODE
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const winston = require('winston');
@@ -10,7 +9,13 @@ const express = require('express');
 require('express-async-errors');
 const app = express();
 require('./startup/routes')(app);
-const DB_HOST = config.get('database.host');
+
+const DB_USER = config.get('database.user');
+const DB_PASS = config.get('database.pass');
+const DB_ADMINSOURCE = config.get('database.adminSource');
+const DB_DB = config.get('database.db');
+const DB_PORT = config.get('database.port') || 27018;
+const DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@mongo:${DB_PORT}/${DB_DB}?authSource${DB_ADMINSOURCE}`;
 require('./startup/db')(DB_HOST);
 
 // setup winston
@@ -44,6 +49,6 @@ if (!config.get('jwtPrivateKey')) {
 winston.info('Application Name: ' + config.get('name'));
 
 // configures server port
-const SERVER_PORT = config.get('server.port') || 5001;
+const APP_PORT = config.get('app.port') || 5001;
 // configures server to listen to configured server port above
-app.listen(SERVER_PORT, () => winston.info(`Listening on port ${SERVER_PORT}...`));
+app.listen(APP_PORT, () => winston.info(`Listening on port ${APP_PORT}...`));

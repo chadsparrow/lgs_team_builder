@@ -11,7 +11,7 @@ module.exports = async function(DB_HOST) {
   const admins = await Admin.find();
   if (admins && admins.length === 0) {
     winston.info('No admin users detected - creating root user.');
-    const rootPass = config.get('server.rootPass');
+    const rootPass = config.get('app.rootPass');
     const newAdmin = new Admin({
       name: 'root',
       phone: '555-555-1212',

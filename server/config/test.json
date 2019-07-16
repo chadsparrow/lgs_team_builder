@@ -1,3 +1,4 @@
 {
-    "name": "Team Builder - TEST"
+  "name": "Team Builder - TEST",
+  "jwtPrivateKey": "12345"
 }
