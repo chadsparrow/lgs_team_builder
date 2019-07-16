@@ -2,7 +2,8 @@
   "app": {
     "port": "APP_PORT",
     "rootUser": "MONGO_INITDB_ROOT_USERNAME",
-    "rootPass": "MONGO_INITDB_ROOT_PASSWORD"
+    "rootPass": "MONGO_INITDB_ROOT_PASSWORD",
+    "rootEmail": "MONGO_INITDB_ROOT_EMAIL"
   },
   "database": {
     "user": "MONGO_INITDB_ROOT_USERNAME",
@@ -11,5 +12,6 @@
     "db": "MONGO_INITDB_ROOT_DB",
     "port": "MONGO_INITDB_ROOT_PORT"
   },
+  "env": "NODE_ENV",
   "jwtPrivateKey": "JWT_PRIVATE_KEY"
 }
