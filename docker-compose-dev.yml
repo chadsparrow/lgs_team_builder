@@ -26,7 +26,8 @@ services:
       - .env.development
     environment:
       WAIT_HOSTS: mongo:27018
-  vue-dev:
+    command: pm2-dev ecosystem.config.js --env development
+  vue:
     container_name: team_builder_frontend_dev
     image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app-frontend-dev:1.0.0
     restart: always
