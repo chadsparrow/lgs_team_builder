@@ -1,5 +1,8 @@
-.env*
-/logs
-server/logs
+.env.test
+.env.development
+.env.production
+logs
+.tests.js
 node_modules
 .vscode
+coverage
