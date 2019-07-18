@@ -175,10 +175,6 @@ const MemberSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-MemberSchema.statics.lookup = function(memberId) {
-  return this.findById(memberId);
-};
-
 function validateNewMember(member) {
   const schema = {
     name: Joi.string()

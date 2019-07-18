@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Joi = require('@hapi/joi');
-const config = require('config');
-const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose");
+const Joi = require("@hapi/joi");
+const config = require("config");
+const jwt = require("jsonwebtoken");
 
 const AdminSchema = new mongoose.Schema(
   {
@@ -83,7 +83,7 @@ function validateNewAdmin(admin) {
       .required(),
     extension: Joi.string()
       .trim()
-      .allow('', null),
+      .allow("", null),
     office: Joi.string()
       .trim()
       .required(),
@@ -95,11 +95,11 @@ function validateNewAdmin(admin) {
       .min(8)
       .required(),
     confirm_password: Joi.string()
-      .valid(Joi.ref('password'))
+      .valid(Joi.ref("password"))
       .min(8)
       .required()
-      .options({ language: { any: { allowOnly: 'New Password and Confirm Passwords must match.' } } }),
-    avatar_url: Joi.string().allow('', null)
+      .options({ language: { any: { allowOnly: "New Password and Confirm Passwords must match." } } }),
+    avatar_url: Joi.string().allow("", null)
   };
   return Joi.validate(admin, schema);
 }
@@ -115,22 +115,18 @@ function validateAdminPassword(admin) {
       .required()
       .trim(),
     confirmpassword: Joi.string()
-      .valid(Joi.ref('newpassword'))
+      .valid(Joi.ref("newpassword"))
       .required()
-      .options({ language: { any: { allowOnly: 'New Password and Confirm Passwords must match.' } } })
+      .options({ language: { any: { allowOnly: "New Password and Confirm Passwords must match." } } })
   };
   return Joi.validate(admin, schema);
 }
 
-AdminSchema.statics.lookup = function(adminId) {
-  return this.findById(adminId);
-};
-
 AdminSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id, admin: true }, config.get('jwtPrivateKey'));
+  const token = jwt.sign({ _id: this._id, admin: true }, config.get("jwtPrivateKey"));
   return token;
 };
 
-exports.Admin = mongoose.model('admins', AdminSchema);
+exports.Admin = mongoose.model("admins", AdminSchema);
 exports.validateNewAdmin = validateNewAdmin;
 exports.validateAdminPassword = validateAdminPassword;
