@@ -111,6 +111,7 @@ function validateAdminPassword(admin) {
       .required()
       .trim(),
     newpassword: Joi.string()
+      .disallow(Joi.ref("oldpassword"))
       .min(8)
       .required()
       .trim(),

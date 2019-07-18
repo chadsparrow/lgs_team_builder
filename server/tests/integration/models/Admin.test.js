@@ -1,18 +1,25 @@
 const { validateNewAdmin, validateAdminPassword } = require("../../../models/Admin");
 let validRequest;
+let char;
 
 describe("Joi validateAdminPassword()", () => {
   beforeEach(() => {
-    validRequest = { oldpassword: "password", newpassword: "drowssap", confirmpassword: "drowssap" };
+    validRequest = {
+      oldpassword: "password",
+      newpassword: "drowssap",
+      confirmpassword: "drowssap"
+    };
+    char = "a";
   });
 
   afterEach(() => {
-    validRequest = {};
+    validRequest = null;
+    char = null;
   });
 
   describe("req.body.oldpassword", () => {
     it("should return an error if it is less than 8 characters", () => {
-      validRequest.oldpassword = "passwor";
+      validRequest.oldpassword = char.repeat(7);
       const { error } = validateAdminPassword(validRequest);
       expect(error.message).toMatch(/oldpassword/);
     });
@@ -40,10 +47,18 @@ describe("Joi validateAdminPassword()", () => {
   });
 
   describe("req.body.newpassword", () => {
-    it("should return an error if it is less than 8 characters", () => {
-      validRequest.newpassword = "drowssa";
+    it("should return an error if it is the same as req.body.oldpassword", () => {
+      validRequest.newpassword = validRequest.oldpassword;
       const { error } = validateAdminPassword(validRequest);
       expect(error.message).toMatch(/newpassword/);
+      expect(error.message).toMatch(/invalid/);
+    });
+
+    it("should return an error if it is less than 8 characters", () => {
+      validRequest.newpassword = char.repeat(7);
+      const { error } = validateAdminPassword(validRequest);
+      expect(error.message).toMatch(/newpassword/);
+      expect(error.message).toMatch(/8/);
     });
 
     it("should return an error if it is empty", () => {
@@ -70,7 +85,7 @@ describe("Joi validateAdminPassword()", () => {
 
   describe("req.body.confirmpassword", () => {
     it("should return an error if it is less than 8 characters", () => {
-      validRequest.confirmpassword = "drowssa";
+      validRequest.confirmpassword = char.repeat(7);
       const { error } = validateAdminPassword(validRequest);
       expect(error.message).toMatch(/confirmpassword/);
     });
@@ -97,7 +112,7 @@ describe("Joi validateAdminPassword()", () => {
     });
 
     it("should return an error if it does not match req.body.newpassword", () => {
-      validRequest.confirmpassword = "drewssap";
+      validRequest.confirmpassword = "notmatch";
       const { error } = validateAdminPassword(validRequest);
       expect(error.message).toMatch(/confirmpassword/);
       expect(error.message).toMatch(/match/);
@@ -122,9 +137,11 @@ describe("Joi validateNewAdmin", () => {
       confirm_password: "password",
       avatar_url: null
     };
+    char = "a";
   });
   afterEach(() => {
-    validRequest = {};
+    validRequest = null;
+    char = null;
   });
 
   describe("req.body.name", () => {
@@ -143,14 +160,14 @@ describe("Joi validateNewAdmin", () => {
     });
 
     it("should return error if it is less than 4 characters", () => {
-      validRequest.name = "nam";
+      validRequest.name = char.repeat(3);
       const { error } = validateNewAdmin(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/4/);
     });
 
     it("should return error if it is more than 50 characters", () => {
-      validRequest.name = "averylongstringthatwillcover50characterstomaketestfail";
+      validRequest.name = char.repeat(51);
       const { error } = validateNewAdmin(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/50/);
@@ -282,7 +299,7 @@ describe("Joi validateNewAdmin", () => {
     });
 
     it("should return an error if it is not at least 8 characters", () => {
-      validRequest.password = "passwor";
+      validRequest.password = char.repeat(7);
       const { error } = validateNewAdmin(validRequest);
       expect(error.message).toMatch(/password/);
       expect(error.message).toMatch(/8/);

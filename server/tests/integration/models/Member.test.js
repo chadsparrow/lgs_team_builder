@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Joi = require("@hapi/joi");
 Joi.objectId = require("joi-objectid")(Joi);
 let validRequest;
+let char;
 
 describe("Joi validateNewMember()", () => {
   beforeEach(() => {
@@ -28,10 +29,13 @@ describe("Joi validateNewMember()", () => {
       shipping_phone: "5555551212",
       shipping_email: "email@email.com"
     };
+
+    char = "a";
   });
 
   afterEach(() => {
     validRequest = null;
+    char = null;
   });
 
   describe("req.body.name", () => {
@@ -43,14 +47,14 @@ describe("Joi validateNewMember()", () => {
     });
 
     it("should return an error if it is not at least 5 characters", () => {
-      validRequest.name = "name";
+      validRequest.name = char.repeat(4);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/5/);
     });
 
     it("should return an error if it is not at over 50 characters", () => {
-      validRequest.name = "verylongstringthatisatleast50characterstomaketestfail";
+      validRequest.name = char.repeat(51);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/50/);
@@ -80,7 +84,7 @@ describe("Joi validateNewMember()", () => {
     });
 
     it("should return an error if it is not at least 10 characters", () => {
-      validRequest.address1 = "tenchars";
+      validRequest.address1 = char.repeat(9);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/address1/);
       expect(error.message).toMatch(/10/);
@@ -154,7 +158,7 @@ describe("Joi validateNewMember()", () => {
     });
 
     it("should return an error if it less than 2 characters", () => {
-      validRequest.state_prov = "a";
+      validRequest.state_prov = char.repeat(1);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/state_prov/);
       expect(error.message).toMatch(/2/);
@@ -191,7 +195,7 @@ describe("Joi validateNewMember()", () => {
     });
 
     it("should return an error if it is less than 2 characters", () => {
-      validRequest.country = "a";
+      validRequest.country = char.repeat(1);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/country/);
       expect(error.message).toMatch(/2/);
@@ -297,7 +301,7 @@ describe("Joi validateNewMember()", () => {
     });
 
     it("should return an error if it is less than 8 characters", () => {
-      validRequest.password = "passwor";
+      validRequest.password = char.repeat(7);
       const { error } = validateNewMember(validRequest);
       expect(error.message).toMatch(/password/);
       expect(error.message).toMatch(/8/);
@@ -355,7 +359,7 @@ describe("Joi validateNewMember()", () => {
 
     it("should return an error shipping_same is false and is less than 5 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_name = "name";
+      validRequest.shipping_name = char.repeat(4);
       const { error } = validateNewMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_name/);
@@ -364,7 +368,7 @@ describe("Joi validateNewMember()", () => {
 
     it("should return an error shipping_same is false and is more than 50 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_name = "textstringmorethan50characterstomaketestfailuponrunning";
+      validRequest.shipping_name = char.repeat(51);
       const { error } = validateNewMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_name/);
@@ -410,7 +414,7 @@ describe("Joi validateNewMember()", () => {
 
     it("should return an error shipping_same is false and is less than 10 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_address1 = "address1";
+      validRequest.shipping_address1 = char.repeat(9);
       const { error } = validateNewMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_address1/);
@@ -519,7 +523,7 @@ describe("Joi validateNewMember()", () => {
 
     it("should return an error shipping_same is false and is less than 2 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_state_prov = "a";
+      validRequest.shipping_state_prov = char.repeat(1);
       const { error } = validateNewMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_state_prov/);
@@ -565,7 +569,7 @@ describe("Joi validateNewMember()", () => {
 
     it("should return an error shipping_same is false and is less than 2 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_country = "a";
+      validRequest.shipping_country = char.repeat(1);
       const { error } = validateNewMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_country/);
@@ -756,10 +760,12 @@ describe("Joi validateUpdateMember()", () => {
       shipping_phone: "5555551212",
       shipping_email: "email@email.com"
     };
+    char = "a";
   });
 
   afterEach(() => {
     validRequest = null;
+    char = null;
   });
 
   describe("req.body.name", () => {
@@ -771,14 +777,14 @@ describe("Joi validateUpdateMember()", () => {
     });
 
     it("should return an error if it is not at least 5 characters", () => {
-      validRequest.name = "name";
+      validRequest.name = char.repeat(4);
       const { error } = validateUpdateMember(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/5/);
     });
 
     it("should return an error if it is not at over 50 characters", () => {
-      validRequest.name = "verylongstringthatisatleast50characterstomaketestfail";
+      validRequest.name = char.repeat(51);
       const { error } = validateUpdateMember(validRequest);
       expect(error.message).toMatch(/name/);
       expect(error.message).toMatch(/50/);
@@ -808,7 +814,7 @@ describe("Joi validateUpdateMember()", () => {
     });
 
     it("should return an error if it is not at least 10 characters", () => {
-      validRequest.address1 = "tenchars";
+      validRequest.address1 = char.repeat(9);
       const { error } = validateUpdateMember(validRequest);
       expect(error.message).toMatch(/address1/);
       expect(error.message).toMatch(/10/);
@@ -882,7 +888,7 @@ describe("Joi validateUpdateMember()", () => {
     });
 
     it("should return an error if it less than 2 characters", () => {
-      validRequest.state_prov = "a";
+      validRequest.state_prov = char.repeat(1);
       const { error } = validateUpdateMember(validRequest);
       expect(error.message).toMatch(/state_prov/);
       expect(error.message).toMatch(/2/);
@@ -919,7 +925,7 @@ describe("Joi validateUpdateMember()", () => {
     });
 
     it("should return an error if it is less than 2 characters", () => {
-      validRequest.country = "a";
+      validRequest.country = char.repeat(1);
       const { error } = validateUpdateMember(validRequest);
       expect(error.message).toMatch(/country/);
       expect(error.message).toMatch(/2/);
@@ -1023,7 +1029,7 @@ describe("Joi validateUpdateMember()", () => {
 
     it("should return an error shipping_same is false and is less than 5 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_name = "name";
+      validRequest.shipping_name = char.repeat(4);
       const { error } = validateUpdateMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_name/);
@@ -1032,7 +1038,7 @@ describe("Joi validateUpdateMember()", () => {
 
     it("should return an error shipping_same is false and is more than 50 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_name = "textstringmorethan50characterstomaketestfailuponrunning";
+      validRequest.shipping_name = char.repeat(51);
       const { error } = validateUpdateMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_name/);
@@ -1078,7 +1084,7 @@ describe("Joi validateUpdateMember()", () => {
 
     it("should return an error shipping_same is false and is less than 10 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_address1 = "address1";
+      validRequest.shipping_address1 = char.repeat(9);
       const { error } = validateUpdateMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_address1/);
@@ -1187,7 +1193,7 @@ describe("Joi validateUpdateMember()", () => {
 
     it("should return an error shipping_same is false and is less than 2 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_state_prov = "a";
+      validRequest.shipping_state_prov = char.repeat(1);
       const { error } = validateUpdateMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_state_prov/);
@@ -1233,7 +1239,7 @@ describe("Joi validateUpdateMember()", () => {
 
     it("should return an error shipping_same is false and is less than 2 characters", () => {
       validRequest.shipping_same = false;
-      validRequest.shipping_country = "a";
+      validRequest.shipping_country = char.repeat(1);
       const { error } = validateUpdateMember(validRequest);
       expect(validRequest.shipping_same).toBe(false);
       expect(error.message).toMatch(/shipping_country/);
@@ -1405,9 +1411,11 @@ describe("Joi validateUpdateMember()", () => {
 describe("Joi validateEmail()", () => {
   beforeEach(() => {
     validRequest = { email: "email@email.com" };
+    char = "a";
   });
   afterEach(() => {
     validRequest = null;
+    char = null;
   });
 
   describe("req.body.email", () => {
@@ -1444,10 +1452,12 @@ describe("Joi validatePassword()", () => {
       newpassword: "drowssap",
       confirmpassword: "drowssap"
     };
+    char = "a";
   });
 
   afterEach(() => {
     validRequest = null;
+    char = null;
   });
 
   describe("req.body.oldpassword", () => {
@@ -1459,7 +1469,7 @@ describe("Joi validatePassword()", () => {
     });
 
     it("should return an error if it is not at least 8 characters", () => {
-      validRequest.oldpassword = "passwor";
+      validRequest.oldpassword = char.repeat(7);
       const { error } = validatePassword(validRequest);
       expect(error.message).toMatch(/oldpassword/);
       expect(error.message).toMatch(/8/);
@@ -1496,7 +1506,7 @@ describe("Joi validatePassword()", () => {
     });
 
     it("should return an error if it is not at least 8 characters", () => {
-      validRequest.newpassword = "drowssa";
+      validRequest.newpassword = char.repeat(7);
       const { error } = validatePassword(validRequest);
       expect(error.message).toMatch(/newpassword/);
       expect(error.message).toMatch(/8/);
@@ -1560,10 +1570,12 @@ describe("Joi validateNotification()", () => {
       message: "message",
       clickTo: "clicktoURL"
     };
+    char = "a";
   });
 
   afterEach(() => {
     validRequest = null;
+    char = null;
   });
 
   describe("req.body.recipients", () => {
