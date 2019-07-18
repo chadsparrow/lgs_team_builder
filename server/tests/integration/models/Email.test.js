@@ -4,7 +4,7 @@ const Joi = require("@hapi/joi");
 Joi.objectId = require("joi-objectid")(Joi);
 let validRequest;
 
-describe("validateEmail", () => {
+describe("Joi validateEmail()", () => {
   beforeEach(() => {
     validRequest = { recipients: [new mongoose.Types.ObjectId().toHexString()], subject: "subject", message: "message" };
   });
@@ -13,82 +13,88 @@ describe("validateEmail", () => {
     validRequest = {};
   });
 
-  it("should return an error if req.body.recipients is not an array", () => {
-    validRequest.recipients = 1;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/recipients/);
-    expect(error.message).toMatch(/array/);
+  describe("req.body.recipients", () => {
+    it("should return an error if it is not an array", () => {
+      validRequest.recipients = 1;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/recipients/);
+      expect(error.message).toMatch(/array/);
+    });
+
+    it("should return an error if it is an empty array", () => {
+      validRequest.recipients = [];
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/recipients/);
+    });
+
+    it("should return an error if any recipient are not valid ObjectID string", () => {
+      validRequest.recipients = ["stringnotObjectID"];
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/recipients/);
+      expect(error.message).toMatch(/pattern/);
+    });
+
+    it("should return an error if it is not provided", () => {
+      delete validRequest.recipients;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/recipients/);
+      expect(error.message).toMatch(/required/);
+    });
   });
 
-  it("should return an error if req.body.recipients is an empty array", () => {
-    validRequest.recipients = [];
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/recipients/);
+  describe("req.body.subject", () => {
+    it("should return an error if it is not a string", () => {
+      validRequest.subject = 1;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/subject/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if it is empty", () => {
+      validRequest.subject = "";
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/subject/);
+      expect(error.message).toMatch(/empty/);
+    });
+
+    it("should return an error if it is not provided", () => {
+      delete validRequest.subject;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/subject/);
+      expect(error.message).toMatch(/required/);
+    });
   });
 
-  it("should return an error if req.body.recipients are not valid ObjectID string", () => {
-    validRequest.recipients = ["aaaa"];
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/recipients/);
-    expect(error.message).toMatch(/pattern/);
+  describe("req.body.message", () => {
+    it("should return an error if it is not a string", () => {
+      validRequest.message = 1;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if it is empty", () => {
+      validRequest.message = "";
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/empty/);
+    });
+
+    it("should return an error if it is not provided", () => {
+      delete validRequest.message;
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/required/);
+    });
   });
 
-  it("should return an error if req.body.recipients is not provided", () => {
-    delete validRequest.recipients;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/recipients/);
-    expect(error.message).toMatch(/required/);
-  });
-
-  it("should return an error if req.body.subject is a string", () => {
-    validRequest.subject = 1;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/subject/);
-    expect(error.message).toMatch(/string/);
-  });
-
-  it("should return an error if req.body.subject is empty", () => {
-    validRequest.subject = "";
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/subject/);
-    expect(error.message).toMatch(/empty/);
-  });
-
-  it("should return an error if req.body.subject is not provided", () => {
-    delete validRequest.subject;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/subject/);
-    expect(error.message).toMatch(/required/);
-  });
-
-  it("should return an error if req.body.message is not a string", () => {
-    validRequest.message = 1;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/string/);
-  });
-
-  it("should return an error if req.body.message is empty", () => {
-    validRequest.message = "";
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/empty/);
-  });
-
-  it("should return an error if req.body.message is not provided", () => {
-    delete validRequest.message;
-    const { error } = validateEmail(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/required/);
-  });
-
-  it("should return error as null if req.body.message is validated", () => {
+  it("should return error as null if it is validated", () => {
     const { error } = validateEmail(validRequest);
     expect(error).toBe(null);
   });
 });
 
-describe("validateMessage", () => {
+describe("Joi validateMessage()", () => {
   beforeEach(() => {
     validRequest = { message: "message" };
   });
@@ -97,28 +103,30 @@ describe("validateMessage", () => {
     validRequest = {};
   });
 
-  it("should return an error if req.body.message is not a string", () => {
-    validRequest.message = 1;
-    const { error } = validateMessage(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/string/);
+  describe("req.body.message", () => {
+    it("should return an error if it is not a string", () => {
+      validRequest.message = 1;
+      const { error } = validateMessage(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if it is empty", () => {
+      validRequest.message = "";
+      const { error } = validateMessage(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/empty/);
+    });
+
+    it("should return an error if it is not provided", () => {
+      delete validRequest.message;
+      const { error } = validateMessage(validRequest);
+      expect(error.message).toMatch(/message/);
+      expect(error.message).toMatch(/required/);
+    });
   });
 
-  it("should return an error if req.body.message is empty", () => {
-    validRequest.message = "";
-    const { error } = validateMessage(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/empty/);
-  });
-
-  it("should return an error if req.body.message is not provided", () => {
-    delete validRequest.message;
-    const { error } = validateMessage(validRequest);
-    expect(error.message).toMatch(/message/);
-    expect(error.message).toMatch(/required/);
-  });
-
-  it("should return error as null if req.body.message is validated", () => {
+  it("should return error as null if it is validated", () => {
     const { error } = validateMessage(validRequest);
     expect(error).toBe(null);
   });
