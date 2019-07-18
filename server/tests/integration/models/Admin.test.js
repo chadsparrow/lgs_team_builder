@@ -2,6 +2,15 @@ const { validateNewAdmin, validateAdminPassword } = require("../../../models/Adm
 let validRequest;
 let char;
 
+beforeAll(() => {
+  char = "a";
+});
+
+afterAll(() => {
+  validRequest = null;
+  char = null;
+});
+
 describe("Joi validateAdminPassword()", () => {
   beforeEach(() => {
     validRequest = {
@@ -10,11 +19,6 @@ describe("Joi validateAdminPassword()", () => {
       confirmpassword: "drowssap"
     };
     char = "a";
-  });
-
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.oldpassword", () => {
@@ -137,11 +141,6 @@ describe("Joi validateNewAdmin", () => {
       confirm_password: "password",
       avatar_url: null
     };
-    char = "a";
-  });
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.name", () => {

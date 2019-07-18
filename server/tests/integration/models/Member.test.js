@@ -5,6 +5,15 @@ Joi.objectId = require("joi-objectid")(Joi);
 let validRequest;
 let char;
 
+beforeAll(() => {
+  char = "a";
+});
+
+afterAll(() => {
+  validRequest = null;
+  char = null;
+});
+
 describe("Joi validateNewMember()", () => {
   beforeEach(() => {
     validRequest = {
@@ -29,13 +38,6 @@ describe("Joi validateNewMember()", () => {
       shipping_phone: "5555551212",
       shipping_email: "email@email.com"
     };
-
-    char = "a";
-  });
-
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.name", () => {
@@ -760,12 +762,6 @@ describe("Joi validateUpdateMember()", () => {
       shipping_phone: "5555551212",
       shipping_email: "email@email.com"
     };
-    char = "a";
-  });
-
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.name", () => {
@@ -1411,11 +1407,6 @@ describe("Joi validateUpdateMember()", () => {
 describe("Joi validateEmail()", () => {
   beforeEach(() => {
     validRequest = { email: "email@email.com" };
-    char = "a";
-  });
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.email", () => {
@@ -1452,12 +1443,6 @@ describe("Joi validatePassword()", () => {
       newpassword: "drowssap",
       confirmpassword: "drowssap"
     };
-    char = "a";
-  });
-
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.oldpassword", () => {
@@ -1570,12 +1555,6 @@ describe("Joi validateNotification()", () => {
       message: "message",
       clickTo: "clicktoURL"
     };
-    char = "a";
-  });
-
-  afterEach(() => {
-    validRequest = null;
-    char = null;
   });
 
   describe("req.body.recipients", () => {

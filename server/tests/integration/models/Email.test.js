@@ -4,13 +4,13 @@ const Joi = require("@hapi/joi");
 Joi.objectId = require("joi-objectid")(Joi);
 let validRequest;
 
+afterAll(() => {
+  validRequest = null;
+});
+
 describe("Joi validateEmail()", () => {
   beforeEach(() => {
     validRequest = { recipients: [new mongoose.Types.ObjectId().toHexString()], subject: "subject", message: "message" };
-  });
-
-  afterEach(() => {
-    validRequest = {};
   });
 
   describe("req.body.recipients", () => {
@@ -105,10 +105,6 @@ describe("Joi validateEmail()", () => {
 describe("Joi validateMessage()", () => {
   beforeEach(() => {
     validRequest = { message: "message" };
-  });
-
-  afterEach(() => {
-    validRequest = {};
   });
 
   describe("req.body.message", () => {
