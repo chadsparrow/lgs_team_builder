@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Joi = require('@hapi/joi');
+const mongoose = require("mongoose");
+const Joi = require("@hapi/joi");
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -15,16 +15,16 @@ const TeamSchema = new mongoose.Schema(
     },
     admin_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Member'
+      ref: "members"
     },
     manager_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Member'
+      ref: "members"
     },
     main_contact: {
       contact: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Member'
+        ref: "members"
       },
       name: {
         type: String,
@@ -78,7 +78,7 @@ const TeamSchema = new mongoose.Schema(
     bulk_shipping: {
       contact: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Member'
+        ref: "members"
       },
       name: {
         type: String,
@@ -129,7 +129,7 @@ const TeamSchema = new mongoose.Schema(
         trim: true
       }
     },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }]
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "members" }]
   },
   { timestamps: true }
 );
@@ -145,11 +145,11 @@ function validateTeam(team) {
   const schema = {
     logo: Joi.string()
       .uri()
-      .allow('', null),
+      .allow("", null),
     admin_id: Joi.objectId().required(),
     manager_id: Joi.objectId().required(),
     useManagerDetails: Joi.boolean().required(),
-    contact_name: Joi.when('useManagerDetails', {
+    contact_name: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .min(5)
@@ -161,7 +161,7 @@ function validateTeam(team) {
         .max(50)
         .trim()
     }),
-    contact_address1: Joi.when('useManagerDetails', {
+    contact_address1: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .min(10)
@@ -173,15 +173,15 @@ function validateTeam(team) {
     }),
     contact_address2: Joi.string()
       .trim()
-      .allow('', null),
-    contact_city: Joi.when('useManagerDetails', {
+      .allow("", null),
+    contact_city: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .trim()
         .required(),
       otherwise: Joi.string().trim()
     }),
-    contact_state_prov: Joi.when('useManagerDetails', {
+    contact_state_prov: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .min(2)
@@ -191,7 +191,7 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_country: Joi.when('useManagerDetails', {
+    contact_country: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .min(2)
@@ -201,7 +201,7 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_zip_postal: Joi.when('useManagerDetails', {
+    contact_zip_postal: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .min(5)
@@ -211,7 +211,7 @@ function validateTeam(team) {
         .min(5)
         .trim()
     }),
-    contact_phone: Joi.when('useManagerDetails', {
+    contact_phone: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .trim()
@@ -225,7 +225,7 @@ function validateTeam(team) {
         .max(13)
         .regex(/^[0-9]{7,13}$/)
     }),
-    contact_email: Joi.when('useManagerDetails', {
+    contact_email: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .email()
@@ -233,64 +233,64 @@ function validateTeam(team) {
       otherwise: Joi.string().email()
     }),
     bulk_use_above_details: Joi.boolean().required(),
-    bulk_contact_name: Joi.when('bulk_use_above_details', {
+    bulk_contact_name: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_name'),
+      then: Joi.ref("contact_name"),
       otherwise: Joi.string()
         .min(5)
         .max(50)
         .trim()
         .required()
     }),
-    bulk_contact_address1: Joi.when('bulk_use_above_details', {
+    bulk_contact_address1: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_address1'),
+      then: Joi.ref("contact_address1"),
       otherwise: Joi.string()
         .min(10)
         .trim()
         .required()
     }),
-    bulk_contact_address2: Joi.when('bulk_use_above_details', {
+    bulk_contact_address2: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_address2'),
+      then: Joi.ref("contact_address2"),
       otherwise: Joi.string()
         .trim()
-        .allow('', null)
+        .allow("", null)
     }),
-    bulk_contact_city: Joi.when('bulk_use_above_details', {
+    bulk_contact_city: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_city'),
+      then: Joi.ref("contact_city"),
       otherwise: Joi.string()
         .trim()
         .required()
     }),
-    bulk_contact_state_prov: Joi.when('bulk_use_above_details', {
+    bulk_contact_state_prov: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_state_prov'),
+      then: Joi.ref("contact_state_prov"),
       otherwise: Joi.string()
         .min(2)
         .trim()
         .required()
     }),
-    bulk_contact_country: Joi.when('bulk_use_above_details', {
+    bulk_contact_country: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_country'),
+      then: Joi.ref("contact_country"),
       otherwise: Joi.string()
         .min(2)
         .trim()
         .required()
     }),
-    bulk_contact_zip_postal: Joi.when('bulk_use_above_details', {
+    bulk_contact_zip_postal: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_zip_postal'),
+      then: Joi.ref("contact_zip_postal"),
       otherwise: Joi.string()
         .min(5)
         .trim()
         .required()
     }),
-    bulk_contact_phone: Joi.when('bulk_use_above_details', {
+    bulk_contact_phone: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_phone'),
+      then: Joi.ref("contact_phone"),
       otherwise: Joi.string()
         .trim()
         .min(7)
@@ -298,9 +298,9 @@ function validateTeam(team) {
         .regex(/^[0-9]{7,13}$/)
         .required()
     }),
-    bulk_contact_email: Joi.when('bulk_use_above_details', {
+    bulk_contact_email: Joi.when("bulk_use_above_details", {
       is: true,
-      then: Joi.ref('contact_email'),
+      then: Joi.ref("contact_email"),
       otherwise: Joi.string()
         .email()
         .required()
@@ -309,6 +309,14 @@ function validateTeam(team) {
   return Joi.validate(team, schema);
 }
 
-exports.Team = mongoose.model('teams', TeamSchema);
+function validateAddMember(member) {
+  const schema = {
+    name: Joi.objectId().required()
+  };
+  return Joi.validate(member, schema);
+}
+
+exports.Team = mongoose.model("teams", TeamSchema);
 exports.validateTeam = validateTeam;
 exports.validateTeamName = validateTeamName;
+exports.validateAddMember = validateAddMember;

@@ -9,6 +9,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       ignore_watch: ["logs", "node_modules"],
+      watch_options: {
+        followSymlinks: false
+      },
       max_memory_restart: "1G",
       env_development: {
         NODE_ENV: "development",

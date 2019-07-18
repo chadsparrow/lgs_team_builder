@@ -46,11 +46,13 @@ router.post("/register", async (req, res) => {
     shipping_country,
     shipping_zip_postal,
     shipping_phone,
-    shipping_email
+    shipping_email,
+    isAdmin
   } = req.body;
 
   let member = await Member.findOne({ email });
   if (member) return res.status(400).send({ msg: "Member already registered." });
+  if (!req.member.isAdmin && isAdmin) return res.status(403).send({ msg: "Access Denied." });
 
   const newMember = new Member({
     name,
@@ -61,7 +63,8 @@ router.post("/register", async (req, res) => {
     country,
     zip_postal,
     phone,
-    email
+    email,
+    isAdmin
   });
 
   newMember.notifications.push({ date: new Date(), message: "Welcome to Team Builder!" });
@@ -93,7 +96,7 @@ router.post("/register", async (req, res) => {
 
   await newMember.save();
 
-  res.send(_.pick(newMember, ["_id", "name", "email"]));
+  res.send(_.pick(newMember, ["_id", "name", "email", "isAdmin"]));
 });
 
 // PUT /api/members/:id
@@ -119,8 +122,10 @@ router.put("/:id", auth, async (req, res) => {
     shipping_country,
     shipping_zip_postal,
     shipping_phone,
-    shipping_email
+    shipping_email,
+    isAdmin
   } = req.body;
+  if (!req.member.isAdmin && isAdmin) return res.status(403).send({ msg: "Access Denied" });
 
   let member = await Member.findById(req.params.id);
   if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
@@ -133,6 +138,7 @@ router.put("/:id", auth, async (req, res) => {
   member.country = country;
   member.zip_postal = zip_postal;
   member.phone = phone;
+  member.isAdmin = isAdmin;
 
   if (shipping_same) {
     member.shipping_name = member.name;
@@ -158,7 +164,7 @@ router.put("/:id", auth, async (req, res) => {
 
   await member.save();
 
-  res.send(_.pick(member, ["_id", "name", "email"]));
+  res.send(_.pick(member, ["_id", "name", "email", "isAdmin"]));
 });
 
 // PATCH /api/members/email/:id
@@ -184,7 +190,7 @@ router.patch("/email/:id", auth, async (req, res) => {
 
   member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email: req.body.email }, { new: true });
 
-  res.send(_.pick(member, ["_id", "name", "email"]));
+  res.send(_.pick(member, ["_id", "name", "email", "isAdmin"]));
 });
 
 // PATCH /api/members/password/:id
@@ -204,7 +210,7 @@ router.patch("/password/:id", auth, async (req, res) => {
       bcrypt.hash(req.body.newpassword, salt, async (err, hash) => {
         member.password = hash;
         await member.save();
-        res.send(_.pick(member, ["_id", "name", "email"]));
+        res.send(_.pick(member, ["_id", "name", "email", "isAdmin"]));
       });
     });
   });
@@ -214,7 +220,7 @@ router.patch("/password/:id", auth, async (req, res) => {
 router.delete("/:id", [auth, admin], async (req, res) => {
   const member = await Member.findByIdAndRemove(req.params.id);
   if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
-  res.send(_.pick(member, ["_id", "name", "email"]));
+  res.send(_.pick(member, ["_id", "name", "email", "isAdmin"]));
 });
 
 module.exports = router;

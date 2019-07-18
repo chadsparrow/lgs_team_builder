@@ -1,6 +1,5 @@
 const winston = require("winston");
 const mongoose = require("mongoose");
-const { Admin } = require("../models/Admin");
 const config = require("config");
 const bcrypt = require("bcryptjs");
 
@@ -13,24 +12,24 @@ module.exports = async function(DB_HOST) {
     process.exit(0);
   });
 
-  try {
-    const admins = await Admin.find();
-    if (admins && admins.length === 0) {
-      winston.info("No admin users detected - creating root user.");
-      const rootPass = config.get("app.rootPass");
-      const rootEmail = config.get("app.rootEmail");
-      const newAdmin = new Admin({
-        name: "root",
-        phone: "555-555-1212",
-        office: "AI",
-        email: rootEmail
-      });
-      const salt = await bcrypt.genSalt(10);
-      newAdmin.password = await bcrypt.hash(rootPass, salt);
-      await newAdmin.save();
-      winston.info("Root Admin user created.");
-    }
-  } catch (err) {
-    winston.err(err.message, err);
-  }
+  // try {
+  //   const admins = await Member.find({ isAdmin: true });
+  //   if (admins && admins.length === 0) {
+  //     winston.info("No admin users detected - creating root user.");
+  //     const rootPass = config.get("app.rootPass");
+  //     const rootEmail = config.get("app.rootEmail");
+  //     const newAdmin = new Member({
+  //       name: "root",
+  //       phone: "555-555-1212",
+  //       office: "AI",
+  //       email: rootEmail
+  //     });
+  //     const salt = await bcrypt.genSalt(10);
+  //     newAdmin.password = await bcrypt.hash(rootPass, salt);
+  //     await newAdmin.save();
+  //     winston.info("Root Admin user created.");
+  //   }
+  // } catch (err) {
+  //   winston.err(err.message, err);
+  // }
 };

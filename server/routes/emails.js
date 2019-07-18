@@ -14,12 +14,13 @@ router.get("/me", auth, async (req, res) => {
       { messages: { $elemMatch: { sentBy: mongoose.Types.ObjectId(req.member._id) } } }
     ]
   })
-    .populate("sender", "name email", Member)
-    .populate("recipients.member", "name email", Member)
-    .populate("messages.sentBy", "name email", Member)
+    .populate({ path: "sender", select: "name email" })
+    .populate({ path: "recipients.member", select: "name email" })
+    .populate({ path: "messages.sentBy", select: "name email" })
     .sort("-messages.date")
     .select("-__v");
-  if (emails.length == 0) return res.status(404).send({ msg: "You have no messages." });
+
+  if (emails.length === 0) return res.status(404).send({ msg: "You have no messages." });
   res.send(emails);
 });
 
@@ -48,8 +49,8 @@ router.post("/", auth, async (req, res) => {
 
   newEmail.messages.push({ message: req.body.message, date: new Date(), sentBy: req.member._id });
 
-  let savedEmail = await newEmail.save();
-  let populatedEmail = await populateEmail(savedEmail);
+  let savedEmail = await email.save();
+  let populatedEmail = await populateEmail(savedEmail._id);
 
   res.send(populatedEmail);
 });
@@ -68,7 +69,7 @@ router.patch("/:id/tr", auth, async (req, res) => {
   });
 
   let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail);
+  let populatedEmail = await populateEmail(savedEmail._id);
 
   res.send(populatedEmail);
 });
@@ -89,7 +90,7 @@ router.patch("/:id/archive", auth, async (req, res) => {
   });
 
   let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail);
+  let populatedEmail = await populateEmail(savedEmail._id);
 
   res.send(populatedEmail);
 });
@@ -123,19 +124,19 @@ router.post("/:id/reply", auth, async (req, res) => {
   email.recipients = resetUnread;
 
   let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail);
+  let populatedEmail = await populateEmail(savedEmail._id);
+
   res.send(populatedEmail);
 });
 
-function populateEmail(email) {
+function populateEmail(emailId) {
   return new Promise(async (resolve, reject) => {
-    const opts = [
-      { path: "sender", select: "name email" },
-      { path: "recipients.member", select: "name email" },
-      { path: "messages.sentBy", select: "name email" }
-    ];
-    const populatedEmail = await Member.populate(email, opts);
-    resolve(_.pick(populatedEmail, ["_id", "sender", "subject", "recipients", "messages", "updatedAt", "createdAt"]));
+    let popemail = await Email.findById(emailId)
+      .populate({ path: "sender", select: "name email" })
+      .populate({ path: "recipients.member", select: "name email" })
+      .populate({ path: "messages.sentBy", select: "name email" })
+      .select("_id sender subject recipients messages updatedAt createdAt");
+    resolve(popemail);
   });
 }
 

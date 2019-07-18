@@ -1,18 +1,18 @@
-const mongoose = require('mongoose');
-const Joi = require('@hapi/joi');
+const mongoose = require("mongoose");
+const Joi = require("@hapi/joi");
 
 const EmailSchema = new mongoose.Schema(
   {
     sender: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Member'
+      ref: "members"
     },
     recipients: [
       {
         _id: false,
         member: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Member'
+          ref: "members"
         },
         unread: {
           type: Boolean,
@@ -42,7 +42,7 @@ const EmailSchema = new mongoose.Schema(
         },
         sentBy: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Member'
+          ref: "members"
         }
       }
     ]
@@ -68,6 +68,6 @@ function validateMessage(message) {
   return Joi.validate(message, schema);
 }
 
-exports.Email = mongoose.model('emails', EmailSchema);
+exports.Email = mongoose.model("emails", EmailSchema);
 exports.validateEmail = validateEmail;
 exports.validateMessage = validateMessage;

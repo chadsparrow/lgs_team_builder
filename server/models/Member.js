@@ -170,7 +170,11 @@ const MemberSchema = new mongoose.Schema(
           type: String
         }
       }
-    ]
+    ],
+    isAdmin: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );
@@ -284,7 +288,8 @@ function validateNewMember(member) {
         .email()
         .trim()
         .required()
-    })
+    }),
+    isAdmin: Joi.boolean()
   };
   return Joi.validate(member, schema);
 }
@@ -394,7 +399,8 @@ function validateUpdateMember(member) {
         .trim()
         .email()
         .required()
-    })
+    }),
+    isAdmin: Joi.boolean()
   };
   return Joi.validate(member, schema);
 }
@@ -442,7 +448,7 @@ function validateNotification(notification) {
 }
 
 MemberSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id }, config.get("jwtPrivateKey"));
+  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get("jwtPrivateKey"));
   return token;
 };
 

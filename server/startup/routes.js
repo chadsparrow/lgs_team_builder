@@ -15,7 +15,6 @@ module.exports = function(app) {
 
   // Load API Routes
   app.use("/api/me", require("../routes/me"));
-  app.use("/api/admins", require("../routes/admins"));
   app.use("/api/members", require("../routes/members"));
   app.use("/api/auth", require("../routes/auth"));
   app.use("/api/notifications", require("../routes/notifications"));
