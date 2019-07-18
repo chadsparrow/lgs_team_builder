@@ -197,6 +197,7 @@ function validateNewMember(member) {
       .required()
       .trim(),
     country: Joi.string()
+      .min(2)
       .required()
       .trim(),
     zip_postal: Joi.string()
@@ -204,14 +205,15 @@ function validateNewMember(member) {
       .trim(),
     phone: Joi.string()
       .trim()
-      .regex(/^[0-9]{7,10}$/),
+      .regex(/^[0-9]{7,10}$/)
+      .required(),
     email: Joi.string()
       .email()
       .required(),
     password: Joi.string()
       .min(8)
       .required()
-      .trim(false),
+      .trim(),
     shipping_same: Joi.boolean().required(),
     shipping_name: Joi.when("shipping_same", {
       is: true,
@@ -256,6 +258,7 @@ function validateNewMember(member) {
       is: true,
       then: Joi.ref("country"),
       otherwise: Joi.string()
+        .min(2)
         .required()
         .trim()
     }),
@@ -308,12 +311,14 @@ function validateUpdateMember(member) {
       .required()
       .trim(),
     country: Joi.string()
+      .min(2)
       .required()
       .trim(),
     zip_postal: Joi.string()
       .required()
       .trim(),
     phone: Joi.string()
+      .regex(/^[0-9]{7,10}$/)
       .required()
       .trim(),
     shipping_same: Joi.boolean().required(),
@@ -360,6 +365,7 @@ function validateUpdateMember(member) {
       is: true,
       then: Joi.ref("country"),
       otherwise: Joi.string()
+        .min(2)
         .required()
         .trim()
     }),
@@ -376,6 +382,17 @@ function validateUpdateMember(member) {
       otherwise: Joi.string()
         .trim()
         .regex(/^[0-9]{7,10}$/)
+        .required()
+    }),
+    shipping_email: Joi.when("shipping_same", {
+      is: true,
+      then: Joi.string()
+        .trim()
+        .allow("", null)
+        .email(),
+      otherwise: Joi.string()
+        .trim()
+        .email()
         .required()
     })
   };
@@ -399,6 +416,7 @@ function validatePassword(member) {
       .required()
       .trim(),
     newpassword: Joi.string()
+      .disallow(Joi.ref("oldpassword"))
       .min(8)
       .required()
       .trim(),
@@ -413,7 +431,9 @@ function validatePassword(member) {
 
 function validateNotification(notification) {
   const schema = {
-    recipients: Joi.array().items(Joi.objectId().required()),
+    recipients: Joi.array()
+      .required()
+      .items(Joi.objectId().required()),
     message: Joi.string().required(),
     clickTo: Joi.string().allow("", null)
   };

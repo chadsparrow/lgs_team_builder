@@ -14,27 +14,35 @@ describe("Joi validateEmail()", () => {
   });
 
   describe("req.body.recipients", () => {
-    it("should return an error if it is not an array", () => {
+    it("should return an error if recipients is not an array", () => {
       validRequest.recipients = 1;
       const { error } = validateEmail(validRequest);
       expect(error.message).toMatch(/recipients/);
       expect(error.message).toMatch(/array/);
     });
 
-    it("should return an error if it is an empty array", () => {
+    it("should return an error if recipients array is empty", () => {
       validRequest.recipients = [];
       const { error } = validateEmail(validRequest);
       expect(error.message).toMatch(/recipients/);
+      expect(error.message).toMatch(/required/);
     });
 
-    it("should return an error if any recipient are not valid ObjectID string", () => {
-      validRequest.recipients = ["stringnotObjectID"];
+    it("should return an error if any recipient is not a string", () => {
+      validRequest.recipients = [1];
+      const { error } = validateEmail(validRequest);
+      expect(error.message).toMatch(/recipients/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if any recipient is not a valid ObjectID", () => {
+      validRequest.recipients = ["notavalidobjectid"];
       const { error } = validateEmail(validRequest);
       expect(error.message).toMatch(/recipients/);
       expect(error.message).toMatch(/pattern/);
     });
 
-    it("should return an error if it is not provided", () => {
+    it("should return an error if any recipients is not provided", () => {
       delete validRequest.recipients;
       const { error } = validateEmail(validRequest);
       expect(error.message).toMatch(/recipients/);
