@@ -16,16 +16,17 @@ router.get("/", auth, async (req, res) => {
       .populate({ path: "admin_id", select: "name email" })
       .populate({ path: "members", select: "name email" })
       .populate({ path: "main_contact.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
-      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" });
+      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
+      .select("-updatedAt -__v ");
     if (teams && teams.length == 0) return res.status(404).send({ msg: "No Teams found." });
     return res.send(teams);
   } else {
     teams = await Team.find({ $or: [{ manager_id: req.member._id }, { members: req.member._id }] })
-      .select("-admin_id")
       .populate({ path: "manager_id", select: "name email" })
       .populate({ path: "members", select: "name email" })
       .populate({ path: "main_contact.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
-      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" });
+      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
+      .select("-updatedAt -__v -admin_id");
 
     if (teams && teams.length == 0) return res.status(404).send({ msg: "You are currently not a member of any teams" });
 
@@ -42,14 +43,15 @@ router.get("/:id", auth, async (req, res) => {
       .populate({ path: "admin_id", select: "name email" })
       .populate({ path: "members", select: "name email" })
       .populate({ path: "main_contact.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
-      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" });
+      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
+      .select("-updatedAt -__v ");
   } else {
     team = await Team.findById(req.params.id)
-      .select("-admin_id")
       .populate({ path: "manager_id", select: "name email" })
       .populate({ path: "members", select: "name email" })
       .populate({ path: "main_contact.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
-      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" });
+      .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
+      .select("-updatedAt -__v -admin_id");
   }
   if (!team) return res.status(404).send({ msg: "Team with the given ID not found." });
 
@@ -167,7 +169,8 @@ router.put("/:id", [auth, admin], async (req, res) => {
     .populate({ path: "admin_id", select: "name email" })
     .populate({ path: "members", select: "name email" })
     .populate({ path: "main_contact.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
-    .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" });
+    .populate({ path: "bulk_shipping.contact", select: "name address1 address2 city state_prov country zip_postal email phone" })
+    .select("-updatedAt -__v");
 
   res.send(populatedTeam);
 });
