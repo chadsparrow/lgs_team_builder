@@ -299,4 +299,68 @@ describe("Joi validateTeam()", () => {
       expect(error).toBe(null);
     });
   });
+
+  describe("req.body.contact_address1", () => {
+    it("should return an error if useManagerDetails == false and is not provided", () => {
+      validRequest.useManagerDetails = false;
+      delete validRequest.contact_address1;
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(false);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/required/);
+    });
+
+    it("should return an error if useManagerDetails == false and is not a string", () => {
+      validRequest.useManagerDetails = false;
+      validRequest.contact_address1 = 1;
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(false);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if useManagerDetails == false and is not at least 10 characters", () => {
+      validRequest.useManagerDetails = false;
+      validRequest.contact_address1 = char.repeat(9);
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(false);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/10/);
+    });
+
+    it("should return an error if useManagerDetails == true and it is not a string", () => {
+      validRequest.useManagerDetails = true;
+      validRequest.contact_address1 = 1;
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(true);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/string/);
+    });
+
+    it("should return an error if useManagerDetails == true and it is empty", () => {
+      validRequest.useManagerDetails = true;
+      validRequest.contact_address1 = "";
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(true);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/empty/);
+    });
+
+    it("should return an error if useManagerDetails == true and it is not at least 10 characters", () => {
+      validRequest.useManagerDetails = true;
+      validRequest.contact_address1 = char.repeat(9);
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(true);
+      expect(error.message).toMatch(/contact_address1/);
+      expect(error.message).toMatch(/10/);
+    });
+
+    it("should not return an error if useManagerDetails == true and it is not provided", () => {
+      validRequest.useManagerDetails = true;
+      delete validRequest.contact_address1;
+      const { error } = validateTeam(validRequest);
+      expect(validRequest.useManagerDetails).toBe(true);
+      expect(error).toBe(null);
+    });
+  });
 });
