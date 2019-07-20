@@ -204,26 +204,19 @@ function validateTeam(team) {
     contact_zip_postal: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
-        .min(5)
         .trim()
         .required(),
-      otherwise: Joi.string()
-        .min(5)
-        .trim()
+      otherwise: Joi.string().trim()
     }),
     contact_phone: Joi.when("useManagerDetails", {
       is: false,
       then: Joi.string()
         .trim()
-        .min(7)
-        .max(13)
-        .regex(/^[0-9]{7,13}$/)
+        .regex(/^[0-9]{7,10}$/)
         .required(),
       otherwise: Joi.string()
         .trim()
-        .min(7)
-        .max(13)
-        .regex(/^[0-9]{7,13}$/)
+        .regex(/^[0-9]{7,10}$/)
     }),
     contact_email: Joi.when("useManagerDetails", {
       is: false,
@@ -284,7 +277,6 @@ function validateTeam(team) {
       is: true,
       then: Joi.ref("contact_zip_postal"),
       otherwise: Joi.string()
-        .min(5)
         .trim()
         .required()
     }),
@@ -293,9 +285,7 @@ function validateTeam(team) {
       then: Joi.ref("contact_phone"),
       otherwise: Joi.string()
         .trim()
-        .min(7)
-        .max(13)
-        .regex(/^[0-9]{7,13}$/)
+        .regex(/^[0-9]{7,10}$/)
         .required()
     }),
     bulk_contact_email: Joi.when("bulk_use_above_details", {
@@ -311,7 +301,7 @@ function validateTeam(team) {
 
 function validateAddMember(member) {
   const schema = {
-    name: Joi.objectId().required()
+    id: Joi.objectId().required()
   };
   return Joi.validate(member, schema);
 }
