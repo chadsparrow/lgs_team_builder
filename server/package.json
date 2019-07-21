@@ -4,7 +4,7 @@
   "description": "Kit Order Replacement App for LG/Sugoi",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "nodemon -L server.js",
     "start": "node server.js",
     "test": "jest --watchAll --verbose",
     "coverage": "jest --watchAll --verbose --coverage"
