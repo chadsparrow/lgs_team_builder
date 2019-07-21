@@ -42,5 +42,6 @@ services:
       - .env.development
     environment:
       WAIT_HOSTS: server:5001
+    command: npm run serve
 volumes:
   mongodbdata:
