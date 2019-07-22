@@ -1,4 +1,15 @@
 {
   "name": "Team Builder - TEST",
-  "jwtPrivateKey": "12345"
+  "jwtPrivateKey": "12345",
+  "database": {
+    "user": "MONGO_INITDB_ROOT_USERNAME",
+    "pass": "MONGO_INITDB_ROOT_PASSWORD",
+    "adminSource": "admin",
+    "db": "teambuilder-test",
+    "port": "27018"
+  },
+  "app": {
+    "port": 5001,
+    "rootEmail": "root@teambuilder.io"
+  }
 }

@@ -1,30 +1,31 @@
-const { Email, validateEmail, validateMessage } = require("../models/Email");
-const { Member } = require("../models/Member");
-const express = require("express");
+const { Email, validateEmail, validateMessage } = require('../models/Email');
+const { Member } = require('../models/Member');
+const express = require('express');
 const router = express.Router();
-const auth = require("../middleware/auth");
-const _ = require("lodash");
-const mongoose = require("mongoose");
+const auth = require('../middleware/auth');
+const _ = require('lodash');
+const mongoose = require('mongoose');
+const validateObjectId = require('../middleware/validateObjectId');
 
 // GET /api/notifcations/me
-router.get("/me", auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   const emails = await Email.find({
     $or: [
       { recipients: { $elemMatch: { member: mongoose.Types.ObjectId(req.member._id) } } },
       { messages: { $elemMatch: { sentBy: mongoose.Types.ObjectId(req.member._id) } } }
     ]
   })
-    .populate({ path: "sender", select: "name email" })
-    .populate({ path: "recipients.member", select: "name email" })
-    .populate({ path: "messages.sentBy", select: "name email" })
-    .sort("-messages.date")
-    .select("-__v");
+    .populate({ path: 'sender', select: 'name email' })
+    .populate({ path: 'recipients.member', select: 'name email' })
+    .populate({ path: 'messages.sentBy', select: 'name email' })
+    .sort('-messages.date')
+    .select('-__v');
 
-  if (emails.length === 0) return res.status(404).send({ msg: "You have no messages." });
+  if (emails.length === 0) return res.status(404).send({ msg: 'You have no messages.' });
   res.send(emails);
 });
 
-router.post("/", auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
@@ -55,12 +56,13 @@ router.post("/", auth, async (req, res) => {
   res.send(populatedEmail);
 });
 
-router.patch("/:id/tr", auth, async (req, res) => {
+// Toggle Unread boolean on an email.
+router.patch('/:id/tr', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send({ msg: "Email with the given ID was not found." });
+  if (!email) return res.status(400).send({ msg: 'Email with the given ID was not found.' });
 
   email.recipients.forEach(recipient => {
     if (recipient.member == req.member._id) {
@@ -74,9 +76,9 @@ router.patch("/:id/tr", auth, async (req, res) => {
   res.send(populatedEmail);
 });
 
-router.patch("/:id/archive", auth, async (req, res) => {
+router.patch('/:id/archive', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
   if (!email) return res.status(400).send({ msg: `Email with the given ID was not found.` });
@@ -85,7 +87,7 @@ router.patch("/:id/archive", auth, async (req, res) => {
     if (recipient.member == req.member._id && !recipient.archived) {
       recipient.archived = true;
     } else if (recipient.member == req.member._id && recipient.archived) {
-      return res.status(400).send({ msg: "Email with the given ID is already archived." });
+      return res.status(400).send({ msg: 'Email with the given ID is already archived.' });
     }
   });
 
@@ -95,12 +97,12 @@ router.patch("/:id/archive", auth, async (req, res) => {
   res.send(populatedEmail);
 });
 
-router.post("/:id/reply", auth, async (req, res) => {
+router.post('/:id/reply', [validateObjectId, auth], async (req, res) => {
   const { error } = validateMessage(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
   if (!email) return res.status(400).send({ msg: `Email with the given ID was not found.` });
@@ -132,10 +134,10 @@ router.post("/:id/reply", auth, async (req, res) => {
 function populateEmail(emailId) {
   return new Promise(async (resolve, reject) => {
     let popemail = await Email.findById(emailId)
-      .populate({ path: "sender", select: "name email" })
-      .populate({ path: "recipients.member", select: "name email" })
-      .populate({ path: "messages.sentBy", select: "name email" })
-      .select("_id sender subject recipients messages updatedAt createdAt");
+      .populate({ path: 'sender', select: 'name email' })
+      .populate({ path: 'recipients.member', select: 'name email' })
+      .populate({ path: 'messages.sentBy', select: 'name email' })
+      .select('_id sender subject recipients messages updatedAt createdAt');
     resolve(popemail);
   });
 }

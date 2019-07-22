@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon -L server.js",
     "start": "node server.js",
-    "test": "jest --watchAll --verbose",
+    "test": "NODE_ENV=test jest --watchAll --verbose --forceExit",
     "coverage": "jest --watchAll --verbose --coverage"
   },
   "author": "Chad Sparrow",

@@ -1,16 +1,17 @@
-const { Member, validateNotification } = require("../models/Member");
-const express = require("express");
+const { Member, validateNotification } = require('../models/Member');
+const express = require('express');
 const router = express.Router();
-const auth = require("../middleware/auth");
+const auth = require('../middleware/auth');
+const validateObjectId = require('../middleware/validateObjectId');
 
 // GET /api/notifcations/me
-router.get("/me", auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ msg: "Member with the given ID was not found." });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
   res.send(member.notifications);
 });
 
-router.post("/", auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validateNotification(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
@@ -31,14 +32,14 @@ router.post("/", auth, async (req, res) => {
   res.end();
 });
 
-router.delete("/all", auth, async (req, res) => {
+router.delete('/all', auth, async (req, res) => {
   let member = await Member.findById(req.member._id);
   member.notifications = [];
   await member.save();
   res.end();
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete('/:id', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.member._id);
   if (member.notifications.length > 0) {
     member.notifications = member.notifications.filter(n => {
@@ -48,7 +49,7 @@ router.delete("/:id", auth, async (req, res) => {
     return res.send(member.notifications);
   }
 
-  return res.status(400).send({ msg: "Notifications with that ID not found." });
+  return res.status(400).send({ msg: 'Notifications with that ID not found.' });
 });
 
 module.exports = router;
