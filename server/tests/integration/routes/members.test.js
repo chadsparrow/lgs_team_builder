@@ -142,4 +142,63 @@ describe('/api/members', () => {
       expect(res.body).toHaveProperty('email', member.email);
     });
   });
+
+  describe('GET /register', () => {
+    it('should return 400 if req.body is invalidated by Joi', async () => {
+      const member = {};
+
+      const res = await request(app)
+        .post('/api/members/register')
+        .send(member);
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if req.body is validated by Joi but already in the database', async () => {
+      const member = {
+        name: 'user1',
+        address1: '123 Any Street',
+        city: 'City',
+        state_prov: 'AB',
+        country: 'AB',
+        zip_postal: '12345',
+        phone: '5555551212',
+        email: 'email@email.com',
+        password: 'password',
+        shipping_same: true
+      };
+
+      const saveMember = new Member(member);
+      await saveMember.save();
+
+      const res = await request(app)
+        .post('/api/members/register')
+        .send(member);
+
+      expect(res.status).toBe(400);
+      expect(res.body).toMatchObject({ msg: 'Member already registered.' });
+    });
+
+    it('should return 200 and a new member object if the request is valid and member does not exist', async () => {
+      const member = {
+        name: 'user1',
+        address1: '123 Any Street',
+        city: 'City',
+        state_prov: 'AB',
+        country: 'AB',
+        zip_postal: '12345',
+        phone: '5555551212',
+        email: 'email@email.com',
+        password: 'password',
+        shipping_same: true
+      };
+
+      const res = await request(app)
+        .post('/api/members/register')
+        .send(member);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('email', member.email);
+      expect(res.body).toHaveProperty('name', member.name.toUpperCase());
+    });
+  });
 });
