@@ -48,12 +48,6 @@ describe('/api/members', () => {
       expect(res.status).toBe(401);
     });
 
-    it('should return 401 if client provides an invalid token', async () => {
-      token = '12345';
-      const res = await exec();
-      expect(res.status).toBe(401);
-    });
-
     it('should return a 404 if there are no members', async () => {
       await Member.deleteMany({});
       const res = await exec();
@@ -79,15 +73,6 @@ describe('/api/members', () => {
     it('should return 401 if client is not logged in', async () => {
       const id = mongoose.Types.ObjectId().toHexString();
       const res = await request(app).get(`/api/members/${id}`);
-      expect(res.status).toBe(401);
-    });
-
-    it('should return 401 if provided an invalid token', async () => {
-      token = '123456';
-      const id = mongoose.Types.ObjectId().toHexString();
-      const res = await request(app)
-        .get(`/api/members/${id}`)
-        .set('x-auth-token', token);
       expect(res.status).toBe(401);
     });
 
@@ -256,14 +241,6 @@ describe('/api/members', () => {
       expect(res.status).toBe(401);
     });
 
-    it('should return 401 if provided an invalid token', async () => {
-      token = '123456';
-      reqBody = '';
-      const id = mongoose.Types.ObjectId().toHexString();
-      const res = await exec(id, reqBody, token);
-      expect(res.status).toBe(401);
-    });
-
     it('should return 400 if req.body is invalidated by Joi', async () => {
       await Member.deleteMany({});
 
@@ -384,14 +361,6 @@ describe('/api/members', () => {
       expect(res.status).toBe(401);
     });
 
-    it('should return 401 if provided an invalid token', async () => {
-      token = '123456';
-      reqBody = '';
-      const id = mongoose.Types.ObjectId().toHexString();
-      const res = await exec(id, reqBody, token);
-      expect(res.status).toBe(401);
-    });
-
     it('should return 400 if req.body is invalidated by Joi', async () => {
       await Member.deleteMany({});
 
@@ -480,14 +449,6 @@ describe('/api/members', () => {
 
     it('should return 401 if client is not logged in', async () => {
       token = '';
-      reqBody = '';
-      const id = mongoose.Types.ObjectId().toHexString();
-      const res = await exec(id, reqBody, token);
-      expect(res.status).toBe(401);
-    });
-
-    it('should return 401 if provided an invalid token', async () => {
-      token = '123456';
       reqBody = '';
       const id = mongoose.Types.ObjectId().toHexString();
       const res = await exec(id, reqBody, token);
@@ -584,13 +545,6 @@ describe('/api/members', () => {
 
     it('should return 401 if client is not logged in', async () => {
       token = '';
-      const id = mongoose.Types.ObjectId().toHexString();
-      const res = await exec(id, token);
-      expect(res.status).toBe(401);
-    });
-
-    it('should return 401 if provided an invalid token', async () => {
-      token = '123456';
       const id = mongoose.Types.ObjectId().toHexString();
       const res = await exec(id, token);
       expect(res.status).toBe(401);
