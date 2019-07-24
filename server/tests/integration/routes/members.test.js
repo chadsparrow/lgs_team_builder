@@ -13,7 +13,7 @@ describe('/api/members', () => {
   });
 
   afterEach(async () => {
-    await Member.deleteMany({});
+    await Member.deleteMany();
   });
 
   describe('GET /', () => {
@@ -216,6 +216,10 @@ describe('/api/members', () => {
       token = member.generateAuthToken();
     });
 
+    afterEach(async () => {
+      await Member.deleteMany();
+    });
+
     const exec = async (id, reqBody, token) => {
       return await request(app)
         .put(`/api/members/${id}`)
@@ -336,6 +340,10 @@ describe('/api/members', () => {
       token = member.generateAuthToken();
     });
 
+    afterEach(async () => {
+      await Member.deleteMany();
+    });
+
     const exec = async (id, reqBody, token) => {
       return await request(app)
         .patch(`/api/members/email/${id}`)
@@ -453,6 +461,10 @@ describe('/api/members', () => {
       token = member.generateAuthToken();
     });
 
+    afterEach(async () => {
+      await Member.deleteMany();
+    });
+
     const exec = async (id, reqBody, token) => {
       return await request(app)
         .patch(`/api/members/password/${id}`)
@@ -549,6 +561,10 @@ describe('/api/members', () => {
 
       await member.save();
       token = member.generateAuthToken();
+    });
+
+    afterEach(async () => {
+      await Member.deleteMany();
     });
 
     const exec = async (id, token) => {

@@ -25,6 +25,10 @@ describe('auth middleware', () => {
     token = member.generateAuthToken();
   });
 
+  afterEach(async () => {
+    await Member.deleteMany();
+  });
+
   const exec = () => {
     return request(app)
       .get('/api/members')
