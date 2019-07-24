@@ -18,7 +18,7 @@ router.get('/', auth, async (req, res) => {
 // GET /api/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select('-__v -password -updatedAt -notifications');
-  if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
   res.send(member);
 });
 
@@ -125,7 +125,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     isAdmin
   } = req.body;
 
-  if (!req.member.isAdmin && isAdmin) return res.status(403).send({ msg: 'Access Denied' });
+  if (!req.member.isAdmin && isAdmin) return res.status(403).send({ msg: 'Access Denied.' });
 
   let member = await Member.findById(req.params.id);
   if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
@@ -173,7 +173,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   if (member.email === req.body.email) {
     return res.status(400).send({ msg: 'Email is identical to what is already set.' });
@@ -198,10 +198,8 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
 
-  if (req.body.newpassword === req.body.oldpassword) return res.status(400).send({ msg: 'Please ensure new password is different.' });
-
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(404).send({ msg: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
 
   bcrypt.compare(req.body.oldpassword, member.password, (err, result) => {
     if (!result) return res.status(400).send({ msg: 'Password incorrect.' });
