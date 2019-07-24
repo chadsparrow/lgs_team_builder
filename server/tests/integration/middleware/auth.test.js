@@ -7,11 +7,14 @@ let token;
 describe('auth middleware', () => {
   beforeEach(async () => {
     app = require('../../../app');
+
+    await Member.deleteMany();
+
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash('password1', salt);
     const member = new Member({
-      name: 'user2',
-      email: 'email1@email.com',
+      name: 'auth1',
+      email: 'auth@auth.com',
       password: hash,
       phone: '5555551212',
       zip_postal: '12345',
@@ -36,14 +39,12 @@ describe('auth middleware', () => {
   };
 
   it('should return 401 if no token is provided', async () => {
-    await Member.deleteMany({});
     token = '';
     const res = await exec();
     expect(res.status).toBe(401);
   });
 
   it('should return 400 if token is invalid', async () => {
-    await Member.deleteMany({});
     token = 'a';
     const res = await exec();
     expect(res.status).toBe(400);
