@@ -395,6 +395,29 @@ describe('/api/members', () => {
       expect(res.body).toMatchObject({ msg: 'Email is identical to what is already set.' });
     });
 
+    it('should return 400 if valid email passed is already registered', async () => {
+      const newMember = new Member({
+        name: 'user2',
+        email: 'email1@email.com',
+        address1: '123 Any Street',
+        password: 'password',
+        city: 'City',
+        state_prov: 'AB',
+        country: 'AB',
+        zip_postal: '12345',
+        phone: '5555551212',
+        shipping_same: true,
+        isAdmin: false
+      });
+      await newMember.save();
+
+      reqBody = {
+        email: 'email1@email.com'
+      };
+      const res = await exec(id, reqBody, token);
+      expect(res.status).toBe(400);
+    });
+
     it('should return a member if valid and found', async () => {
       const reqBody = {
         email: 'email1@email.com'
