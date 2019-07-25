@@ -84,6 +84,10 @@ const CouponSchema = new mongoose.Schema({
   end_date: {
     type: Date,
     required: true
+  },
+  timezone: {
+    type: String,
+    required: true
   }
 });
 
@@ -122,7 +126,8 @@ function validateCoupon(coupon) {
       .min('now'),
     end_date: Joi.date()
       .required()
-      .greater(Joi.ref('start_date'))
+      .greater(Joi.ref('start_date')),
+    timezone: Joi.string().required()
   };
   return Joi.validate(coupon, schema);
 }
