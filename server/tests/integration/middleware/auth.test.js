@@ -5,14 +5,13 @@ const bcrypt = require('bcryptjs');
 let token;
 
 describe('auth middleware', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     app = require('../../../app');
 
-    await Member.deleteMany();
-
+    const password = 'password1';
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash('password1', salt);
-    const member = new Member({
+    const hash = await bcrypt.hash(password, salt);
+    member = {
       name: 'auth1',
       email: 'auth@auth.com',
       password: hash,
@@ -21,15 +20,18 @@ describe('auth middleware', () => {
       country: 'AB',
       state_prov: 'AB',
       city: 'City',
-      address1: '123 Any Street'
-    });
+      address1: '123 Any Street',
+      shipping_same: true
+    };
+    const newMember = new Member(member);
 
-    await member.save();
-    token = member.generateAuthToken();
+    await newMember.save();
+
+    token = newMember.generateAuthToken();
   });
 
-  afterEach(async () => {
-    await Member.deleteMany();
+  afterAll(async () => {
+    await Member.collection.drop();
   });
 
   const exec = () => {
@@ -45,7 +47,7 @@ describe('auth middleware', () => {
   });
 
   it('should return 400 if token is invalid', async () => {
-    token = 'a';
+    token = '123456';
     const res = await exec();
     expect(res.status).toBe(400);
   });

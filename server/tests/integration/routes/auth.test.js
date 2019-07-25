@@ -2,18 +2,17 @@ const { Member } = require('../../../models/Member');
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
 let app;
-let reqBody;
-const password = 'password1';
+let email;
+let password;
 
 describe('/api/auth', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     app = require('../../../app');
 
-    await Member.deleteMany();
-
+    password = 'password1';
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash('password1', salt);
-    const member = new Member({
+    const hash = await bcrypt.hash(password, salt);
+    member = {
       name: 'auth1',
       email: 'auth@auth.com',
       password: hash,
@@ -22,55 +21,54 @@ describe('/api/auth', () => {
       country: 'AB',
       state_prov: 'AB',
       city: 'City',
-      address1: '123 Any Street'
-    });
-
-    reqBody = {
-      email: member.email,
-      password: password
+      address1: '123 Any Street',
+      shipping_same: true
     };
+    const newMember = new Member(member);
 
-    await member.save();
+    await newMember.save();
+
+    token = newMember.generateAuthToken();
   });
 
-  afterEach(async () => {
-    await Member.deleteMany();
+  afterAll(async () => {
+    await Member.collection.drop();
   });
 
   describe('POST /', () => {
     const exec = async () => {
       return await request(app)
         .post('/api/auth')
-        .send(reqBody);
+        .send({ email, password });
     };
 
     it('should return a 400 if req is invalidated by Joi', async () => {
-      reqBody = {};
+      email = '';
+      password = '';
       const res = await exec();
       expect(res.status).toBe(400);
     });
 
     it('should return a 401 if email doesnt exist', async () => {
-      reqBody = {
-        email: 'wrongauth@auth.com',
-        password: password
-      };
+      email = 'wrong@auth.com';
+      password = 'password1';
 
       const res = await exec();
       expect(res.status).toBe(401);
     });
 
     it('should return a 401 if password is incorrect', async () => {
-      reqBody = {
-        email: 'auth@auth.com',
-        password: 'notthepassword'
-      };
+      email = 'auth@auth.com';
+      password = 'notthepassword';
 
       const res = await exec();
       expect(res.status).toBe(401);
     });
 
     it('should return a valid JWT Token', async () => {
+      email = 'auth@auth.com';
+      password = 'password1';
+
       const res = await exec();
       expect(res.status).toBe(200);
     });

@@ -11,7 +11,6 @@ let member;
 describe('/api/members', () => {
   beforeEach(async () => {
     app = require('../../../app');
-    await Member.deleteMany();
 
     const password = 'password1';
     const salt = await bcrypt.genSalt(10);
@@ -36,7 +35,7 @@ describe('/api/members', () => {
   });
 
   afterEach(async () => {
-    await Member.deleteMany();
+    await Member.collection.drop();
   });
 
   describe('GET /', () => {
@@ -53,7 +52,7 @@ describe('/api/members', () => {
     });
 
     it('should return a 404 if there are no members', async () => {
-      await Member.deleteMany();
+      await Member.collection.drop();
       const res = await exec();
       expect(res.status).toBe(404);
       expect(res.body).toMatchObject({ msg: 'There are no members in the database.' });
@@ -202,7 +201,7 @@ describe('/api/members', () => {
     });
 
     it('should return 400 if requested member cannot be found', async () => {
-      await Member.deleteMany();
+      await Member.collection.drop();
 
       reqBody = {
         name: 'member1',
@@ -274,7 +273,7 @@ describe('/api/members', () => {
     });
 
     it('should return 400 if member is not found', async () => {
-      await Member.deleteMany();
+      await Member.collection.drop();
 
       reqBody = {
         email: 'member@member.com'
@@ -366,7 +365,7 @@ describe('/api/members', () => {
     });
 
     it('should return 400 if member cannot be found', async () => {
-      await Member.deleteMany({});
+      await Member.collection.drop();
 
       reqBody = {
         oldpassword: 'password1',
@@ -429,7 +428,7 @@ describe('/api/members', () => {
     });
 
     afterEach(async () => {
-      await Member.deleteMany();
+      await Member.collection.drop();
     });
 
     const exec = async (id, token) => {
@@ -461,7 +460,7 @@ describe('/api/members', () => {
     });
 
     it('should return 400 if requested member to change cannot be found', async () => {
-      await Member.deleteMany({});
+      await Member.collection.drop();
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash('password1', salt);
@@ -482,7 +481,7 @@ describe('/api/members', () => {
 
       await member.save();
       token = member.generateAuthToken();
-      await Member.deleteMany({});
+      await Member.collection.drop();
 
       const res = await exec(id, token);
 
@@ -491,7 +490,7 @@ describe('/api/members', () => {
     });
 
     it('should delete a member if valid and found', async () => {
-      await Member.deleteMany({});
+      await Member.collection.drop();
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash('password1', salt);
       let member = new Member({
