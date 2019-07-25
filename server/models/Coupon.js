@@ -4,7 +4,7 @@ const Float = require('mongoose-float').loadType(mongoose);
 
 const CouponSchema = new mongoose.Schema({
   store_id: {
-    type: mongoose.Schema.Types.ObjectId(),
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     trim: true
   },
@@ -65,6 +65,18 @@ const CouponSchema = new mongoose.Schema({
       return this.max_coupons - this.coupons_used;
     }
   },
+  approved_items: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'stores'
+    }
+  ],
+  recipients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'members'
+    }
+  ],
   start_date: {
     type: Date,
     required: true

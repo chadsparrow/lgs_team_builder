@@ -33,7 +33,7 @@ const CartSchema = new mongoose.Schema(
     ],
     discount: {
       coupon_id: {
-        type: mongoose.Schema.Types.ObjectId(),
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'coupons'
       }
     },

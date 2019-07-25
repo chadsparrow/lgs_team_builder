@@ -4,7 +4,7 @@ const Float = require('mongoose-float').loadType(mongoose);
 
 const CatalogItemSchema = new mongoose.Schema({
   catalog_id: {
-    type: mongoose.Schema.Types.ObjectId(),
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'catalogs'
   },
   name: {
