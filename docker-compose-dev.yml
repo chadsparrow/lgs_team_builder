@@ -27,21 +27,5 @@ services:
     environment:
       WAIT_HOSTS: mongo:27018
     command: npm run dev
-  vue:
-    container_name: team_builder_frontend_dev
-    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app-frontend-dev:1.0.0
-    restart: always
-    ports:
-      - 8080:8080
-    volumes:
-      - ./client:/usr/src/app/client
-      - /usr/src/app/client/node_modules
-    depends_on:
-      - server
-    env_file:
-      - .env.development
-    environment:
-      WAIT_HOSTS: server:5001
-    command: npm run serve
 volumes:
   mongodbdata:
