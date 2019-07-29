@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
+const moment = require('moment-timezone');
 
 const { Member, validateNewMember, validateUpdateMember, validateEmail, validatePassword } = require('../models/Member');
 let selectString = '';
@@ -30,6 +31,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   }
   const member = await Member.findById(req.params.id).select(selectString);
   if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
+
   res.send(member);
 });
 

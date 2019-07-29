@@ -5,6 +5,7 @@ WORKDIR /usr/src/app/server
 COPY package*.json ./
 
 RUN npm install
+RUN apk update && apk add bash
 
 COPY . .
 

@@ -3,6 +3,7 @@ FROM node:8-alpine
 ADD server /usr/src/app/server
 
 RUN cd /usr/src/app/server && npm install
+RUN apk update && apk add bash
 
 EXPOSE 5001
 
