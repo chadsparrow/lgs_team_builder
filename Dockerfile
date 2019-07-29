@@ -1,10 +1,8 @@
-FROM node:8
+FROM node:8-alpine
 
 ADD server /usr/src/app/server
 
-RUN cd /usr/src/app/server
-RUN npm install && npm install pm2 -g
-RUN pm2 install pm2-logrotate && pm2 set pm2-logrotate:retain 14
+RUN cd /usr/src/app/server && npm install
 
 EXPOSE 5001
 

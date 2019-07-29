@@ -7,17 +7,28 @@ const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
 const { Member, validateNewMember, validateUpdateMember, validateEmail, validatePassword } = require('../models/Member');
+let selectString = '';
 
 // GET /api/members
 router.get('/', auth, async (req, res) => {
-  const members = await Member.find().select('-password -__v -updatedAt -notifications');
+  if (req.member.isAdmin) {
+    selectString = '-password -__v -updatedAt -notifications';
+  } else {
+    selectString = '-password -__v -updatedAt -notifications -isAdmin';
+  }
+  const members = await Member.find().select(selectString);
   if (members && members.length === 0) return res.status(404).send({ msg: 'There are no members in the database.' });
   res.send(members);
 });
 
 // GET /api/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id).select('-__v -password -updatedAt -notifications');
+  if (req.member.isAdmin) {
+    selectString = '-password -__v -updatedAt -notifications';
+  } else {
+    selectString = '-password -__v -updatedAt -notifications -isAdmin';
+  }
+  const member = await Member.findById(req.params.id).select(selectString);
   if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
   res.send(member);
 });

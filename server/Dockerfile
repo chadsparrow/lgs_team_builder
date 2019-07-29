@@ -1,11 +1,10 @@
-FROM node:8
+FROM node:8-alpine
 
 WORKDIR /usr/src/app/server
 
 COPY package*.json ./
 
-RUN npm install && npm install pm2 -g
-RUN pm2 install pm2-logrotate && pm2 set pm2-logrotate:retain 14
+RUN npm install
 
 COPY . .
 

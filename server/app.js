@@ -14,12 +14,16 @@ const DB_PASS = config.get('database.pass');
 const DB_ADMINSOURCE = config.get('database.adminSource');
 const DB_DB = config.get('database.db');
 const DB_PORT = config.get('database.port') || 27018;
-let DB_HOST;
+let DB_URI = '';
+let DB_HOST = '';
+
 if (config.get('env') === 'test') {
-  DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@localhost:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}`;
+  DB_URI = 'localhost';
 } else {
-  DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@mongo:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}`;
+  DB_URI = 'mongo';
 }
+
+DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@${DB_URI}:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}`;
 require('./startup/db')(DB_HOST);
 
 // setup winston
