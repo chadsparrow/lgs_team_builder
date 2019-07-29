@@ -7,12 +7,6 @@
 <script>
 export default {
   name: "HelloWorld",
-  data() {
-    return {
-      items: ["Bio", "Pics", "Companies", "Links"],
-      active: "Bio"
-    };
-  },
   methods: {}
 };
 </script>
