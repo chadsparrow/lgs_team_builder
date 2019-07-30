@@ -2,98 +2,93 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
-const CouponSchema = new mongoose.Schema({
-  store_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    trim: true
-  },
-  code: {
-    type: String,
-    required: true,
-    uppercase: true,
-    minlength: 5,
-    maxlength: 12
-  },
-  description: {
-    type: String,
-    required: true,
-    minlength: 5
-  },
-  discount_amount: {
-    type: Float,
-    required: true,
-    min: 0
-  },
-  discount_type: {
-    type: String,
-    enum: ['%', '$'],
-    trim: true,
-    required: true
-  },
-  discount_applied: {
-    type: String,
-    enum: ['cart', 'items'],
-    trim: true,
-    required: true
-  },
-  coupon_type: {
-    type: String,
-    enum: ['member', 'amount'],
-    trim: true,
-    required: true
-  },
-  max_coupons: {
-    type: Number,
-    min: 1,
-    required: true
-  },
-  coupons_used: {
-    type: Number,
-    min: 0,
-    max: function() {
-      return this.max_coupons;
-    },
-    required: true
-  },
-  coupons_remaining: {
-    type: Number,
-    get: function() {
-      return this.max_coupons - this.coupons_used;
-    },
-    set: function() {
-      return this.max_coupons - this.coupons_used;
-    }
-  },
-  approved_items: [
-    {
+const CouponSchema = new mongoose.Schema(
+  {
+    store_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'stores'
+      required: true,
+      trim: true
+    },
+    code: {
+      type: String,
+      required: true,
+      uppercase: true,
+      minlength: 5,
+      maxlength: 12
+    },
+    description: {
+      type: String,
+      required: true,
+      minlength: 5
+    },
+    discount_amount: {
+      type: Float,
+      required: true,
+      min: 0
+    },
+    discount_type: {
+      type: String,
+      enum: ['%', '$'],
+      trim: true,
+      required: true
+    },
+    discount_applied: {
+      type: String,
+      enum: ['cart', 'items'],
+      trim: true,
+      required: true
+    },
+    coupon_type: {
+      type: String,
+      enum: ['member', 'amount'],
+      trim: true,
+      required: true
+    },
+    max_coupons: {
+      type: Number,
+      min: 1,
+      required: true
+    },
+    coupons_used: {
+      type: Number,
+      min: 0,
+      required: true
+    },
+    coupons_remaining: {
+      type: Number,
+      required: true
+    },
+    approved_items: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'stores'
+      }
+    ],
+    recipients: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'members'
+      }
+    ],
+    start_date: {
+      type: Date,
+      required: true
+    },
+    end_date: {
+      type: Date,
+      required: true
+    },
+    timezone: {
+      type: String,
+      required: true
     }
-  ],
-  recipients: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'members'
-    }
-  ],
-  start_date: {
-    type: Date,
-    required: true
   },
-  end_date: {
-    type: Date,
-    required: true
-  },
-  timezone: {
-    type: String,
-    required: true
-  }
-});
+  { timestamps: true, retainKeyOrder: true }
+);
 
 function validateCoupon(coupon) {
   const schema = {
-    store_id: Joi.ObjectId().required(),
+    store_id: Joi.objectId().required(),
     code: Joi.string()
       .min(5)
       .max(12)
@@ -118,9 +113,11 @@ function validateCoupon(coupon) {
     max_coupons: Joi.number()
       .min(1)
       .required(true),
-    used_coupons: Joi.number()
+    coupons_used: Joi.number()
       .max(Joi.ref('max_coupons'))
       .required(),
+    approved_items: Joi.array().items(Joi.objectId().required()),
+    recipients: Joi.array().items(Joi.objectId().required()),
     start_date: Joi.date()
       .required()
       .min('now'),
@@ -132,5 +129,15 @@ function validateCoupon(coupon) {
   return Joi.validate(coupon, schema);
 }
 
+function validateAddAmount(message) {
+  const schema = {
+    amount: Joi.number()
+      .required()
+      .min(1)
+  };
+  return Joi.validate(message, schema);
+}
+
 exports.Coupon = mongoose.model('coupons', CouponSchema);
 exports.validateCoupon = validateCoupon;
+exports.validateAddAmount = validateAddAmount;

@@ -58,7 +58,7 @@ const CatalogItemSchema = new mongoose.Schema({
 
 function validateCatalogItem(catalogItem) {
   const schema = {
-    catalog_id: Joi.ObjectId().required(),
+    catalog_id: Joi.objectId().required(),
     name: Joi.string()
       .min(5)
       .required()

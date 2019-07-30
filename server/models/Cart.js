@@ -57,10 +57,10 @@ const CartSchema = new mongoose.Schema(
 
 function validateCart(cart) {
   const schema = {
-    owner: Joi.ObjectId().required(),
+    owner: Joi.objectId().required(),
     items: Joi.array().items(
       Joi.object().keys({
-        code: Joi.ObjectId().required(),
+        code: Joi.objectId().required(),
         qty: Joi.number()
           .min(0)
           .required(),
@@ -71,7 +71,7 @@ function validateCart(cart) {
       })
     ),
     discount: Joi.object().keys({
-      coupon_id: Joi.ObjectId().required()
+      coupon_id: Joi.objectId().required()
     }),
     tax_amount: Joi.number()
       .required()
