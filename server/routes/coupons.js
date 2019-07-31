@@ -29,6 +29,15 @@ router.get('/check/:id', [validateObjectId, auth], async (req, res) => {
   res.status(200).send({ msg: 'Verified' });
 });
 
+router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
+  const coupons = await Coupon.find({ store_id: req.params.id })
+    .populate(populateOptions)
+    .select('-__v -updatedAt');
+  if (coupons && coupons.length === 0) return res.status(400).send({ msg: 'Coupons under the given Store ID were not found.' });
+
+  res.send(coupons);
+});
+
 router.get('/me', auth, async (req, res) => {
   const coupons = await Coupon.find({ recipients: req.member._id })
     .populate(populateOptions)
@@ -38,15 +47,6 @@ router.get('/me', auth, async (req, res) => {
   coupons.forEach(async coupon => {
     coupon = await populateCoupon(coupon._id);
   });
-
-  res.send(coupons);
-});
-
-router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
-  const coupons = await Coupon.find({ store_id: req.params.id })
-    .populate(populateOptions)
-    .select('-__v -updatedAt');
-  if (coupons && coupons.length === 0) return res.status(400).send({ msg: 'Coupons under the given Store ID were not found.' });
 
   res.send(coupons);
 });

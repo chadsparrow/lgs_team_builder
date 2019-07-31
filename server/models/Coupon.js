@@ -66,8 +66,14 @@ const CouponSchema = new mongoose.Schema(
     ],
     recipients: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'members'
+        member: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'members'
+        },
+        expired: {
+          type: Boolean,
+          default: false
+        }
       }
     ],
     start_date: {
@@ -117,7 +123,7 @@ function validateCoupon(coupon) {
       .max(Joi.ref('max_coupons'))
       .required(),
     approved_items: Joi.array().items(Joi.objectId().required()),
-    recipients: Joi.array().items(Joi.objectId().required()),
+    recipients: Joi.array().items(Joi.object({ member: Joi.objectId().required(), expired: Joi.boolean() })),
     start_date: Joi.date()
       .required()
       .min('now'),
