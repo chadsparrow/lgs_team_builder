@@ -1,31 +1,35 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const CatalogSchema = new mongoose.Schema({
-  brand: {
-    type: String,
-    required: true,
-    trim: true,
-    uppercase: true
+const CatalogSchema = new mongoose.Schema(
+  {
+    brand: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true
+    },
+    season: {
+      type: String,
+      required: true,
+      trim: true,
+      enum: ['SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER'],
+      uppercase: true
+    },
+    year: {
+      type: String,
+      required: true,
+      minlength: 4,
+      maxlength: 4,
+      trim: true,
+      match: /^\d{4}$/
+    },
+    cover_img: {
+      type: String
+    }
   },
-  season: {
-    type: String,
-    required: true,
-    trim: true,
-    uppercase: true
-  },
-  year: {
-    type: String,
-    required: true,
-    minlength: 4,
-    maxlength: 4,
-    trim: true,
-    uppercase: true
-  },
-  image: {
-    type: String
-  }
-});
+  { timestamps: true }
+);
 
 function validateCatalog(catalog) {
   const schema = {
@@ -34,16 +38,28 @@ function validateCatalog(catalog) {
       .trim(),
     season: Joi.string()
       .required()
-      .trim(),
+      .trim()
+      .valid(['spring/summer', 'fall/winter', 'spring', 'summer', 'fall', 'winter']),
     year: Joi.string()
       .required()
+      .regex(/^\d{4}$/)
       .min(4)
       .max(4)
       .trim(),
-    image: Joi.string().uri()
+    cover_img: Joi.string().uri()
   };
   return Joi.validate(catalog, schema);
 }
 
+function validateCoverImage(image) {
+  const schema = {
+    cover_img: Joi.string()
+      .uri()
+      .required()
+  };
+  return Joi.validate(image, schema);
+}
+
 exports.Catalog = mongoose.model('catalogs', CatalogSchema);
 exports.validateCatalog = validateCatalog;
+exports.validateCoverImage = validateCoverImage;
