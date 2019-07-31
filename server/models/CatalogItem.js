@@ -30,7 +30,8 @@ const CatalogItemSchema = new mongoose.Schema({
       type: String,
       trim: true,
       required: true,
-      minlength: 1
+      minlength: 1,
+      unique: true
     }
   ],
   price: {
@@ -53,7 +54,11 @@ const CatalogItemSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  images: [{ type: String, trim: true }]
+  images: [{ type: String, trim: true }],
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 });
 
 function validateCatalogItem(catalogItem) {
@@ -88,10 +93,21 @@ function validateCatalogItem(catalogItem) {
     category: Joi.string()
       .required()
       .trim(),
-    images: Joi.array().items(Joi.string().uri())
+    images: Joi.array().items(Joi.string().uri()),
+    isActive: Joi.boolean()
   };
   return Joi.validate(catalogItem, schema);
 }
 
+function validateCatalogImg(image) {
+  const schema = {
+    image_url: Joi.string()
+      .uri()
+      .required()
+  };
+  Joi.validate(image, schema);
+}
+
 exports.CatalogItem = mongoose.model('catalogitems', CatalogItemSchema);
 exports.validateCatalogItem = validateCatalogItem;
+exports.validateCatalogImg = validateCatalogImg;

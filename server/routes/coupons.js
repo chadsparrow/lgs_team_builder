@@ -20,9 +20,11 @@ router.get('/', auth, async (req, res) => {
   res.send(coupons);
 });
 
-router.get('/check/:id', [validateObjectId, auth], async (req, res) => {
-  const coupon = await Coupon.findById(req.params.id);
-  if (!coupon) return res.status(400).send({ msg: 'Coupon with the given ID was not found.' });
+// TODO ADD MEMBER COUPON CHECK
+
+router.get('/verify/', [auth], async (req, res) => {
+  const coupon = await Coupon.findOne({ store_id: req.query.store, code: req.query.code });
+  if (!coupon) return res.status(400).send({ msg: 'Invalid Coupon' });
 
   if (coupon.coupons_remaining == 0) return res.status(400).send({ msg: 'Coupon expired.' });
 

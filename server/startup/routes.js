@@ -22,5 +22,6 @@ module.exports = function(app) {
   app.use('/api/teams', require('../routes/teams'));
   app.use('/api/coupons', require('../routes/coupons'));
   app.use('/api/catalogs', require('../routes/catalogs'));
+  app.use('/api/catalogitems', require('../routes/catalogitems'));
   app.use(error);
 };
