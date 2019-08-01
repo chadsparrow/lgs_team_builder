@@ -75,7 +75,7 @@ const StoreSchema = new mongoose.Schema(
     },
     items: [
       {
-        id: {
+        item_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'catalogitems'
         },
@@ -315,7 +315,8 @@ function validateStore(store) {
 
 function validateStoreItem(item) {
   const schema = {
-    id: Joi.objectId().required(),
+    item_id: Joi.objectId().required(),
+    isActive: Joi.boolean(),
     sizes_offered: Joi.array().items(
       Joi.string()
         .min(1)
