@@ -2,64 +2,68 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
-const CatalogItemSchema = new mongoose.Schema({
-  catalog_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'catalogs'
-  },
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    trim: true
-  },
-  product_code: {
-    type: String,
-    required: true,
-    trim: true,
-    uppercase: true
-  },
-  style_code: {
-    type: String,
-    required: true,
-    trim: true,
-    uppercase: true
-  },
-  sizes: [
-    {
+const CatalogItemSchema = new mongoose.Schema(
+  {
+    catalog_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'catalogs'
+    },
+    name: {
       type: String,
-      trim: true,
       required: true,
-      minlength: 1,
-      unique: true
+      minlength: 5,
+      trim: true
+    },
+    product_code: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true
+    },
+    style_code: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true
+    },
+    sizes: [
+      {
+        type: String,
+        trim: true,
+        required: true,
+        minlength: 1,
+        uppercase: true,
+        unique: true
+      }
+    ],
+    price: {
+      type: Float,
+      required: true,
+      min: 0.0
+    },
+    gender: {
+      type: String,
+      required: true,
+      uppercase: true,
+      trim: true
+    },
+    description: {
+      type: String,
+      trim: true
+    },
+    category: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    images: [{ type: String, trim: true }],
+    isActive: {
+      type: Boolean,
+      default: true
     }
-  ],
-  price: {
-    type: Float,
-    required: true,
-    min: 0.0
   },
-  gender: {
-    type: String,
-    required: true,
-    uppercase: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  category: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  images: [{ type: String, trim: true }],
-  isActive: {
-    type: Boolean,
-    default: true
-  }
-});
+  { timestamps: true }
+);
 
 function validateCatalogItem(catalogItem) {
   const schema = {
@@ -142,7 +146,7 @@ function validateCatalogImg(image) {
       .uri()
       .required()
   };
-  Joi.validate(image, schema);
+  return Joi.validate(image, schema);
 }
 
 exports.CatalogItem = mongoose.model('catalogitems', CatalogItemSchema);

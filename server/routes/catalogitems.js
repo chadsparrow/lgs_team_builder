@@ -118,6 +118,25 @@ router.patch('/img/edit/:id/:index', [validateObjectId, auth, admin], async (req
   res.send(populateCatalogItem(item._id));
 });
 
+router.delete('/img/delete/:id/:index', [validateObjectId, auth, admin], async (req, res) => {
+  const item = await CatalogItem.findById(req.params.id);
+  if (!item) return res.status(400).send({ msg: 'Catalog Item with the given ID not found.' });
+  const filteredImages = item.images.filter((image, index) => {
+    return index != req.params.index;
+  });
+
+  item.images = filteredImages;
+  await item.save();
+  res.status(200).send({ msg: 'Image removed.' });
+});
+
+router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
+  const item = await CatalogItem.findByIdAndRemove(req.params.id);
+  if (!item) res.status(400).send({ msg: 'Catalog Item with the given ID not found.' });
+
+  res.status(200).send('Item Removed.');
+});
+
 function populateCatalogItem(catalogItem) {
   return new Promise(async (resolve, reject) => {
     let popcatitem = await CatalogItem.findById(catalogItem).populate(popOptions);

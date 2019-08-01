@@ -89,7 +89,7 @@ const CouponSchema = new mongoose.Schema(
       required: true
     }
   },
-  { timestamps: true, retainKeyOrder: true }
+  { timestamps: true }
 );
 
 function validateCoupon(coupon) {

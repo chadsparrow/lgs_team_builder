@@ -214,6 +214,13 @@ router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
   res.send(await populateCoupon(coupon._id));
 });
 
+router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
+  const coupon = await Coupon.findByIdAndRemove(req.params.id);
+  if (!coupon) return res.status(400).send({ msg: 'Coupon with the given ID not found.' });
+
+  res.status(200).send({ msg: 'Coupon Removed.' });
+});
+
 function populateCoupon(couponId) {
   return new Promise(async (resolve, reject) => {
     let popcoupon = await Coupon.findById(couponId).populate(populateOptions);
