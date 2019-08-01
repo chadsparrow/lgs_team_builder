@@ -133,7 +133,11 @@ const StoreSchema = new mongoose.Schema(
               trim: true
             }
           }
-        ]
+        ],
+        mandatory: {
+          type: Boolean,
+          default: false
+        }
       }
     ],
     store_message: {
@@ -334,7 +338,8 @@ function validateStoreItem(item) {
           .trim(),
         name: Joi.string().trim()
       })
-    )
+    ),
+    mandatory: Joi.boolean()
   };
   return Joi.validate(item, schema);
 }
