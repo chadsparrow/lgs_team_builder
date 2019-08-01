@@ -99,6 +99,43 @@ function validateCatalogItem(catalogItem) {
   return Joi.validate(catalogItem, schema);
 }
 
+function validateCatalogItemEdit(catalogItem) {
+  const schema = {
+    name: Joi.string()
+      .min(5)
+      .required()
+      .trim(),
+    product_code: Joi.string()
+      .required()
+      .trim(),
+    style_code: Joi.string()
+      .required()
+      .trim(),
+    sizes: Joi.array()
+      .required()
+      .min(1)
+      .items(
+        Joi.string()
+          .required()
+          .min(1)
+          .trim()
+      ),
+    price: Joi.number()
+      .required()
+      .min(0),
+    gender: Joi.string()
+      .required()
+      .trim(),
+    description: Joi.string().trim(),
+    category: Joi.string()
+      .required()
+      .trim(),
+    images: Joi.array().items(Joi.string().uri()),
+    isActive: Joi.boolean()
+  };
+  return Joi.validate(catalogItem, schema);
+}
+
 function validateCatalogImg(image) {
   const schema = {
     image_url: Joi.string()
@@ -110,4 +147,5 @@ function validateCatalogImg(image) {
 
 exports.CatalogItem = mongoose.model('catalogitems', CatalogItemSchema);
 exports.validateCatalogItem = validateCatalogItem;
+exports.validateCatalogItemEdit = validateCatalogItemEdit;
 exports.validateCatalogImg = validateCatalogImg;

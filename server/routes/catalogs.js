@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
+// Collects all catalogs
 router.get('/', auth, async (req, res) => {
   const catalogs = await Catalog.find();
   if (catalogs && catalogs.length === 0) return res.status(404).send({ msg: 'No catalogs found.' });
@@ -12,6 +13,7 @@ router.get('/', auth, async (req, res) => {
   res.send(catalogs);
 });
 
+// Collects all catalogs for a brand specified
 router.get('/b', auth, async (req, res) => {
   if (!req.body.brand) return res.status(400).send({ msg: 'Invalid brand requested.' });
   const brand = req.body.brand.toUpperCase();
@@ -22,6 +24,7 @@ router.get('/b', auth, async (req, res) => {
   res.send(catalogs);
 });
 
+// Collects all catalogs for a season specified
 router.get('/s', auth, async (req, res) => {
   if (!req.body.season) return res.status(400).send({ msg: 'Invalid season requested.' });
   const season = req.body.season.toUpperCase();
@@ -31,6 +34,7 @@ router.get('/s', auth, async (req, res) => {
   res.send(catalogs);
 });
 
+// Collects all catalogs for a year specified
 router.get('/y', auth, async (req, res) => {
   if (!req.body.year) return res.status(400).send({ msg: 'Valid year required.' });
   const year = req.body.year.toUpperCase();
@@ -43,11 +47,13 @@ router.get('/y', auth, async (req, res) => {
   res.send(catalogs);
 });
 
+// Collects a specific catalog based on given ID
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const catalog = await Catalog.findById(req.params.id);
   if (!catalog) return res.status(400).send({ msg: 'Catalog with the given ID not found.' });
 });
 
+// Adds a new catalog, doesn't allow duplicate brand/season/year
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
@@ -69,6 +75,7 @@ router.post('/', [auth, admin], async (req, res) => {
   res.send(catalog);
 });
 
+// Edits a specific catalog, doesnt allow duplicate brand/season/year
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });
@@ -90,6 +97,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   res.send(catalog);
 });
 
+// edits the cover image URI of the catalog
 router.patch('/cover_img/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCoverImage(req.body);
   if (error) return res.status(400).send({ msg: error.details[0].message });

@@ -134,6 +134,47 @@ function validateCoupon(coupon) {
   };
   return Joi.validate(coupon, schema);
 }
+function validateCouponEdit(coupon) {
+  const schema = {
+    code: Joi.string()
+      .min(5)
+      .max(12)
+      .required()
+      .trim(),
+    description: Joi.string()
+      .required()
+      .min(5)
+      .trim(),
+    discount_amount: Joi.number()
+      .required()
+      .min(0),
+    discount_type: Joi.string()
+      .valid(['%', '$'])
+      .required(),
+    discount_applied: Joi.string()
+      .valid(['cart', 'items'])
+      .required(),
+    coupon_type: Joi.string()
+      .valid(['member', 'amount'])
+      .required(),
+    max_coupons: Joi.number()
+      .min(1)
+      .required(true),
+    coupons_used: Joi.number()
+      .max(Joi.ref('max_coupons'))
+      .required(),
+    approved_items: Joi.array().items(Joi.objectId().required()),
+    recipients: Joi.array().items(Joi.object({ member: Joi.objectId().required(), expired: Joi.boolean() })),
+    start_date: Joi.date()
+      .required()
+      .min('now'),
+    end_date: Joi.date()
+      .required()
+      .greater(Joi.ref('start_date')),
+    timezone: Joi.string().required()
+  };
+  return Joi.validate(coupon, schema);
+}
 
 function validateAddAmount(message) {
   const schema = {
@@ -147,3 +188,4 @@ function validateAddAmount(message) {
 exports.Coupon = mongoose.model('coupons', CouponSchema);
 exports.validateCoupon = validateCoupon;
 exports.validateAddAmount = validateAddAmount;
+exports.validateCouponEdit = validateCouponEdit;
