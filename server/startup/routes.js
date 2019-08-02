@@ -24,5 +24,6 @@ module.exports = function(app) {
   app.use('/api/catalogs', require('../routes/catalogs'));
   app.use('/api/catalogitems', require('../routes/catalogitems'));
   app.use('/api/stores', require('../routes/stores'));
+  app.use('/api/joinrequests', require('../routes/joinrequests'));
   app.use(error);
 };
