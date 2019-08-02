@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     container_name: team_builder_mongo_dev
-    image: mongo:4
+    image: mongo
     restart: always
     ports:
       - 27018:27018
