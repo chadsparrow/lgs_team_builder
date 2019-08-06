@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const EmailSchema = new mongoose.Schema(
   {
@@ -45,7 +46,11 @@ const EmailSchema = new mongoose.Schema(
           ref: 'members'
         }
       }
-    ]
+    ],
+    team_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'teams'
+    }
   },
   { timestamps: true }
 );
@@ -55,17 +60,20 @@ function validateEmail(email) {
     recipients: Joi.array()
       .required()
       .items(Joi.objectId().required()),
-    subject: Joi.string().required(),
-    message: Joi.string().required()
+    subject: Joi.string()
+      .required()
+      .trim(),
+    message: Joi.string().required(),
+    team_id: Joi.objectId().required()
   };
-  return Joi.validate(email, schema);
+  return Joi.validate(email, schema, joi_options);
 }
 
 function validateMessage(message) {
   const schema = {
     message: Joi.string().required()
   };
-  return Joi.validate(message, schema);
+  return Joi.validate(message, schema, joi_options);
 }
 
 exports.Email = mongoose.model('emails', EmailSchema);

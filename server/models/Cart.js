@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CartSchema = new mongoose.Schema(
   {
@@ -83,7 +84,7 @@ function validateCart(cart) {
       .required()
       .trim()
   };
-  return Joi.validate(cart, schema);
+  return Joi.validate(cart, schema, joi_options);
 }
 
 exports.Cart = mongoose.model('carts', CartSchema);

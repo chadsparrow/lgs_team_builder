@@ -13,28 +13,28 @@ const popOtions = { path: 'requestBy', select: 'name email' };
 
 router.get('/', auth, async (req, res) => {
   const joins = await JoinRequest.find().populate(popOtions);
-  if (joins && joins.length === 0) return res.status(404).send({ msg: 'No join requests found.' });
+  if (joins && joins.length === 0) return res.status(404).send({ message: 'No join requests found.' });
 
-  res.send(joins);
+  res.json(joins);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const joins = await JoinRequest.find({ team_id: req.params.id }).populate(popOtions);
-  if (joins && joins.length === 0) return res.status(400).send({ msg: 'Team with the given ID not found.' });
+  if (joins && joins.length === 0) return res.status(400).send({ message: 'Team with the given ID not found.' });
 
-  res.send(joins);
+  res.json(joins);
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const join = await JoinRequest.findById(req.params.id).populate(popOtions);
-  if (!join) return res.status(400).send({ msg: 'Join Request with the given ID not found.' });
+  if (!join) return res.status(400).send({ message: 'Join Request with the given ID not found.' });
 
-  res.send(join);
+  res.json(join);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateJoinRequest(req.body);
-  if (error) return res.status(400).send({ msg: error.details[0].message });
+  if (error) return res.status(400).send(error.details);
 
   const requestedBy = await Member.findById(req.body.requestBy).select('name');
 
@@ -61,7 +61,7 @@ router.post('/', auth, async (req, res) => {
 
   await newJoin.save();
 
-  res.status(200).send({ msg: 'Request sent.' });
+  res.status(200).send({ message: 'Request sent.' });
 });
 
 module.exports = router;

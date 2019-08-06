@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CatalogSchema = new mongoose.Schema(
   {
@@ -48,7 +49,7 @@ function validateCatalog(catalog) {
       .trim(),
     cover_img: Joi.string().uri()
   };
-  return Joi.validate(catalog, schema);
+  return Joi.validate(catalog, schema, joi_options);
 }
 
 function validateCoverImage(image) {
@@ -57,7 +58,7 @@ function validateCoverImage(image) {
       .uri()
       .required()
   };
-  return Joi.validate(image, schema);
+  return Joi.validate(image, schema, joi_options);
 }
 
 exports.Catalog = mongoose.model('catalogs', CatalogSchema);

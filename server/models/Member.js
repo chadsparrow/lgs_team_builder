@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const MemberSchema = new mongoose.Schema(
   {
@@ -291,7 +292,8 @@ function validateNewMember(member) {
     }),
     isAdmin: Joi.boolean()
   };
-  return Joi.validate(member, schema);
+
+  return Joi.validate(member, schema, joi_options);
 }
 
 function validateUpdateMember(member) {
@@ -402,7 +404,7 @@ function validateUpdateMember(member) {
     }),
     isAdmin: Joi.boolean()
   };
-  return Joi.validate(member, schema);
+  return Joi.validate(member, schema, joi_options);
 }
 
 function validateEmail(member) {
@@ -412,7 +414,7 @@ function validateEmail(member) {
       .required()
   };
 
-  return Joi.validate(member, schema);
+  return Joi.validate(member, schema, joi_options);
 }
 
 function validatePassword(member) {
@@ -432,7 +434,7 @@ function validatePassword(member) {
       .options({ language: { any: { allowOnly: 'New Password and Confirm Passwords must match.' } } })
   };
 
-  return Joi.validate(member, schema);
+  return Joi.validate(member, schema, joi_options);
 }
 
 function validateNotification(notification) {
@@ -444,7 +446,7 @@ function validateNotification(notification) {
     clickTo: Joi.string().allow('', null)
   };
 
-  return Joi.validate(notification, schema);
+  return Joi.validate(notification, schema, joi_options);
 }
 
 MemberSchema.methods.generateAuthToken = function() {

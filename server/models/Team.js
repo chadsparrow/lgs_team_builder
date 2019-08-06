@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -131,8 +132,7 @@ const TeamSchema = new mongoose.Schema(
     },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'members' }],
     team_timezone: {
-      type: String,
-      required: true
+      type: String
     }
   },
   { timestamps: true }
@@ -142,7 +142,7 @@ function validateTeamName(team) {
   const schema = {
     name: Joi.string().required()
   };
-  return Joi.validate(team, schema);
+  return Joi.validate(team, schema, joi_options);
 }
 
 function validateTeam(team) {
@@ -301,14 +301,14 @@ function validateTeam(team) {
     }),
     team_timezone: Joi.string().required()
   };
-  return Joi.validate(team, schema);
+  return Joi.validate(team, schema, joi_options);
 }
 
 function validateAddMember(member) {
   const schema = {
     id: Joi.objectId().required()
   };
-  return Joi.validate(member, schema);
+  return Joi.validate(member, schema, joi_options);
 }
 
 exports.Team = mongoose.model('teams', TeamSchema);

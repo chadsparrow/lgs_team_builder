@@ -19,8 +19,9 @@ router.get('/', auth, async (req, res) => {
       .populate({ path: 'main_contact.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' })
       .populate({ path: 'bulk_shipping.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' })
       .select('-updatedAt -__v ');
-    if (teams && teams.length == 0) return res.status(404).send({ msg: 'No Teams found.' });
-    return res.send(teams);
+    if (teams && teams.length == 0) return res.status(404).send({ message: 'No Teams found.' });
+
+    return res.json(teams);
   } else {
     teams = await Team.find({ $or: [{ manager_id: req.member._id }, { members: req.member._id }] })
       .populate({ path: 'manager_id', select: 'name email' })
@@ -29,9 +30,9 @@ router.get('/', auth, async (req, res) => {
       .populate({ path: 'bulk_shipping.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' })
       .select('-updatedAt -__v -admin_id');
 
-    if (teams && teams.length == 0) return res.status(404).send({ msg: 'You are currently not a member of any teams' });
+    if (teams && teams.length == 0) return res.status(404).send({ message: 'You are currently not a member of any teams' });
 
-    return res.send(teams);
+    return res.json(teams);
   }
 });
 
@@ -54,30 +55,30 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
       .populate({ path: 'bulk_shipping.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' })
       .select('-updatedAt -__v -admin_id');
   }
-  if (!team) return res.status(404).send({ msg: 'Team with the given ID not found.' });
+  if (!team) return res.status(404).send({ message: 'Team with the given ID not found.' });
 
-  return res.send(team);
+  return res.json(team);
 });
 
 // POST /api/teams
 router.post('/', [auth, admin], async (req, res) => {
-  if (swearjar.profane(req.body.name)) return res.status(400).send({ msg: 'Team name must not contain profanity.' });
+  if (swearjar.profane(req.body.name)) return res.status(400).send({ message: 'Team name must not contain profanity.' });
 
   const { error } = validateTeamName(req.body);
-  if (error) return res.status(400).send({ msg: error.details[0].message });
+  if (error) return res.status(400).send(error.details);
 
   const team = await Team.findOne({ name: req.body.name });
-  if (team) return res.status(400).send({ msg: 'Team name already registered' });
+  if (team) return res.status(400).send({ message: 'Team name already registered' });
 
   const newTeam = new Team({ name: req.body.name });
   await newTeam.save();
-  res.send(newTeam);
+  res.json(_.pick(newTeam, ['_id', 'name', 'members']));
 });
 
 // PUT /api/teams/:id
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);
-  if (error) return res.status(400).send({ msg: error.details[0].message });
+  if (error) return res.status(400).send({ message: error.details[0].message });
 
   let {
     logo,
@@ -106,14 +107,14 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   } = req.body;
 
   let team = await Team.findById(req.params.id);
-  if (!team) return res.status(400).send({ msg: 'Team with the given ID was not found.' });
+  if (!team) return res.status(400).send({ message: 'Team with the given ID was not found.' });
 
   const admin = await Member.findById(admin_id);
-  if (!admin) return res.status(400).send({ msg: 'Admin: Member with the given ID was not found.' });
+  if (!admin) return res.status(400).send({ message: 'Admin: Member with the given ID was not found.' });
   team.admin_id = admin_id;
 
   const manager = await Member.findById(manager_id);
-  if (!manager) return res.status(400).send({ msg: 'Manager: Member with the given ID was not found.' });
+  if (!manager) return res.status(400).send({ message: 'Manager: Member with the given ID was not found.' });
   team.manager_id = manager._id;
 
   if (logo != '' || logo) {
@@ -173,24 +174,24 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     .populate({ path: 'bulk_shipping.contact', select: 'name address1 address2 city state_prov country zip_postal email phone' })
     .select('-updatedAt -__v');
 
-  res.send(populatedTeam);
+  res.json(populatedTeam);
 });
 
 //TODO router.put update team
 
 router.post('/:id/members/', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateAddMember(req.body);
-  if (error) return res.status(400).send({ msg: error.details[0].message });
+  if (error) return res.status(400).send(error.details);
 
   const memberId = req.body.memberId;
 
   const member = await Member.findById(memberId);
-  if (!member) return res.status(400).send({ msg: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
 
   const team = await Team.findByIdAndUpdate(req.params.id, { $push: { members: { memberId } } });
-  if (!team) return res.status(400).send({ msg: 'Team with the given ID was not found.' });
+  if (!team) return res.status(400).send({ message: 'Team with the given ID was not found.' });
 
-  res.end();
+  res.status(200).end();
 });
 
 module.exports = router;

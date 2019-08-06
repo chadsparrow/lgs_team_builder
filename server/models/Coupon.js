@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CouponSchema = new mongoose.Schema(
   {
@@ -122,8 +123,20 @@ function validateCoupon(coupon) {
     coupons_used: Joi.number()
       .max(Joi.ref('max_coupons'))
       .required(),
-    approved_items: Joi.array().items(Joi.objectId().required()),
-    recipients: Joi.array().items(Joi.object({ member: Joi.objectId().required(), expired: Joi.boolean() })),
+    approved_items: Joi.when('discount_applied', {
+      is: 'items',
+      then: Joi.array()
+        .min(1)
+        .required()
+        .items(Joi.objectId().required())
+    }),
+    recipients: Joi.when('coupon_type', {
+      is: 'member',
+      then: Joi.array()
+        .min(1)
+        .required()
+        .items(Joi.objectId({ member: Joi.objectId().required() }))
+    }),
     start_date: Joi.date()
       .required()
       .min('now'),
@@ -132,7 +145,7 @@ function validateCoupon(coupon) {
       .greater(Joi.ref('start_date')),
     timezone: Joi.string().required()
   };
-  return Joi.validate(coupon, schema);
+  return Joi.validate(coupon, schema, joi_options);
 }
 function validateCouponEdit(coupon) {
   const schema = {
@@ -173,7 +186,7 @@ function validateCouponEdit(coupon) {
       .greater(Joi.ref('start_date')),
     timezone: Joi.string().required()
   };
-  return Joi.validate(coupon, schema);
+  return Joi.validate(coupon, schema, joi_options);
 }
 
 function validateAddAmount(message) {
@@ -182,7 +195,7 @@ function validateAddAmount(message) {
       .required()
       .min(1)
   };
-  return Joi.validate(message, schema);
+  return Joi.validate(message, schema, joi_options);
 }
 
 exports.Coupon = mongoose.model('coupons', CouponSchema);

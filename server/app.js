@@ -47,7 +47,4 @@ if (!config.get('jwtPrivateKey')) {
   process.exit(1);
 }
 
-//Displays environment application is in
-winston.info('Application Name: ' + config.get('name'));
-
 module.exports = app;

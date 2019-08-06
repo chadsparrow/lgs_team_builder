@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
+const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CatalogItemSchema = new mongoose.Schema(
   {
@@ -100,7 +101,7 @@ function validateCatalogItem(catalogItem) {
     images: Joi.array().items(Joi.string().uri()),
     isActive: Joi.boolean()
   };
-  return Joi.validate(catalogItem, schema);
+  return Joi.validate(catalogItem, schema, joi_options);
 }
 
 function validateCatalogItemEdit(catalogItem) {
@@ -137,7 +138,7 @@ function validateCatalogItemEdit(catalogItem) {
     images: Joi.array().items(Joi.string().uri()),
     isActive: Joi.boolean()
   };
-  return Joi.validate(catalogItem, schema);
+  return Joi.validate(catalogItem, schema, joi_options);
 }
 
 function validateCatalogImg(image) {
@@ -146,7 +147,7 @@ function validateCatalogImg(image) {
       .uri()
       .required()
   };
-  return Joi.validate(image, schema);
+  return Joi.validate(image, schema, joi_options);
 }
 
 exports.CatalogItem = mongoose.model('catalogitems', CatalogItemSchema);

@@ -9,11 +9,17 @@ module.exports = function(app) {
   app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
   app.use(express.static('public'));
   app.use(helmet());
-  app.use(cors());
+
+  //app.use(cors());
   app.enable('trust proxy');
+  app.locals.joi_options = {
+    abortEarly: false,
+    language: {
+      key: '{{key}} '
+    }
+  };
 
   // Load API Routes
-  app.use('/api/me', require('../routes/me'));
   app.use('/api/members', require('../routes/members'));
   app.use('/api/auth', require('../routes/auth'));
   app.use('/api/notifications', require('../routes/notifications'));
