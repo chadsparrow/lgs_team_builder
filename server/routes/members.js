@@ -72,6 +72,10 @@ router.post('/register', async (req, res) => {
     shipping_email
   } = req.body;
 
+  const userEmail = email.split('@')[0];
+  if (password.includes('password')) return res.status(400).send({ message: "Please do not use 'password' in your password" });
+  if (password.includes(userEmail)) return res.status(400).send({ message: 'Please do not use your email username in your password' });
+
   let member = await Member.findOne({ email });
   if (member) return res.status(400).send({ message: 'Member already registered.' });
 
@@ -223,11 +227,17 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.params.id);
   if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
 
-  const result = bcrypt.compare(req.body.oldpassword, member.password);
+  const result = await bcrypt.compare(req.body.oldpassword, member.password);
   if (!result) return res.status(400).send({ message: 'Password incorrect.' });
 
+  const userEmail = member.email.split('@')[0];
+
+  if (req.body.newpassword.includes('password')) return res.status(400).send({ message: "Please do not use 'password' in your password" });
+
+  if (req.body.newpassword.includes(userEmail)) return res.status(400).send({ message: 'Please do not use your email username in your password' });
+
   const salt = await bcrypt.genSalt(10);
-  const hash = await brcrypt.hash(req.body.newpassword, salt);
+  const hash = await bcrypt.hash(req.body.newpassword, salt);
 
   member.password = hash;
   await member.save();

@@ -133,6 +133,7 @@ const StoreSchema = new mongoose.Schema(
       },
       bulk_ship_email: {
         type: String,
+        lowercase: true,
         trim: true
       }
     }

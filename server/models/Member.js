@@ -421,17 +421,15 @@ function validatePassword(member) {
   const schema = {
     oldpassword: Joi.string()
       .min(8)
-      .required()
-      .trim(),
+      .required(),
     newpassword: Joi.string()
       .disallow(Joi.ref('oldpassword'))
       .min(8)
-      .required()
-      .trim(),
+      .required(),
     confirmpassword: Joi.string()
       .valid(Joi.ref('newpassword'))
       .required()
-      .options({ language: { any: { allowOnly: 'New Password and Confirm Passwords must match.' } } })
+      .options({ language: { any: { allowOnly: 'and newpassword fields must match.' } } })
   };
 
   return Joi.validate(member, schema, joi_options);

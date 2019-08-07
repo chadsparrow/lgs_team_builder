@@ -5,20 +5,56 @@ const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CartSchema = new mongoose.Schema(
   {
-    owner: {
+    member_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
+    team_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'teams'
+    },
+    store_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'stores'
+    },
+    coupon_used: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'coupons'
+    },
+    order_discount: {
+      type: Float,
+      default: 0.0,
+      min: 0
+    },
+    tax_percentage: {
+      type: Float,
+      default: 0.0,
+      min: 0.0
+    },
+    sub_total: {
+      type: Float,
+      default: 0.0
+    },
+    total_amount: {
+      type: Float,
+      default: 0.0,
+      min: 0.0
+    },
+    currency: {
+      type: String,
+      trim: true,
+      required: true
+    },
     items: [
       {
-        code: {
+        item_id: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'catalogs'
+          ref: 'storeitems'
         },
-        qty: {
+        quantity: {
           type: Number,
           default: 0,
-          min: 0
+          min: 1
         },
         price: {
           type: Float,
@@ -29,60 +65,44 @@ const CartSchema = new mongoose.Schema(
           type: String,
           trim: true
         },
-        sizes: [String]
+        size: {
+          type: String,
+          minlength: 1,
+          trim: true
+        },
+        discount: {
+          type: Float,
+          default: 0.0
+        }
       }
-    ],
-    discount: {
-      coupon_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'coupons'
-      }
-    },
-    tax_amount: {
-      type: Float,
-      default: 0.0,
-      min: 0.0
-    },
-    total: {
-      type: Float,
-      default: 0.0,
-      min: 0.0
-    },
-    mode: {
-      type: String,
-      trim: true
-    }
+    ]
   },
   { timestamps: true }
 );
 
 function validateCart(cart) {
   const schema = {
-    owner: Joi.objectId().required(),
-    items: Joi.array().items(
-      Joi.object().keys({
-        code: Joi.objectId().required(),
-        qty: Joi.number()
-          .min(0)
-          .required(),
-        price: Joi.number()
-          .min(0)
-          .required(),
-        image: Joi.string().uri()
+    member_id: Joi.objectId().required(),
+    team_id: Joi.objectId().required(),
+    store_id: Joi.objectId().required(),
+    coupon_used: Joi.object().required(),
+    order_discount: Joi.number().min(0),
+    tax_percentage: Joi.number().min(0),
+    currency: Joi.string().required(),
+    items: Joi.array()
+      .required()
+      .items({
+        item_id: Joi.objectId().required(),
+        quantity: Joi.number().min(1),
+        price: Joi.number().min(0),
+        image: Joi.string()
+          .uri()
+          .trim(),
+        size: Joi.string()
+          .min(1)
+          .trim(),
+        discount: Joi.number().min(0)
       })
-    ),
-    discount: Joi.object().keys({
-      coupon_id: Joi.objectId().required()
-    }),
-    tax_amount: Joi.number()
-      .required()
-      .min(0),
-    total: Joi.number()
-      .required()
-      .min(0),
-    mode: Joi.string()
-      .required()
-      .trim()
   };
   return Joi.validate(cart, schema, joi_options);
 }
