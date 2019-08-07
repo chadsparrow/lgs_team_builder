@@ -73,73 +73,6 @@ const StoreSchema = new mongoose.Schema(
       type: Float,
       default: 0.0
     },
-    items: [
-      {
-        item_id: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'catalogitems'
-        },
-        survey_likes: {
-          type: Number,
-          default: 0
-        },
-        survey_qty: {
-          type: Number,
-          default: 0
-        },
-        isActive: {
-          type: Boolean,
-          default: true
-        },
-        sizes_offered: [
-          {
-            type: String,
-            trim: true,
-            required: true,
-            minlength: 1,
-            uppercase: true,
-            unique: true
-          }
-        ],
-        category: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        name: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        code: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        number: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        images: [
-          {
-            name: {
-              type: String,
-              uppercase: true,
-              trim: true
-            },
-            url: {
-              type: String,
-              trim: true
-            }
-          }
-        ],
-        mandatory: {
-          type: Boolean,
-          default: false
-        }
-      }
-    ],
     store_message: {
       type: String,
       trim: true
@@ -317,33 +250,5 @@ function validateStore(store) {
   return Joi.validate(store, schema);
 }
 
-function validateStoreItem(item) {
-  const schema = {
-    item_id: Joi.objectId().required(),
-    isActive: Joi.boolean(),
-    sizes_offered: Joi.array().items(
-      Joi.string()
-        .min(1)
-        .required()
-        .trim()
-    ),
-    category: Joi.string().trim(),
-    name: Joi.string().trim(),
-    code: Joi.string().trim(),
-    number: Joi.string().trim(),
-    images: Joi.array().items(
-      Joi.object({
-        url: Joi.string()
-          .uri()
-          .trim(),
-        name: Joi.string().trim()
-      })
-    ),
-    mandatory: Joi.boolean()
-  };
-  return Joi.validate(item, schema);
-}
-
 exports.Store = mongoose.model('stores', StoreSchema);
 exports.validateStore = validateStore;
-exports.validateStoreItem = validateStoreItem;

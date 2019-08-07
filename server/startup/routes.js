@@ -1,5 +1,5 @@
 const helmet = require('helmet');
-const cors = require('cors');
+//const cors = require('cors');
 const error = require('../middleware/error');
 const express = require('express');
 
@@ -12,12 +12,6 @@ module.exports = function(app) {
 
   //app.use(cors());
   app.enable('trust proxy');
-  app.locals.joi_options = {
-    abortEarly: false,
-    language: {
-      key: '{{key}} '
-    }
-  };
 
   // Load API Routes
   app.use('/api/members', require('../routes/members'));
@@ -29,6 +23,7 @@ module.exports = function(app) {
   app.use('/api/catalogs', require('../routes/catalogs'));
   app.use('/api/catalogitems', require('../routes/catalogitems'));
   app.use('/api/stores', require('../routes/stores'));
+  app.use('/api/storeitems', require('../routes/storeitems'));
   app.use('/api/joinrequests', require('../routes/joinrequests'));
   app.use(error);
 };
