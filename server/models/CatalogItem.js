@@ -58,7 +58,7 @@ const CatalogItemSchema = new mongoose.Schema(
       trim: true
     },
     images: [{ type: String, trim: true }],
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true
     }
@@ -99,7 +99,7 @@ function validateCatalogItem(catalogItem) {
       .required()
       .trim(),
     images: Joi.array().items(Joi.string().uri()),
-    isActive: Joi.boolean()
+    is_active: Joi.boolean()
   };
   return Joi.validate(catalogItem, schema, joi_options);
 }
@@ -136,7 +136,7 @@ function validateCatalogItemEdit(catalogItem) {
       .required()
       .trim(),
     images: Joi.array().items(Joi.string().uri()),
-    isActive: Joi.boolean()
+    is_active: Joi.boolean()
   };
   return Joi.validate(catalogItem, schema, joi_options);
 }

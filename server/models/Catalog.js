@@ -40,7 +40,8 @@ function validateCatalog(catalog) {
     season: Joi.string()
       .required()
       .trim()
-      .valid(['spring/summer', 'fall/winter', 'spring', 'summer', 'fall', 'winter']),
+      .uppercase()
+      .valid(['SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER']),
     year: Joi.string()
       .required()
       .regex(/^\d{4}$/)

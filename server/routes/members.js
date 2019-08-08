@@ -14,32 +14,32 @@ let selectString = '';
 
 // GET /api/members
 router.get('/', auth, async (req, res) => {
-  const members = await Member.find().select('avatar_url _id name email isAdmin');
+  const members = await Member.find().select('avatar_url _id name email is_admin');
 
-  if (members && members.length === 0) return res.status(404).send({ message: 'There are no members in the database.' });
+  if (members && members.length === 0) return res.status(404).json({ message: 'There are no members in the database.' });
   res.json(members);
 });
 
 router.get('/me', auth, async (req, res) => {
   const emails = await Email.find({
     $or: [
-      { recipients: { $elemMatch: { member: mongoose.Types.ObjectId(req.member._id) } } },
-      { messages: { $elemMatch: { sentBy: mongoose.Types.ObjectId(req.member._id) } } }
+      { recipients: { $elemMatch: { member_id: mongoose.Types.ObjectId(req.member._id) } } },
+      { messages: { $elemMatch: { sender_id: mongoose.Types.ObjectId(req.member._id) } } }
     ]
   })
-    .populate({ path: 'sender', select: 'name email' })
-    .populate({ path: 'recipients.member', select: 'name email' })
-    .populate({ path: 'messages.sentBy', select: 'name email' })
+    .populate({ path: 'sender_id', select: 'name email' })
+    .populate({ path: 'recipients.member_id', select: 'name email' })
+    .populate({ path: 'messages.sender_id', select: 'name email' })
     .sort('-messages.date');
 
   const member = await Member.findById(req.member._id);
-  return res.json({ member: _.pick(member, ['avatar_url', '_id', 'name', 'email', 'isAdmin']), emails });
+  return res.json({ member: _.pick(member, ['avatar_url', '_id', 'name', 'email', 'is_admin']), emails });
 });
 
 // GET /api/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select(selectString);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   res.json(_.pick(member, ['_id', 'avatar_url', 'name', 'email']));
 });
@@ -47,7 +47,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 // POST /api/members
 router.post('/register', async (req, res) => {
   const { error } = validateNewMember(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let {
     name,
@@ -73,11 +73,11 @@ router.post('/register', async (req, res) => {
   } = req.body;
 
   const userEmail = email.split('@')[0];
-  if (password.includes('password')) return res.status(400).send({ message: "Please do not use 'password' in your password" });
-  if (password.includes(userEmail)) return res.status(400).send({ message: 'Please do not use your email username in your password' });
+  if (password.includes('password')) return res.status(400).json({ message: "Please do not use 'password' in your password" });
+  if (password.includes(userEmail)) return res.status(400).json({ message: 'Please do not use your email username in your password' });
 
   let member = await Member.findOne({ email });
-  if (member) return res.status(400).send({ message: 'Member already registered.' });
+  if (member) return res.status(400).json({ message: 'Member already registered.' });
 
   const newMember = new Member({
     name,
@@ -89,10 +89,10 @@ router.post('/register', async (req, res) => {
     zip_postal,
     phone,
     email,
-    isAdmin: false
+    is_admin: false
   });
 
-  newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
+  newMember.notifications.push({ date: Date.now(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
@@ -127,7 +127,7 @@ router.post('/register', async (req, res) => {
 // PUT /api/members/:id
 router.put('/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let {
     name,
@@ -148,13 +148,13 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     shipping_zip_postal,
     shipping_phone,
     shipping_email,
-    isAdmin
+    is_admin
   } = req.body;
 
-  if (!req.member.isAdmin && isAdmin) return res.status(403).send({ message: 'Access Denied.' });
+  if (!req.member.is_admin && is_admin) return res.status(403).json({ message: 'Access Denied.' });
 
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   member.name = name;
   member.address1 = address1;
@@ -164,7 +164,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   member.country = country;
   member.zip_postal = zip_postal;
   member.phone = phone;
-  member.isAdmin = isAdmin;
+  member.is_admin = is_admin;
 
   if (shipping_same) {
     member.shipping_name = member.name;
@@ -196,13 +196,13 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 // PATCH /api/members/email/:id
 router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   if (member.email === req.body.email) {
-    return res.status(400).send({ message: 'Email is identical to what is already set.' });
+    return res.status(400).json({ message: 'Email is identical to what is already set.' });
   }
 
   const emailCheck = await Member.findOne({
@@ -211,30 +211,29 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   });
 
   if (emailCheck) {
-    return res.status(400).send({ message: 'Member with the given email address already registered' });
+    return res.status(400).json({ message: 'Member with the given email address already registered' });
   }
 
   member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email: req.body.email }, { new: true });
 
-  res.json(_.pick(member, ['_id', 'name', 'email']));
+  res.status(200).json({ message: 'Member email updated' });
 });
 
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   const result = await bcrypt.compare(req.body.oldpassword, member.password);
-  if (!result) return res.status(400).send({ message: 'Password incorrect.' });
+  if (!result) return res.status(400).json({ message: 'Password incorrect.' });
 
   const userEmail = member.email.split('@')[0];
 
-  if (req.body.newpassword.includes('password')) return res.status(400).send({ message: "Please do not use 'password' in your password" });
-
-  if (req.body.newpassword.includes(userEmail)) return res.status(400).send({ message: 'Please do not use your email username in your password' });
+  if (req.body.newpassword.includes('password')) return res.status(400).json({ message: "Please do not use 'password' in your password" });
+  if (req.body.newpassword.includes(userEmail)) return res.status(400).json({ message: 'Please do not use your email username in your password' });
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(req.body.newpassword, salt);
@@ -242,14 +241,14 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   member.password = hash;
   await member.save();
 
-  res.json(_.pick(member, ['_id', 'name', 'email']));
+  res.status(200).json({ message: 'Member password updated' });
 });
 
 // DELETE /api/members/:id
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findByIdAndRemove(req.params.id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
-  res.send(`Deleted - ${_.pick(member, ['_id', 'name', 'email'])}`);
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  res.status(200).json({ message: 'Member deleted' });
 });
 
 module.exports = router;

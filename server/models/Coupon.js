@@ -62,12 +62,12 @@ const CouponSchema = new mongoose.Schema(
     approved_items: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'stores'
+        ref: 'storeitems'
       }
     ],
     recipients: [
       {
-        member: {
+        member_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
         },
@@ -135,7 +135,7 @@ function validateCoupon(coupon) {
       then: Joi.array()
         .min(1)
         .required()
-        .items(Joi.objectId({ member: Joi.objectId().required() }))
+        .items({ member_id: Joi.objectId().required() })
     }),
     start_date: Joi.date()
       .required()
@@ -147,6 +147,7 @@ function validateCoupon(coupon) {
   };
   return Joi.validate(coupon, schema, joi_options);
 }
+
 function validateCouponEdit(coupon) {
   const schema = {
     code: Joi.string()
@@ -177,7 +178,7 @@ function validateCouponEdit(coupon) {
       .max(Joi.ref('max_coupons'))
       .required(),
     approved_items: Joi.array().items(Joi.objectId().required()),
-    recipients: Joi.array().items(Joi.object({ member: Joi.objectId().required(), expired: Joi.boolean() })),
+    recipients: Joi.array().items({ member_id: Joi.objectId().required(), expired: Joi.boolean() }),
     start_date: Joi.date()
       .required()
       .min('now'),

@@ -150,12 +150,6 @@ const MemberSchema = new mongoose.Schema(
       default: null,
       trim: true
     },
-    resetPasswordToken: {
-      type: String
-    },
-    resetPasswordExpires: {
-      type: Date
-    },
     notifications: [
       {
         date: {
@@ -167,12 +161,12 @@ const MemberSchema = new mongoose.Schema(
           required: true,
           trim: true
         },
-        clickTo: {
+        click_to: {
           type: String
         }
       }
     ],
-    isAdmin: {
+    is_admin: {
       type: Boolean,
       default: false
     }
@@ -290,7 +284,7 @@ function validateNewMember(member) {
         .trim()
         .required()
     }),
-    isAdmin: Joi.boolean()
+    is_admin: Joi.boolean()
   };
 
   return Joi.validate(member, schema, joi_options);
@@ -402,7 +396,7 @@ function validateUpdateMember(member) {
         .email()
         .required()
     }),
-    isAdmin: Joi.boolean()
+    is_admin: Joi.boolean()
   };
   return Joi.validate(member, schema, joi_options);
 }
@@ -441,14 +435,14 @@ function validateNotification(notification) {
       .required()
       .items(Joi.objectId().required()),
     message: Joi.string().required(),
-    clickTo: Joi.string().allow('', null)
+    click_to: Joi.string().allow('', null)
   };
 
   return Joi.validate(notification, schema, joi_options);
 }
 
 MemberSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
+  const token = jwt.sign({ _id: this._id, is_admin: this.is_admin }, config.get('jwtPrivateKey'));
   return token;
 };
 

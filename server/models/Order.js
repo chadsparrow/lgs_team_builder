@@ -67,7 +67,7 @@ const OrderSchema = mongoose.Schema(
         trim: true
       }
     },
-    coupon_used: {
+    coupon_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coupons'
     },
@@ -90,10 +90,6 @@ const OrderSchema = mongoose.Schema(
       type: Float,
       default: 0.0,
       min: 0.0
-    },
-    amount_paid: {
-      type: Float,
-      default: 0.0
     },
     balance_owing: {
       type: Float,
@@ -167,14 +163,11 @@ function validateOrder(order) {
     drop_email: Joi.string()
       .email()
       .trim(),
-    coupon_used: Joi.objectId(),
+    coupon_id: Joi.objectId(),
     order_discount: Joi.number()
       .min(0)
       .trim(),
     tax_percentage: Joi.number()
-      .min(0)
-      .trim(),
-    amount_paid: Joi.number()
       .min(0)
       .trim(),
     order_date: Joi.date(),

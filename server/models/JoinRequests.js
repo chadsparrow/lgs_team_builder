@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi');
 
 const JoinRequestSchema = new mongoose.Schema(
   {
-    requestBy: {
+    member_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
@@ -17,7 +17,7 @@ const JoinRequestSchema = new mongoose.Schema(
 
 function validateJoinRequest(request) {
   const schema = {
-    requestBy: Joi.objectId().required(),
+    member_id: Joi.objectId().required(),
     team_id: Joi.objectId().required()
   };
 

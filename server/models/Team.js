@@ -23,7 +23,7 @@ const TeamSchema = new mongoose.Schema(
       ref: 'members'
     },
     main_contact: {
-      contact: {
+      member_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'members'
       },
@@ -77,7 +77,7 @@ const TeamSchema = new mongoose.Schema(
       }
     },
     bulk_shipping: {
-      contact: {
+      member_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'members'
       },
@@ -130,7 +130,12 @@ const TeamSchema = new mongoose.Schema(
         trim: true
       }
     },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'members' }],
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'members'
+      }
+    ],
     team_timezone: {
       type: String
     }
@@ -152,8 +157,8 @@ function validateTeam(team) {
       .allow('', null),
     admin_id: Joi.objectId().required(),
     manager_id: Joi.objectId().required(),
-    useManagerDetails: Joi.boolean().required(),
-    contact_name: Joi.when('useManagerDetails', {
+    use_manager_details: Joi.boolean().required(),
+    contact_name: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .min(5)
@@ -165,7 +170,7 @@ function validateTeam(team) {
         .max(50)
         .trim()
     }),
-    contact_address1: Joi.when('useManagerDetails', {
+    contact_address1: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .min(10)
@@ -178,14 +183,14 @@ function validateTeam(team) {
     contact_address2: Joi.string()
       .trim()
       .allow('', null),
-    contact_city: Joi.when('useManagerDetails', {
+    contact_city: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .trim()
         .required(),
       otherwise: Joi.string().trim()
     }),
-    contact_state_prov: Joi.when('useManagerDetails', {
+    contact_state_prov: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .min(2)
@@ -195,7 +200,7 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_country: Joi.when('useManagerDetails', {
+    contact_country: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .min(2)
@@ -205,14 +210,14 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_zip_postal: Joi.when('useManagerDetails', {
+    contact_zip_postal: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .trim()
         .required(),
       otherwise: Joi.string().trim()
     }),
-    contact_phone: Joi.when('useManagerDetails', {
+    contact_phone: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .trim()
@@ -222,7 +227,7 @@ function validateTeam(team) {
         .trim()
         .regex(/^[0-9]{7,10}$/)
     }),
-    contact_email: Joi.when('useManagerDetails', {
+    contact_email: Joi.when('use_manager_details', {
       is: false,
       then: Joi.string()
         .email()
@@ -306,7 +311,7 @@ function validateTeam(team) {
 
 function validateAddMember(member) {
   const schema = {
-    id: Joi.objectId().required()
+    member_id: Joi.objectId().required()
   };
   return Joi.validate(member, schema, joi_options);
 }

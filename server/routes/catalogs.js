@@ -11,11 +11,11 @@ router.get('/', auth, async (req, res) => {
   const { filter } = aqp(req.query);
   if (filter.year) {
     const pattern = new RegExp(/^\d{4}$/);
-    if (!pattern.test(filter.year)) return res.status(400).send({ message: 'Invalid year requested.' });
+    if (!pattern.test(filter.year)) return res.status(400).json({ message: 'Invalid year requested.' });
   }
 
   const catalogs = await Catalog.find(filter);
-  if (catalogs && catalogs.length === 0) return res.status(404).send({ message: 'No catalogs found.' });
+  if (catalogs && catalogs.length === 0) return res.status(404).json({ message: 'No catalogs found.' });
 
   res.json(catalogs);
 });
@@ -23,7 +23,7 @@ router.get('/', auth, async (req, res) => {
 // Collects a specific catalog based on given ID
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const catalog = await Catalog.findById(req.params.id);
-  if (!catalog) return res.status(400).send({ message: 'Catalog with the given ID not found.' });
+  if (!catalog) return res.status(400).json({ message: 'Catalog with the given ID not found.' });
 
   res.json(catalog);
 });
@@ -31,12 +31,12 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 // Adds a new catalog, doesn't allow duplicate brand/season/year
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
   let { brand, season, year, cover_img } = req.body;
 
   let catalog = await Catalog.findOne({ brand: brand.toUpperCase(), season: season.toUpperCase(), year: year });
 
-  if (catalog) return res.status(400).send({ message: 'Catalog already exists.' });
+  if (catalog) return res.status(400).json({ message: 'Catalog already exists.' });
 
   catalog = new Catalog({
     brand,
@@ -53,15 +53,15 @@ router.post('/', [auth, admin], async (req, res) => {
 // Edits a specific catalog, doesnt allow duplicate brand/season/year
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let { brand, season, year, cover_img } = req.body;
 
   let catalog = await Catalog.findById(req.params.id);
-  if (!catalog) return res.status(400).send({ message: 'Catalog with the given ID not found.' });
+  if (!catalog) return res.status(400).json({ message: 'Catalog with the given ID not found.' });
 
-  const dupcatalog = await Catalog.findOne({ brand: brand.toUpperCase(), season: season.toUpperCase(), year });
-  if (dupcatalog) return res.status(400).send({ message: 'Catalog already exists.' });
+  const duplicate_catalog = await Catalog.findOne({ brand: brand.toUpperCase(), season: season.toUpperCase(), year });
+  if (duplicate_catalog) return res.status(400).json({ message: 'Catalog already exists.' });
 
   catalog.brand = brand;
   catalog.season = season;
@@ -75,10 +75,10 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 // edits the cover image URI of the catalog
 router.patch('/cover_img/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCoverImage(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   const catalog = await Catalog.findByIdAndUpdate(req.params.id, { cover_img: req.body.cover_img }, { new: true });
-  if (!catalog) return res.status(400).send({ message: 'Catalog with the given ID not found.' });
+  if (!catalog) return res.status(400).json({ message: 'Catalog with the given ID not found.' });
 
   res.json(catalog);
 });

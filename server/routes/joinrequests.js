@@ -9,46 +9,47 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const validateObjectId = require('../middleware/validateObjectId');
 
-const popOtions = { path: 'requestBy', select: 'name email' };
+const populateOptions = { path: 'member_id', select: 'name email' };
 
 router.get('/', auth, async (req, res) => {
-  const joins = await JoinRequest.find().populate(popOtions);
-  if (joins && joins.length === 0) return res.status(404).send({ message: 'No join requests found.' });
+  const joins = await JoinRequest.find().populate(populateOptions);
+  if (joins && joins.length === 0) return res.status(404).json({ message: 'No join requests found.' });
 
   res.json(joins);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
-  const joins = await JoinRequest.find({ team_id: req.params.id }).populate(popOtions);
-  if (joins && joins.length === 0) return res.status(400).send({ message: 'Team with the given ID not found.' });
+  const joins = await JoinRequest.find({ team_id: req.params.id }).populate(populateOptions);
+  if (joins && joins.length === 0) return res.status(400).json({ message: 'Team with the given ID not found.' });
 
   res.json(joins);
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  const join = await JoinRequest.findById(req.params.id).populate(popOtions);
-  if (!join) return res.status(400).send({ message: 'Join Request with the given ID not found.' });
+  const join = await JoinRequest.findById(req.params.id).populate(populateOptions);
+  if (!join) return res.status(400).json({ message: 'Join Request with the given ID not found.' });
 
   res.json(join);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateJoinRequest(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
-  const requestedBy = await Member.findById(req.body.requestBy).select('name');
+  const requested_by = await Member.findById(req.body.member_id).select('name');
+  if (!requested_by) return res.status(400).json({ message: 'Member with the given ID not found' });
 
   const newJoin = new JoinRequest({
-    requestBy: req.body.requestBy,
+    member_id: req.body.member_id,
     team_id: req.body.team_id
   });
 
-  const sendTo = await Team.findById(req.body.team_id).select('admin_id manager_id');
+  const send_notification_to = await Team.findById(req.body.team_id).select('admin_id manager_id');
 
   const newNotification = {
-    recipients: [sendTo.admin_id, sendTo.manager_id],
-    message: `${requestedBy.name} wants to join your team!`,
-    clickTo: `/api/joinrequests/${newJoin._id}`
+    recipients: [send_notification_to.admin_id, send_notification_to.manager_id],
+    message: `${requested_by.name} wants to join your team!`,
+    click_to: `/api/v1/joinrequests/${newJoin._id}`
   };
 
   for (recipient of req.body.recipients) {
@@ -61,7 +62,7 @@ router.post('/', auth, async (req, res) => {
 
   await newJoin.save();
 
-  res.status(200).send({ message: 'Request sent.' });
+  res.status(200).json({ message: 'Request sent.' });
 });
 
 module.exports = router;

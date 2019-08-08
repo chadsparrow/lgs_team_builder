@@ -4,14 +4,13 @@ const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const EmailSchema = new mongoose.Schema(
   {
-    sender: {
+    sender_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
     recipients: [
       {
-        _id: false,
-        member: {
+        member_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
         },
@@ -41,7 +40,7 @@ const EmailSchema = new mongoose.Schema(
           type: Date,
           required: true
         },
-        sentBy: {
+        sender_id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
         }
@@ -64,7 +63,9 @@ function validateEmail(email) {
       .required()
       .trim(),
     message: Joi.string().required(),
-    team_id: Joi.objectId().required()
+    team_id: Joi.objectId()
+
+    // TODO - make team required once we add a team
   };
   return Joi.validate(email, schema, joi_options);
 }

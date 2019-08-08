@@ -17,7 +17,7 @@ const CartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'stores'
     },
-    coupon_used: {
+    coupon_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coupons'
     },
@@ -85,7 +85,7 @@ function validateCart(cart) {
     member_id: Joi.objectId().required(),
     team_id: Joi.objectId().required(),
     store_id: Joi.objectId().required(),
-    coupon_used: Joi.object().required(),
+    coupon_id: Joi.object().required(),
     order_discount: Joi.number().min(0),
     tax_percentage: Joi.number().min(0),
     currency: Joi.string().required(),

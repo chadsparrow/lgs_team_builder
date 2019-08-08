@@ -84,10 +84,6 @@ const StoreSchema = new mongoose.Schema(
         uppercase: true,
         enum: ['BULK', 'DROP']
       },
-      use_team_manager_details: {
-        type: Boolean,
-        default: true
-      },
       bulk_ship_contact_name: {
         type: String,
         uppercase: true,

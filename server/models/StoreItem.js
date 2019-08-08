@@ -20,7 +20,7 @@ const StoreItemSchema = mongoose.Schema(
       type: Number,
       default: 0
     },
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true
     },
@@ -61,7 +61,7 @@ const StoreItemSchema = mongoose.Schema(
           uppercase: true,
           trim: true
         },
-        url: {
+        image_url: {
           type: String,
           trim: true
         }
@@ -84,7 +84,7 @@ function validateStoreItem(item) {
   const schema = {
     store_id: Joi.objectId().require(),
     item_id: Joi.objectId().required(),
-    isActive: Joi.boolean(),
+    is_active: Joi.boolean(),
     sizes_offered: Joi.array()
       .unique()
       .items(
@@ -99,7 +99,7 @@ function validateStoreItem(item) {
     number: Joi.string().trim(),
     images: Joi.array().items(
       Joi.object({
-        url: Joi.string()
+        image_url: Joi.string()
           .uri()
           .trim(),
         name: Joi.string().trim()
@@ -116,7 +116,7 @@ function validateStoreItem(item) {
 
 function validateStoreItemEdit(item) {
   const schema = {
-    isActive: Joi.boolean(),
+    is_active: Joi.boolean(),
     sizes_offered: Joi.array()
       .unique()
       .items(

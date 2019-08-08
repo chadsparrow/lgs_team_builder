@@ -14,7 +14,7 @@ router.get('/admin', [auth, admin], async (req, res) => {
   const { filter } = aqp(req.query);
   const emails = await Email.find(filter);
 
-  if (emails && emails.length === 0) return res.status(404).send({ message: 'No emails found.' });
+  if (emails && emails.length === 0) return res.status(404).json({ message: 'No emails found.' });
 
   res.json(emails);
 });
@@ -23,134 +23,134 @@ router.get('/admin', [auth, admin], async (req, res) => {
 router.get('/', auth, async (req, res) => {
   const emails = await Email.find({
     $or: [
-      { recipients: { $elemMatch: { member: mongoose.Types.ObjectId(req.member._id) } } },
-      { messages: { $elemMatch: { sentBy: mongoose.Types.ObjectId(req.member._id) } } }
+      { recipients: { $elemMatch: { member_id: mongoose.Types.ObjectId(req.member._id) } } },
+      { messages: { $elemMatch: { sender_id: mongoose.Types.ObjectId(req.member._id) } } }
     ]
   })
-    .populate({ path: 'sender', select: 'name email' })
-    .populate({ path: 'recipients.member', select: 'name email' })
-    .populate({ path: 'messages.sentBy', select: 'name email' })
+    .populate({ path: 'sender_id', select: 'name email' })
+    .populate({ path: 'recipients.member_id', select: 'name email' })
+    .populate({ path: 'messages.sender_id', select: 'name email' })
     .sort('-messages.date')
     .select('-__v -team_id');
 
-  if (emails.length === 0) return res.status(404).send({ message: 'You have no messages.' });
+  if (emails.length === 0) return res.status(404).json({ message: 'You have no messages.' });
   res.json(emails);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let recipients = [];
 
   let sender = await Member.findById(req.member._id);
-  if (!sender) return res.status(400).send({ message: `Sender with a given ID (${req.member._id}) was not found. Please try again.` });
+  if (!sender) return res.status(400).json({ message: `Sender with a given ID (${req.member._id}) was not found. Please try again.` });
 
-  recipients.push({ member: req.member._id, unread: false });
+  recipients.push({ member_id: req.member._id, unread: false });
 
   req.body.recipients.forEach(async recipient => {
     let member = await Member.findById(recipient);
-    if (!member) return res.status(400).send({ message: `Recipient with the given ID (${recipient}) was not found. Please try again.` });
-    recipients.push({ member: recipient });
+    if (!member) return res.status(400).json({ message: `Recipient with the given ID (${recipient}) was not found. Please try again.` });
+    recipients.push({ member_id: recipient });
   });
 
-  const newEmail = new Email({
-    sender: req.member._id,
+  let new_email = new Email({
+    sender_id: req.member._id,
     subject: req.body.subject,
     recipients: recipients,
     team_id: req.body.team_id
   });
 
-  newEmail.messages.push({ message: req.body.message, date: new Date(), sentBy: req.member._id });
+  new_email.messages.push({ message: req.body.message, date: new Date(), sender_id: req.member._id });
 
-  let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail._id);
+  let saved_email = await new_email.save();
+  let populated_email = await populateEmail(saved_email._id);
 
-  res.json(populatedEmail);
+  res.json(populated_email);
 });
 
 // Toggle Unread boolean on an email.
 router.patch('/:id/tr', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send({ message: 'Email with the given ID was not found.' });
+  if (!email) return res.status(400).json({ message: 'Email with the given ID was not found.' });
 
   email.recipients.forEach(recipient => {
-    if (recipient.member == req.member._id) {
+    if (recipient.member_id == req.member._id) {
       recipient.unread = !recipient.unread;
     }
   });
 
-  let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail._id);
+  let saved_email = await email.save();
+  let populated_email = await populateEmail(saved_email._id);
 
-  res.json(populatedEmail);
+  res.json(populated_email);
 });
 
 router.patch('/:id/archive', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send({ message: `Email with the given ID was not found.` });
+  if (!email) return res.status(400).json({ message: `Email with the given ID was not found.` });
 
   email.recipients.forEach(recipient => {
-    if (recipient.member == req.member._id && !recipient.archived) {
+    if (recipient.member_id == req.member._id && !recipient.archived) {
       recipient.archived = true;
-    } else if (recipient.member == req.member._id && recipient.archived) {
-      return res.status(400).send({ message: 'Email with the given ID is already archived.' });
+    } else if (recipient.member_id == req.member._id && recipient.archived) {
+      return res.status(400).json({ message: 'Email with the given ID is already archived.' });
     }
   });
 
-  let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail._id);
+  let saved_email = await email.save();
+  let populated_email = await populateEmail(saved_email._id);
 
-  res.json(populatedEmail);
+  res.json(populated_email);
 });
 
 router.post('/:id/reply', [validateObjectId, auth], async (req, res) => {
   const { error } = validateMessage(req.body);
-  if (error) return res.status(400).send(error.details);
+  if (error) return res.status(400).json(error.details);
 
   let member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).send({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   let email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).send({ message: `Email with the given ID was not found.` });
+  if (!email) return res.status(400).json({ message: `Email with the given ID was not found.` });
 
   let newMessage = {
     message: req.body.message,
-    sentBy: req.member._id,
+    sender_id: req.member._id,
     date: new Date()
   };
 
   email.messages.push(newMessage);
 
-  let resetUnread = email.recipients.map(recipient => {
-    if (recipient.member != req.member._id) {
+  let reset_unread = email.recipients.map(recipient => {
+    if (recipient.member_id != req.member._id) {
       recipient.unread = true;
     }
     recipient.archived = false;
     return recipient;
   });
 
-  email.recipients = resetUnread;
+  email.recipients = reset_unread;
 
-  let savedEmail = await email.save();
-  let populatedEmail = await populateEmail(savedEmail._id);
+  let saved_email = await email.save();
+  let populated_email = await populateEmail(saved_email._id);
 
-  res.json(populatedEmail);
+  res.json(populated_email);
 });
 
-function populateEmail(emailId) {
+function populateEmail(email_id) {
   return new Promise(async (resolve, reject) => {
-    let popemail = await Email.findById(emailId)
-      .populate({ path: 'sender', select: 'name email' })
-      .populate({ path: 'recipients.member', select: 'name email' })
-      .populate({ path: 'messages.sentBy', select: 'name email' })
-      .select('_id sender subject recipients messages updatedAt createdAt');
+    let popemail = await Email.findById(email_id)
+      .populate({ path: 'sender_id', select: 'name email' })
+      .populate({ path: 'recipients.member_id', select: 'name email' })
+      .populate({ path: 'messages.sender_id', select: 'name email' })
+      .select('_id sender_id subject recipients messages updatedAt createdAt');
     resolve(popemail);
   });
 }
