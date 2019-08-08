@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const winston = require('winston');
-//require('winston-mongodb');
+//require('winston-mongodb'); // enable on production
 require('winston-daily-rotate-file');
 const config = require('config');
 const express = require('express');
