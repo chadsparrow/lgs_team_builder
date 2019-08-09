@@ -1,11 +1,11 @@
 image: docker:latest
 
 services:
- - docker:dind
+  - docker:dind
 
- build:
+build:
   stage: build
   script:
     - docker build -t test .
-  only: 
+  only:
     - develop
