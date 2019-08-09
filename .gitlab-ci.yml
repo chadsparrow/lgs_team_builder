@@ -9,6 +9,8 @@ before_script:
 
 build-dev:
     type: build
+    tags:
+    - docker-in-docker-pure-builder
     script:
         - cd server && docker build -t $DEV_IMAGE -f ./server/Dockerfile .
     only: 
