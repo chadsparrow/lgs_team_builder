@@ -1,9 +1,11 @@
 FROM node:8-alpine
 RUN apk update && apk add bash
 
-ADD . /usr/src/app/
-
+WORKDIR /usr/src/app/
+COPY package*.json ./
 RUN npm install
+
+COPY . ./
 
 EXPOSE 5001
 
