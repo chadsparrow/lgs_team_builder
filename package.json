@@ -5,9 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon -L server.js",
-    "start": "node server.js",
-    "test": "jest --watchAll --verbose --forceExit",
-    "coverage": "jest --watchAll --verbose --coverage"
+    "start": "node server.js"
   },
   "author": "Chad Sparrow",
   "license": "UNLICENSED",
