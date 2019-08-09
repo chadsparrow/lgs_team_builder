@@ -3,6 +3,7 @@ image: docker:18
 
 stages:
   - build
+  - develop
   - push
 
 services:
@@ -25,12 +26,12 @@ Build:
     - >
       docker build
       --pull
-      --build-arg VCS_REF=$CI_COMMIT_SHA
+      --build-arg VCS_REF=$CI_COMMIT_SHORT_SHA
       --build-arg VCS_URL=$CI_PROJECT_URL
       --cache-from $CI_REGISTRY_IMAGE:latest
-      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
       .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 
 # Here, the goal is to tag the "master" branch as "latest"
 Push latest:
@@ -45,9 +46,9 @@ Push latest:
   script:
     # Because we have no guarantee that this job will be picked up by the same runner
     # that built the image in the previous step, we pull it again locally
-    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
     # Then we tag it "latest"
-    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:latest
     # Annnd we push it.
     - docker push $CI_REGISTRY_IMAGE:latest
 
@@ -61,22 +62,25 @@ Push tag:
     # We want this job to be run on tags only.
     - tags
   script:
-    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
-    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 # Here, the goal is to tag the "master" branch as "latest"
-Push latest:
+Push develop:
   variables:
+    # We are just playing with Docker here.
+    # We do not need GitLab to clone the source code.
     GIT_STRATEGY: none
-  stage: push
+  stage: develop
   only:
+    # Only "develop" should be tagged "develop"
     - develop
   script:
     # Because we have no guarantee that this job will be picked up by the same runner
     # that built the image in the previous step, we pull it again locally
-    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
     # Then we tag it "latest"
-    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:latest
     # Annnd we push it.
-    - docker push $CI_REGISTRY_IMAGE:develop
+    - docker push $CI_REGISTRY_IMAGE:$CI_JOB_STAGE
