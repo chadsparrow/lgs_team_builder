@@ -1,0 +1,18 @@
+variables:
+    DOCKER_REPO: registry.gitlab.com/garneau-dev/sugoi/team-builder
+    DEV_IMAGE_BASE_NAME: app-dev
+    DEV_IMAGE: $DOCKER_REPO/$DEV_IMAGE_BASE_NAME:1.0.0
+
+
+before_script:
+    - docker info
+
+build-dev:
+    type: build
+    tags:
+    - docker-in-docker-pure-builder
+    script:
+        - cd server && docker build -t $DEV_IMAGE -f ./server/Dockerfile .
+    only: 
+        - develop
+    
