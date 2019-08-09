@@ -1,9 +1,9 @@
 FROM node:8-alpine
 RUN apk update && apk add bash
 
-ADD server /usr/src/app/server
+ADD . /usr/src/app/
 
-RUN cd /usr/src/app/server && npm install
+RUN npm install
 
 EXPOSE 5001
 
