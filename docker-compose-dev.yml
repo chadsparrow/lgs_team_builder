@@ -13,7 +13,7 @@ services:
     command: mongod --port 27018
   server:
     container_name: team_builder_app_dev
-    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app-dev:1.0.0
+    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app-dev
     restart: always
     ports:
       - 5001:5001
