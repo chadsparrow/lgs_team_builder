@@ -3,7 +3,7 @@
   "LGS_APP_VER": "1.0.0",
   "LGS_APP_SUBDOMAIN": "teambuilder",
   "LGS_APP_DOMAIN": "garneau.com",
-  "LGS_DOCKER_REGISTRY_SERVER": "registry.gitlab.com/garneau-dev/sugoi/team-builder",
+  "LGS_DOCKER_REGISTRY_SERVER": "registry.gitlab.com/garneau-dev/sugoi/team-builder:latest",
   "LGS_CONTAINER_NAME": "teambuilder",
   "LGS_HOST_BASE_DIR": "/data/sites",
   "LGS_HOST_APP_DIR": "teambuilder",
