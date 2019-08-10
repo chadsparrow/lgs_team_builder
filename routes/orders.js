@@ -1,6 +1,4 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 const express = require('express');
 
 const router = express.Router();
@@ -16,111 +14,109 @@ router.get('/all', [auth, admin], async (req, res) => {
   const orders = await Order.find();
   if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found' });
 
-  res.json(orders);
+  return res.json(orders);
 });
 
 router.get('/me', [auth], async (req, res) => {
-  const orders = await Order.find({ member_id: req.member._id });
+  const orders = await Order.find({ memberId: req.member._id });
   if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found' });
 
-  res.json(orders);
+  return res.json(orders);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).json({ message: 'Team with the given ID not found' });
 
-  if (req.member._id !== team.manager_id || !req.member.is_admin)
+  if (req.member._id !== team.managerId || !req.member.isAdmin)
     return res.status(403).json({ message: 'Access Denied' });
 
-  const orders = await Order.find({ team_id: req.params.id });
+  const orders = await Order.find({ teamId: req.params.id });
   if (orders && orders.length === 0)
     return res.status(404).json({ message: 'No orders found for the given Team ID' });
 
-  res.json(orders);
+  return res.json(orders);
 });
 
 router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID not found' });
 
-  const orders = await Order.find({ member_id: req.params.id });
+  const orders = await Order.find({ memberId: req.params.id });
   if (orders && orders.length === 0)
     return res.status(404).json({ message: 'No orders found for the given Member ID' });
 
-  res.json(orders);
+  return res.json(orders);
 });
 
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).json({ message: 'Store with given ID not found' });
 
-  if (req.member._id !== store.manager_id || !req.member.is_admin)
+  if (req.member._id !== store.managerId || !req.member.isAdmin)
     return res.status(403).json({ message: 'Access Denied' });
 
-  const orders = await Order.find({ store_id: req.params.id });
+  const orders = await Order.find({ storeId: req.params.id });
   if (orders && orders.length === 0)
     return res.status(404).json({ message: 'No orders found for the given Store ID' });
 
-  res.json(orders);
+  return res.json(orders);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateOrder(req.body);
   if (error) return res.status(400).json(error.details);
 
-  const member = await Member.findById(req.body.member_id);
+  const member = await Member.findById(req.body.memberId);
   if (!member) return res.status(400).json({ message: 'Member with the given ID not found' });
 
-  const team = await Team.findById(req.body.team_id);
+  const team = await Team.findById(req.body.teamId);
   if (!team) return res.status(400).json({ message: 'Team with the given ID not found' });
 
-  const store = await Store.findById(req.body.store_id);
+  const store = await Store.findById(req.body.storeId);
   if (!store) return res.status(400).json({ message: 'Store with the given ID not found' });
 
   const {
-    store_id,
-    team_id,
-    member_id,
-    drop_contact,
-    drop_address1,
-    drop_address2,
-    drop_city,
-    drop_state_prov,
-    drop_country,
-    drop_zip_postal,
-    drop_phone,
-    drop_email,
-    coupon_id,
-    order_discount,
-    tax_percentage,
-    amount_paid,
+    storeId,
+    teamId,
+    memberId,
+    dropContact,
+    dropAddress1,
+    dropAddress2,
+    dropCity,
+    dropStateProv,
+    dropCountry,
+    dropZipPostal,
+    dropPhone,
+    dropEmail,
+    couponId,
+    orderDiscount,
+    taxPercentage,
     items
   } = req.body;
 
   const order = new Order({
-    store_id,
-    team_id,
-    member_id,
-    coupon_id,
-    order_discount,
-    tax_percentage,
-    amount_paid,
-    order_date: Date.now(),
+    storeId,
+    teamId,
+    memberId,
+    couponId,
+    orderDiscount,
+    taxPercentage,
+    orderDate: new Date(),
     items
   });
 
-  if (store.shipping.shipping_type === 'DROP') {
-    order.drop_shipping.contact = drop_contact;
-    order.drop_shipping.address1 = drop_address1;
-    if (drop_address2) order.drop_shipping.address2 = drop_address2;
+  if (store.shipping.shippingType === 'DROP') {
+    order.dropShipping.contact = dropContact;
+    order.dropShipping.address1 = dropAddress1;
+    if (dropAddress2) order.dropShipping.address2 = dropAddress2;
 
-    order.drop_shipping.city = drop_city;
-    order.drop_shipping.state_prov = drop_state_prov;
-    order.drop_shipping.country = drop_country;
-    order.drop_shipping.zip_postal = drop_zip_postal;
-    order.drop_shipping.phone = drop_phone;
-    order.drop_shipping.email = drop_email;
+    order.dropShipping.city = dropCity;
+    order.dropShipping.stateProv = dropStateProv;
+    order.dropShipping.country = dropCountry;
+    order.dropShipping.zipPostal = dropZipPostal;
+    order.dropShipping.phone = dropPhone;
+    order.dropShipping.email = dropEmail;
   }
 
   let itemsTotal = 0;
@@ -128,14 +124,14 @@ router.post('/', auth, async (req, res) => {
     itemsTotal += (item.price - item.discount) * item.quantity;
   });
 
-  order.sub_total = itemsTotal;
-  const taxAmount = (order.sub_total - order.discount) * (order.tax_percentage / 100);
-  order.total_amount = order.sub_total - order.discount + taxAmount;
+  order.subTotal = itemsTotal;
+  const taxAmount = (order.subTotal - order.discount) * (order.taxPercentage / 100);
+  order.totalAmount = order.subTotal - order.discount + taxAmount;
 
-  order.balance_owing = order.total_amount - order.amount_paid;
+  order.balanceOwing = order.totalAmount - order.amount_paid;
 
   await order.save();
-  res.json(order);
+  return res.json(order);
 });
 
 module.exports = router;

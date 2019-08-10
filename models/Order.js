@@ -1,25 +1,24 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Float = require('mongoose-float');
 const Joi = require('@hapi/joi');
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const OrderSchema = mongoose.Schema(
   {
-    store_id: {
+    storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'stores'
     },
-    team_id: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'teams'
     },
-    member_id: {
+    memberId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    drop_shipping: {
+    dropShipping: {
       contact: {
         type: String,
         trim: true,
@@ -40,7 +39,7 @@ const OrderSchema = mongoose.Schema(
         trim: true,
         uppercase: true
       },
-      state_prov: {
+      stateProv: {
         type: String,
         trim: true,
         uppercase: true,
@@ -52,7 +51,7 @@ const OrderSchema = mongoose.Schema(
         uppercase: true,
         minlength: 2
       },
-      zip_postal: {
+      zipPostal: {
         type: String,
         trim: true,
         uppercase: true,
@@ -69,35 +68,35 @@ const OrderSchema = mongoose.Schema(
         trim: true
       }
     },
-    coupon_id: {
+    couponId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coupons'
     },
-    order_discount: {
+    orderDiscount: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
-    tax_percentage: {
+    taxPercentage: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
-    sub_total: {
+    subTotal: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
-    total_amount: {
+    totalAmount: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
-    balance_owing: {
+    balanceOwing: {
       type: Float,
       default: 0.0
     },
-    order_date: {
+    orderDate: {
       type: Date,
       required: true
     },
@@ -107,7 +106,7 @@ const OrderSchema = mongoose.Schema(
     },
     items: [
       {
-        item_id: {
+        itemId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'storeitems'
         },
@@ -141,43 +140,43 @@ const OrderSchema = mongoose.Schema(
 
 function validateOrder(order) {
   const schema = {
-    store_id: Joi.objectId().required(),
-    team_id: Joi.objectId().required(),
-    member_id: Joi.objectId().required(),
-    drop_contact: Joi.string()
+    storeId: Joi.objectId().required(),
+    teamId: Joi.objectId().required(),
+    memberId: Joi.objectId().required(),
+    dropContact: Joi.string()
       .trim()
       .min(5),
-    drop_address1: Joi.string().trim(),
-    drop_address2: Joi.string().trim(),
-    drop_city: Joi.string().trim(),
-    drop_state_prov: Joi.string()
+    dropAddress1: Joi.string().trim(),
+    dropAddress2: Joi.string().trim(),
+    dropCity: Joi.string().trim(),
+    dropStateProv: Joi.string()
       .min(2)
       .trim(),
-    drop_country: Joi.string()
+    dropCountry: Joi.string()
       .min(2)
       .trim(),
-    drop_zip_postal: Joi.string()
+    dropZipPostal: Joi.string()
       .min(5)
       .trim(),
-    drop_phone: Joi.string()
+    dropPhone: Joi.string()
       .regex(/^[0-9]{7,10}$/)
       .trim(),
-    drop_email: Joi.string()
+    dropEmail: Joi.string()
       .email()
       .trim(),
-    coupon_id: Joi.objectId(),
-    order_discount: Joi.number()
+    couponId: Joi.objectId(),
+    orderDiscount: Joi.number()
       .min(0)
       .trim(),
-    tax_percentage: Joi.number()
+    taxPercentage: Joi.number()
       .min(0)
       .trim(),
-    order_date: Joi.date(),
+    orderDate: Joi.date(),
     items: Joi.array()
       .required()
       .min(1)
       .items({
-        item_id: Joi.objectId(),
+        itemId: Joi.objectId(),
         size: Joi.string()
           .min(1)
           .trim(),
@@ -192,7 +191,7 @@ function validateOrder(order) {
       })
   };
 
-  return Joi.validate(order, schema, joi_options);
+  return Joi.validate(order, schema, joiOptions);
 }
 
 exports.Order = mongoose.model('orders', OrderSchema);

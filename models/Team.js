@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -16,16 +15,16 @@ const TeamSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
-    admin_id: {
+    adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    manager_id: {
+    managerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    main_contact: {
-      member_id: {
+    mainContact: {
+      memberId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'members'
       },
@@ -52,7 +51,7 @@ const TeamSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
-      state_prov: {
+      stateProv: {
         type: String,
         uppercase: true,
         minlength: 2,
@@ -63,7 +62,7 @@ const TeamSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
-      zip_postal: {
+      zipPostal: {
         type: String,
         uppercase: true,
         minlength: 5,
@@ -78,8 +77,8 @@ const TeamSchema = new mongoose.Schema(
         trim: true
       }
     },
-    bulk_shipping: {
-      member_id: {
+    bulkShipping: {
+      memberId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'members'
       },
@@ -106,7 +105,7 @@ const TeamSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
-      state_prov: {
+      stateProv: {
         type: String,
         uppercase: true,
         minlength: 2,
@@ -117,7 +116,7 @@ const TeamSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
-      zip_postal: {
+      zipPostal: {
         type: String,
         uppercase: true,
         minlength: 5,
@@ -138,7 +137,7 @@ const TeamSchema = new mongoose.Schema(
         ref: 'members'
       }
     ],
-    team_timezone: {
+    teamTimezone: {
       type: String
     }
   },
@@ -149,7 +148,7 @@ function validateTeamName(team) {
   const schema = {
     name: Joi.string().required()
   };
-  return Joi.validate(team, schema, joi_options);
+  return Joi.validate(team, schema, joiOptions);
 }
 
 function validateTeam(team) {
@@ -157,10 +156,10 @@ function validateTeam(team) {
     logo: Joi.string()
       .uri()
       .allow('', null),
-    admin_id: Joi.objectId().required(),
-    manager_id: Joi.objectId().required(),
-    use_manager_details: Joi.boolean().required(),
-    contact_name: Joi.when('use_manager_details', {
+    adminId: Joi.objectId().required(),
+    managerId: Joi.objectId().required(),
+    useManagerDetails: Joi.boolean().required(),
+    contactName: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .min(5)
@@ -172,7 +171,7 @@ function validateTeam(team) {
         .max(50)
         .trim()
     }),
-    contact_address1: Joi.when('use_manager_details', {
+    contactAddress1: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .min(10)
@@ -182,17 +181,17 @@ function validateTeam(team) {
         .min(10)
         .trim()
     }),
-    contact_address2: Joi.string()
+    contactAddress2: Joi.string()
       .trim()
       .allow('', null),
-    contact_city: Joi.when('use_manager_details', {
+    contactCity: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .trim()
         .required(),
       otherwise: Joi.string().trim()
     }),
-    contact_state_prov: Joi.when('use_manager_details', {
+    contactStateProv: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .min(2)
@@ -202,7 +201,7 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_country: Joi.when('use_manager_details', {
+    contactCountry: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .min(2)
@@ -212,14 +211,14 @@ function validateTeam(team) {
         .min(2)
         .trim()
     }),
-    contact_zip_postal: Joi.when('use_manager_details', {
+    contactZipPostal: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .trim()
         .required(),
       otherwise: Joi.string().trim()
     }),
-    contact_phone: Joi.when('use_manager_details', {
+    contactPhone: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .trim()
@@ -229,93 +228,93 @@ function validateTeam(team) {
         .trim()
         .regex(/^[0-9]{7,10}$/)
     }),
-    contact_email: Joi.when('use_manager_details', {
+    contactEmail: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()
         .email()
         .required(),
       otherwise: Joi.string().email()
     }),
-    bulk_use_above_details: Joi.boolean().required(),
-    bulk_contact_name: Joi.when('bulk_use_above_details', {
+    bulkUseAboveDetails: Joi.boolean().required(),
+    bulkContactName: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_name'),
+      then: Joi.ref('contactName'),
       otherwise: Joi.string()
         .min(5)
         .max(50)
         .trim()
         .required()
     }),
-    bulk_contact_address1: Joi.when('bulk_use_above_details', {
+    bulkContactAddress1: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_address1'),
+      then: Joi.ref('contactAddress1'),
       otherwise: Joi.string()
         .min(10)
         .trim()
         .required()
     }),
-    bulk_contact_address2: Joi.when('bulk_use_above_details', {
+    bulkContactAddress2: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_address2'),
+      then: Joi.ref('contactAddress2'),
       otherwise: Joi.string()
         .trim()
         .allow('', null)
     }),
-    bulk_contact_city: Joi.when('bulk_use_above_details', {
+    bulkContactCity: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_city'),
+      then: Joi.ref('contactCity'),
       otherwise: Joi.string()
         .trim()
         .required()
     }),
-    bulk_contact_state_prov: Joi.when('bulk_use_above_details', {
+    bulkContactStateProv: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_state_prov'),
-      otherwise: Joi.string()
-        .min(2)
-        .trim()
-        .required()
-    }),
-    bulk_contact_country: Joi.when('bulk_use_above_details', {
-      is: true,
-      then: Joi.ref('contact_country'),
+      then: Joi.ref('contactStateProv'),
       otherwise: Joi.string()
         .min(2)
         .trim()
         .required()
     }),
-    bulk_contact_zip_postal: Joi.when('bulk_use_above_details', {
+    bulkContactCountry: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_zip_postal'),
+      then: Joi.ref('contactCountry'),
+      otherwise: Joi.string()
+        .min(2)
+        .trim()
+        .required()
+    }),
+    bulkContactZipPostal: Joi.when('bulkUseAboveDetails', {
+      is: true,
+      then: Joi.ref('contactZipPostal'),
       otherwise: Joi.string()
         .trim()
         .required()
     }),
-    bulk_contact_phone: Joi.when('bulk_use_above_details', {
+    bulkContactPhone: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_phone'),
+      then: Joi.ref('contactPhone'),
       otherwise: Joi.string()
         .trim()
         .regex(/^[0-9]{7,10}$/)
         .required()
     }),
-    bulk_contact_email: Joi.when('bulk_use_above_details', {
+    bulkContactEmail: Joi.when('bulkUseAboveDetails', {
       is: true,
-      then: Joi.ref('contact_email'),
+      then: Joi.ref('contactEmail'),
       otherwise: Joi.string()
         .email()
         .required()
     }),
     team_timezone: Joi.string().required()
   };
-  return Joi.validate(team, schema, joi_options);
+  return Joi.validate(team, schema, joiOptions);
 }
 
 function validateAddMember(member) {
   const schema = {
-    member_id: Joi.objectId().required()
+    memberId: Joi.objectId().required()
   };
-  return Joi.validate(member, schema, joi_options);
+  return Joi.validate(member, schema, joiOptions);
 }
 
 exports.Team = mongoose.model('teams', TeamSchema);

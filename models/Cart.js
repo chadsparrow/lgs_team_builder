@@ -1,43 +1,42 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CartSchema = new mongoose.Schema(
   {
-    member_id: {
+    memberId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    team_id: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'teams'
     },
-    store_id: {
+    storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'stores'
     },
-    coupon_id: {
+    couponId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'coupons'
     },
-    order_discount: {
+    orderDiscount: {
       type: Float,
       default: 0.0,
       min: 0
     },
-    tax_percentage: {
+    taxPercentage: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
-    sub_total: {
+    subTotal: {
       type: Float,
       default: 0.0
     },
-    total_amount: {
+    totalAmount: {
       type: Float,
       default: 0.0,
       min: 0.0
@@ -49,7 +48,7 @@ const CartSchema = new mongoose.Schema(
     },
     items: [
       {
-        item_id: {
+        itemId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'storeitems'
         },
@@ -84,17 +83,17 @@ const CartSchema = new mongoose.Schema(
 
 function validateCart(cart) {
   const schema = {
-    member_id: Joi.objectId().required(),
-    team_id: Joi.objectId().required(),
-    store_id: Joi.objectId().required(),
-    coupon_id: Joi.object().required(),
-    order_discount: Joi.number().min(0),
-    tax_percentage: Joi.number().min(0),
+    memberId: Joi.objectId().required(),
+    teamId: Joi.objectId().required(),
+    storeId: Joi.objectId().required(),
+    couponId: Joi.object().required(),
+    orderDiscount: Joi.number().min(0),
+    taxPercentage: Joi.number().min(0),
     currency: Joi.string().required(),
     items: Joi.array()
       .required()
       .items({
-        item_id: Joi.objectId().required(),
+        itemId: Joi.objectId().required(),
         quantity: Joi.number().min(1),
         price: Joi.number().min(0),
         image: Joi.string()
@@ -106,7 +105,7 @@ function validateCart(cart) {
         discount: Joi.number().min(0)
       })
   };
-  return Joi.validate(cart, schema, joi_options);
+  return Joi.validate(cart, schema, joiOptions);
 }
 
 exports.Cart = mongoose.model('carts', CartSchema);

@@ -2,29 +2,31 @@ const mongoose = require('mongoose');
 const Float = require('mongoose-float');
 const Joi = require('@hapi/joi');
 
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+
 const StoreItemSchema = mongoose.Schema(
   {
-    store_id: {
+    storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'stores'
     },
-    item_id: {
+    itemId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'catalogitems'
     },
-    survey_likes: {
+    surveyLikes: {
       type: Number,
       default: 0
     },
-    survey_qty: {
+    surveyQuantity: {
       type: Number,
       default: 0
     },
-    is_active: {
+    isActive: {
       type: Boolean,
       default: true
     },
-    sizes_offered: [
+    sizesOffered: [
       {
         type: String,
         trim: true,
@@ -61,7 +63,7 @@ const StoreItemSchema = mongoose.Schema(
           uppercase: true,
           trim: true
         },
-        image_url: {
+        imageUrl: {
           type: String,
           trim: true
         }
@@ -82,10 +84,10 @@ const StoreItemSchema = mongoose.Schema(
 
 function validateStoreItem(item) {
   const schema = {
-    store_id: Joi.objectId().require(),
-    item_id: Joi.objectId().required(),
-    is_active: Joi.boolean(),
-    sizes_offered: Joi.array()
+    storeId: Joi.objectId().require(),
+    itemId: Joi.objectId().required(),
+    isActive: Joi.boolean(),
+    sizesOffered: Joi.array()
       .unique()
       .items(
         Joi.string()
@@ -99,7 +101,7 @@ function validateStoreItem(item) {
     number: Joi.string().trim(),
     images: Joi.array().items(
       Joi.object({
-        image_url: Joi.string()
+        imageUrl: Joi.string()
           .uri()
           .trim(),
         name: Joi.string().trim()
@@ -111,13 +113,13 @@ function validateStoreItem(item) {
       .required()
       .trim()
   };
-  return Joi.validate(item, schema);
+  return Joi.validate(item, schema, joiOptions);
 }
 
 function validateStoreItemEdit(item) {
   const schema = {
-    is_active: Joi.boolean(),
-    sizes_offered: Joi.array()
+    isActive: Joi.boolean(),
+    sizesOffered: Joi.array()
       .unique()
       .items(
         Joi.string()
@@ -135,18 +137,18 @@ function validateStoreItemEdit(item) {
       .required()
       .trim()
   };
-  return Joi.validate(item, schema);
+  return Joi.validate(item, schema, joiOptions);
 }
 
 function validateStoreItemImage(image) {
   const schema = {
-    image_url: Joi.string()
+    imageUrl: Joi.string()
       .uri()
       .trim(),
     name: Joi.string().trim()
   };
 
-  return Joi.validate(image, schema);
+  return Joi.validate(image, schema, joiOptions);
 }
 
 exports.StoreItem = mongoose.model('storeitems', StoreItemSchema);

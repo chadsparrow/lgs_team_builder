@@ -1,6 +1,4 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const express = require('express');
 const moment = require('moment-timezone');
@@ -23,38 +21,38 @@ router.get('/', auth, async (req, res) => {
   const stores = await Store.find();
   if (stores && stores.length === 0) return res.status(404).json({ message: 'No stores found.' });
 
-  res.json(stores);
+  return res.json(stores);
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).json({ message: 'Store with the given ID not found.' });
 
-  res.json(store);
+  return res.json(store);
 });
 
 router.get('/admin/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const stores = await Store.find({ admin_id: req.params.id });
+  const stores = await Store.find({ adminId: req.params.id });
   if (stores && stores.length === 0)
     return res.status(400).json({ message: 'Stores with the given admin ID not found.' });
 
-  res.json(stores);
+  return res.json(stores);
 });
 
 router.get('/manager/:id', [validateObjectId, auth], async (req, res) => {
-  const stores = await Store.find({ manager_id: req.params.id });
+  const stores = await Store.find({ managerId: req.params.id });
   if (stores && stores.length === 0)
     return res.status(400).json({ message: 'Stores with the given manager ID not found.' });
 
-  res.json(stores);
+  return res.json(stores);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
-  const stores = await Store.find({ team_id: req.params.id });
+  const stores = await Store.find({ teamId: req.params.id });
   if (stores && stores.length === 0)
     return res.status(400).json({ message: 'Stores with the given team ID not found.' });
 
-  res.json(stores);
+  return res.json(stores);
 });
 
 router.get('/me', auth, async (req, res) => {
@@ -64,14 +62,14 @@ router.get('/me', auth, async (req, res) => {
     return res.status(400).json({ message: 'Member not registered to any team.' });
 
   const stores = teams.map(async team => {
-    const store = await Store.find({ team_id: team._id });
+    const store = await Store.find({ teamId: team._id });
     return store;
   });
 
   if (stores && stores.length === 0)
     return res.status(404).json({ message: 'Team does not have any stores.' });
 
-  res.json(stores);
+  return res.json(stores);
 });
 
 router.post('/', [auth, admin], async (req, res) => {
@@ -79,67 +77,66 @@ router.post('/', [auth, admin], async (req, res) => {
   if (error) return res.status(400).json(error.details);
 
   const {
-    team_id,
-    store_name,
+    teamId,
+    storeName,
     brand,
     currency,
-    order_reference,
-    admin_id,
-    manager_id,
-    opening_date,
-    closing_date,
+    orderReference,
+    adminId,
+    managerId,
+    openingDate,
+    closingDate,
     timezone,
-    store_message,
+    storeMessage,
     shipping
   } = req.body;
 
   let { mode } = req.body;
 
-  if (swearjar.profane(store_name))
+  if (swearjar.profane(storeName))
     return res.status(400).json({ message: 'Store name must not contain profanity.' });
-  if (swearjar.profane(store_message))
+  if (swearjar.profane(storeMessage))
     return res.status(400).json({ message: 'Store message must not contain profanity.' });
 
-  if (!validateId(admin_id)) return res.status(400).json({ message: 'Invalid ID. (Admin)' });
-  // eslint-disable-next-line no-shadow
-  const admin = await Member.findById(admin_id);
-  if (!admin) return res.status(400).json({ message: 'Admin with the given ID not found.' });
+  if (!validateId(adminId)) return res.status(400).json({ message: 'Invalid ID. (Admin)' });
+  const storeAdmin = await Member.findById(adminId);
+  if (!storeAdmin) return res.status(400).json({ message: 'Admin with the given ID not found.' });
 
-  if (!validateId(manager_id)) return res.status(400).json({ message: 'Invalid ID. (Manager)' });
-  const manager = await Member.findById(manager_id);
+  if (!validateId(managerId)) return res.status(400).json({ message: 'Invalid ID. (Manager)' });
+  const manager = await Member.findById(managerId);
   if (!manager) return res.status(400).json({ message: 'Manager with the given ID not found.' });
 
   const currentDate = moment.tz(timezone);
 
   if (
-    currentDate.isAfter(moment.tz(opening_date, timezone)) &&
-    currentDate.isBefore(moment.tz(closing_date, timezone))
+    currentDate.isAfter(moment.tz(openingDate, timezone)) &&
+    currentDate.isBefore(moment.tz(closingDate, timezone))
   ) {
     mode = 'OPEN';
-  } else if (currentDate.isBefore(moment.tz(opening_date, timezone))) {
+  } else if (currentDate.isBefore(moment.tz(openingDate, timezone))) {
     mode = 'SURVEY';
-  } else if (currentDate.isAfter(moment.tz(closing_date, timezone))) {
+  } else if (currentDate.isAfter(moment.tz(closingDate, timezone))) {
     mode = 'CLOSED';
   }
 
   const store = new Store({
-    team_id,
-    store_name,
+    teamId,
+    storeName,
     brand,
     currency,
-    order_reference,
-    admin_id,
-    manager_id,
+    orderReference,
+    adminId,
+    managerId,
     mode,
-    opening_date: moment.tz(opening_date, timezone).format(),
-    closing_date: moment.tz(closing_date, timezone).format(),
+    openingDate: moment.tz(openingDate, timezone).format(),
+    closingDate: moment.tz(closingDate, timezone).format(),
     timezone,
-    store_message,
+    storeMessage,
     shipping
   });
 
   await store.save();
-  res.json(store);
+  return res.json(store);
 });
 
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
@@ -147,68 +144,68 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   if (error) return res.status(400).json(error.details);
 
   const {
-    team_id,
-    store_name,
+    teamId,
+    storeName,
     brand,
     currency,
-    order_reference,
-    admin_id,
-    manager_id,
-    opening_date,
-    closing_date,
+    orderReference,
+    adminId,
+    managerId,
+    openingDate,
+    closingDate,
     timezone,
-    store_message,
+    storeMessage,
     shipping
   } = req.body;
 
   let { mode } = req.body;
 
-  if (swearjar.profane(store_name))
+  if (swearjar.profane(storeName))
     return res.status(400).json({ message: 'Store name must not contain profanity.' });
-  if (swearjar.profane(store_message))
+  if (swearjar.profane(storeMessage))
     return res.status(400).json({ message: 'Store message must not contain profanity.' });
 
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).json({ message: 'Store with the given ID not found.' });
 
-  if (!validateId(admin_id)) return res.status(400).json({ message: 'Invalid ID. (Admin)' });
-  // eslint-disable-next-line no-shadow
-  const admin = await Member.findById(admin_id);
-  if (!admin) return res.status(400).json({ message: 'Admin with the given ID not found.' });
+  if (!validateId(adminId)) return res.status(400).json({ message: 'Invalid ID. (Admin)' });
 
-  if (!validateId(manager_id)) return res.status(400).json({ message: 'Invalid ID. (Manager)' });
-  const manager = await Member.findById(manager_id);
+  const storeAdmin = await Member.findById(adminId);
+  if (!storeAdmin) return res.status(400).json({ message: 'Admin with the given ID not found.' });
+
+  if (!validateId(managerId)) return res.status(400).json({ message: 'Invalid ID. (Manager)' });
+  const manager = await Member.findById(managerId);
   if (!manager) return res.status(400).json({ message: 'Manager with the given ID not found.' });
 
   const currentDate = moment.tz(timezone);
 
   if (
-    currentDate.isAfter(moment.tz(opening_date, timezone)) &&
-    currentDate.isBefore(moment.tz(closing_date, timezone))
+    currentDate.isAfter(moment.tz(openingDate, timezone)) &&
+    currentDate.isBefore(moment.tz(closingDate, timezone))
   ) {
     mode = 'OPEN';
-  } else if (currentDate.isBefore(moment.tz(opening_date, timezone))) {
+  } else if (currentDate.isBefore(moment.tz(openingDate, timezone))) {
     mode = 'SURVEY';
-  } else if (currentDate.isAfter(moment.tz(closing_date, timezone))) {
+  } else if (currentDate.isAfter(moment.tz(closingDate, timezone))) {
     mode = 'CLOSED';
   }
 
-  store.team_id = team_id;
+  store.teamId = teamId;
   store.brand = brand;
-  store.store_name = store_name;
+  store.storeName = storeName;
   store.currency = currency;
-  store.order_reference = order_reference;
-  store.admin_id = admin_id;
-  store.manager_id = manager_id;
+  store.orderReference = orderReference;
+  store.adminId = adminId;
+  store.managerId = managerId;
   store.mode = mode;
-  store.opening_date = moment.tz(opening_date, timezone).format();
-  store.closing_date = moment.tz(closing_date, timezone).format();
+  store.openingDate = moment.tz(openingDate, timezone).format();
+  store.closingDate = moment.tz(closingDate, timezone).format();
   store.timezone = timezone;
-  store.store_message = store_message;
+  store.storeMessage = storeMessage;
   store.shipping = shipping;
 
   await store.save();
-  res.json(store);
+  return res.json(store);
 });
 
 router.patch('/add/item/:id', [validateObjectId, auth, admin], async (req, res) => {
@@ -218,15 +215,15 @@ router.patch('/add/item/:id', [validateObjectId, auth, admin], async (req, res) 
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).json({ message: 'Store with the given ID not found.' });
 
-  const { item_id, sizes_offered, category, name, code, number, images } = req.body;
+  const { itemId, sizesOffered, category, name, code, number, images } = req.body;
 
-  if (!validateId(item_id)) return res.status(400).json({ message: 'Invalid ID. (Item)' });
-  const catalogItem = await CatalogItem.findById(item_id);
+  if (!validateId(itemId)) return res.status(400).json({ message: 'Invalid ID. (Item)' });
+  const catalogItem = await CatalogItem.findById(itemId);
   if (!catalogItem) res.status(400).json({ message: 'Catalog Item with the given ID not found.' });
 
   const newItem = {
-    item_id,
-    sizes_offered,
+    itemId,
+    sizesOffered,
     category,
     name,
     code,
@@ -237,7 +234,7 @@ router.patch('/add/item/:id', [validateObjectId, auth, admin], async (req, res) 
   store.items.push(newItem);
 
   await store.save();
-  res.json(store.items);
+  return res.json(store.items);
 });
 
 router.delete('/:id/item/:itemId', [validateObjectId, auth, admin], async (req, res) => {
@@ -246,14 +243,15 @@ router.delete('/:id/item/:itemId', [validateObjectId, auth, admin], async (req, 
 
   if (!validateId(req.params.itemId))
     return res.status(400).json({ message: 'Invalid ID. (Item)' });
+
   const filtered = store.items.filter(item => {
-    return item.item_id !== req.params.itemId;
+    return item.itemId !== req.params.itemId;
   });
 
   store.items = filtered;
 
   await store.save();
-  res.json(store.items);
+  return res.json(store.items);
 });
 
 module.exports = router;

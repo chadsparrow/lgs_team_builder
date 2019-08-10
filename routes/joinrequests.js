@@ -1,6 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable camelcase */
-/* eslint-disable consistent-return */
 const express = require('express');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
@@ -10,49 +7,49 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
 
-const populateOptions = { path: 'member_id', select: 'name email' };
+const populateOptions = { path: 'memberId', select: 'name email' };
 
 router.get('/', auth, async (req, res) => {
   const joins = await JoinRequest.find().populate(populateOptions);
   if (joins && joins.length === 0)
     return res.status(404).json({ message: 'No join requests found.' });
 
-  res.json(joins);
+  return res.json(joins);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
-  const joins = await JoinRequest.find({ team_id: req.params.id }).populate(populateOptions);
+  const joins = await JoinRequest.find({ teamId: req.params.id }).populate(populateOptions);
   if (joins && joins.length === 0)
     return res.status(400).json({ message: 'Team with the given ID not found.' });
 
-  res.json(joins);
+  return res.json(joins);
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const join = await JoinRequest.findById(req.params.id).populate(populateOptions);
   if (!join) return res.status(400).json({ message: 'Join Request with the given ID not found.' });
-
-  res.json(join);
+  return res.json(join);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateJoinRequest(req.body);
   if (error) return res.status(400).json(error.details);
 
-  const requested_by = await Member.findById(req.body.member_id).select('name');
-  if (!requested_by) return res.status(400).json({ message: 'Member with the given ID not found' });
+  const requestedBy = await Member.findById(req.body.memberId).select('name');
+  if (!requestedBy) return res.status(400).json({ message: 'Member with the given ID not found' });
 
   const newJoin = new JoinRequest({
-    member_id: req.body.member_id,
-    team_id: req.body.team_id
+    memberId: req.body.memberId,
+    teamId: req.body.teamId
   });
 
-  const send_notification_to = await Team.findById(req.body.team_id).select('admin_id manager_id');
+  const sendTo = await Team.findById(req.body.teamId).select('adminId managerId');
 
   const newNotification = {
-    recipients: [send_notification_to.admin_id, send_notification_to.manager_id],
-    message: `${requested_by.name} wants to join your team!`,
-    click_to: `/api/v1/joinrequests/${newJoin._id}`
+    recipients: [sendTo.adminId, sendTo.managerId],
+    message: `${requestedBy.name} wants to join your team!`,
+    // eslint-disable-next-line no-underscore-dangle
+    clickTo: `/api/v1/joinrequests/${newJoin._id}`
   };
 
   req.body.recipients.map(async recipient => {
@@ -65,7 +62,7 @@ router.post('/', auth, async (req, res) => {
 
   await newJoin.save();
 
-  res.status(200).json({ message: 'Request sent.' });
+  return res.status(200).json({ message: 'Request sent.' });
 });
 
 module.exports = router;

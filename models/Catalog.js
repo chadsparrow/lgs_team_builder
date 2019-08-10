@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CatalogSchema = new mongoose.Schema(
   {
@@ -27,7 +26,7 @@ const CatalogSchema = new mongoose.Schema(
       trim: true,
       match: /^\d{4}$/
     },
-    cover_img: {
+    coverImg: {
       type: String
     }
   },
@@ -50,18 +49,18 @@ function validateCatalog(catalog) {
       .min(4)
       .max(4)
       .trim(),
-    cover_img: Joi.string().uri()
+    coverImg: Joi.string().uri()
   };
-  return Joi.validate(catalog, schema, joi_options);
+  return Joi.validate(catalog, schema, joiOptions);
 }
 
 function validateCoverImage(image) {
   const schema = {
-    cover_img: Joi.string()
+    coverImg: Joi.string()
       .uri()
       .required()
   };
-  return Joi.validate(image, schema, joi_options);
+  return Joi.validate(image, schema, joiOptions);
 }
 
 exports.Catalog = mongoose.model('catalogs', CatalogSchema);

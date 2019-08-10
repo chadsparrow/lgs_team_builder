@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+
 const JoinRequestSchema = new mongoose.Schema(
   {
-    member_id: {
+    memberId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    team_id: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'teams'
     }
@@ -17,11 +19,11 @@ const JoinRequestSchema = new mongoose.Schema(
 
 function validateJoinRequest(request) {
   const schema = {
-    member_id: Joi.objectId().required(),
-    team_id: Joi.objectId().required()
+    memberId: Joi.objectId().required(),
+    teamId: Joi.objectId().required()
   };
 
-  return Joi.validate(request, schema);
+  return Joi.validate(request, schema, joiOptions);
 }
 
 exports.JoinRequest = mongoose.model('joinrequests', JoinRequestSchema);

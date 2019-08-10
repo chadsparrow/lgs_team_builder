@@ -1,6 +1,4 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 const _ = require('lodash');
 const express = require('express');
 
@@ -20,42 +18,42 @@ const {
 } = require('../models/Member');
 const { Email } = require('../models/Email');
 
-const selectString = '';
-
 // GET /api/members
 router.get('/', auth, async (req, res) => {
-  const members = await Member.find().select('avatar_url _id name email is_admin');
+  const members = await Member.find().select('avatarUrl _id name email isAdmin');
 
   if (members && members.length === 0)
     return res.status(404).json({ message: 'There are no members in the database.' });
-  res.json(members);
+
+  return res.json(members);
 });
 
 router.get('/me', auth, async (req, res) => {
   const emails = await Email.find({
     $or: [
-      { recipients: { $elemMatch: { member_id: mongoose.Types.ObjectId(req.member._id) } } },
-      { messages: { $elemMatch: { sender_id: mongoose.Types.ObjectId(req.member._id) } } }
+      { recipients: { $elemMatch: { memberId: mongoose.Types.ObjectId(req.member._id) } } },
+      { messages: { $elemMatch: { senderId: mongoose.Types.ObjectId(req.member._id) } } }
     ]
   })
-    .populate({ path: 'sender_id', select: 'name email' })
-    .populate({ path: 'recipients.member_id', select: 'name email' })
-    .populate({ path: 'messages.sender_id', select: 'name email' })
+    .populate({ path: 'senderId', select: 'name email' })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'messages.senderId', select: 'name email' })
     .sort('-messages.date');
 
   const member = await Member.findById(req.member._id);
+
   return res.json({
-    member: _.pick(member, ['avatar_url', '_id', 'name', 'email', 'is_admin']),
+    member: _.pick(member, ['avatarUrl', '_id', 'name', 'email', 'isAdmin']),
     emails
   });
 });
 
 // GET /api/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id).select(selectString);
+  const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
-  res.json(_.pick(member, ['_id', 'avatar_url', 'name', 'email']));
+  return res.json(_.pick(member, ['_id', 'avatarUrl', 'name', 'email']));
 });
 
 // POST /api/members
@@ -68,22 +66,22 @@ router.post('/register', async (req, res) => {
     address1,
     address2,
     city,
-    state_prov,
+    stateProv,
     country,
-    zip_postal,
+    zipPostal,
     phone,
     email,
     password,
-    shipping_same,
-    shipping_name,
-    shipping_address1,
-    shipping_address2,
-    shipping_city,
-    shipping_state_prov,
-    shipping_country,
-    shipping_zip_postal,
-    shipping_phone,
-    shipping_email
+    shippingSame,
+    shippingName,
+    shippingAddress1,
+    shippingAddress2,
+    shippingCity,
+    shippingStateProv,
+    shippingCountry,
+    shippingZipPostal,
+    shippingPhone,
+    shippingEmail
   } = req.body;
 
   const userEmail = email.split('@')[0];
@@ -102,44 +100,44 @@ router.post('/register', async (req, res) => {
     address1,
     address2,
     city,
-    state_prov,
+    stateProv,
     country,
-    zip_postal,
+    zipPostal,
     phone,
     email,
-    is_admin: false
+    isAdmin: false
   });
 
-  newMember.notifications.push({ date: Date.now(), message: 'Welcome to Team Builder!' });
+  newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 
-  if (shipping_same) {
-    newMember.shipping_name = newMember.name;
-    newMember.shipping_address1 = newMember.address1;
-    newMember.shipping_address2 = newMember.address2;
-    newMember.shipping_city = newMember.city;
-    newMember.shipping_state_prov = newMember.state_prov;
-    newMember.shipping_country = newMember.country;
-    newMember.shipping_zip_postal = newMember.zip_postal;
-    newMember.shipping_phone = newMember.phone;
-    newMember.shipping_email = newMember.email;
+  if (shippingSame) {
+    newMember.shipping.name = newMember.name;
+    newMember.shipping.address1 = newMember.address1;
+    newMember.shipping.address2 = newMember.address2;
+    newMember.shipping.city = newMember.city;
+    newMember.shipping.stateProv = newMember.stateProv;
+    newMember.shipping.country = newMember.country;
+    newMember.shipping.zipPostal = newMember.zipPostal;
+    newMember.shipping.phone = newMember.phone;
+    newMember.shipping.email = newMember.email;
   } else {
-    newMember.shipping_name = shipping_name;
-    newMember.shipping_address1 = shipping_address1;
-    newMember.shipping_address2 = shipping_address2;
-    newMember.shipping_city = shipping_city;
-    newMember.shipping_state_prov = shipping_state_prov;
-    newMember.shipping_country = shipping_country;
-    newMember.shipping_zip_postal = shipping_zip_postal;
-    newMember.shipping_phone = shipping_phone;
-    newMember.shipping_email = shipping_email;
+    newMember.shipping.name = shippingName;
+    newMember.shipping.address1 = shippingAddress1;
+    newMember.shipping.address2 = shippingAddress2;
+    newMember.shipping.city = shippingCity;
+    newMember.shipping.stateProv = shippingStateProv;
+    newMember.shipping.country = shippingCountry;
+    newMember.shipping.zipPostal = shippingZipPostal;
+    newMember.shipping.phone = shippingPhone;
+    newMember.shipping.email = shippingEmail;
   }
 
   await newMember.save();
 
-  res.json(_.pick(newMember, ['_id', 'name', 'email']));
+  return res.json(_.pick(newMember, ['_id', 'name', 'email']));
 });
 
 // PUT /api/members/:id
@@ -152,24 +150,24 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     address1,
     address2,
     city,
-    state_prov,
+    stateProv,
     country,
-    zip_postal,
+    zipPostal,
     phone,
-    shipping_same,
-    shipping_name,
-    shipping_address1,
-    shipping_address2,
-    shipping_city,
-    shipping_state_prov,
-    shipping_country,
-    shipping_zip_postal,
-    shipping_phone,
-    shipping_email,
-    is_admin
+    shippingSame,
+    shippingName,
+    shippingAddress1,
+    shippingAddress2,
+    shippingCity,
+    shippingStateProv,
+    shippingCountry,
+    shippingZipPostal,
+    shippingPhone,
+    shippingEmail,
+    isAdmin
   } = req.body;
 
-  if (!req.member.is_admin && is_admin) return res.status(403).json({ message: 'Access Denied.' });
+  if (!req.member.isAdmin && isAdmin) return res.status(403).json({ message: 'Access Denied.' });
 
   const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
@@ -178,37 +176,37 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   member.address1 = address1;
   member.address2 = address2;
   member.city = city;
-  member.state_prov = state_prov;
+  member.stateProv = stateProv;
   member.country = country;
-  member.zip_postal = zip_postal;
+  member.zipPostal = zipPostal;
   member.phone = phone;
-  member.is_admin = is_admin;
+  member.isAdmin = isAdmin;
 
-  if (shipping_same) {
-    member.shipping_name = member.name;
-    member.shipping_address1 = member.address1;
-    member.shipping_address2 = member.address2;
-    member.shipping_city = member.city;
-    member.shipping_state_prov = member.state_prov;
-    member.shipping_country = member.country;
-    member.shipping_zip_postal = member.zip_postal;
-    member.shipping_phone = member.phone;
-    member.shipping_email = member.email;
+  if (shippingSame) {
+    member.shipping.name = member.name;
+    member.shipping.address1 = member.address1;
+    member.shipping.address2 = member.address2;
+    member.shipping.city = member.city;
+    member.shipping.stateProv = member.stateProv;
+    member.shipping.country = member.country;
+    member.shipping.zipPostal = member.zipPostal;
+    member.shipping.phone = member.phone;
+    member.shipping.email = member.email;
   } else {
-    member.shipping_name = shipping_name;
-    member.shipping_address1 = shipping_address1;
-    member.shipping_address2 = shipping_address2;
-    member.shipping_city = shipping_city;
-    member.shipping_state_prov = shipping_state_prov;
-    member.shipping_country = shipping_country;
-    member.shipping_zip_postal = shipping_zip_postal;
-    member.shipping_phone = shipping_phone;
-    member.shipping_email = shipping_email;
+    member.shipping.name = shippingName;
+    member.shipping.address1 = shippingAddress1;
+    member.shipping.address2 = shippingAddress2;
+    member.shipping.city = shippingCity;
+    member.shipping.stateProv = shippingStateProv;
+    member.shipping.country = shippingCountry;
+    member.shipping.zipPostal = shippingZipPostal;
+    member.shipping.phone = shippingPhone;
+    member.shipping.email = shippingEmail;
   }
 
   await member.save();
 
-  res.json(_.pick(member, ['_id', 'name', 'email']));
+  return res.json(_.pick(member, ['_id', 'name', 'email']));
 });
 
 // PATCH /api/members/email/:id
@@ -240,7 +238,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
     { new: true }
   );
 
-  res.status(200).json({ message: 'Member email updated' });
+  return res.status(200).json({ message: 'Member email updated' });
 });
 
 // PATCH /api/members/password/:id
@@ -269,14 +267,14 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   member.password = hash;
   await member.save();
 
-  res.status(200).json({ message: 'Member password updated' });
+  return res.status(200).json({ message: 'Member password updated' });
 });
 
 // DELETE /api/members/:id
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findByIdAndRemove(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
-  res.status(200).json({ message: 'Member deleted' });
+  return res.status(200).json({ message: 'Member deleted' });
 });
 
 module.exports = router;

@@ -2,13 +2,15 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+
 const StoreSchema = new mongoose.Schema(
   {
-    team_id: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'teams'
     },
-    store_name: {
+    storeName: {
       type: String,
       uppercase: true,
       trim: true
@@ -25,16 +27,16 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
-    order_reference: {
+    orderReference: {
       type: String,
       required: true,
       trim: true
     },
-    admin_id: {
+    adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    manager_id: {
+    managerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
@@ -44,11 +46,11 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       enum: ['SURVEY', 'OPEN', 'CLOSED', 'HOLD']
     },
-    opening_date: {
+    openingDate: {
       type: Date,
       required: true
     },
-    closing_date: {
+    closingDate: {
       type: Date,
       required: true
     },
@@ -57,77 +59,77 @@ const StoreSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-    total_orders: {
+    totalOrders: {
       type: Number,
       default: 0
     },
-    total_items_ordered: {
+    totalItemsOrdered: {
       type: Number,
       default: 0
     },
-    orders_value: {
+    ordersTotalValue: {
       type: Float,
       default: 0.0
     },
-    collected_amount: {
+    collectedAmount: {
       type: Float,
       default: 0.0
     },
-    store_message: {
+    storeMessage: {
       type: String,
       trim: true
     },
     shipping: {
-      shipping_type: {
+      shippingType: {
         type: String,
         required: true,
         uppercase: true,
         enum: ['BULK', 'DROP']
       },
-      bulk_ship_contact_name: {
+      bulkShipContactName: {
         type: String,
         uppercase: true,
         trim: true
       },
-      bulk_ship_address1: {
+      bulkShipAddress1: {
         type: String,
         uppercase: true,
         trim: true,
         minlength: 10
       },
-      bulk_ship_address2: {
+      bulkShipAddress2: {
         type: String,
         uppercase: true,
         trim: true
       },
-      bulk_ship_city: {
+      bulkShipCity: {
         type: String,
         uppercase: true,
         trim: true
       },
-      bulk_ship_state_prov: {
+      bulkShipStateProv: {
         type: String,
         uppercase: true,
         trim: true,
         minlength: 2
       },
-      bulk_ship_country: {
+      bulkShipCountry: {
         type: String,
         uppercase: true,
         trim: true,
         minlength: 2
       },
-      bulk_ship_zip_postal: {
+      bulkShipZipPostal: {
         type: String,
         uppercase: true,
         minlength: 5,
         trim: true
       },
-      bulk_ship_phone: {
+      bulkShipPhone: {
         type: String,
         trim: true
       },
-      bulk_ship_email: {
+      bulkShipEmail: {
         type: String,
         lowercase: true,
         trim: true
@@ -139,47 +141,47 @@ const StoreSchema = new mongoose.Schema(
 
 function validateStore(store) {
   const schema = {
-    team_id: Joi.objectId().required(),
+    teamId: Joi.objectId().required(),
     brand: Joi.string()
       .required()
       .trim(),
-    store_name: Joi.string().trim(),
+    storeName: Joi.string().trim(),
     currency: Joi.string()
       .required()
       .trim(),
-    order_reference: Joi.string()
+    orderReference: Joi.string()
       .required()
       .trim(),
-    admin_id: Joi.objectId().required(),
-    manager_id: Joi.objectId().required(),
+    adminId: Joi.objectId().required(),
+    managerId: Joi.objectId().required(),
     mode: Joi.string()
       .valid(['SURVEY', 'OPEN', 'CLOSED', 'HOLD'])
       .required()
       .trim(),
-    opening_date: Joi.date()
+    openingDate: Joi.date()
       .required()
       .min('now'),
-    closing_date: Joi.date()
+    closingDate: Joi.date()
       .required()
-      .greater(Joi.ref('opening_date')),
+      .greater(Joi.ref('openingDate')),
     timezone: Joi.string()
       .required()
       .trim(),
-    store_message: Joi.string().trim(),
+    storeMessage: Joi.string().trim(),
     shipping: Joi.object({
-      shipping_type: Joi.string()
+      shippingType: Joi.string()
         .required()
         .trim()
         .valid(['BULK', 'DROP']),
-      use_team_manager_details: Joi.boolean().required(),
-      bulk_ship_contact_name: Joi.when('use_team_manager_details', {
+      useTeamManagerDetails: Joi.boolean().required(),
+      bulkShipContactName: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string().trim(),
         otherwise: Joi.string()
           .required()
           .trim()
       }),
-      bulk_ship_address1: Joi.when('use_team_manager_details', {
+      bulkShipAddress1: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string().trim(),
         otherwise: Joi.string()
@@ -187,15 +189,15 @@ function validateStore(store) {
           .trim()
           .min(10)
       }),
-      bulk_ship_address2: Joi.string().trim(),
-      bulk_ship_city: Joi.when('use_team_manager_details', {
+      bulkShipAddress2: Joi.string().trim(),
+      bulkShipCity: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string().trim(),
         otherwise: Joi.string()
           .required()
           .trim()
       }),
-      bulk_ship_state_prov: Joi.when('use_team_manager_details', {
+      bulkShipStateProv: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string()
           .trim()
@@ -205,7 +207,7 @@ function validateStore(store) {
           .trim()
           .min(2)
       }),
-      bulk_ship_country: Joi.when('use_team_manager_details', {
+      bulkShipCountry: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string()
           .trim()
@@ -215,7 +217,7 @@ function validateStore(store) {
           .trim()
           .min(2)
       }),
-      bulk_ship_zip_postal: Joi.when('use_team_manager_details', {
+      bulkShipZipPostal: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string()
           .trim()
@@ -225,14 +227,14 @@ function validateStore(store) {
           .trim()
           .min(5)
       }),
-      bulk_ship_phone: Joi.when('use_team_manager_details', {
+      bulkShipPhone: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string().trim(),
         otherwise: Joi.string()
           .required()
           .trim()
       }),
-      bulk_ship_email: Joi.when('use_team_manager_details', {
+      bulkShipEmail: Joi.when('useTeamManagerDetails', {
         is: true,
         then: Joi.string()
           .trim()
@@ -244,7 +246,7 @@ function validateStore(store) {
       })
     })
   };
-  return Joi.validate(store, schema);
+  return Joi.validate(store, schema, joiOptions);
 }
 
 exports.Store = mongoose.model('stores', StoreSchema);

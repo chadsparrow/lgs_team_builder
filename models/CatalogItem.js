@@ -1,13 +1,12 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CatalogItemSchema = new mongoose.Schema(
   {
-    catalog_id: {
+    catalogId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'catalogs'
     },
@@ -17,13 +16,13 @@ const CatalogItemSchema = new mongoose.Schema(
       minlength: 5,
       trim: true
     },
-    product_code: {
+    productCode: {
       type: String,
       required: true,
       trim: true,
       uppercase: true
     },
-    style_code: {
+    styleCode: {
       type: String,
       required: true,
       trim: true,
@@ -60,7 +59,7 @@ const CatalogItemSchema = new mongoose.Schema(
       trim: true
     },
     images: [{ type: String, trim: true }],
-    is_active: {
+    isActive: {
       type: Boolean,
       default: true
     }
@@ -70,15 +69,15 @@ const CatalogItemSchema = new mongoose.Schema(
 
 function validateCatalogItem(catalogItem) {
   const schema = {
-    catalog_id: Joi.objectId().required(),
+    catalogId: Joi.objectId().required(),
     name: Joi.string()
       .min(5)
       .required()
       .trim(),
-    product_code: Joi.string()
+    productCode: Joi.string()
       .required()
       .trim(),
-    style_code: Joi.string()
+    styleCode: Joi.string()
       .required()
       .trim(),
     sizes: Joi.array()
@@ -101,9 +100,9 @@ function validateCatalogItem(catalogItem) {
       .required()
       .trim(),
     images: Joi.array().items(Joi.string().uri()),
-    is_active: Joi.boolean()
+    isActive: Joi.boolean()
   };
-  return Joi.validate(catalogItem, schema, joi_options);
+  return Joi.validate(catalogItem, schema, joiOptions);
 }
 
 function validateCatalogItemEdit(catalogItem) {
@@ -112,10 +111,10 @@ function validateCatalogItemEdit(catalogItem) {
       .min(5)
       .required()
       .trim(),
-    product_code: Joi.string()
+    productCode: Joi.string()
       .required()
       .trim(),
-    style_code: Joi.string()
+    styleCode: Joi.string()
       .required()
       .trim(),
     sizes: Joi.array()
@@ -138,18 +137,18 @@ function validateCatalogItemEdit(catalogItem) {
       .required()
       .trim(),
     images: Joi.array().items(Joi.string().uri()),
-    is_active: Joi.boolean()
+    isActive: Joi.boolean()
   };
-  return Joi.validate(catalogItem, schema, joi_options);
+  return Joi.validate(catalogItem, schema, joiOptions);
 }
 
 function validateCatalogImg(image) {
   const schema = {
-    image_url: Joi.string()
+    imageUrl: Joi.string()
       .uri()
       .required()
   };
-  return Joi.validate(image, schema, joi_options);
+  return Joi.validate(image, schema, joiOptions);
 }
 
 exports.CatalogItem = mongoose.model('catalogitems', CatalogItemSchema);

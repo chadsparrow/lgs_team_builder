@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
@@ -16,36 +13,36 @@ const validateObjectId = require('../middleware/validateObjectId');
 // GET /api/teams
 router.get('/', auth, async (req, res) => {
   let teams = [];
-  if (req.member.is_admin) {
+  if (req.member.isAdmin) {
     teams = await Team.find()
-      .populate({ path: 'manager_id', select: 'name email' })
-      .populate({ path: 'admin_id', select: 'name email' })
+      .populate({ path: 'managerId', select: 'name email' })
+      .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'members', select: 'name email' })
       .populate({
-        path: 'main_contact.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'mainContact.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .populate({
-        path: 'bulk_shipping.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'bulkShipping.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .select('-updatedAt -__v ');
     if (teams && teams.length === 0) return res.status(404).json({ message: 'No Teams found.' });
 
     return res.json(teams);
   }
-  teams = await Team.find({ $or: [{ manager_id: req.member._id }, { members: req.member._id }] })
-    .populate({ path: 'manager_id', select: 'name email' })
+  teams = await Team.find({ $or: [{ managerId: req.member._id }, { members: req.member._id }] })
+    .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .populate({
-      path: 'main_contact.contact',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'mainContact.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
     .populate({
-      path: 'bulk_shipping.contact',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'bulkShipping.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
-    .select('-updatedAt -__v -admin_id');
+    .select('-updatedAt -__v -adminId');
 
   if (teams && teams.length === 0)
     return res.status(404).json({ message: 'You are currently not a member of any teams' });
@@ -58,31 +55,31 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   let team = {};
   if (req.member.isAdmin) {
     team = await Team.findById(req.params.id)
-      .populate({ path: 'manager_id', select: 'name email' })
-      .populate({ path: 'admin_id', select: 'name email' })
+      .populate({ path: 'managerId', select: 'name email' })
+      .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'members', select: 'name email' })
       .populate({
-        path: 'main_contact.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'mainContact.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .populate({
-        path: 'bulk_shipping.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'bulkShipping.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .select('-updatedAt -__v ');
   } else {
     team = await Team.findById(req.params.id)
-      .populate({ path: 'manager_id', select: 'name email' })
+      .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'members', select: 'name email' })
       .populate({
-        path: 'main_contact.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'mainContact.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .populate({
-        path: 'bulk_shipping.contact',
-        select: 'name address1 address2 city state_prov country zip_postal email phone'
+        path: 'bulkShipping.memberId',
+        select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
-      .select('-updatedAt -__v -admin_id');
+      .select('-updatedAt -__v -adminId');
   }
   if (!team) return res.status(404).json({ message: 'Team with the given ID not found.' });
 
@@ -102,7 +99,7 @@ router.post('/', [auth, admin], async (req, res) => {
 
   const newTeam = new Team({ name: req.body.name });
   await newTeam.save();
-  res.json(_.pick(newTeam, ['_id', 'name']));
+  return res.json(_.pick(newTeam, ['_id', 'name']));
 });
 
 // PUT /api/teams/:id
@@ -112,150 +109,149 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   const {
     logo,
-    admin_id,
-    manager_id,
-    use_manager_details,
-    contact_name,
-    contact_address1,
-    contact_address2,
-    contact_city,
-    contact_state_prov,
-    contact_country,
-    contact_zip_postal,
-    contact_phone,
-    contact_email,
-    bulk_use_above_details,
-    bulk_contact_name,
-    bulk_contact_address1,
-    bulk_contact_address2,
-    bulk_contact_city,
-    bulk_contact_state_prov,
-    bulk_contact_country,
-    bulk_contact_zip_postal,
-    bulk_contact_phone,
-    bulk_contact_email
+    adminId,
+    managerId,
+    useManagerDetails,
+    contactName,
+    contactAddress1,
+    contactAddress2,
+    contactCity,
+    contactStateProv,
+    contactCountry,
+    contactZipPostal,
+    contactPhone,
+    contactEmail,
+    bulkUseAboveDetails,
+    bulkContactName,
+    bulkContactAddress1,
+    bulkContactAddress2,
+    bulkContactCity,
+    bulkContactStateProv,
+    bulkContactCountry,
+    bulkContactZipPostal,
+    bulkContactPhone,
+    bulkContactEmail
   } = req.body;
 
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).json({ message: 'Team with the given ID was not found' });
 
-  // eslint-disable-next-line no-shadow
-  const admin = await Member.findById(admin_id);
-  if (!admin)
+  const teamAdmin = await Member.findById(adminId);
+  if (!teamAdmin)
     return res.status(400).json({ message: 'Admin: Member with the given ID was not found' });
-  if (!admin.is_admin)
+  if (!teamAdmin.isAdmin)
     return res.status(403).json({ message: 'Admin: Member must have admin status' });
 
-  team.admin_id = admin_id;
+  team.adminId = adminId;
 
-  const manager = await Member.findById(manager_id);
+  const manager = await Member.findById(managerId);
   if (!manager)
     return res.status(400).json({ message: 'Manager: Member with the given ID was not found' });
-  if (manager.is_admin)
+  if (manager.isAdmin)
     return res.status(403).json({ message: 'Manager: Member cannot be an admin' });
-  team.manager_id = manager._id;
+  team.managerId = managerId;
 
   if (logo !== '' || logo) {
     team.logo = logo;
   }
 
-  if (use_manager_details) {
-    team.main_contact.member_id = team.manager_id;
+  if (useManagerDetails) {
+    team.mainContact.memberId = team.managerId;
   } else {
-    team.main_contact.member_id = null;
-    team.main_contact.name = contact_name;
-    team.main_contact.address1 = contact_address1;
-    team.main_contact.address2 = contact_address2;
-    team.main_contact.city = contact_city;
-    team.main_contact.state_prov = contact_state_prov;
-    team.main_contact.country = contact_country;
-    team.main_contact.zip_postal = contact_zip_postal;
-    team.main_contact.phone = contact_phone;
-    team.main_contact.email = contact_email;
+    team.mainContact.memberId = null;
+    team.mainContact.name = contactName;
+    team.mainContact.address1 = contactAddress1;
+    team.mainContact.address2 = contactAddress2;
+    team.mainContact.city = contactCity;
+    team.mainContact.stateProv = contactStateProv;
+    team.mainContact.country = contactCountry;
+    team.mainContact.zipPostal = contactZipPostal;
+    team.mainContact.phone = contactPhone;
+    team.mainContact.email = contactEmail;
   }
 
-  if (bulk_use_above_details) {
-    if (team.main_contact.member_id) {
-      team.bulk_shipping.member_id = team.main_contact.member_id;
+  if (bulkUseAboveDetails) {
+    if (team.mainContact.memberId) {
+      team.bulkShipping.memberId = team.mainContact.memberId;
     } else {
-      team.bulk_shipping.member_id = null;
-      team.bulk_shipping.name = team.main_contact.name;
-      team.bulk_shipping.address1 = team.main_contact.address1;
-      team.bulk_shipping.address2 = team.main_contact.address2;
-      team.bulk_shipping.city = team.main_contact.city;
-      team.bulk_shipping.state_prov = team.main_contact.state_prov;
-      team.bulk_shipping.country = team.main_contact.country;
-      team.bulk_shipping.zip_postal = team.main_contact.zip_postal;
-      team.bulk_shipping.phone = team.main_contact.phone;
-      team.bulk_shipping.email = team.main_contact.email;
+      team.bulkShipping.memberId = null;
+      team.bulkShipping.name = team.mainContact.name;
+      team.bulkShipping.address1 = team.mainContact.address1;
+      team.bulkShipping.address2 = team.mainContact.address2;
+      team.bulkShipping.city = team.mainContact.city;
+      team.bulkShipping.stateProv = team.mainContact.stateProv;
+      team.bulkShipping.country = team.mainContact.country;
+      team.bulkShipping.zipPostal = team.mainContact.zipPostal;
+      team.bulkShipping.phone = team.mainContact.phone;
+      team.bulkShipping.email = team.mainContact.email;
     }
   } else {
-    team.bulk_shipping.member_id = null;
-    team.bulk_shipping.name = bulk_contact_name;
-    team.bulk_shipping.address1 = bulk_contact_address1;
-    team.bulk_shipping.address2 = bulk_contact_address2;
-    team.bulk_shipping.city = bulk_contact_city;
-    team.bulk_shipping.state_prov = bulk_contact_state_prov;
-    team.bulk_shipping.country = bulk_contact_country;
-    team.bulk_shipping.zip_postal = bulk_contact_zip_postal;
-    team.bulk_shipping.phone = bulk_contact_phone;
-    team.bulk_shipping.email = bulk_contact_email;
+    team.bulkShipping.memberId = null;
+    team.bulkShipping.name = bulkContactName;
+    team.bulkShipping.address1 = bulkContactAddress1;
+    team.bulkShipping.address2 = bulkContactAddress2;
+    team.bulkShipping.city = bulkContactCity;
+    team.bulkShipping.stateProv = bulkContactStateProv;
+    team.bulkShipping.country = bulkContactCountry;
+    team.bulkShipping.zipPostal = bulkContactZipPostal;
+    team.bulkShipping.phone = bulkContactPhone;
+    team.bulkShipping.email = bulkContactEmail;
   }
 
   const savedTeam = await team.save();
 
   const populatedTeam = await Team.findById(savedTeam._id)
-    .populate({ path: 'manager_id', select: 'name email' })
-    .populate({ path: 'admin_id', select: 'name email' })
+    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .populate({
-      path: 'main_contact.member_id',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'mainContact.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
     .populate({
-      path: 'bulk_shipping.member_id',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'bulkShipping.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
     .select('-updatedAt -__v');
 
-  res.status(200).json(populatedTeam);
+  return res.status(200).json(populatedTeam);
 });
 
 router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateAddMember(req.body);
   if (error) return res.status(400).json(error.details);
 
-  const { member_id } = req.body;
+  const { memberId } = req.body;
 
-  const member = await Member.findById(member_id);
+  const member = await Member.findById(memberId);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).json({ message: 'Team with the given ID was not found.' });
 
-  const already_registered = team.members.includes(req.body.member_id);
-  if (already_registered)
+  const alreadyRegistered = team.members.includes(req.body.memberId);
+  if (alreadyRegistered)
     return res.status(400).json({ message: 'Member already part of the team' });
 
-  team.members.push(mongoose.Types.ObjectId(member._id));
+  team.members.push(mongoose.Types.ObjectId(memberId));
 
   const savedTeam = await team.save();
 
   const populatedTeam = await Team.findById(savedTeam._id)
-    .populate({ path: 'manager_id', select: 'name email' })
-    .populate({ path: 'admin_id', select: 'name email' })
+    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .populate({
-      path: 'main_contact.member_id',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'mainContact.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
     .populate({
-      path: 'bulk_shipping.member_id',
-      select: 'name address1 address2 city state_prov country zip_postal email phone'
+      path: 'bulkShipping.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
     .select('-updatedAt -__v');
 
-  res.status(200).json(populatedTeam);
+  return res.status(200).json(populatedTeam);
 });
 
 module.exports = router;

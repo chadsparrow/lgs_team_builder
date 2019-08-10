@@ -1,6 +1,6 @@
-const app = require('./app');
 const config = require('config');
 const winston = require('winston');
+const app = require('./app');
 
 // configures server port
 const APP_PORT = config.get('app.port') || 5001;

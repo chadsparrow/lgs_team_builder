@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 const express = require('express');
 
 const router = express.Router();
@@ -19,13 +16,14 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
-function populateCoupon(coupon_id) {
+function populateCoupon(couponId) {
+  // eslint-disable-next-line no-unused-vars
   return new Promise(async (resolve, reject) => {
-    const populated_coupon = await Coupon.findById(coupon_id)
-      .populate({ path: 'recipients.member_id', select: 'name email' })
-      .populate({ path: 'approved_items' });
-    // .populate({ path: 'store_id', select: 'name email' });
-    resolve(populated_coupon);
+    const populatedCoupon = await Coupon.findById(couponId)
+      .populate({ path: 'recipients.memberId', select: 'name email' })
+      .populate({ path: 'approvedItems' });
+    // .populate({ path: 'storeId', select: 'name email' });
+    resolve(populatedCoupon);
   });
 }
 
@@ -33,20 +31,20 @@ function populateCoupon(coupon_id) {
 router.get('/', auth, async (req, res) => {
   const { filter } = aqp(req.query);
   const coupons = await Coupon.find(filter)
-    .populate({ path: 'recipients.member_id', select: 'name email' })
-    .populate({ path: 'approved_items' })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'approvedItems' })
     .select('-updatedAt -__v');
   if (coupons && coupons.length === 0)
     return res.status(404).json({ message: 'No coupons found.' });
 
-  res.json(coupons);
+  return res.json(coupons);
 });
 
 // Collects all coupons for the current authenticated user
 router.get('/me', auth, async (req, res) => {
-  const coupons = await Coupon.find({ recipients: { $elemMatch: { member_id: req.member._id } } })
-    .populate({ path: 'recipients.member_id', select: 'name email' })
-    .populate({ path: 'approved_items' })
+  const coupons = await Coupon.find({ recipients: { $elemMatch: { memberId: req.member._id } } })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
   if (coupons && coupons.length === 0)
     return res.status(404).json({ message: 'You have no coupons.' });
@@ -55,30 +53,30 @@ router.get('/me', auth, async (req, res) => {
     coupons[index] = await populateCoupon(coupon._id);
   });
 
-  res.json(coupons);
+  return res.json(coupons);
 });
 
 // Collects all coupons for a specified store based on given ID.
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
-  const coupons = await Coupon.find({ store_id: req.params.id })
-    .populate({ path: 'recipients.member_id', select: 'name email' })
-    .populate({ path: 'approved_items' })
+  const coupons = await Coupon.find({ storeId: req.params.id })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
   if (coupons && coupons.length === 0)
     return res.status(400).json({ message: 'Coupons under the given Store ID were not found.' });
 
-  res.json(coupons);
+  return res.json(coupons);
 });
 
 // Collects a coupon with a given ID
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id)
-    .populate({ path: 'recipients.member_id', select: 'name email' })
-    .populate({ path: 'approved_items' })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
   if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID not found.' });
 
-  res.json(coupon);
+  return res.json(coupon);
 });
 
 // Adds a new coupon, cannot make duplicate coupon in a single store
@@ -87,81 +85,82 @@ router.post('/', [auth, admin], async (req, res) => {
   if (error) return res.status(400).json(error.details);
 
   const {
-    store_id,
+    storeId,
     code,
     description,
-    discount_amount,
-    discount_type,
-    discount_applied,
-    coupon_type,
-    max_coupons,
-    coupons_used,
-    start_date,
-    end_date,
+    discountAmount,
+    discountType,
+    discountApplied,
+    couponType,
+    maxCoupons,
+    couponsUsed,
+    startDate,
+    endDate,
     timezone,
     recipients,
-    approved_items
+    approvedItems
   } = req.body;
 
-  let coupon = await Coupon.findOne({ store_id, code: code.toUpperCase() });
+  let coupon = await Coupon.findOne({ storeId, code: code.toUpperCase() });
   if (coupon)
     return res.status(400).json({ message: 'Coupon code already exists for this store.' });
 
   coupon = new Coupon({
-    store_id,
+    storeId,
     code,
     description,
-    discount_amount,
-    discount_type,
-    discount_applied,
-    coupon_type,
-    max_coupons,
-    coupons_used: 0,
-    coupons_remaining: parseInt(max_coupons - coupons_used, 10),
+    discountAmount,
+    discountType,
+    discountApplied,
+    couponType,
+    maxCoupons,
+    couponsUsed: 0,
+    couponsRemaining: parseInt(maxCoupons - couponsUsed, 10),
     timezone,
-    start_date: moment.tz(start_date, timezone).format(),
-    end_date: moment.tz(end_date, timezone).format(),
+    startDate: moment.tz(startDate, timezone).format(),
+    endDate: moment.tz(endDate, timezone).format(),
     recipients,
-    approved_items
+    approvedItems
   });
 
-  if (discount_applied !== 'member') {
+  if (discountApplied !== 'member') {
     coupon.recipients = [];
   }
 
-  if (coupon_type !== 'items') {
-    coupon.approved_items = [];
+  if (couponType !== 'items') {
+    coupon.approvedItems = [];
   }
 
   await coupon.save();
 
-  res.json(await populateCoupon(coupon._id));
+  return res.json(await populateCoupon(coupon._id));
 });
 
 // Verifies coupon sent by client
 router.post('/verify/', [auth], async (req, res) => {
-  const coupon = await Coupon.findOne({ store_id: req.query.store, code: req.query.code });
+  const coupon = await Coupon.findOne({ storeId: req.query.store, code: req.query.code });
   if (!coupon) return res.status(400).json({ message: 'Invalid coupon' });
 
-  let member_found = false;
-  if (coupon.coupon_type === 'amount') {
-    if (coupon.coupons_remaining === 0) return res.status(400).json({ message: 'Coupon expired.' });
-  } else if (coupon.coupon_type === 'member') {
+  let memberFound = false;
+  if (coupon.couponType === 'amount') {
+    if (coupon.couponsRemaining === 0) return res.status(400).json({ message: 'Coupon expired.' });
+  } else if (coupon.couponType === 'member') {
+    // eslint-disable-next-line consistent-return
     coupon.recipients.forEach(recipient => {
-      if (req.member._id === recipient.member_id) {
-        member_found = true;
+      if (req.member._id === recipient.memberId) {
         if (recipient.expired === true) {
           return res.status(400).json({ message: 'Coupon expired.' });
         }
+        memberFound = true;
       }
     });
   }
 
-  if (member_found === false) {
+  if (memberFound === false) {
     return res.status(400).json({ message: 'Invalid coupon.' });
   }
 
-  res.status(200).json({ message: 'Verified' });
+  return res.status(200).json({ message: 'Verified' });
 });
 
 // Updates coupon, but doesnt allow duplicate codes in single store
@@ -172,66 +171,66 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const {
     code,
     description,
-    discount_amount,
-    discount_type,
-    discount_applied,
-    coupon_type,
-    max_coupons,
-    coupons_used,
+    discountAmount,
+    discountType,
+    discountApplied,
+    couponType,
+    maxCoupons,
+    couponsUsed,
     timezone,
     recipients,
-    approved_items
+    approvedItems
   } = req.body;
 
-  let { start_date, end_date } = req.body;
+  let { startDate, endDate } = req.body;
 
-  start_date = moment.tz(start_date, timezone).format();
-  end_date = moment.tz(end_date, timezone).format();
+  startDate = moment.tz(startDate, timezone).format();
+  endDate = moment.tz(endDate, timezone).format();
 
   const coupon = await Coupon.findById(req.params.id);
   if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
 
-  const duplicate_coupon = await Coupon.findOne({
+  const duplicateCoupon = await Coupon.findOne({
     _id: { $ne: req.params.id },
-    store_id: coupon.store_id,
+    storeId: coupon.storeId,
     code: code.toUpperCase()
   });
 
-  if (duplicate_coupon)
+  if (duplicateCoupon)
     return res.status(400).json({ message: 'Coupon code already exists for this store.' });
 
   coupon.code = code;
   coupon.description = description;
-  coupon.discount_amount = discount_amount;
-  coupon.discount_type = discount_type;
-  coupon.discount_applied = discount_applied;
-  coupon.coupon_type = coupon_type;
-  coupon.max_coupons = max_coupons;
-  coupon.coupons_used = coupons_used;
-  coupon.coupons_remaining = parseInt(coupon.max_coupons - coupon.coupons_used, 10);
-  coupon.start_date = start_date;
-  coupon.end_date = end_date;
+  coupon.discountAmount = discountAmount;
+  coupon.discountType = discountType;
+  coupon.discountApplied = discountApplied;
+  coupon.couponType = couponType;
+  coupon.maxCoupons = maxCoupons;
+  coupon.couponsUsed = couponsUsed;
+  coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
+  coupon.startDate = startDate;
+  coupon.endDate = endDate;
   coupon.timezone = timezone;
   coupon.recipients = recipients;
-  coupon.approved_items = approved_items;
+  coupon.approvedItems = approvedItems;
 
   await coupon.save();
 
-  res.json(await populateCoupon(coupon._id));
+  return res.json(await populateCoupon(coupon._id));
 });
 
 router.patch('/use/:id', [validateObjectId, auth], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id);
   if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
-  if (coupon.coupons_remaining === 0)
+  if (coupon.couponsRemaining === 0)
     return res.status(400).json({ message: 'Coupon is now expired.' });
 
-  coupon.coupons_used += 1;
-  coupon.coupons_remaining = parseInt(coupon.max_coupons - coupon.coupons_used, 10);
+  coupon.couponsUsed += 1;
+  coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
 
   await coupon.save();
 
-  res.json(await populateCoupon(coupon._id));
+  return res.json(await populateCoupon(coupon._id));
 });
 
 router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
@@ -241,19 +240,19 @@ router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id);
   if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
 
-  coupon.max_coupons += req.body.amount;
-  coupon.coupons_remaining = parseInt(coupon.max_coupons - coupon.coupons_used, 10);
+  coupon.maxCoupons += req.body.amount;
+  coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
 
   await coupon.save();
 
-  res.json(await populateCoupon(coupon._id));
+  return res.json(await populateCoupon(coupon._id));
 });
 
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const coupon = await Coupon.findByIdAndRemove(req.params.id);
   if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID not found.' });
 
-  res.status(200).json({ message: 'Coupon Removed.' });
+  return res.status(200).json({ message: 'Coupon Removed.' });
 });
 
 module.exports = router;

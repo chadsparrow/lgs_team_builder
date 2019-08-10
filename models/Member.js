@@ -1,12 +1,9 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const MemberSchema = new mongoose.Schema(
   {
@@ -36,7 +33,7 @@ const MemberSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
-    state_prov: {
+    stateProv: {
       type: String,
       required: true,
       uppercase: true,
@@ -49,7 +46,7 @@ const MemberSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
-    zip_postal: {
+    zipPostal: {
       type: String,
       required: true,
       uppercase: true,
@@ -73,83 +70,61 @@ const MemberSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-    shipping_name: {
-      type: String,
-      required() {
-        return this.shipping_same;
+    shipping: {
+      name: {
+        type: String,
+        minlength: 5,
+        uppercase: true,
+        trim: true
       },
-      minlength: 5,
-      uppercase: true,
-      trim: true
-    },
-    shipping_address1: {
-      type: String,
-      required() {
-        return this.shipping_same;
+      address1: {
+        type: String,
+        minlength: 10,
+        uppercase: true,
+        trim: true
       },
-      minlength: 10,
-      uppercase: true,
-      trim: true
-    },
-    shipping_address2: {
-      type: String,
-      uppercase: true,
-      trim: true
-    },
-    shipping_city: {
-      type: String,
-      uppercase: true,
-      required() {
-        return this.shipping_same;
+      address2: {
+        type: String,
+        uppercase: true,
+        trim: true
       },
-      trim: true
-    },
-    shipping_state_prov: {
-      type: String,
-      uppercase: true,
-      required() {
-        return this.shipping_same;
+      city: {
+        type: String,
+        uppercase: true,
+        trim: true
       },
-      minlength: 2,
-      trim: true
-    },
-    shipping_country: {
-      type: String,
-      uppercase: true,
-      required() {
-        return this.shipping_same;
+      stateProv: {
+        type: String,
+        uppercase: true,
+        minlength: 2,
+        trim: true
       },
-      trim: true
-    },
-    shipping_zip_postal: {
-      type: String,
-      uppercase: true,
-      required() {
-        return this.shipping_same;
+      country: {
+        type: String,
+        uppercase: true,
+        trim: true
       },
-      minlength: 5,
-      trim: true
-    },
-    shipping_phone: {
-      type: String,
-      required() {
-        return this.shipping_same;
+      zipPostal: {
+        type: String,
+        uppercase: true,
+        minlength: 5,
+        trim: true
       },
-      trim: true,
-      minlength: 7
-    },
-    shipping_email: {
-      type: String,
-      required() {
-        return this.shipping_same;
+      phone: {
+        type: String,
+        trim: true,
+        minlength: 7
       },
-      trim: true
+      email: {
+        type: String,
+        trim: true
+      }
     },
     timezone: {
       type: String,
       trim: true
     },
-    avatar_url: {
+    avatarUrl: {
       type: String,
       default: null,
       trim: true
@@ -165,12 +140,12 @@ const MemberSchema = new mongoose.Schema(
           required: true,
           trim: true
         },
-        click_to: {
+        clickTo: {
           type: String
         }
       }
     ],
-    is_admin: {
+    isAdmin: {
       type: Boolean,
       default: false
     }
@@ -195,7 +170,7 @@ function validateNewMember(member) {
     city: Joi.string()
       .required()
       .trim(),
-    state_prov: Joi.string()
+    stateProv: Joi.string()
       .min(2)
       .required()
       .trim(),
@@ -203,7 +178,7 @@ function validateNewMember(member) {
       .min(2)
       .required()
       .trim(),
-    zip_postal: Joi.string()
+    zipPostal: Joi.string()
       .required()
       .trim(),
     phone: Joi.string()
@@ -217,8 +192,8 @@ function validateNewMember(member) {
       .min(8)
       .required()
       .trim(),
-    shipping_same: Joi.boolean().required(),
-    shipping_name: Joi.when('shipping_same', {
+    shippingSame: Joi.boolean().required(),
+    shippingName: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('name'),
       otherwise: Joi.string()
@@ -227,7 +202,7 @@ function validateNewMember(member) {
         .required()
         .trim()
     }),
-    shipping_address1: Joi.when('shipping_same', {
+    shippingAddress1: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('address1'),
       otherwise: Joi.string()
@@ -235,29 +210,29 @@ function validateNewMember(member) {
         .required()
         .trim()
     }),
-    shipping_address2: Joi.when('shipping_same', {
+    shippingAddress2: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('address2'),
       otherwise: Joi.string()
         .trim()
         .allow('', null)
     }),
-    shipping_city: Joi.when('shipping_same', {
+    shippingCity: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('city'),
       otherwise: Joi.string()
         .required()
         .trim()
     }),
-    shipping_state_prov: Joi.when('shipping_same', {
+    shippingStateProv: Joi.when('shippingSame', {
       is: true,
-      then: Joi.ref('state_prov'),
+      then: Joi.ref('stateProv'),
       otherwise: Joi.string()
         .min(2)
         .required()
         .trim()
     }),
-    shipping_country: Joi.when('shipping_same', {
+    shippingCountry: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('country'),
       otherwise: Joi.string()
@@ -265,14 +240,14 @@ function validateNewMember(member) {
         .required()
         .trim()
     }),
-    shipping_zip_postal: Joi.when('shipping_same', {
+    shippingZipPostal: Joi.when('shippingSame', {
       is: true,
-      then: Joi.ref('zip_postal'),
+      then: Joi.ref('zipPostal'),
       otherwise: Joi.string()
         .required()
         .trim()
     }),
-    shipping_phone: Joi.when('shipping_same', {
+    shippingPhone: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('phone'),
       otherwise: Joi.string()
@@ -280,7 +255,7 @@ function validateNewMember(member) {
         .regex(/^[0-9]{7,10}$/)
         .required()
     }),
-    shipping_email: Joi.when('shipping_same', {
+    shippingEmail: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('email'),
       otherwise: Joi.string()
@@ -288,10 +263,10 @@ function validateNewMember(member) {
         .trim()
         .required()
     }),
-    is_admin: Joi.boolean()
+    isAdmin: Joi.boolean()
   };
 
-  return Joi.validate(member, schema, joi_options);
+  return Joi.validate(member, schema, joiOptions);
 }
 
 function validateUpdateMember(member) {
@@ -311,7 +286,7 @@ function validateUpdateMember(member) {
     city: Joi.string()
       .required()
       .trim(),
-    state_prov: Joi.string()
+    stateProv: Joi.string()
       .min(2)
       .required()
       .trim(),
@@ -319,15 +294,15 @@ function validateUpdateMember(member) {
       .min(2)
       .required()
       .trim(),
-    zip_postal: Joi.string()
+    zipPostal: Joi.string()
       .required()
       .trim(),
     phone: Joi.string()
       .regex(/^[0-9]{7,10}$/)
       .required()
       .trim(),
-    shipping_same: Joi.boolean().required(),
-    shipping_name: Joi.when('shipping_same', {
+    shippingSame: Joi.boolean().required(),
+    shippingName: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('name'),
       otherwise: Joi.string()
@@ -336,7 +311,7 @@ function validateUpdateMember(member) {
         .required()
         .trim()
     }),
-    shipping_address1: Joi.when('shipping_same', {
+    shippingAddress1: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('address1'),
       otherwise: Joi.string()
@@ -344,29 +319,29 @@ function validateUpdateMember(member) {
         .required()
         .trim()
     }),
-    shipping_address2: Joi.when('shipping_same', {
+    shippingAddress2: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('address2'),
       otherwise: Joi.string()
         .trim()
         .allow('', null)
     }),
-    shipping_city: Joi.when('shipping_same', {
+    shippingCity: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('city'),
       otherwise: Joi.string()
         .required()
         .trim()
     }),
-    shipping_state_prov: Joi.when('shipping_same', {
+    shippingStateProv: Joi.when('shippingSame', {
       is: true,
-      then: Joi.ref('state_prov'),
+      then: Joi.ref('stateProv'),
       otherwise: Joi.string()
         .min(2)
         .required()
         .trim()
     }),
-    shipping_country: Joi.when('shipping_same', {
+    shippingCountry: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('country'),
       otherwise: Joi.string()
@@ -374,14 +349,14 @@ function validateUpdateMember(member) {
         .required()
         .trim()
     }),
-    shipping_zip_postal: Joi.when('shipping_same', {
+    shippingZipPostal: Joi.when('shippingSame', {
       is: true,
-      then: Joi.ref('zip_postal'),
+      then: Joi.ref('zipPostal'),
       otherwise: Joi.string()
         .required()
         .trim()
     }),
-    shipping_phone: Joi.when('shipping_same', {
+    shippingPhone: Joi.when('shippingSame', {
       is: true,
       then: Joi.ref('phone'),
       otherwise: Joi.string()
@@ -389,7 +364,7 @@ function validateUpdateMember(member) {
         .regex(/^[0-9]{7,10}$/)
         .required()
     }),
-    shipping_email: Joi.when('shipping_same', {
+    shippingEmail: Joi.when('shippingSame', {
       is: true,
       then: Joi.string()
         .trim()
@@ -400,9 +375,9 @@ function validateUpdateMember(member) {
         .email()
         .required()
     }),
-    is_admin: Joi.boolean()
+    isAdmin: Joi.boolean()
   };
-  return Joi.validate(member, schema, joi_options);
+  return Joi.validate(member, schema, joiOptions);
 }
 
 function validateEmail(member) {
@@ -412,7 +387,7 @@ function validateEmail(member) {
       .required()
   };
 
-  return Joi.validate(member, schema, joi_options);
+  return Joi.validate(member, schema, joiOptions);
 }
 
 function validatePassword(member) {
@@ -420,17 +395,17 @@ function validatePassword(member) {
     oldpassword: Joi.string()
       .min(8)
       .required(),
-    newpassword: Joi.string()
+    newPassword: Joi.string()
       .disallow(Joi.ref('oldpassword'))
       .min(8)
       .required(),
-    confirmpassword: Joi.string()
+    confirmPassword: Joi.string()
       .valid(Joi.ref('newpassword'))
       .required()
       .options({ language: { any: { allowOnly: 'and newpassword fields must match.' } } })
   };
 
-  return Joi.validate(member, schema, joi_options);
+  return Joi.validate(member, schema, joiOptions);
 }
 
 function validateNotification(notification) {
@@ -439,14 +414,16 @@ function validateNotification(notification) {
       .required()
       .items(Joi.objectId().required()),
     message: Joi.string().required(),
-    click_to: Joi.string().allow('', null)
+    clickTo: Joi.string().allow('', null)
   };
 
-  return Joi.validate(notification, schema, joi_options);
+  return Joi.validate(notification, schema, joiOptions);
 }
 
+// eslint-disable-next-line func-names
 MemberSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id, is_admin: this.is_admin }, config.get('jwtPrivateKey'));
+  // eslint-disable-next-line no-underscore-dangle
+  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
   return token;
 };
 

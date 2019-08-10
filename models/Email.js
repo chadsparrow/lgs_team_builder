@@ -1,18 +1,17 @@
-/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const EmailSchema = new mongoose.Schema(
   {
-    sender_id: {
+    senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
     recipients: [
       {
-        member_id: {
+        memberId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
         },
@@ -42,13 +41,13 @@ const EmailSchema = new mongoose.Schema(
           type: Date,
           required: true
         },
-        sender_id: {
+        senderId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
         }
       }
     ],
-    team_id: {
+    teamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'teams'
     }
@@ -65,18 +64,16 @@ function validateEmail(email) {
       .required()
       .trim(),
     message: Joi.string().required(),
-    team_id: Joi.objectId()
-
-    // TODO - make team required once we add a team
+    teamId: Joi.objectId()
   };
-  return Joi.validate(email, schema, joi_options);
+  return Joi.validate(email, schema, joiOptions);
 }
 
 function validateMessage(message) {
   const schema = {
     message: Joi.string().required()
   };
-  return Joi.validate(message, schema, joi_options);
+  return Joi.validate(message, schema, joiOptions);
 }
 
 exports.Email = mongoose.model('emails', EmailSchema);
