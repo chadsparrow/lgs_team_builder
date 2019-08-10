@@ -16,7 +16,7 @@ before_script:
 Build latest:
   stage: build
   only:
-    - master
+    - tags
   script:
     # fetches the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE:latest || true
@@ -31,22 +31,9 @@ Build latest:
       --build-arg VCS_URL=$CI_PROJECT_URL
       --cache-from $CI_REGISTRY_IMAGE:latest
       --tag $CI_REGISTRY_IMAGE:latest
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
       .
     - docker push $CI_REGISTRY_IMAGE:latest
-
-Tag version:
-  variables:
-    # We are just playing with Docker here.
-    # We do not need GitLab to clone the source code.
-    GIT_STRATEGY: none
-  stage: tag
-  only:
-    - master
-    - tags
-  script:
-    # fetches the latest image (not failing if image is not found)
-    - docker pull $CI_REGISTRY_IMAGE:latest
-    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 Build develop:
