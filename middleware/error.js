@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-unused-vars */
 const winston = require('winston');
 
 module.exports = function(err, req, res, next) {

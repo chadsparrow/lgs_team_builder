@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
+
 const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const CartSchema = new mongoose.Schema(

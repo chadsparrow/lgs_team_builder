@@ -1,9 +1,26 @@
+/* eslint-disable consistent-return */
+/* eslint-disable camelcase */
 const express = require('express');
+
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const { Member } = require('../models/Member');
+
 const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
+
+function validate(req) {
+  const schema = {
+    email: Joi.string()
+      .email()
+      .required(),
+    password: Joi.string()
+      .min(8)
+      .required()
+      .trim(false)
+  };
+  return Joi.validate(req, schema, joi_options);
+}
 
 // POST /api/members
 router.post('/login', async (req, res) => {
@@ -19,18 +36,5 @@ router.post('/login', async (req, res) => {
   const token = member.generateAuthToken();
   res.send(token);
 });
-
-function validate(req) {
-  const schema = {
-    email: Joi.string()
-      .email()
-      .required(),
-    password: Joi.string()
-      .min(8)
-      .required()
-      .trim(false)
-  };
-  return Joi.validate(req, schema, joi_options);
-}
 
 module.exports = router;

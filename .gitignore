@@ -1,6 +1,5 @@
-.env.test
-.env.development
 .env
+.env.development
 logs
 node_modules
 .vscode

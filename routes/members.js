@@ -1,22 +1,33 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 const _ = require('lodash');
 const express = require('express');
+
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
-const moment = require('moment-timezone');
-const mongoose = require('mongoose');
 
-const { Member, validateNewMember, validateUpdateMember, validateEmail, validatePassword } = require('../models/Member');
+const {
+  Member,
+  validateNewMember,
+  validateUpdateMember,
+  validateEmail,
+  validatePassword
+} = require('../models/Member');
 const { Email } = require('../models/Email');
-let selectString = '';
+
+const selectString = '';
 
 // GET /api/members
 router.get('/', auth, async (req, res) => {
   const members = await Member.find().select('avatar_url _id name email is_admin');
 
-  if (members && members.length === 0) return res.status(404).json({ message: 'There are no members in the database.' });
+  if (members && members.length === 0)
+    return res.status(404).json({ message: 'There are no members in the database.' });
   res.json(members);
 });
 
@@ -33,7 +44,10 @@ router.get('/me', auth, async (req, res) => {
     .sort('-messages.date');
 
   const member = await Member.findById(req.member._id);
-  return res.json({ member: _.pick(member, ['avatar_url', '_id', 'name', 'email', 'is_admin']), emails });
+  return res.json({
+    member: _.pick(member, ['avatar_url', '_id', 'name', 'email', 'is_admin']),
+    emails
+  });
 });
 
 // GET /api/members/:id
@@ -49,7 +63,7 @@ router.post('/register', async (req, res) => {
   const { error } = validateNewMember(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let {
+  const {
     name,
     address1,
     address2,
@@ -73,10 +87,14 @@ router.post('/register', async (req, res) => {
   } = req.body;
 
   const userEmail = email.split('@')[0];
-  if (password.includes('password')) return res.status(400).json({ message: "Please do not use 'password' in your password" });
-  if (password.includes(userEmail)) return res.status(400).json({ message: 'Please do not use your email username in your password' });
+  if (password.includes('password'))
+    return res.status(400).json({ message: "Please do not use 'password' in your password" });
+  if (password.includes(userEmail))
+    return res
+      .status(400)
+      .json({ message: 'Please do not use your email username in your password' });
 
-  let member = await Member.findOne({ email });
+  const member = await Member.findOne({ email });
   if (member) return res.status(400).json({ message: 'Member already registered.' });
 
   const newMember = new Member({
@@ -129,7 +147,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let {
+  const {
     name,
     address1,
     address2,
@@ -153,7 +171,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   if (!req.member.is_admin && is_admin) return res.status(403).json({ message: 'Access Denied.' });
 
-  let member = await Member.findById(req.params.id);
+  const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   member.name = name;
@@ -211,10 +229,16 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   });
 
   if (emailCheck) {
-    return res.status(400).json({ message: 'Member with the given email address already registered' });
+    return res
+      .status(400)
+      .json({ message: 'Member with the given email address already registered' });
   }
 
-  member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email: req.body.email }, { new: true });
+  member = await Member.findByIdAndUpdate(
+    { _id: req.params.id },
+    { email: req.body.email },
+    { new: true }
+  );
 
   res.status(200).json({ message: 'Member email updated' });
 });
@@ -224,7 +248,7 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let member = await Member.findById(req.params.id);
+  const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   const result = await bcrypt.compare(req.body.oldpassword, member.password);
@@ -232,8 +256,12 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
 
   const userEmail = member.email.split('@')[0];
 
-  if (req.body.newpassword.includes('password')) return res.status(400).json({ message: "Please do not use 'password' in your password" });
-  if (req.body.newpassword.includes(userEmail)) return res.status(400).json({ message: 'Please do not use your email username in your password' });
+  if (req.body.newpassword.includes('password'))
+    return res.status(400).json({ message: "Please do not use 'password' in your password" });
+  if (req.body.newpassword.includes(userEmail))
+    return res
+      .status(400)
+      .json({ message: 'Please do not use your email username in your password' });
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(req.body.newpassword, salt);

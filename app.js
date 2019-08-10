@@ -1,11 +1,13 @@
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const winston = require('winston');
-//require('winston-mongodb'); // enable on production
+// require('winston-mongodb'); // enable on production
 require('winston-daily-rotate-file');
+
 const config = require('config');
 const express = require('express');
 require('express-async-errors');
+
 const app = express();
 require('./startup/routes')(app);
 
@@ -27,8 +29,12 @@ DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@${DB_URI}:${DB_PORT}/${DB_DB}?authSou
 require('./startup/db')(DB_HOST);
 
 // setup winston
-winston.add(winston.transports.DailyRotateFile, { filename: './logs/teambuilder-%DATE%.log', maxFiles: '14d' });
-//winston.add(winston.transports.MongoDB, { db: DB_HOST, level: 'error' });
+winston.add(winston.transports.DailyRotateFile, {
+  filename: './logs/teambuilder-%DATE%.log',
+  maxFiles: '14d'
+});
+
+// winston.add(winston.transports.MongoDB, { db: DB_HOST, level: 'error' });
 
 // handle all uncaught expceptions
 process.on('uncaughtException', ex => {

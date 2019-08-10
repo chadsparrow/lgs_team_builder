@@ -1,17 +1,35 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
+/* eslint-disable consistent-return */
 const express = require('express');
+
 const router = express.Router();
-const { CatalogItem, validateCatalogItem, validateCatalogItemEdit, validateCatalogImg } = require('../models/CatalogItem');
-const { Catalog } = require('../models/Catalog');
+const {
+  CatalogItem,
+  validateCatalogItem,
+  validateCatalogItemEdit,
+  validateCatalogImg
+} = require('../models/CatalogItem');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
 const populateOptions = { path: 'catalog_id', select: 'brand season year' };
 
+function populateCatalogItem(catalog_item) {
+  return new Promise(async resolve => {
+    const populated_catalog_item = await CatalogItem.findById(catalog_item).populate(
+      populateOptions
+    );
+    resolve(populated_catalog_item);
+  });
+}
+
 // Collects all catalog items
 router.get('/', auth, async (req, res) => {
   const items = await CatalogItem.find().populate(populateOptions);
-  if (items && items.length === 0) return res.status(404).json({ message: 'There are no catalog items.' });
+  if (items && items.length === 0)
+    return res.status(404).json({ message: 'There are no catalog items.' });
 
   res.json(items);
 });
@@ -19,7 +37,8 @@ router.get('/', auth, async (req, res) => {
 // Collects all items from a specific catalog item based on given ID
 router.get('/catalog/:id', [validateObjectId, auth], async (req, res) => {
   const items = await CatalogItem.find({ catalog_id: req.params.id });
-  if (items && items.length === 0) return res.status(400).json({ message: 'Catalog with the given ID has no items.' });
+  if (items && items.length === 0)
+    return res.status(400).json({ message: 'Catalog with the given ID has no items.' });
 
   res.json(items);
 });
@@ -37,9 +56,25 @@ router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCatalogItem(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let { catalog_id, name, product_code, style_code, sizes, price, gender, description, category, images, is_active } = req.body;
+  const {
+    catalog_id,
+    name,
+    product_code,
+    style_code,
+    sizes,
+    price,
+    gender,
+    description,
+    category,
+    images,
+    is_active
+  } = req.body;
 
-  let item = await CatalogItem.findOne({ catalog_id: catalog_id, product_code: product_code.toUpperCase(), style_code: style_code.toUpperCase() });
+  let item = await CatalogItem.findOne({
+    catalog_id,
+    product_code: product_code.toUpperCase(),
+    style_code: style_code.toUpperCase()
+  });
   if (item) return res.status(400).json({ message: 'Product already exists.' });
 
   item = new CatalogItem({
@@ -65,9 +100,20 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalogItemEdit(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let { name, product_code, style_code, sizes, price, gender, description, category, images, is_active } = req.body;
+  const {
+    name,
+    product_code,
+    style_code,
+    sizes,
+    price,
+    gender,
+    description,
+    category,
+    images,
+    is_active
+  } = req.body;
 
-  let item = await CatalogItem.findById(req.params.id);
+  const item = await CatalogItem.findById(req.params.id);
   if (!item) return res.status(400).json({ message: 'Item with the given ID not found.' });
 
   const duplicate_item = await CatalogItem.findOne({
@@ -98,7 +144,7 @@ router.patch('/img/add/:id', [validateObjectId, auth, admin], async (req, res) =
   const { error } = validateCatalogImg(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let item = await CatalogItem.findById(req.params.id);
+  const item = await CatalogItem.findById(req.params.id);
   if (!item) return res.status(400).json({ message: 'Catalog Item with the given ID not found.' });
 
   item.images.push(req.body.image_url);
@@ -112,7 +158,7 @@ router.patch('/img/edit/:id/:index', [validateObjectId, auth, admin], async (req
   const { error } = validateCatalogImg(req.body);
   if (error) return res.status(400).json(error.details);
 
-  let item = await CatalogItem.findById(req.params.id);
+  const item = await CatalogItem.findById(req.params.id);
   if (!item) return res.status(400).json({ message: 'Catalog Item with the given ID not found.' });
 
   item.images[req.params.index] = req.body.image_url;
@@ -125,7 +171,7 @@ router.delete('/img/delete/:id/:index', [validateObjectId, auth, admin], async (
   const item = await CatalogItem.findById(req.params.id);
   if (!item) return res.status(400).json({ message: 'Catalog Item with the given ID not found.' });
   const filtered_images = item.images.filter((image, index) => {
-    return index != req.params.index;
+    return index !== req.params.index;
   });
 
   item.images = filtered_images;
@@ -139,12 +185,5 @@ router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   res.status(200).json('Item Removed.');
 });
-
-function populateCatalogItem(catalog_item) {
-  return new Promise(async (resolve, reject) => {
-    let populated_catalog_item = await CatalogItem.findById(catalog_item).populate(populateOptions);
-    resolve(populated_catalog_item);
-  });
-}
 
 module.exports = router;

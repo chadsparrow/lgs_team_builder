@@ -1,8 +1,11 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 const express = require('express');
+
 const router = express.Router();
 const { Order, validateOrder } = require('../models/Order');
 const { Store } = require('../models/Store');
-const { StoreItem } = require('../models/StoreItem');
 const { Member } = require('../models/Member');
 const { Team } = require('../models/Team');
 const auth = require('../middleware/auth');
@@ -27,10 +30,12 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).json({ message: 'Team with the given ID not found' });
 
-  if (req.member._id !== team.manager_id || !req.member.is_admin) return res.status(403).json({ message: 'Access Denied' });
+  if (req.member._id !== team.manager_id || !req.member.is_admin)
+    return res.status(403).json({ message: 'Access Denied' });
 
   const orders = await Order.find({ team_id: req.params.id });
-  if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found for the given Team ID' });
+  if (orders && orders.length === 0)
+    return res.status(404).json({ message: 'No orders found for the given Team ID' });
 
   res.json(orders);
 });
@@ -40,7 +45,8 @@ router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
   if (!member) return res.status(400).json({ message: 'Member with the given ID not found' });
 
   const orders = await Order.find({ member_id: req.params.id });
-  if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found for the given Member ID' });
+  if (orders && orders.length === 0)
+    return res.status(404).json({ message: 'No orders found for the given Member ID' });
 
   res.json(orders);
 });
@@ -49,10 +55,12 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).json({ message: 'Store with given ID not found' });
 
-  if (req.member._id !== store.manager_id || !req.member.is_admin) return res.status(403).json({ message: 'Access Denied' });
+  if (req.member._id !== store.manager_id || !req.member.is_admin)
+    return res.status(403).json({ message: 'Access Denied' });
 
   const orders = await Order.find({ store_id: req.params.id });
-  if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found for the given Store ID' });
+  if (orders && orders.length === 0)
+    return res.status(404).json({ message: 'No orders found for the given Store ID' });
 
   res.json(orders);
 });
@@ -70,7 +78,7 @@ router.post('/', auth, async (req, res) => {
   const store = await Store.findById(req.body.store_id);
   if (!store) return res.status(400).json({ message: 'Store with the given ID not found' });
 
-  let {
+  const {
     store_id,
     team_id,
     member_id,
@@ -87,11 +95,10 @@ router.post('/', auth, async (req, res) => {
     order_discount,
     tax_percentage,
     amount_paid,
-    order_date,
     items
   } = req.body;
 
-  let order = new Order({
+  const order = new Order({
     store_id,
     team_id,
     member_id,

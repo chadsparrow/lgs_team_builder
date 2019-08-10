@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Float = require('mongoose-float');
 const Joi = require('@hapi/joi');
+
 const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const OrderSchema = mongoose.Schema(

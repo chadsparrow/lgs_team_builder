@@ -1,5 +1,8 @@
-const { Member, validateNotification } = require('../models/Member');
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
+const { Member, validateNotification } = require('../models/Member');
+
 const router = express.Router();
 const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -22,28 +25,29 @@ router.post('/', auth, async (req, res) => {
     click_to: req.body.click_to
   };
 
-  for (recipient of req.body.recipients) {
-    let member = await Member.findById(recipient);
+  req.body.recipients.map(async recipient => {
+    const member = await Member.findById(recipient);
     if (member) {
       member.notifications.push(newNotification);
       await member.save();
     }
-  }
+  });
+
   res.status(200).json({ message: 'Notification sent' });
 });
 
 router.delete('/all', auth, async (req, res) => {
-  let member = await Member.findById(req.member._id);
+  const member = await Member.findById(req.member._id);
   member.notifications = [];
   await member.save();
   res.status(200).json({ message: 'Notifications cleared' });
 });
 
 router.delete('/:id', [validateObjectId, auth], async (req, res) => {
-  let member = await Member.findById(req.member._id);
+  const member = await Member.findById(req.member._id);
   if (member.notifications.length > 0) {
     member.notifications = member.notifications.filter(n => {
-      return n._id != req.params.id;
+      return n._id !== req.params.id;
     });
     await member.save();
     return res.status(200).json({ message: 'Notification deleted' });

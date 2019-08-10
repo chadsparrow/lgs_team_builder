@@ -1,7 +1,9 @@
+/* eslint-disable func-names */
+/* eslint-disable global-require */
 const helmet = require('helmet');
-//const cors = require('cors'); //** Re-enable if needed for CORS Errors */
-const error = require('../middleware/error');
+// const cors = require('cors'); //** Re-enable if needed for CORS Errors */
 const express = require('express');
+const error = require('../middleware/error');
 
 module.exports = function(app) {
   // Set up express, security and cors
@@ -10,7 +12,7 @@ module.exports = function(app) {
   app.use(express.static('public'));
   app.use(helmet());
 
-  //app.use(cors());  //** Re-enable if needed for CORS Errors */
+  // app.use(cors());  //** Re-enable if needed for CORS Errors */
   app.enable('trust proxy');
 
   // Load API Routes

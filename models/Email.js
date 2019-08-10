@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+
 const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const EmailSchema = new mongoose.Schema(

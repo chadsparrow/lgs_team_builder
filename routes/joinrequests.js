@@ -1,26 +1,29 @@
-const { Team } = require('../models/Team');
-const { Member, validateNotification } = require('../models/Member');
-const { JoinRequest, validateJoinRequest } = require('../models/JoinRequests');
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
+/* eslint-disable consistent-return */
 const express = require('express');
+const { Team } = require('../models/Team');
+const { Member } = require('../models/Member');
+const { JoinRequest, validateJoinRequest } = require('../models/JoinRequests');
+
 const router = express.Router();
 const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
-const _ = require('lodash');
-const mongoose = require('mongoose');
 const validateObjectId = require('../middleware/validateObjectId');
 
 const populateOptions = { path: 'member_id', select: 'name email' };
 
 router.get('/', auth, async (req, res) => {
   const joins = await JoinRequest.find().populate(populateOptions);
-  if (joins && joins.length === 0) return res.status(404).json({ message: 'No join requests found.' });
+  if (joins && joins.length === 0)
+    return res.status(404).json({ message: 'No join requests found.' });
 
   res.json(joins);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const joins = await JoinRequest.find({ team_id: req.params.id }).populate(populateOptions);
-  if (joins && joins.length === 0) return res.status(400).json({ message: 'Team with the given ID not found.' });
+  if (joins && joins.length === 0)
+    return res.status(400).json({ message: 'Team with the given ID not found.' });
 
   res.json(joins);
 });
@@ -52,13 +55,13 @@ router.post('/', auth, async (req, res) => {
     click_to: `/api/v1/joinrequests/${newJoin._id}`
   };
 
-  for (recipient of req.body.recipients) {
-    let member = await Member.findById(recipient);
+  req.body.recipients.map(async recipient => {
+    const member = await Member.findById(recipient);
     if (member) {
       member.notifications.push(newNotification);
       await member.save();
     }
-  }
+  });
 
   await newJoin.save();
 

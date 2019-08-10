@@ -1,7 +1,11 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+
 const joi_options = { abortEarly: false, language: { key: '{{key}} ' } };
 
 const MemberSchema = new mongoose.Schema(
@@ -71,7 +75,7 @@ const MemberSchema = new mongoose.Schema(
     },
     shipping_name: {
       type: String,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       minlength: 5,
@@ -80,7 +84,7 @@ const MemberSchema = new mongoose.Schema(
     },
     shipping_address1: {
       type: String,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       minlength: 10,
@@ -95,7 +99,7 @@ const MemberSchema = new mongoose.Schema(
     shipping_city: {
       type: String,
       uppercase: true,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       trim: true
@@ -103,7 +107,7 @@ const MemberSchema = new mongoose.Schema(
     shipping_state_prov: {
       type: String,
       uppercase: true,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       minlength: 2,
@@ -112,7 +116,7 @@ const MemberSchema = new mongoose.Schema(
     shipping_country: {
       type: String,
       uppercase: true,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       trim: true
@@ -120,7 +124,7 @@ const MemberSchema = new mongoose.Schema(
     shipping_zip_postal: {
       type: String,
       uppercase: true,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       minlength: 5,
@@ -128,7 +132,7 @@ const MemberSchema = new mongoose.Schema(
     },
     shipping_phone: {
       type: String,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       trim: true,
@@ -136,7 +140,7 @@ const MemberSchema = new mongoose.Schema(
     },
     shipping_email: {
       type: String,
-      required: function() {
+      required() {
         return this.shipping_same;
       },
       trim: true
