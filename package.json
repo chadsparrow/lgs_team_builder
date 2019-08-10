@@ -10,10 +10,9 @@
   "author": "Chad Sparrow",
   "license": "UNLICENSED",
   "devDependencies": {
-    "@types/jest": "^24.0.15",
-    "jest": "^24.8.0",
+    "eslint": "^6.1.0",
     "nodemon": "^1.18.10",
-    "supertest": "^4.0.2"
+    "prettier": "^1.18.2"
   },
   "dependencies": {
     "@hapi/joi": "^15.0.3",
