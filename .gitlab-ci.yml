@@ -42,6 +42,7 @@ Tag version:
   stage: tag
   only:
     - master
+    - tags
   script:
     # fetches the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE:latest
