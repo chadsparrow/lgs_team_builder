@@ -42,6 +42,7 @@ router.get('/me', auth, async (req, res) => {
     .sort('-messages.date');
 
   const member = await Member.findById(req.member._id);
+  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   return res.json({
     member: _.pick(member, ['avatarUrl', '_id', 'name', 'email', 'isAdmin']),
@@ -93,7 +94,7 @@ router.post('/register', [auth, admin], async (req, res) => {
       .status(400)
       .json({ message: 'Please do not use your email username in your password' });
 
-  const member = await Member.findOne({ email: cryptr.encrypt(email) });
+  const member = await Member.findOne({ email });
   if (member) return res.status(400).json({ message: 'Member already registered.' });
 
   const newMember = new Member({
@@ -105,7 +106,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     country,
     zipPostal,
     phone: cryptr.encrypt(phone),
-    email: cryptr.encrypt(email),
+    email,
     isAdmin: false
   });
 
@@ -133,7 +134,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.shipping.country = shippingCountry;
     newMember.shipping.zipPostal = shippingZipPostal;
     newMember.shipping.phone = cryptr.encrypt(shippingPhone);
-    newMember.shipping.email = cryptr.encrypt(shippingEmail);
+    newMember.shipping.email = shippingEmail;
   }
 
   await newMember.save();
@@ -202,7 +203,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     member.shipping.country = shippingCountry;
     member.shipping.zipPostal = shippingZipPostal;
     member.shipping.phone = cryptr.encrypt(shippingPhone);
-    member.shipping.email = cryptr.encrypt(shippingEmail);
+    member.shipping.email = shippingEmail;
   }
 
   await member.save();
@@ -220,13 +221,13 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   let member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
-  if (cryptr.decrypt(member.email) === email) {
+  if (member.email === email) {
     return res.status(400).json({ message: 'Email is identical to what is already set.' });
   }
 
   const emailCheck = await Member.findOne({
     _id: { $ne: req.params.id },
-    email: cryptr.encrypt(email)
+    email
   });
 
   if (emailCheck) {
@@ -235,11 +236,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
       .json({ message: 'Member with the given email address already registered' });
   }
 
-  member = await Member.findByIdAndUpdate(
-    { _id: req.params.id },
-    { email: cryptr.encrypt(email) },
-    { new: true }
-  );
+  member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email }, { new: true });
 
   return res.status(200).json({ message: 'Member email updated' });
 });
@@ -257,7 +254,7 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const result = await bcrypt.compare(oldpassword, member.password);
   if (!result) return res.status(400).json({ message: 'Password incorrect.' });
 
-  const userEmail = cryptr.decrypt(member.email).split('@')[0];
+  const userEmail = member.email.split('@')[0];
 
   if (newpassword.includes('password'))
     return res.status(400).json({ message: "Please do not use 'password' in your password" });

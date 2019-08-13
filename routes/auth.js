@@ -27,12 +27,10 @@ router.post('/login', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).json(error.details);
 
-  const { email, password } = req.body;
-
-  const member = await Member.findOne({ email: cryptr.encrypt(email) });
+  const member = await Member.findOne({ email: req.body.email });
   if (!member) return res.status(401).json({ message: 'Invalid email or password.' });
 
-  const validPassword = await bcrypt.compare(password, member.password);
+  const validPassword = await bcrypt.compare(req.body.password, member.password);
   if (!validPassword) return res.status(401).json({ message: 'Invalid email or password' });
 
   const token = member.generateAuthToken();
@@ -87,7 +85,7 @@ router.post('/register', async (req, res) => {
     country,
     zipPostal,
     phone: cryptr.encrypt(phone),
-    email: cryptr.encrypt(email),
+    email,
     isAdmin: false
   });
 
@@ -115,7 +113,7 @@ router.post('/register', async (req, res) => {
     newMember.shipping.country = shippingCountry;
     newMember.shipping.zipPostal = shippingZipPostal;
     newMember.shipping.phone = cryptr.encrypt(shippingPhone);
-    newMember.shipping.email = cryptr.encrypt(shippingEmail);
+    newMember.shipping.email = shippingEmail;
   }
 
   await newMember.save();

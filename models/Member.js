@@ -17,15 +17,10 @@ const MemberSchema = new mongoose.Schema(
     },
     address1: {
       type: String,
-      required: true,
-      minlength: 10,
-      uppercase: true,
-      trim: true
+      required: true
     },
     address2: {
-      type: String,
-      uppercase: true,
-      trim: true
+      type: String
     },
     city: {
       type: String,
@@ -55,15 +50,11 @@ const MemberSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
-      minlength: 7,
-      trim: true
+      required: true
     },
     email: {
       type: String,
-      required: true,
-      trim: true,
-      unique: true
+      required: true
     },
     password: {
       type: String,
@@ -78,15 +69,10 @@ const MemberSchema = new mongoose.Schema(
         trim: true
       },
       address1: {
-        type: String,
-        minlength: 10,
-        uppercase: true,
-        trim: true
+        type: String
       },
       address2: {
-        type: String,
-        uppercase: true,
-        trim: true
+        type: String
       },
       city: {
         type: String,
@@ -111,13 +97,10 @@ const MemberSchema = new mongoose.Schema(
         trim: true
       },
       phone: {
-        type: String,
-        trim: true,
-        minlength: 7
+        type: String
       },
       email: {
-        type: String,
-        trim: true
+        type: String
       }
     },
     timezone: {
@@ -423,7 +406,7 @@ function validateNotification(notification) {
 // eslint-disable-next-line func-names
 MemberSchema.methods.generateAuthToken = function() {
   // eslint-disable-next-line no-underscore-dangle
-  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
+  const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
   return token;
 };
 
