@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const cryptr = require('../middleware/cryptr');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -57,7 +58,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 });
 
 // POST /api/members
-router.post('/register', async (req, res) => {
+router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewMember(req.body);
   if (error) return res.status(400).json(error.details);
 
@@ -92,19 +93,19 @@ router.post('/register', async (req, res) => {
       .status(400)
       .json({ message: 'Please do not use your email username in your password' });
 
-  const member = await Member.findOne({ email });
+  const member = await Member.findOne({ email: cryptr.encrypt(email) });
   if (member) return res.status(400).json({ message: 'Member already registered.' });
 
   const newMember = new Member({
     name,
-    address1,
-    address2,
+    address1: cryptr.encrypt(address1),
+    address2: cryptr.encrypt(address2),
     city,
     stateProv,
     country,
     zipPostal,
-    phone,
-    email,
+    phone: cryptr.encrypt(phone),
+    email: cryptr.encrypt(email),
     isAdmin: false
   });
 
@@ -125,14 +126,14 @@ router.post('/register', async (req, res) => {
     newMember.shipping.email = newMember.email;
   } else {
     newMember.shipping.name = shippingName;
-    newMember.shipping.address1 = shippingAddress1;
-    newMember.shipping.address2 = shippingAddress2;
+    newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
+    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
     newMember.shipping.city = shippingCity;
     newMember.shipping.stateProv = shippingStateProv;
     newMember.shipping.country = shippingCountry;
     newMember.shipping.zipPostal = shippingZipPostal;
-    newMember.shipping.phone = shippingPhone;
-    newMember.shipping.email = shippingEmail;
+    newMember.shipping.phone = cryptr.encrypt(shippingPhone);
+    newMember.shipping.email = cryptr.encrypt(shippingEmail);
   }
 
   await newMember.save();
@@ -173,13 +174,13 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
   member.name = name;
-  member.address1 = address1;
-  member.address2 = address2;
+  member.address1 = cryptr.encrypt(address1);
+  member.address2 = cryptr.encrypt(address2);
   member.city = city;
   member.stateProv = stateProv;
   member.country = country;
   member.zipPostal = zipPostal;
-  member.phone = phone;
+  member.phone = cryptr.encrypt(phone);
   member.isAdmin = isAdmin;
 
   if (shippingSame) {
@@ -194,14 +195,14 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     member.shipping.email = member.email;
   } else {
     member.shipping.name = shippingName;
-    member.shipping.address1 = shippingAddress1;
-    member.shipping.address2 = shippingAddress2;
+    member.shipping.address1 = cryptr.encrypt(shippingAddress1);
+    member.shipping.address2 = cryptr.encrypt(shippingAddress2);
     member.shipping.city = shippingCity;
     member.shipping.stateProv = shippingStateProv;
     member.shipping.country = shippingCountry;
     member.shipping.zipPostal = shippingZipPostal;
-    member.shipping.phone = shippingPhone;
-    member.shipping.email = shippingEmail;
+    member.shipping.phone = cryptr.encrypt(shippingPhone);
+    member.shipping.email = cryptr.encrypt(shippingEmail);
   }
 
   await member.save();
@@ -214,16 +215,18 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).json(error.details);
 
+  const { email } = req.body;
+
   let member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
-  if (member.email === req.body.email) {
+  if (cryptr.decrypt(member.email) === email) {
     return res.status(400).json({ message: 'Email is identical to what is already set.' });
   }
 
   const emailCheck = await Member.findOne({
     _id: { $ne: req.params.id },
-    email: req.body.email
+    email: cryptr.encrypt(email)
   });
 
   if (emailCheck) {
@@ -234,7 +237,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
 
   member = await Member.findByIdAndUpdate(
     { _id: req.params.id },
-    { email: req.body.email },
+    { email: cryptr.encrypt(email) },
     { new: true }
   );
 
@@ -246,23 +249,25 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).json(error.details);
 
+  const { oldpassword, newpassword } = req.body;
+
   const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
 
-  const result = await bcrypt.compare(req.body.oldpassword, member.password);
+  const result = await bcrypt.compare(oldpassword, member.password);
   if (!result) return res.status(400).json({ message: 'Password incorrect.' });
 
-  const userEmail = member.email.split('@')[0];
+  const userEmail = cryptr.decrypt(member.email).split('@')[0];
 
-  if (req.body.newpassword.includes('password'))
+  if (newpassword.includes('password'))
     return res.status(400).json({ message: "Please do not use 'password' in your password" });
-  if (req.body.newpassword.includes(userEmail))
+  if (newpassword.includes(userEmail))
     return res
       .status(400)
       .json({ message: 'Please do not use your email username in your password' });
 
   const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(req.body.newpassword, salt);
+  const hash = await bcrypt.hash(newpassword, salt);
 
   member.password = hash;
   await member.save();

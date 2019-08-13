@@ -9,7 +9,7 @@ networks:
 services:
   mongo:
     restart: always
-    image: mongo
+    image: mongo:4.0
     ports:
       - 27018:27018
     volumes:
@@ -23,11 +23,11 @@ services:
   app:
     image: ${LGS_DOCKER_IMAGE}
     restart: always
-    working_dir: /usr/src/app/server
+    working_dir: /usr/src/app/
     ports:
       - 5001:5001
     volumes:
-      - /data/logs/team-builder:/usr/src/app/server/logs
+      - /data/logs/team-builder:/usr/src/app/logs
       - /data/logs/team-builder/npm:/root/.npm/
     depends_on:
       - mongo
@@ -35,4 +35,4 @@ services:
       - .env
     environment:
       WAIT_HOSTS: mongo:27018
-    command: pm2-runtime ecosystem.config.js --env production
+    command: npm run start

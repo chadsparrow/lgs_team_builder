@@ -18,7 +18,7 @@ Build latest:
     - tags
   script:
     # fetches the latest image (not failing if image is not found)
-    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker pull $CI_REGISTRY_IMAGE/app:latest || true
     # builds the project, passing vcs vars for LABEL
     # notice the cache-from, which is going to use the image we just pulled locally
     # the built image is tagged locally with the commit SHA, and then pushed to
@@ -29,11 +29,11 @@ Build latest:
       --build-arg VCS_REF=latest
       --build-arg VCS_URL=$CI_PROJECT_URL
       --cache-from $CI_REGISTRY_IMAGE:latest
-      --tag $CI_REGISTRY_IMAGE:latest
-      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --tag $CI_REGISTRY_IMAGE/app:latest
+      --tag $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
       .
-    - docker push $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE/app:latest
+    - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
 
 Build develop:
   stage: build
@@ -41,7 +41,7 @@ Build develop:
     - develop
   script:
     # fetches the latest image (not failing if image is not found)
-    - docker pull $CI_REGISTRY_IMAGE:develop || true
+    - docker pull $CI_REGISTRY_IMAGE/app:develop || true
     # builds the project, passing vcs vars for LABEL
     # notice the cache-from, which is going to use the image we just pulled locally
     # the built image is tagged locally with the commit SHA, and then pushed to
@@ -51,7 +51,7 @@ Build develop:
       --pull
       --build-arg VCS_REF=develop
       --build-arg VCS_URL=$CI_PROJECT_URL
-      --cache-from $CI_REGISTRY_IMAGE:develop
-      --tag $CI_REGISTRY_IMAGE:develop
+      --cache-from $CI_REGISTRY_IMAGE/app:develop
+      --tag $CI_REGISTRY_IMAGE/app:develop
       .
-    - docker push $CI_REGISTRY_IMAGE:develop
+    - docker push $CI_REGISTRY_IMAGE/app:develop
