@@ -1,6 +1,6 @@
 {
   "app": {
-    "port": "APP_PORT",
+    "port": "PORT",
     "rootUser": "MONGO_INITDB_ROOT_USERNAME",
     "rootPass": "MONGO_INITDB_ROOT_PASSWORD",
     "rootEmail": "MONGO_INITDB_ROOT_EMAIL"

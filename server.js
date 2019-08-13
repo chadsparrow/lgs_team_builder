@@ -1,12 +1,23 @@
 const express = require('express');
-const Joi = require('@hapi/joi');
-Joi.objectId = require('joi-objectid')(Joi);
-
-const config = require('config');
-const logger = require('./middleware/logger');
 require('express-async-errors');
 
 const app = express();
+const helmet = require('helmet');
+const config = require('config');
+const Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
+const logger = require('./middleware/logger');
+const requestLogger = require('./middleware/requestLogger');
+
+// Set up express, security
+app.use(helmet());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(express.static('public'));
+app.use(requestLogger);
+
+// app.use(cors());  //** Re-enable if needed for CORS Errors */
+app.enable('trust proxy');
 
 const DB_USER = config.get('database.user');
 const DB_PASS = config.get('database.pass');

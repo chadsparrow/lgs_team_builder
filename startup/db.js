@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
-const winston = require('winston');
 const mongoose = require('mongoose');
 const config = require('config');
 const bcrypt = require('bcryptjs');
+const logger = require('../middleware/logger');
 const { Member } = require('../models/Member');
 
 module.exports = async function(DB_HOST) {
@@ -12,7 +12,7 @@ module.exports = async function(DB_HOST) {
     useFindAndModify: false,
     useCreateIndex: true
   });
-  winston.info('Connected to MongoDB..');
+  logger.info('Connected to MongoDB..');
 
   process.on('SIGINT', async () => {
     await mongoose.disconnect();
@@ -21,7 +21,7 @@ module.exports = async function(DB_HOST) {
 
   const admins = await Member.find({ isAdmin: true });
   if (admins && admins.length === 0) {
-    winston.info('No admin users detected - creating root user.');
+    logger.info('No admin users detected - creating root user.');
     const rootPass = config.get('app.rootPass');
     const rootEmail = config.get('app.rootEmail');
     const newAdmin = new Member({
@@ -48,6 +48,6 @@ module.exports = async function(DB_HOST) {
     const salt = await bcrypt.genSalt(10);
     newAdmin.password = await bcrypt.hash(rootPass, salt);
     await newAdmin.save();
-    winston.info('Root Admin user created.');
+    logger.info('Root Admin user created.');
   }
 };

@@ -1,20 +1,8 @@
 /* eslint-disable func-names */
 /* eslint-disable global-require */
-const helmet = require('helmet');
-// const cors = require('cors'); //** Re-enable if needed for CORS Errors */
-const express = require('express');
 const error = require('../middleware/error');
 
 module.exports = function(app) {
-  // Set up express, security and cors
-  app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
-  app.use(express.static('public'));
-  app.use(helmet());
-
-  // app.use(cors());  //** Re-enable if needed for CORS Errors */
-  app.enable('trust proxy');
-
   // Load API Routes
   app.use('/api/v1/members', require('../routes/members'));
   app.use('/api/v1/auth', require('../routes/auth'));
