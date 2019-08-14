@@ -10,13 +10,14 @@ export default new Vuex.Store({
     currentMember: {}
   },
   actions: {
-    login: (state, user) => {
+    login: ({ commit }, user) => {
       return new Promise(async (resolve, reject) => {
         try {
           // commit('auth_request');
           const resp = await axios.post('/api/v1/auth/login', user);
           const data = await resp.data;
           localStorage.setItem('access_token', data.token);
+          commit('SET_CURRENT_MEMBER', data.member);
           resolve(resp);
         } catch (err) {
           // commit('auth_error');
@@ -26,5 +27,9 @@ export default new Vuex.Store({
       });
     }
   },
-  mutations: {}
+  mutations: {
+    SET_CURRENT_MEMBER: (state, payload) => {
+      state.currentMember = payload;
+    }
+  }
 });
