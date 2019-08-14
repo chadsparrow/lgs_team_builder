@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Login Page</h2>
+    <h4>Login Page</h4>
     <form @submit.prevent="login">
       <div>
         <input placeholder="Your email" type="email" v-model="email" />
@@ -25,11 +25,15 @@ export default {
     };
   },
   methods: {
-    login: async function() {
+    login: function() {
       const email = this.email;
       const password = this.password;
-      await this.$store.dispatch('login', { email, password });
-      this.$router.push('/about');
+      this.$store
+        .dispatch('login', { email, password })
+        .then(() => {
+          this.$router.push('/dashboard');
+        })
+        .catch(err => console.log(err));
     }
   }
 };

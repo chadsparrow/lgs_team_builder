@@ -1,20 +1,30 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Axios from 'axios';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     accessToken: localStorage.getItem('access_token') || '',
-    currentUser: {}
+    currentMember: {}
   },
-  mutations: {},
   actions: {
-    login: async ({ email, password }) => {
-      const res = await Axios.post('http://localhost:8080/api/v1/auth/login', { email, password });
-      const data = await res.data;
-      console.log(data);
+    login: (state, user) => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          // commit('auth_request');
+          const resp = await axios.post('/api/v1/auth/login', user);
+          const data = await resp.data;
+          localStorage.setItem('access_token', data.token);
+          resolve(resp);
+        } catch (err) {
+          // commit('auth_error');
+          localStorage.removeItem('access_token');
+          reject(err);
+        }
+      });
     }
-  }
+  },
+  mutations: {}
 });

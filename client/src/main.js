@@ -9,7 +9,7 @@ Vue.prototype.$http = Axios;
 const accessToken = localStorage.getItem('access_token');
 
 if (accessToken) {
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = accessToken;
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 }
 
 new Vue({

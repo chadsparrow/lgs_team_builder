@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
   if (!validPassword) return res.status(401).json({ message: 'Invalid email or password' });
 
   const token = member.generateAuthToken();
-  return res.send(token);
+  return res.send({ token, member });
 });
 
 // POST /api/members
