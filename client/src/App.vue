@@ -1,13 +1,28 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <sui-sidebar visible="true" width="very thin" animation="overlay"></sui-sidebar>
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-    </div>
+  <div>
     <router-view />
   </div>
 </template>
 
-<style>
+<style lang="scss">
+@import url('https://fonts.googleapis.com/css?family=Overpass&display=swap');
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Overpass', sans-serif;
+  height: 100vh;
+  width: 100%;
+
+  a {
+    text-decoration: none;
+    color: white !important;
+  }
+}
+
+body {
+  background-image: linear-gradient(to bottom right, white, rgb(225, 225, 225));
+}
 </style>
