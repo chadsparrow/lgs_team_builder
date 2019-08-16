@@ -13,8 +13,6 @@ html {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
-  height: 100vh;
-  width: 100%;
 
   a {
     text-decoration: none;
@@ -22,7 +20,10 @@ html {
   }
 }
 
-body {
-  background-image: linear-gradient(to bottom right, white, rgb(225, 225, 225));
+#toast-container {
+  top: auto !important;
+  left: auto !important;
+  bottom: 30px;
+  right: 30px;
 }
 </style>

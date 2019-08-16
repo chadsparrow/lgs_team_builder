@@ -5,8 +5,9 @@ import store from './store';
 import Axios from 'axios';
 
 Vue.config.productionTip = false;
-Vue.prototype.$http = Axios;
 const accessToken = localStorage.getItem('access_token');
+
+Vue.prototype.$http = Axios;
 
 if (accessToken) {
   Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;

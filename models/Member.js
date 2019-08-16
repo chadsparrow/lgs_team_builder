@@ -3,10 +3,19 @@ const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { language: { key: '{{key}} ' } };
 
 const MemberSchema = new mongoose.Schema(
   {
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true
+    },
     name: {
       type: String,
       required: true,
@@ -52,13 +61,8 @@ const MemberSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    email: {
+    timezone: {
       type: String,
-      required: true
-    },
-    password: {
-      type: String,
-      required: true,
       trim: true
     },
     shipping: {
@@ -103,10 +107,6 @@ const MemberSchema = new mongoose.Schema(
         type: String
       }
     },
-    timezone: {
-      type: String,
-      trim: true
-    },
     avatarUrl: {
       type: String,
       default: null,
@@ -138,6 +138,13 @@ const MemberSchema = new mongoose.Schema(
 
 function validateNewMember(member) {
   const schema = {
+    email: Joi.string()
+      .email()
+      .required(),
+    password: Joi.string()
+      .min(8)
+      .required()
+      .trim(),
     name: Joi.string()
       .min(5)
       .max(50)
@@ -168,85 +175,34 @@ function validateNewMember(member) {
       .trim()
       .regex(/^[0-9]{7,10}$/)
       .required(),
-    email: Joi.string()
-      .email()
-      .required(),
-    password: Joi.string()
-      .min(8)
+    timezone: Joi.string()
       .required()
       .trim(),
-    shippingSame: Joi.boolean().required(),
-    shippingName: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('name'),
-      otherwise: Joi.string()
-        .min(5)
-        .max(50)
-        .required()
-        .trim()
-    }),
-    shippingAddress1: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('address1'),
-      otherwise: Joi.string()
-        .min(10)
-        .required()
-        .trim()
-    }),
-    shippingAddress2: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('address2'),
-      otherwise: Joi.string()
-        .trim()
-        .allow('', null)
-    }),
-    shippingCity: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('city'),
-      otherwise: Joi.string()
-        .required()
-        .trim()
-    }),
-    shippingStateProv: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('stateProv'),
-      otherwise: Joi.string()
-        .min(2)
-        .required()
-        .trim()
-    }),
-    shippingCountry: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('country'),
-      otherwise: Joi.string()
-        .min(2)
-        .required()
-        .trim()
-    }),
-    shippingZipPostal: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('zipPostal'),
-      otherwise: Joi.string()
-        .required()
-        .trim()
-    }),
-    shippingPhone: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('phone'),
-      otherwise: Joi.string()
-        .trim()
-        .regex(/^[0-9]{7,10}$/)
-        .required()
-    }),
-    shippingEmail: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('email'),
-      otherwise: Joi.string()
-        .email()
-        .trim()
-        .required()
-    }),
-    isAdmin: Joi.boolean()
+    shippingName: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress1: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress2: Joi.string().trim(),
+    shippingCity: Joi.string()
+      .required()
+      .trim(),
+    shippingStateProv: Joi.string()
+      .required()
+      .trim(),
+    shippingCountry: Joi.string()
+      .required()
+      .trim(),
+    shippingZipPostal: Joi.string()
+      .required()
+      .trim(),
+    shippingPhone: Joi.string()
+      .required()
+      .trim(),
+    shippingEmail: Joi.string()
+      .required()
+      .email()
   };
 
   return Joi.validate(member, schema, joiOptions);
@@ -405,8 +361,11 @@ function validateNotification(notification) {
 
 // eslint-disable-next-line func-names
 MemberSchema.methods.generateAuthToken = function() {
+  const signOptions = {
+    expiresIn: '5m' // *******    change to '8h' for production
+  };
   // eslint-disable-next-line no-underscore-dangle
-  const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
+  const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'), signOptions);
   return token;
 };
 

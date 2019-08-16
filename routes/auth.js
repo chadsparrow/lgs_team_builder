@@ -25,13 +25,13 @@ function validate(req) {
 // POST /api/members
 router.post('/login', async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const member = await Member.findOne({ email: req.body.email });
-  if (!member) return res.status(401).json({ message: 'Invalid email or password.' });
+  if (!member) return res.status(401).send([{ message: 'Invalid email or password.' }]);
 
   const validPassword = await bcrypt.compare(req.body.password, member.password);
-  if (!validPassword) return res.status(401).json({ message: 'Invalid email or password' });
+  if (!validPassword) return res.status(401).send([{ message: 'Invalid email or password' }]);
 
   const token = member.generateAuthToken();
   return res.send({ token, member: _.pick(member, ['_id', 'email', 'isAdmin']) });
@@ -40,9 +40,11 @@ router.post('/login', async (req, res) => {
 // POST /api/members
 router.post('/register', async (req, res) => {
   const { error } = validateNewMember(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const {
+    email,
+    password,
     name,
     address1,
     address2,
@@ -51,9 +53,6 @@ router.post('/register', async (req, res) => {
     country,
     zipPostal,
     phone,
-    email,
-    password,
-    shippingSame,
     shippingName,
     shippingAddress1,
     shippingAddress2,
@@ -67,19 +66,18 @@ router.post('/register', async (req, res) => {
 
   const userEmail = email.split('@')[0];
   if (password.includes('password'))
-    return res.status(400).json({ message: "Please do not use 'password' in your password" });
+    return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
   if (password.includes(userEmail))
     return res
       .status(400)
-      .json({ message: 'Please do not use your email username in your password' });
+      .send([{ message: 'Please do not use your email username in your password' }]);
 
-  const member = await Member.findOne({ email: cryptr.encrypt(email) });
-  if (member) return res.status(400).json({ message: 'Member already registered.' });
+  const member = await Member.findOne({ email });
+  if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
 
   const newMember = new Member({
     name,
     address1: cryptr.encrypt(address1),
-    address2: cryptr.encrypt(address2),
     city,
     stateProv,
     country,
@@ -89,36 +87,29 @@ router.post('/register', async (req, res) => {
     isAdmin: false
   });
 
+  if (address2) {
+    newMember.address2 = cryptr.encrypt(address2);
+  }
+  newMember.shipping.name = shippingName;
+  newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
+  if (shippingAddress2) {
+    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
+  }
+  newMember.shipping.city = shippingCity;
+  newMember.shipping.stateProv = shippingStateProv;
+  newMember.shipping.country = shippingCountry;
+  newMember.shipping.zipPostal = shippingZipPostal;
+  newMember.shipping.phone = cryptr.encrypt(shippingPhone);
+  newMember.shipping.email = shippingEmail;
+
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 
-  if (shippingSame) {
-    newMember.shipping.name = newMember.name;
-    newMember.shipping.address1 = newMember.address1;
-    newMember.shipping.address2 = newMember.address2;
-    newMember.shipping.city = newMember.city;
-    newMember.shipping.stateProv = newMember.stateProv;
-    newMember.shipping.country = newMember.country;
-    newMember.shipping.zipPostal = newMember.zipPostal;
-    newMember.shipping.phone = newMember.phone;
-    newMember.shipping.email = newMember.email;
-  } else {
-    newMember.shipping.name = shippingName;
-    newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
-    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
-    newMember.shipping.city = shippingCity;
-    newMember.shipping.stateProv = shippingStateProv;
-    newMember.shipping.country = shippingCountry;
-    newMember.shipping.zipPostal = shippingZipPostal;
-    newMember.shipping.phone = cryptr.encrypt(shippingPhone);
-    newMember.shipping.email = shippingEmail;
-  }
-
   await newMember.save();
 
-  return res.json(_.pick(newMember, ['_id', 'name', 'email']));
+  return res.send([{ message: 'You are now registered!' }]);
 });
 
 module.exports = router;
