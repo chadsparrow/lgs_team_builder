@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
@@ -7,42 +8,77 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     status: '',
-    accessToken: localStorage.getItem('access_token') || '',
-    currentMember: {}
+    token: localStorage.getItem('access_token') || '',
+    member: {}
   },
   actions: {
-    login: ({ commit }, user) => {
+    login: ({ commit }, loginCreds) => {
       return new Promise(async (resolve, reject) => {
         try {
-          // commit('auth_request');
-          const resp = await axios.post('/api/v1/auth/login', user);
-          localStorage.setItem('access_token', resp.data.token);
-          commit('SET_CURRENT_MEMBER', resp.data.member);
-          resolve(resp);
+          commit('AUTH_REQUEST');
+          const res = await axios.post('/api/v1/auth/login', loginCreds);
+          const token = res.data[0].token;
+          const member = res.data[0].member;
+          localStorage.setItem('access_token', token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          commit('AUTH_SUCCESS', { token, member });
+          resolve(res);
         } catch (err) {
-          // commit('auth_error');
+          commit('AUTH_ERROR');
           localStorage.removeItem('access_token');
           reject(err);
         }
       });
     },
-    // eslint-disable-next-line no-unused-vars
-    register({ commit }, user) {
+    register({ commit }, member) {
       return new Promise(async (resolve, reject) => {
         try {
-          // commit ('auth_request');
-          const resp = await axios.post('/api/v1/auth/register', user);
-          resolve(resp);
+          commit('AUTH_REQUEST');
+          const res = await axios.post('/api/v1/auth/register', member);
+          resolve(res);
         } catch (err) {
-          // commit ('auth_error')
+          commit('AUTH_ERROR');
+          reject(err);
+        }
+      });
+    },
+    logout({ commit }) {
+      return new Promise((resolve, reject) => {
+        commit('LOGOUT');
+        localStorage.removeItem('access_token');
+        resolve();
+      });
+    },
+    getMembers({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get('/api/v1/members');
+          resolve(res);
+        } catch (err) {
           reject(err);
         }
       });
     }
   },
   mutations: {
-    SET_CURRENT_MEMBER: (state, member) => {
-      state.currentMember = member;
+    AUTH_REQUEST(state) {
+      state.status = 'loading';
+    },
+    AUTH_SUCCESS(state, { token, member }) {
+      state.status = 'success';
+      state.token = token;
+      state.member = member;
+    },
+    AUTH_ERROR(state) {
+      state.status = 'error';
+    },
+    LOGOUT(state) {
+      state.status = '';
+      state.token = '';
     }
+  },
+  getters: {
+    isLoggedIn: state => !!state.token,
+    authStatus: state => state.status
   }
 });

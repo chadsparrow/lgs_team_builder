@@ -167,7 +167,7 @@ export default {
         this.shippingEmail = this.email;
       }
 
-      const user = {
+      const member = {
         email: this.email,
         password: this.password,
         name: this.name,
@@ -191,9 +191,9 @@ export default {
       };
 
       try {
-        const res = await this.$store.dispatch('register', user);
+        const res = await this.$store.dispatch('register', member);
         this.$toast.success(res.data[0].message);
-        this.$router.push('/login');
+        this.$router.push({ name: 'login' });
         this.$toast.success('Please log in');
       } catch (err) {
         if (err.response.data[0].context) {
