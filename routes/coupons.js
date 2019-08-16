@@ -35,9 +35,9 @@ router.get('/', auth, async (req, res) => {
     .populate({ path: 'approvedItems' })
     .select('-updatedAt -__v');
   if (coupons && coupons.length === 0)
-    return res.status(404).json({ message: 'No coupons found.' });
+    return res.status(404).send([{ message: 'No coupons found.' }]);
 
-  return res.json(coupons);
+  return res.send(coupons);
 });
 
 // Collects all coupons for the current authenticated user
@@ -47,13 +47,13 @@ router.get('/me', auth, async (req, res) => {
     .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
   if (coupons && coupons.length === 0)
-    return res.status(404).json({ message: 'You have no coupons.' });
+    return res.status(404).send([{ message: 'You have no coupons.' }]);
 
   coupons.forEach(async (coupon, index) => {
     coupons[index] = await populateCoupon(coupon._id);
   });
 
-  return res.json(coupons);
+  return res.send(coupons);
 });
 
 // Collects all coupons for a specified store based on given ID.
@@ -63,9 +63,9 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
     .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
   if (coupons && coupons.length === 0)
-    return res.status(400).json({ message: 'Coupons under the given Store ID were not found.' });
+    return res.status(400).send([{ message: 'Coupons under the given Store ID were not found.' }]);
 
-  return res.json(coupons);
+  return res.send(coupons);
 });
 
 // Collects a coupon with a given ID
@@ -74,15 +74,15 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
     .populate({ path: 'recipients.memberId', select: 'name email' })
     .populate({ path: 'approvedItems' })
     .select('-__v -updatedAt');
-  if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID not found.' });
+  if (!coupon) return res.status(400).send([{ message: 'Coupon with the given ID not found.' }]);
 
-  return res.json(coupon);
+  return res.send(coupon);
 });
 
 // Adds a new coupon, cannot make duplicate coupon in a single store
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCoupon(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const {
     storeId,
@@ -103,7 +103,7 @@ router.post('/', [auth, admin], async (req, res) => {
 
   let coupon = await Coupon.findOne({ storeId, code: code.toUpperCase() });
   if (coupon)
-    return res.status(400).json({ message: 'Coupon code already exists for this store.' });
+    return res.status(400).send([{ message: 'Coupon code already exists for this store.' }]);
 
   coupon = new Coupon({
     storeId,
@@ -133,23 +133,24 @@ router.post('/', [auth, admin], async (req, res) => {
 
   await coupon.save();
 
-  return res.json(await populateCoupon(coupon._id));
+  return res.send(await populateCoupon(coupon._id));
 });
 
 // Verifies coupon sent by client
 router.post('/verify/', [auth], async (req, res) => {
   const coupon = await Coupon.findOne({ storeId: req.query.store, code: req.query.code });
-  if (!coupon) return res.status(400).json({ message: 'Invalid coupon' });
+  if (!coupon) return res.status(400).send([{ message: 'Invalid coupon' }]);
 
   let memberFound = false;
   if (coupon.couponType === 'amount') {
-    if (coupon.couponsRemaining === 0) return res.status(400).json({ message: 'Coupon expired.' });
+    if (coupon.couponsRemaining === 0)
+      return res.status(400).send([{ message: 'Coupon expired.' }]);
   } else if (coupon.couponType === 'member') {
     // eslint-disable-next-line consistent-return
     coupon.recipients.forEach(recipient => {
       if (req.member._id === recipient.memberId) {
         if (recipient.expired === true) {
-          return res.status(400).json({ message: 'Coupon expired.' });
+          return res.status(400).send([{ message: 'Coupon expired.' }]);
         }
         memberFound = true;
       }
@@ -157,16 +158,16 @@ router.post('/verify/', [auth], async (req, res) => {
   }
 
   if (memberFound === false) {
-    return res.status(400).json({ message: 'Invalid coupon.' });
+    return res.status(400).send([{ message: 'Invalid coupon.' }]);
   }
 
-  return res.status(200).json({ message: 'Verified' });
+  return res.status(200).send([{ message: 'Verified' }]);
 });
 
 // Updates coupon, but doesnt allow duplicate codes in single store
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCouponEdit(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const {
     code,
@@ -188,7 +189,8 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   endDate = moment.tz(endDate, timezone).format();
 
   const coupon = await Coupon.findById(req.params.id);
-  if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
+  if (!coupon)
+    return res.status(400).send([{ message: 'Coupon with the given ID was not found.' }]);
 
   const duplicateCoupon = await Coupon.findOne({
     _id: { $ne: req.params.id },
@@ -197,7 +199,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   });
 
   if (duplicateCoupon)
-    return res.status(400).json({ message: 'Coupon code already exists for this store.' });
+    return res.status(400).send([{ message: 'Coupon code already exists for this store.' }]);
 
   coupon.code = code;
   coupon.description = description;
@@ -216,43 +218,45 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   await coupon.save();
 
-  return res.json(await populateCoupon(coupon._id));
+  return res.send(await populateCoupon(coupon._id));
 });
 
 router.patch('/use/:id', [validateObjectId, auth], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id);
-  if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
+  if (!coupon)
+    return res.status(400).send([{ message: 'Coupon with the given ID was not found.' }]);
   if (coupon.couponsRemaining === 0)
-    return res.status(400).json({ message: 'Coupon is now expired.' });
+    return res.status(400).send([{ message: 'Coupon is now expired.' }]);
 
   coupon.couponsUsed += 1;
   coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
 
   await coupon.save();
 
-  return res.json(await populateCoupon(coupon._id));
+  return res.send(await populateCoupon(coupon._id));
 });
 
 router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateAddAmount(req.query);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const coupon = await Coupon.findById(req.params.id);
-  if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID was not found.' });
+  if (!coupon)
+    return res.status(400).send([{ message: 'Coupon with the given ID was not found.' }]);
 
   coupon.maxCoupons += req.body.amount;
   coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
 
   await coupon.save();
 
-  return res.json(await populateCoupon(coupon._id));
+  return res.send(await populateCoupon(coupon._id));
 });
 
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const coupon = await Coupon.findByIdAndRemove(req.params.id);
-  if (!coupon) return res.status(400).json({ message: 'Coupon with the given ID not found.' });
+  if (!coupon) return res.status(400).send([{ message: 'Coupon with the given ID not found.' }]);
 
-  return res.status(200).json({ message: 'Coupon Removed.' });
+  return res.status(200).send([{ message: 'Coupon Removed.' }]);
 });
 
 module.exports = router;

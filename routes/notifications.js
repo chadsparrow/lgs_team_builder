@@ -9,13 +9,14 @@ const validateObjectId = require('../middleware/validateObjectId');
 // GET /api/notifcations/me
 router.get('/me', auth, async (req, res) => {
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
-  return res.json(member.notifications);
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+  return res.send(member.notifications);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateNotification(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const today = new Date();
   const newNotification = {
@@ -32,14 +33,14 @@ router.post('/', auth, async (req, res) => {
     }
   });
 
-  return res.status(200).json({ message: 'Notification sent' });
+  return res.status(200).send([{ message: 'Notification sent' }]);
 });
 
 router.delete('/all', auth, async (req, res) => {
   const member = await Member.findById(req.member._id);
   member.notifications = [];
   await member.save();
-  return res.status(200).json({ message: 'Notifications cleared' });
+  return res.status(200).send([{ message: 'Notifications cleared' }]);
 });
 
 router.delete('/:id', [validateObjectId, auth], async (req, res) => {
@@ -49,10 +50,10 @@ router.delete('/:id', [validateObjectId, auth], async (req, res) => {
       return n._id !== req.params.id;
     });
     await member.save();
-    return res.status(200).json({ message: 'Notification deleted' });
+    return res.status(200).send([{ message: 'Notification deleted' }]);
   }
 
-  return res.status(400).json({ message: 'Notifications with that ID not found.' });
+  return res.status(400).send([{ message: 'Notifications with that ID not found.' }]);
 });
 
 module.exports = router;

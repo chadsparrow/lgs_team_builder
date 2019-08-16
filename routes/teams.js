@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
@@ -27,9 +28,9 @@ router.get('/', auth, async (req, res) => {
         select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .select('-updatedAt -__v ');
-    if (teams && teams.length === 0) return res.status(404).json({ message: 'No Teams found.' });
+    if (teams && teams.length === 0) return res.status(404).send([{ message: 'No Teams found.' }]);
 
-    return res.json(teams);
+    return res.send(teams);
   }
   teams = await Team.find({ $or: [{ managerId: req.member._id }, { members: req.member._id }] })
     .populate({ path: 'managerId', select: 'name email' })
@@ -45,9 +46,9 @@ router.get('/', auth, async (req, res) => {
     .select('-updatedAt -__v -adminId');
 
   if (teams && teams.length === 0)
-    return res.status(404).json({ message: 'You are currently not a member of any teams' });
+    return res.status(404).send([{ message: 'You are currently not a member of any teams' }]);
 
-  return res.json(teams);
+  return res.send(teams);
 });
 
 // GET /api/teams/:id
@@ -81,31 +82,31 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
       })
       .select('-updatedAt -__v -adminId');
   }
-  if (!team) return res.status(404).json({ message: 'Team with the given ID not found.' });
+  if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
 
-  return res.json(team);
+  return res.send(team);
 });
 
 // POST /api/teams
 router.post('/', [auth, admin], async (req, res) => {
   if (swearjar.profane(req.body.name))
-    return res.status(400).json({ message: 'Team name must not contain profanity.' });
+    return res.status(400).send([{ message: 'Team name must not contain profanity.' }]);
 
   const { error } = validateTeamName(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const team = await Team.findOne({ name: req.body.name });
-  if (team) return res.status(400).json({ message: 'Team name already registered' });
+  if (team) return res.status(400).send([{ message: 'Team name already registered' }]);
 
   const newTeam = new Team({ name: req.body.name });
   await newTeam.save();
-  return res.json(_.pick(newTeam, ['_id', 'name']));
+  return res.send(_.pick(newTeam, ['_id', 'name']));
 });
 
 // PUT /api/teams/:id
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) return res.status(400).send([{ message: error.details[0].message }]);
 
   const {
     logo,
@@ -134,21 +135,21 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   } = req.body;
 
   const team = await Team.findById(req.params.id);
-  if (!team) return res.status(400).json({ message: 'Team with the given ID was not found' });
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found' }]);
 
   const teamAdmin = await Member.findById(adminId);
   if (!teamAdmin)
-    return res.status(400).json({ message: 'Admin: Member with the given ID was not found' });
+    return res.status(400).send([{ message: 'Admin: Member with the given ID was not found' }]);
   if (!teamAdmin.isAdmin)
-    return res.status(403).json({ message: 'Admin: Member must have admin status' });
+    return res.status(403).send([{ message: 'Admin: Member must have admin status' }]);
 
   team.adminId = adminId;
 
   const manager = await Member.findById(managerId);
   if (!manager)
-    return res.status(400).json({ message: 'Manager: Member with the given ID was not found' });
+    return res.status(400).send([{ message: 'Manager: Member with the given ID was not found' }]);
   if (manager.isAdmin)
-    return res.status(403).json({ message: 'Manager: Member cannot be an admin' });
+    return res.status(403).send([{ message: 'Manager: Member cannot be an admin' }]);
   team.managerId = managerId;
 
   if (logo !== '' || logo) {
@@ -214,24 +215,25 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     })
     .select('-updatedAt -__v');
 
-  return res.status(200).json(populatedTeam);
+  return res.status(200).send(populatedTeam);
 });
 
 router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateAddMember(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const { memberId } = req.body;
 
   const member = await Member.findById(memberId);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   const team = await Team.findById(req.params.id);
-  if (!team) return res.status(400).json({ message: 'Team with the given ID was not found.' });
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
 
   const alreadyRegistered = team.members.includes(req.body.memberId);
   if (alreadyRegistered)
-    return res.status(400).json({ message: 'Member already part of the team' });
+    return res.status(400).send([{ message: 'Member already part of the team' }]);
 
   team.members.push(mongoose.Types.ObjectId(memberId));
 
@@ -251,7 +253,7 @@ router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
     })
     .select('-updatedAt -__v');
 
-  return res.status(200).json(populatedTeam);
+  return res.status(200).send(populatedTeam);
 });
 
 module.exports = router;

@@ -126,8 +126,6 @@
 </template>
 
 <script>
-import _ from 'lodash';
-
 export default {
   name: 'Register',
   data() {
@@ -152,14 +150,11 @@ export default {
       shippingCountry: undefined,
       shippingZipPostal: undefined,
       shippingPhone: undefined,
-      shippingEmail: undefined,
-      error: {}
+      shippingEmail: undefined
     };
   },
   methods: {
     register: async function() {
-      this.error = {};
-
       if (this.shippingSame) {
         this.shippingName = this.name;
         this.shippingAddress1 = this.address1;
@@ -197,16 +192,15 @@ export default {
 
       try {
         const res = await this.$store.dispatch('register', user);
-        M.toast({ html: res.data[0].message, classes: 'green' });
-        M.toast({ html: 'Go ahead and sign in', classes: 'green' });
+        this.$toast.success(res.data[0].message);
         this.$router.push('/login');
+        this.$toast.success('Please log in');
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        M.toast({ html: err.response.data[0].message, classes: 'red' });
-        this.error = err.response.data[0];
+        this.$toast.error(err.response.data[0].message);
       }
     }
   }

@@ -24,9 +24,9 @@ router.get('/', auth, async (req, res) => {
   const members = await Member.find().select('avatarUrl _id name email isAdmin');
 
   if (members && members.length === 0)
-    return res.status(404).json({ message: 'There are no members in the database.' });
+    return res.status(404).send([{ message: 'There are no members in the database.' }]);
 
-  return res.json(members);
+  return res.send(members);
 });
 
 router.get('/me', auth, async (req, res) => {
@@ -42,26 +42,30 @@ router.get('/me', auth, async (req, res) => {
     .sort('-messages.date');
 
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  return res.json({
-    member: _.pick(member, ['avatarUrl', '_id', 'name', 'email', 'isAdmin']),
-    emails
-  });
+  return res.send([
+    {
+      member: _.pick(member, ['avatarUrl', '_id', 'name', 'email', 'isAdmin']),
+      emails
+    }
+  ]);
 });
 
 // GET /api/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  return res.json(_.pick(member, ['_id', 'avatarUrl', 'name', 'email']));
+  return res.send(_.pick(member, ['_id', 'avatarUrl', 'name', 'email']));
 });
 
 // POST /api/members
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewMember(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const {
     name,
@@ -88,14 +92,14 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   const userEmail = email.split('@')[0];
   if (password.includes('password'))
-    return res.status(400).json({ message: "Please do not use 'password' in your password" });
+    return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
   if (password.includes(userEmail))
     return res
       .status(400)
-      .json({ message: 'Please do not use your email username in your password' });
+      .send([{ message: 'Please do not use your email username in your password' }]);
 
   const member = await Member.findOne({ email });
-  if (member) return res.status(400).json({ message: 'Member already registered.' });
+  if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
 
   const newMember = new Member({
     name,
@@ -139,13 +143,13 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   await newMember.save();
 
-  return res.json(_.pick(newMember, ['_id', 'name', 'email']));
+  return res.send(_.pick(newMember, ['_id', 'name', 'email']));
 });
 
 // PUT /api/members/:id
 router.put('/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const {
     name,
@@ -169,10 +173,11 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     isAdmin
   } = req.body;
 
-  if (!req.member.isAdmin && isAdmin) return res.status(403).json({ message: 'Access Denied.' });
+  if (!req.member.isAdmin && isAdmin) return res.status(403).send([{ message: 'Access Denied.' }]);
 
   const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   member.name = name;
   member.address1 = cryptr.encrypt(address1);
@@ -208,21 +213,22 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   await member.save();
 
-  return res.json(_.pick(member, ['_id', 'name', 'email']));
+  return res.send(_.pick(member, ['_id', 'name', 'email']));
 });
 
 // PATCH /api/members/email/:id
 router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const { email } = req.body;
 
   let member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   if (member.email === email) {
-    return res.status(400).json({ message: 'Email is identical to what is already set.' });
+    return res.status(400).send([{ message: 'Email is identical to what is already set.' }]);
   }
 
   const emailCheck = await Member.findOne({
@@ -233,35 +239,36 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   if (emailCheck) {
     return res
       .status(400)
-      .json({ message: 'Member with the given email address already registered' });
+      .send([{ message: 'Member with the given email address already registered' }]);
   }
 
   member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email }, { new: true });
 
-  return res.status(200).json({ message: 'Member email updated' });
+  return res.status(200).send([{ message: 'Member email updated' }]);
 });
 
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const { oldpassword, newpassword } = req.body;
 
   const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   const result = await bcrypt.compare(oldpassword, member.password);
-  if (!result) return res.status(400).json({ message: 'Password incorrect.' });
+  if (!result) return res.status(400).send([{ message: 'Password incorrect.' }]);
 
   const userEmail = member.email.split('@')[0];
 
   if (newpassword.includes('password'))
-    return res.status(400).json({ message: "Please do not use 'password' in your password" });
+    return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
   if (newpassword.includes(userEmail))
     return res
       .status(400)
-      .json({ message: 'Please do not use your email username in your password' });
+      .send([{ message: 'Please do not use your email username in your password' }]);
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(newpassword, salt);
@@ -269,14 +276,15 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   member.password = hash;
   await member.save();
 
-  return res.status(200).json({ message: 'Member password updated' });
+  return res.status(200).send([{ message: 'Member password updated' }]);
 });
 
 // DELETE /api/members/:id
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findByIdAndRemove(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
-  return res.status(200).json({ message: 'Member deleted' });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+  return res.status(200).send([{ message: 'Member deleted' }]);
 });
 
 module.exports = router;

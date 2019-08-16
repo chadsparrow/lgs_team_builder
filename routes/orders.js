@@ -12,69 +12,69 @@ const validateObjectId = require('../middleware/validateObjectId');
 
 router.get('/all', [auth, admin], async (req, res) => {
   const orders = await Order.find();
-  if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found' });
+  if (orders && orders.length === 0) return res.status(404).send([{ message: 'No orders found' }]);
 
-  return res.json(orders);
+  return res.send(orders);
 });
 
 router.get('/me', [auth], async (req, res) => {
   const orders = await Order.find({ memberId: req.member._id });
-  if (orders && orders.length === 0) return res.status(404).json({ message: 'No orders found' });
+  if (orders && orders.length === 0) return res.status(404).send([{ message: 'No orders found' }]);
 
-  return res.json(orders);
+  return res.send(orders);
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id);
-  if (!team) return res.status(400).json({ message: 'Team with the given ID not found' });
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
 
   if (req.member._id !== team.managerId || !req.member.isAdmin)
-    return res.status(403).json({ message: 'Access Denied' });
+    return res.status(403).send([{ message: 'Access Denied' }]);
 
   const orders = await Order.find({ teamId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).json({ message: 'No orders found for the given Team ID' });
+    return res.status(404).send([{ message: 'No orders found for the given Team ID' }]);
 
-  return res.json(orders);
+  return res.send(orders);
 });
 
 router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID not found' });
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
 
   const orders = await Order.find({ memberId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).json({ message: 'No orders found for the given Member ID' });
+    return res.status(404).send([{ message: 'No orders found for the given Member ID' }]);
 
-  return res.json(orders);
+  return res.send(orders);
 });
 
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id);
-  if (!store) return res.status(400).json({ message: 'Store with given ID not found' });
+  if (!store) return res.status(400).send([{ message: 'Store with given ID not found' }]);
 
   if (req.member._id !== store.managerId || !req.member.isAdmin)
-    return res.status(403).json({ message: 'Access Denied' });
+    return res.status(403).send([{ message: 'Access Denied' }]);
 
   const orders = await Order.find({ storeId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).json({ message: 'No orders found for the given Store ID' });
+    return res.status(404).send([{ message: 'No orders found for the given Store ID' }]);
 
-  return res.json(orders);
+  return res.send(orders);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateOrder(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const member = await Member.findById(req.body.memberId);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID not found' });
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
 
   const team = await Team.findById(req.body.teamId);
-  if (!team) return res.status(400).json({ message: 'Team with the given ID not found' });
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
 
   const store = await Store.findById(req.body.storeId);
-  if (!store) return res.status(400).json({ message: 'Store with the given ID not found' });
+  if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
 
   const {
     storeId,
@@ -131,7 +131,7 @@ router.post('/', auth, async (req, res) => {
   order.balanceOwing = order.totalAmount - order.amount_paid;
 
   await order.save();
-  return res.json(order);
+  return res.send(order);
 });
 
 module.exports = router;

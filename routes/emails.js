@@ -28,9 +28,9 @@ router.get('/admin', [auth, admin], async (req, res) => {
   const { filter } = aqp(req.query);
   const emails = await Email.find(filter);
 
-  if (emails && emails.length === 0) return res.status(404).json({ message: 'No emails found.' });
+  if (emails && emails.length === 0) return res.status(404).send([{ message: 'No emails found.' }]);
 
-  return res.json(emails);
+  return res.send(emails);
 });
 
 // GET /api/emails
@@ -47,21 +47,21 @@ router.get('/', auth, async (req, res) => {
     .sort('-messages.date')
     .select('-__v -teamId');
 
-  if (emails.length === 0) return res.status(404).json({ message: 'You have no messages.' });
-  return res.json(emails);
+  if (emails.length === 0) return res.status(404).send([{ message: 'You have no messages.' }]);
+  return res.send(emails);
 });
 
 router.post('/', auth, async (req, res) => {
   const { error } = validateEmail(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const recipients = [];
 
   const sender = await Member.findById(req.member._id);
   if (!sender)
-    return res.status(400).json({
+    return res.status(400).send({[
       message: `Sender with a given ID (${req.member._id}) was not found. Please try again.`
-    });
+    }]);
 
   recipients.push({ memberId: req.member._id, unread: false });
 
@@ -69,9 +69,9 @@ router.post('/', auth, async (req, res) => {
   req.body.recipients.forEach(async recipient => {
     const member = await Member.findById(recipient);
     if (!member)
-      return res.status(400).json({
+      return res.status(400).send([{
         message: `Recipient with the given ID (${recipient}) was not found. Please try again.`
-      });
+      }]);
     recipients.push({ memberId: recipient });
   });
 
@@ -91,16 +91,16 @@ router.post('/', auth, async (req, res) => {
   const savedEmail = await newEmail.save();
   const populatedEmail = await populateEmail(savedEmail._id);
 
-  return res.json(populatedEmail);
+  return res.send(populatedEmail);
 });
 
 // Toggle Unread boolean on an email.
 router.patch('/:id/tr', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   const email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).json({ message: 'Email with the given ID was not found.' });
+  if (!email) return res.status(400).send([{ message: 'Email with the given ID was not found.' }]);
 
   email.recipients.forEach((recipient, index) => {
     if (recipient.memberId === req.member._id) {
@@ -111,15 +111,15 @@ router.patch('/:id/tr', [validateObjectId, auth], async (req, res) => {
   const savedEmail = await email.save();
   const populatedEmail = await populateEmail(savedEmail._id);
 
-  return res.json(populatedEmail);
+  return res.send(populatedEmail);
 });
 
 router.patch('/:id/archive', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   const email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).json({ message: `Email with the given ID was not found.` });
+  if (!email) return res.status(400).send([{ message: `Email with the given ID was not found.` }]);
 
   // eslint-disable-next-line consistent-return
   email.recipients.forEach((recipient, index) => {
@@ -128,25 +128,25 @@ router.patch('/:id/archive', [validateObjectId, auth], async (req, res) => {
     }
 
     if (recipient.memberId === req.member._id && recipient.archived) {
-      return res.status(400).json({ message: 'Email with the given ID is already archived.' });
+      return res.status(400).send([{ message: 'Email with the given ID is already archived.' }]);
     }
   });
 
   const savedEmail = await email.save();
   const populatedEmail = await populateEmail(savedEmail._id);
 
-  return res.json(populatedEmail);
+  return res.send(populatedEmail);
 });
 
 router.post('/:id/reply', [validateObjectId, auth], async (req, res) => {
   const { error } = validateMessage(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const member = await Member.findById(req.member._id);
-  if (!member) return res.status(400).json({ message: 'Member with the given ID was not found.' });
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   const email = await Email.findById(req.params.id);
-  if (!email) return res.status(400).json({ message: `Email with the given ID was not found.` });
+  if (!email) return res.status(400).send([{ message: `Email with the given ID was not found.` }]);
 
   const newMessage = {
     message: req.body.message,
@@ -166,7 +166,7 @@ router.post('/:id/reply', [validateObjectId, auth], async (req, res) => {
   const savedEmail = await email.save();
   const populatedEmail = await populateEmail(savedEmail._id);
 
-  return res.json(populatedEmail);
+  return res.send(populatedEmail);
 });
 
 module.exports = router;

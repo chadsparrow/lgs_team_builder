@@ -19,9 +19,9 @@ const validateObjectId = require('../middleware/validateObjectId');
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const storeitems = await StoreItem.find({ storeId: req.params.id });
   if (storeitems && storeitems.length === 0)
-    return res.status(404).json({ message: 'No store items found' });
+    return res.status(404).send([{ message: 'No store items found' }]);
 
-  return res.json(storeitems);
+  return res.send(storeitems);
 });
 
 // GET /api/storeitems/<itemId>
@@ -30,9 +30,9 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const storeitem = await StoreItem.findById(req.params.id);
   if (!storeitem)
-    return res.status(400).json({ message: 'Store item with the given ID not found' });
+    return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
 
-  return res.json(storeitem);
+  return res.send(storeitem);
 });
 
 // GET /api/storeitems/all
@@ -41,9 +41,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 router.get('/all', [auth, admin], async (req, res) => {
   const storeitems = await StoreItem.find();
   if (storeitems && storeitems.length === 0)
-    return res.status(404).json({ message: 'No store items found' });
+    return res.status(404).send([{ message: 'No store items found' }]);
 
-  return res.json(storeitems);
+  return res.send(storeitems);
 });
 
 // POST /api/storeitems/<storeId>
@@ -51,14 +51,14 @@ router.get('/all', [auth, admin], async (req, res) => {
 // ACCESS - Private - Admin only
 router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItem(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const store = await Store.findById(req.params.id);
-  if (!store) return res.status(400).json({ message: 'Store with the given ID not found' });
+  if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
 
   const catalogitem = await CatalogItem.findById(req.body.itemId);
   if (!catalogitem)
-    return res.status(400).json({ message: 'Catalog item with the given ID not found' });
+    return res.status(400).send([{ message: 'Catalog item with the given ID not found' }]);
 
   const {
     storeId,
@@ -89,7 +89,7 @@ router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
   });
 
   await storeItem.save();
-  return res.json(storeItem);
+  return res.send(storeItem);
 });
 
 // PUT /api/storeitems/<itemId>
@@ -97,11 +97,11 @@ router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
 // ACCESS - Private - Admin only
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItemEdit(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const storeItem = await StoreItem.findById(req.params.id);
   if (!storeItem)
-    return res.status(400).json({ message: 'Store item with the given ID not found' });
+    return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
 
   const { isActive, sizesOffered, category, name, code, number, mandatory, price } = req.body;
 
@@ -115,7 +115,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   storeItem.price = price;
 
   await storeItem.save();
-  return res.json(storeItem);
+  return res.send(storeItem);
 });
 
 // PATCH /api/storeitems/<itemId>/images?index=<image index number>
@@ -123,7 +123,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 // ACCESS - Private - Admin only
 router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItemImage(req.body);
-  if (error) return res.status(400).json(error.details);
+  if (error) return res.status(400).send(error.details);
 
   const storeItem = await StoreItem.findById(req.params.id);
 
@@ -132,7 +132,7 @@ router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
   storeItem.images[index].name = req.body.name;
 
   await storeItem.save();
-  return res.json(storeItem);
+  return res.send(storeItem);
 });
 
 // DELETE /api/storeitems/<itemId>
@@ -141,9 +141,9 @@ router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const storeItem = await StoreItem.findByIdAndDelete(req.params.id);
   if (!storeItem)
-    return res.status(400).json({ message: 'Store item with the given ID not found' });
+    return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
 
-  return res.status(200).json({ message: 'Store item deleted' });
+  return res.status(200).send([{ message: 'Store item deleted' }]);
 });
 
 module.exports = router;

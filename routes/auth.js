@@ -34,7 +34,13 @@ router.post('/login', async (req, res) => {
   if (!validPassword) return res.status(401).send([{ message: 'Invalid email or password' }]);
 
   const token = member.generateAuthToken();
-  return res.send({ token, member: _.pick(member, ['_id', 'email', 'isAdmin']) });
+  return res.send([
+    {
+      token,
+      member: _.pick(member, ['_id', 'email', 'isAdmin']),
+      message: 'Welcome Back!'
+    }
+  ]);
 });
 
 // POST /api/members

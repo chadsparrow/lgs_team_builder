@@ -1,14 +1,14 @@
 <template>
   <div>
     <h4>Sign In</h4>
-    <form class="login" @submit.prevent="login">
+    <form class="login" @submit.prevent="login" novalidate>
       <label for="email">Email</label>
       <div>
         <input placeholder="Your email" type="email" v-model="email" autofocus ref="email" />
       </div>
       <label for="password">Password</label>
       <div>
-        <input placeholder="Password" type="password" v-model="password" />
+        <input placeholder="Password" type="password" v-model="password" ref="password" />
       </div>
       <hr />
       <button type="submit">Login</button>
@@ -21,9 +21,8 @@ export default {
   name: 'login',
   data() {
     return {
-      email: '',
-      password: '',
-      error: {}
+      email: undefined,
+      password: undefined
     };
   },
   methods: {
@@ -33,15 +32,14 @@ export default {
 
       try {
         const res = await this.$store.dispatch('login', { email, password });
-        M.toast({ html: 'Welcome Back', classes: 'green' });
         this.$router.push('/dashboard');
+        this.$toast.success(res.data[0].message);
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        M.toast({ html: err.response.data[0].message, classes: 'red' });
-        this.error = err.response.data[0];
+        this.$toast.error(err.response.data[0].message);
       }
     }
   }
