@@ -192,15 +192,15 @@ export default {
 
       try {
         const res = await this.$store.dispatch('register', member);
-        this.$toast.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message);
         this.$router.push({ name: 'login' });
-        this.$toast.success('Please log in');
+        this.$toasted.success('Please log in');
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toast.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message);
       }
     }
   }

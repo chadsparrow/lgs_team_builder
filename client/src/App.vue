@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Overpass:300,400,900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Overpass:200,300,400,900&display=swap');
 
 body,
 html {
@@ -62,5 +62,10 @@ html {
     text-decoration: none;
     cursor: pointer;
   }
+}
+body {
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(to bottom right, white, #d6d6d6);
 }
 </style>

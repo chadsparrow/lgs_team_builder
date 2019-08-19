@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="row text-center">
-      <div class="col-sm-12 title mb-6">TEAM BUILDER</div>
       <form @submit.prevent="login" novalidate class="col-sm-12 text-left">
+        <h4 class="text-center m-4">TB Logo</h4>
         <h4 class="text-center m-4">Log In</h4>
         <div class="form-group">
           <label for="email">Email address</label>
@@ -53,13 +53,13 @@ export default {
       try {
         const res = await this.$store.dispatch('login', { email, password });
         this.$router.push({ name: 'dashboard' });
-        this.$toast.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message);
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toast.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message);
       }
     }
   }
@@ -68,16 +68,18 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  width: 150px;
+  width: 300px;
   background-color: black;
   color: white;
   border-radius: 10px;
   padding: 1rem;
+  position: relative;
+  font-weight: 200;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: 300;
+label {
+  font-size: 0.9rem;
 }
 
 .container {
@@ -88,4 +90,3 @@ form {
   justify-content: center;
 }
 </style>
-

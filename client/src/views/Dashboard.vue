@@ -1,36 +1,46 @@
 <template>
-  <div class="container-fluid">
-    <h4>Dashboard</h4>
-    <div v-for="member of members" :key="member._id">{{ member.name }}</div>
-    <button @click="reload">Reload</button>
+  <div class="dashboard">
+    <SideNav />
+    <TopNav />
+    <div class="mainContent">
+      <h1>Dashboard</h1>
+    </div>
   </div>
 </template>
 
 <script>
+import SideNav from '../components/SideNav';
+import TopNav from '../components/TopNav';
+
 export default {
   name: 'Register',
+  components: {
+    SideNav,
+    TopNav
+  },
   data() {
-    return {
-      members: []
-    };
+    return {};
   },
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch('getMembers');
-      this.members = res.data;
-    } catch (err) {
-      this.$toast.error(err.response.data[0].message);
-    }
-  },
-  methods: {
-    reload: async function() {
-      try {
-        const res = await this.$store.dispatch('getMembers');
-        this.members = res.data;
-      } catch (err) {
-        this.$toast.error(err.response.data[0].message);
-      }
-    }
-  }
+  methods: {}
 };
 </script>
+
+<style lang="scss" scoped>
+.dashboard {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 50px auto;
+  width: 100%;
+  height: 100vh;
+  grid-template-areas:
+    'nav topnav'
+    'nav content';
+}
+
+.mainContent {
+  grid-area: content;
+  padding: 1rem;
+}
+</style>
+
+
