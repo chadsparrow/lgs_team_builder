@@ -9,12 +9,12 @@ import 'vue-toast-notification/dist/index.css';
 Vue.use(VueToast, { position: 'bottom-right' });
 
 Vue.config.productionTip = false;
-const accessToken = localStorage.getItem('access_token');
+const token = localStorage.getItem('token');
 
 Vue.prototype.$http = Axios;
 
-if (accessToken) {
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+if (token) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
 new Vue({

@@ -8,7 +8,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     status: '',
-    token: localStorage.getItem('access_token') || '',
+    token: localStorage.getItem('token') || '',
     member: {}
   },
   actions: {
@@ -19,13 +19,13 @@ export default new Vuex.Store({
           const res = await axios.post('/api/v1/auth/login', loginCreds);
           const token = res.data[0].token;
           const member = res.data[0].member;
-          localStorage.setItem('access_token', token);
+          localStorage.setItem('token', token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           commit('AUTH_SUCCESS', { token, member });
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
-          localStorage.removeItem('access_token');
+          localStorage.removeItem('token');
           reject(err);
         }
       });
@@ -45,7 +45,7 @@ export default new Vuex.Store({
     logout({ commit }) {
       return new Promise((resolve, reject) => {
         commit('LOGOUT');
-        localStorage.removeItem('access_token');
+        localStorage.removeItem('token');
         resolve();
       });
     },
@@ -75,6 +75,7 @@ export default new Vuex.Store({
     LOGOUT(state) {
       state.status = '';
       state.token = '';
+      state.member = {};
     }
   },
   getters: {

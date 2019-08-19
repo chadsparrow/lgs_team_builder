@@ -11,6 +11,8 @@
 </template>
 
 <script>
+// import axios from 'axios';
+
 export default {
   computed: {
     isLoggedIn: function() {
@@ -24,15 +26,28 @@ export default {
     }
   },
   created: function() {
-    this.$http.interceptors.response.use(undefined, function(err) {
-      // eslint-disable-next-line
-      return new Promise(function(resolve, reject) {
-        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-          this.$store.dispatch('logout');
+    // TODO: FIX ERROR INTERCEPTOR
+
+    this.$http.interceptors.response.use(
+      response => {
+        return response;
+      },
+      async error => {
+        if (error.response.status !== 401) {
+          return new Promise((resolve, reject) => {
+            reject(error);
+          });
         }
-        throw err;
-      });
-    });
+
+        localStorage.removeItem('token');
+        this.$store.dispatch('logout');
+        this.$router.push({ name: 'login' });
+
+        return new Promise((resolve, reject) => {
+          reject(error);
+        });
+      }
+    );
   }
 };
 </script>

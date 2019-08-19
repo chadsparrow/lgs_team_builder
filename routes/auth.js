@@ -28,10 +28,10 @@ router.post('/login', async (req, res) => {
   if (error) return res.status(400).send(error.details);
 
   const member = await Member.findOne({ email: req.body.email });
-  if (!member) return res.status(401).send([{ message: 'Invalid email or password.' }]);
+  if (!member) return res.status(400).send([{ message: 'Invalid email or password.' }]);
 
   const validPassword = await bcrypt.compare(req.body.password, member.password);
-  if (!validPassword) return res.status(401).send([{ message: 'Invalid email or password' }]);
+  if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
   const token = member.generateAuthToken();
   return res.send([
