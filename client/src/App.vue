@@ -1,18 +1,16 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link>
       <span v-if="isLoggedIn">
         <a @click="logout">Logout</a>
       </span>
-    </div>
+    </div>-->
     <router-view />
   </div>
 </template>
 
 <script>
-// import axios from 'axios';
-
 export default {
   computed: {
     isLoggedIn: function() {
@@ -26,8 +24,6 @@ export default {
     }
   },
   created: function() {
-    // TODO: FIX ERROR INTERCEPTOR
-
     this.$http.interceptors.response.use(
       response => {
         return response;
@@ -53,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Overpass&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Overpass:300,400,900&display=swap');
 
 body,
 html {

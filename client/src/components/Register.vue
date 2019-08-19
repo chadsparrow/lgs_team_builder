@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <h4>Register</h4>
-    <form @submit.prevent="register" class="mr-auto" novalidate>
+    <form @submit.prevent="register" class="m-auto" novalidate>
       <div class="input-field">
         <label for="email">Email Address</label>
         <input id="email" type="email" v-model="email" autofocus ref="email" />

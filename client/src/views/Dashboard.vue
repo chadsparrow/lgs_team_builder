@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <h4>Dashboard</h4>
     <div v-for="member of members" :key="member._id">{{ member.name }}</div>
     <button @click="reload">Reload</button>

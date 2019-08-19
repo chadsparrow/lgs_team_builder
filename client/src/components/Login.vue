@@ -1,18 +1,38 @@
 <template>
-  <div>
-    <h4>Sign In</h4>
-    <form class="login" @submit.prevent="login" novalidate>
-      <label for="email">Email</label>
-      <div>
-        <input placeholder="Your email" type="email" v-model="email" autofocus ref="email" />
-      </div>
-      <label for="password">Password</label>
-      <div>
-        <input placeholder="Password" type="password" v-model="password" ref="password" />
-      </div>
-      <hr />
-      <button type="submit">Login</button>
-    </form>
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-sm-12 title mb-6">TEAM BUILDER</div>
+      <form @submit.prevent="login" novalidate class="col-sm-12 text-left">
+        <h4 class="text-center m-4">Log In</h4>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter email"
+            ref="email"
+            v-model="email"
+          />
+          <small
+            id="emailHelp"
+            class="form-text text-muted"
+          >We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group mb-5">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Password"
+            ref="password"
+            v-model="password"
+          />
+        </div>
+        <button type="submit" class="btn btn-dark btn-block">Login</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -45,3 +65,27 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+form {
+  width: 150px;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  justify-content: center;
+}
+</style>
+
