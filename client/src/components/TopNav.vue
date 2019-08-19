@@ -15,10 +15,12 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto notifications">
         <li class="nav-item">
-          <router-link class="nav-link" to="/">Home</router-link>
+          <a class="nav-link" href="#">Link</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <span class="nav-link" v-if="isLoggedIn">
+            <a @click="logout">Logout</a>
+          </span>
         </li>
       </ul>
     </div>
@@ -26,7 +28,20 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'TopNav',
+  computed: {
+    isLoggedIn: function() {
+      return this.$store.getters.isLoggedIn;
+    }
+  },
+  methods: {
+    logout: async function() {
+      await this.$store.dispatch('logout');
+      this.$router.push({ name: 'login' });
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
