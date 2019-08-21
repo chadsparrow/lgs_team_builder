@@ -4,6 +4,7 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
+import PageNotFound from './views/PageNotFound.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
 import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
@@ -109,6 +110,11 @@ let router = new Router({
           }
         }
       ]
+    },
+    {
+      path: '*',
+      name: '404',
+      component: PageNotFound
     }
   ]
 });
@@ -116,7 +122,7 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (localStorage.getItem('token') == null) {
-      this.$toasted.error('Access Denied');
+      Vue.toasted.error('Access Denied');
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
@@ -127,7 +133,7 @@ router.beforeEach((to, from, next) => {
         if (member.isAdmin) {
           next();
         } else {
-          this.$toasted.error('Access Denied');
+          Vue.toasted.error('Access Denied');
           next({ name: 'dashboard' });
         }
       } else {
@@ -136,7 +142,6 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.guest)) {
     if (localStorage.getItem('token') == null) {
-      this.$toasted.error('Access Denied');
       next();
     } else {
       next({ name: 'dashboard' });
