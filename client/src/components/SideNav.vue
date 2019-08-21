@@ -1,10 +1,14 @@
 <template>
   <div class="sidenav">
     <div class="logo mb-4 mt-2 text-center">TEAM BUILDER</div>
-    <router-link class="btn btn-block btn-dark" to="#" v-if="member && member.isAdmin">Members</router-link>
-    <router-link class="btn btn-block btn-dark" to="#">Teams</router-link>
-    <router-link class="btn btn-block btn-dark" to="#">Stores</router-link>
-    <router-link class="btn btn-block btn-dark" to="#">Orders</router-link>
+    <router-link
+      class="btn btn-block btn-dark"
+      to="/dashboard/members"
+      v-if="member && member.isAdmin"
+    >Members</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/teams">Teams</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/stores">Stores</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/orders">Orders</router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/catalogs"

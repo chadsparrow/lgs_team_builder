@@ -49,7 +49,7 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  background-color: #222;
+  background-color: #222 !important;
   color: white;
   padding: 0.6em;
   padding-right: 1.85em;

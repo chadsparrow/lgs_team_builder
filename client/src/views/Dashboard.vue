@@ -11,7 +11,7 @@ import SideNav from '../components/SideNav';
 import TopNav from '../components/TopNav';
 
 export default {
-  name: 'Register',
+  name: 'Dashboard',
   components: {
     SideNav,
     TopNav

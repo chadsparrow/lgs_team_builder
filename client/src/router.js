@@ -7,7 +7,10 @@ import Dashboard from './views/Dashboard.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
 import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
-// import store from './store';
+import OrdersIndex from './components/Orders/OrdersIndex.vue';
+import MembersIndex from './components/Members/MembersIndex.vue';
+import StoresIndex from './components/Stores/StoresIndex.vue';
+import TeamsIndex from './components/Teams/TeamsIndex.vue';
 
 Vue.use(Router);
 
@@ -71,6 +74,39 @@ let router = new Router({
             requiresAuth: true,
             isAdmin: true
           }
+        },
+        {
+          path: 'orders',
+          name: 'orders',
+          component: OrdersIndex,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'stores',
+          name: 'stores',
+          component: StoresIndex,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'teams',
+          name: 'teams',
+          component: TeamsIndex,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'members',
+          name: 'members',
+          component: MembersIndex,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
         }
       ]
     }
@@ -80,6 +116,7 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (localStorage.getItem('token') == null) {
+      this.$toasted.error('Access Denied');
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
@@ -90,6 +127,7 @@ router.beforeEach((to, from, next) => {
         if (member.isAdmin) {
           next();
         } else {
+          this.$toasted.error('Access Denied');
           next({ name: 'dashboard' });
         }
       } else {
@@ -98,6 +136,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.guest)) {
     if (localStorage.getItem('token') == null) {
+      this.$toasted.error('Access Denied');
       next();
     } else {
       next({ name: 'dashboard' });
