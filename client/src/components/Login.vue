@@ -14,12 +14,8 @@
             ref="email"
             v-model="email"
           />
-          <small
-            id="emailHelp"
-            class="form-text text-muted"
-          >We'll never share your email with anyone else.</small>
         </div>
-        <div class="form-group mb-5">
+        <div class="form-group mb-4">
           <label for="password">Password</label>
           <input
             type="password"

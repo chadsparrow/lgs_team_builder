@@ -2,9 +2,7 @@
   <div class="dashboard">
     <SideNav />
     <TopNav />
-    <div class="mainContent">
-      <h1>Dashboard</h1>
-    </div>
+    <router-view class="mainContent"></router-view>
   </div>
 </template>
 
@@ -20,6 +18,11 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    isLoggedIn: function() {
+      return this.$store.getters.isLoggedIn;
+    }
   },
   methods: {}
 };
@@ -42,5 +45,3 @@ export default {
   padding: 1rem;
 }
 </style>
-
-

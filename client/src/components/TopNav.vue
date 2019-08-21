@@ -4,23 +4,21 @@
       class="navbar-toggler"
       type="button"
       data-toggle="collapse"
-      data-target="#navbarsExample02"
-      aria-controls="navbarsExample02"
+      data-target="#topNav"
+      aria-controls="topNav"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ml-auto notifications">
+    <div class="collapse navbar-collapse" id="topNav">
+      <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <router-link class="nav-link btn btn-dark" to="#">Profile</router-link>
         </li>
         <li class="nav-item">
-          <span class="nav-link" v-if="isLoggedIn">
-            <a @click="logout">Logout</a>
-          </span>
+          <a class="nav-link btn btn-dark" @click="logout">Logout</a>
         </li>
       </ul>
     </div>
@@ -33,12 +31,17 @@ export default {
   computed: {
     isLoggedIn: function() {
       return this.$store.getters.isLoggedIn;
+    },
+    member: function() {
+      return this.$store.getters.getCurrentMember;
     }
   },
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
       this.$router.push({ name: 'login' });
+      this.$toasted.clear();
+      this.$toasted.success('Logged Out');
     }
   }
 };
@@ -49,8 +52,11 @@ export default {
   background-color: #222;
   color: white;
   padding: 0.6em;
-  padding-right: 2em;
+  padding-right: 1.85em;
   grid-area: topnav;
+
+  .nav-item {
+    margin-left: 0.5em;
+  }
 }
 </style>
-
