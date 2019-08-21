@@ -2,8 +2,8 @@
   <div class="container">
     <div class="row text-center">
       <form @submit.prevent="login" novalidate class="col-sm-12 text-left">
-        <h4 class="text-center m-4">TB Logo</h4>
-        <h4 class="text-center m-4">Log In</h4>
+        <h4 class="text-center mb-4">TB Logo</h4>
+        <h4 class="text-center mb-4">Log In</h4>
         <div class="form-group">
           <label for="email">Email address</label>
           <input

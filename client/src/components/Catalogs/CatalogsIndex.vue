@@ -8,25 +8,34 @@
         <router-link to="/dashboard/catalogs/add" class="btn btn-sm btn-dark ml-auto">Add Catalog</router-link>
       </ol>
     </nav>
-    <span v-if="!catalogs">No Catalogs Found.</span>
-    <div class="table-responsive" v-else>
-      <table class="table table-hover table-striped">
-        <tbody>
-          <tr
-            v-for="(catalog, index) of catalogs"
-            :key="catalog._id"
-            @click.prevent="loadCatalog(catalog._id)"
-          >
-            <th scope="row">{{ index + 1 }}</th>
-            <td>{{ catalog.brand }}</td>
-            <td>{{ catalog.year }}</td>
-            <td>{{ catalog.season }}</td>
-            <td style="width: 100px;">
-              <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}`">View/Edit</router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
+    <div class="row">
+      <div class="col-sm-8">
+        <span v-if="!catalogs">No Catalogs Found.</span>
+        <div class="table-responsive" v-else>
+          <table class="table table-hover table-striped">
+            <tbody>
+              <tr
+                v-for="(catalog, index) of catalogs"
+                :key="catalog._id"
+                @click.prevent="loadCatalog(catalog._id)"
+              >
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ catalog.brand }}</td>
+                <td>{{ catalog.year }}</td>
+                <td>{{ catalog.season }}</td>
+                <td style="width: 100px;">
+                  <router-link
+                    class="btn btn-sm"
+                    :to="`/dashboard/catalogs/${catalog._id}`"
+                  >View/Edit</router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="catalogCover col-sm-4"></div>
     </div>
   </div>
 </template>
@@ -52,5 +61,15 @@ export default {
 <style lang="scss" scoped>
 tr:hover {
   cursor: pointer;
+}
+
+.catalogCover {
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  height: 65vh;
+}
+
+.breadcrumb {
+  background-color: rgb(225, 225, 225);
 }
 </style>

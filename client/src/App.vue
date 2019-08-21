@@ -63,6 +63,7 @@ html {
     cursor: pointer;
   }
 }
+
 body {
   height: 100vh;
   width: 100vw;

@@ -2,7 +2,9 @@
   <div class="dashboard">
     <SideNav />
     <TopNav />
-    <router-view class="mainContent"></router-view>
+    <transition name="fade" mode="out-in">
+      <router-view class="mainContent"></router-view>
+    </transition>
   </div>
 </template>
 
@@ -28,7 +30,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dashboard {
   display: grid;
   grid-template-columns: 200px 1fr;
@@ -42,6 +44,23 @@ export default {
 
 .mainContent {
   grid-area: content;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
+  overflow: auto;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.1s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.breadcrumb {
+  background-color: rgb(225, 225, 225);
 }
 </style>
