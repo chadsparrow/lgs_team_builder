@@ -1,19 +1,14 @@
 <template>
   <div class="container">
-    <div class="row text-center">
+    <div class="row">
       <form @submit.prevent="login" novalidate class="col-sm-12 text-left">
-        <h4 class="text-center mb-4">TB Logo</h4>
+        <div class="text-center mb-4">
+          <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+        </div>
         <h4 class="text-center mb-4">Log In</h4>
         <div class="form-group">
           <label for="email">Email address</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            placeholder="Enter email"
-            ref="email"
-            v-model="email"
-          />
+          <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
         </div>
         <div class="form-group mb-4">
           <label for="password">Password</label>
@@ -21,12 +16,15 @@
             type="password"
             class="form-control"
             id="password"
-            placeholder="Password"
             ref="password"
             v-model="password"
           />
         </div>
-        <button type="submit" class="btn btn-dark btn-block">Login</button>
+        <button type="submit" class="btn btn-dark btn-block">Log In</button>
+        <div class="underForm text-center">
+          <router-link tag="a" class="mr-4" to="/register">Register</router-link>
+          <router-link tag="a" to="/reset">Reset Password</router-link>
+        </div>
       </form>
     </div>
   </div>
@@ -64,6 +62,7 @@ export default {
 
 <style lang="scss" scoped>
 form {
+  margin-bottom: 100px;
   width: 300px;
   background-color: black;
   color: white;
@@ -84,5 +83,20 @@ label {
   height: 100vh;
   overflow: hidden;
   justify-content: center;
+}
+
+.underForm {
+  display: flex;
+  margin-top: 1em;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    color: lightgray;
+  }
+}
+
+#tbLogo {
+  width: 200px;
 }
 </style>

@@ -1,120 +1,226 @@
 <template>
-  <div class="container-fluid">
-    <h4>Register</h4>
-    <form @submit.prevent="register" class="m-auto" novalidate>
-      <div class="input-field">
-        <label for="email">Email Address</label>
-        <input id="email" type="email" v-model="email" autofocus ref="email" />
+  <div class="container">
+    <form @submit.prevent="register" novalidate>
+      <div class="text-center mb-4">
+        <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
       </div>
-      <div class="input-field">
-        <label for="password">Password</label>
-        <input id="password" type="password" v-model="password" ref="password" />
+      <h4 class="text-center mb-4">Register</h4>
+      <div class="row form-group">
+        <div class="col">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            class="form-control form-control-sm"
+            id="email"
+            ref="email"
+            v-model="email"
+            autofocus
+          />
+        </div>
+        <div class="col">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control form-control-sm"
+            id="password"
+            ref="password"
+            v-model="password"
+          />
+        </div>
       </div>
-      <div class="input-field">
-        <label for="name">Name</label>
-        <input id="name" type="text" v-model="name" ref="name" />
-      </div>
-      <div class="input-field">
-        <label for="address1">Address 1</label>
-        <input id="address1" type="text" v-model="address1" ref="address1" />
-      </div>
-      <div class="input-field">
-        <label for="address2">Address 2</label>
-        <input id="address2" type="text" v-model="address2" ref="address2" />
-      </div>
-      <div class="input-field">
-        <label for="city">City</label>
-        <input id="city" type="text" v-model="city" ref="city" />
-      </div>
-      <div class="input-field">
-        <label for="stateProv">State/Province</label>
-        <input id="stateProv" type="text" v-model="stateProv" ref="stateProv" />
-      </div>
-      <div class="input-field">
-        <label for="country">Country</label>
-        <input id="country" type="text" v-model="country" ref="country" />
-      </div>
-      <div class="input-field">
-        <label for="zipPostal">Zip/Postal</label>
-        <input id="zipPostal" type="text" v-model="zipPostal" ref="zipPostal" />
-      </div>
-      <div class="input-field">
-        <label for="phone">Phone</label>
-        <input id="phone" type="text" v-model="phone" ref="phone" />
-      </div>
-      <div class="input-field">
-        <label for="timezone">Timezone</label>
-        <input id="timezone" type="text" v-model="timezone" ref="timezone" />
-      </div>
-      <label>
-        <input
-          type="checkbox"
-          class="filled-in"
-          checked="checked"
-          id="shippingSame"
-          v-model="shippingSame"
-          ref="shippingSame"
-        />
-        <span>Use above details for shipping</span>
-      </label>
 
-      <div class="shippingDetails" v-if="!shippingSame">
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="name"
+            ref="name"
+          />
+        </div>
+        <div class="col-sm-12">
+          <label for="address1">Address 1</label>
+          <input
+            id="address1"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="address1"
+            ref="address1"
+          />
+        </div>
+        <div class="col-sm-12">
+          <label for="address2">Address 2</label>
+          <input
+            id="address2"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="address2"
+            ref="address2"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="city">City</label>
+          <input
+            id="city"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="city"
+            ref="city"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="stateProv">State/Province</label>
+          <input
+            id="stateProv"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="stateProv"
+            ref="stateProv"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="country">Country</label>
+          <input
+            id="country"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="country"
+            ref="country"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="zipPostal">Zip/Postal</label>
+          <input
+            id="zipPostal"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="zipPostal"
+            ref="zipPostal"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="phone">Phone</label>
+          <input
+            id="phone"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="phone"
+            ref="phone"
+          />
+        </div>
+        <div class="col-sm-4">
+          <label for="timezone">Timezone</label>
+          <input
+            id="timezone"
+            class="form-control form-control-sm"
+            type="text"
+            v-model="timezone"
+            ref="timezone"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="shippingSame" v-model="shippingSame" />
+        <label class="form-check-label" for="shippingSame">Use same details for Shipping</label>
+      </div>
+
+      <div class="shippingDetails">
         <h5>Shipping Details</h5>
-        <div class="input-field">
-          <label for="shippingName">Name</label>
-          <input id="shippingName" type="text" v-model="shippingName" ref="shippingDetails" />
-        </div>
-        <div class="input-field">
-          <label for="shippingAddress1">Address 1</label>
-          <input
-            id="shippingAddress1"
-            type="text"
-            v-model="shippingAddress1"
-            ref="shippingAddress1"
-          />
-        </div>
-        <div class="input-field">
-          <label for="shippingAddress2">Address 2</label>
-          <input
-            id="shippingAddress2"
-            type="text"
-            v-model="shippingAddress2"
-            ref="shippingAddress2"
-          />
-        </div>
-        <div class="input-field">
-          <label for="shippingCity">City</label>
-          <input id="shippingCity" type="text" v-model="shippingCity" ref="shippingCity" />
-        </div>
-        <div class="input-field">
-          <label for="shippingStateProv">State/Province</label>
-          <input
-            id="shippingStateProv"
-            type="text"
-            v-model="shippingStateProv"
-            ref="shippingStateProv"
-          />
-        </div>
-        <div class="input-field">
-          <label for="shippingCountry">Country</label>
-          <input id="shippingCountry" type="text" v-model="shippingCountry" ref="shippingCountry" />
-        </div>
-        <div class="input-field">
-          <label for="shippingZipPostal">Zip/Postal</label>
-          <input
-            id="shippingZipPostal"
-            type="text"
-            v-model="shippingZipPostal"
-            ref="shippingZipPostal"
-          />
-        </div>
-        <div class="input-field">
-          <label for="shippingPhone">Phone</label>
-          <input id="shippingPhone" type="text" v-model="shippingPhone" ref="shippingPhone" />
-        </div>
-        <div class="input-field">
-          <label for="shippingEmail">Email</label>
-          <input id="shippingEmail" type="email" v-model="shippingEmail" ref="shippingEmail" />
+        <div class="form-group row">
+          <div class="col-sm-12">
+            <label for="shippingName">Name</label>
+            <input
+              id="shippingName"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="shippingName"
+              ref="shippingName"
+            />
+          </div>
+          <div class="col-sm-12">
+            <label for="shippingAddress1">Address 1</label>
+            <input
+              id="shippingAddress1"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="shippingAddress1"
+              ref="shippingAddress1"
+            />
+          </div>
+          <div class="col-sm-12">
+            <label for="shippingAddress2">Address 2</label>
+            <input
+              id="shippingAddress2"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="shippingAddress2"
+              ref="shippingAddress2"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="shippingCity">City</label>
+            <input
+              id="shippingCity"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="shippingCity"
+              ref="shippingCity"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="stateProv">State/Province</label>
+            <input
+              id="stateProv"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="stateProv"
+              ref="stateProv"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="country">Country</label>
+            <input
+              id="country"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="country"
+              ref="country"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="zipPostal">Zip/Postal</label>
+            <input
+              id="zipPostal"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="zipPostal"
+              ref="zipPostal"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="phone">Phone</label>
+            <input
+              id="phone"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="phone"
+              ref="phone"
+            />
+          </div>
+          <div class="col-sm-4">
+            <label for="timezone">Timezone</label>
+            <input
+              id="timezone"
+              class="form-control form-control-sm"
+              type="text"
+              v-model="timezone"
+              ref="timezone"
+              readonly
+            />
+          </div>
         </div>
       </div>
       <hr />
@@ -209,14 +315,32 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  width: 500px;
+  margin-bottom: 100px;
+  width: 600px;
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  position: relative;
+  font-weight: 200;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
-.alert-box {
-  width: 500px;
-  padding: 10px;
-  background-color: #ef9a9a;
-  border: 1px solid #f43336;
-  border-radius: 10px;
+label {
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+  margin-top: 4px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  justify-content: center;
+}
+
+#tbLogo {
+  width: 150px;
 }
 </style>

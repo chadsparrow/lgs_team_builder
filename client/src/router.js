@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
-import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
@@ -22,7 +21,10 @@ let router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Login,
+      meta: {
+        guest: true
+      }
     },
     {
       path: '/login',

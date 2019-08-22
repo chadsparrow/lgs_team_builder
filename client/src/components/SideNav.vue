@@ -1,6 +1,8 @@
 <template>
   <div class="sidenav">
-    <div class="logo mb-4 mt-2 text-center">TEAM BUILDER</div>
+    <div class="logo mb-4 mt-2 text-center">
+      <img src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+    </div>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/members"
@@ -36,12 +38,13 @@ export default {
 .sidenav {
   background-color: #111;
   color: white;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  padding-top: 0.75em;
   grid-area: nav;
 
   .logo {
-    font-size: 1.5em;
+    width: 100%;
   }
 }
 

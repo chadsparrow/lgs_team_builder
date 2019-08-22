@@ -57,6 +57,10 @@ export default {
 
   .nav-item {
     margin-left: 0.5em;
+
+    a {
+      color: white;
+    }
   }
 }
 </style>
