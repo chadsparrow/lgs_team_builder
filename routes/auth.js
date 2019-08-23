@@ -37,7 +37,14 @@ router.post('/login', async (req, res) => {
   return res.send([
     {
       token,
-      member: _.pick(member, ['_id', 'email', 'isAdmin']),
+      member: _.pick(member, [
+        '_id',
+        'email',
+        'isAdmin',
+        'timezone',
+        'timezoneAbbrev',
+        'avatarUrl'
+      ]),
       message: 'Welcome Back!'
     }
   ]);
@@ -59,6 +66,8 @@ router.post('/register', async (req, res) => {
     country,
     zipPostal,
     phone,
+    timezone,
+    timezoneAbbrev,
     shippingName,
     shippingAddress1,
     shippingAddress2,
@@ -90,6 +99,8 @@ router.post('/register', async (req, res) => {
     zipPostal,
     phone: cryptr.encrypt(phone),
     email,
+    timezone,
+    timezoneAbbrev,
     isAdmin: false
   });
 

@@ -57,11 +57,4 @@ export default {
 tr:hover {
   cursor: pointer;
 }
-
-.catalogCover {
-  background-color: white;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  height: 65vh;
-  min-width: 200px;
-}
 </style>

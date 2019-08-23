@@ -8,9 +8,24 @@
       to="/dashboard/members"
       v-if="member && member.isAdmin"
     >Members</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/teams">Teams</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/stores">Stores</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/orders">Orders</router-link>
+    <router-link
+      class="btn btn-block btn-dark"
+      to="/dashboard/teams"
+      v-if="member && member.isAdmin"
+    >Teams</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/teams" v-else>My Teams</router-link>
+    <router-link
+      class="btn btn-block btn-dark"
+      to="/dashboard/stores"
+      v-if="member && member.isAdmin"
+    >Stores</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/stores" v-else>My Stores</router-link>
+    <router-link
+      class="btn btn-block btn-dark"
+      to="/dashboard/orders"
+      v-if="member && member.isAdmin"
+    >Orders</router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/orders" v-else>My Orders</router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/catalogs"

@@ -78,6 +78,8 @@ router.post('/register', [auth, admin], async (req, res) => {
     phone,
     email,
     password,
+    timezone,
+    timezoneAbbrev,
     shippingSame,
     shippingName,
     shippingAddress1,
@@ -111,6 +113,8 @@ router.post('/register', [auth, admin], async (req, res) => {
     zipPostal,
     phone: cryptr.encrypt(phone),
     email,
+    timezone,
+    timezoneAbbrev,
     isAdmin: false
   });
 
@@ -143,7 +147,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   await newMember.save();
 
-  return res.send(_.pick(newMember, ['_id', 'name', 'email']));
+  return res.send(_.pick(newMember, ['_id', 'name', 'email', 'timezone']));
 });
 
 // PUT /api/members/:id

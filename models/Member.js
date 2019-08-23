@@ -65,6 +65,10 @@ const MemberSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
+    timezoneAbbrev: {
+      type: String,
+      required: true
+    },
     shipping: {
       name: {
         type: String,
@@ -173,11 +177,9 @@ function validateNewMember(member) {
       .trim(),
     phone: Joi.string()
       .trim()
-      .regex(/^[0-9]{7,10}$/)
       .required(),
-    timezone: Joi.string()
-      .required()
-      .trim(),
+    timezone: Joi.string().trim(),
+    timezoneAbbrev: Joi.string().trim(),
     shippingName: Joi.string()
       .required()
       .trim(),
@@ -237,9 +239,10 @@ function validateUpdateMember(member) {
       .required()
       .trim(),
     phone: Joi.string()
-      .regex(/^[0-9]{7,10}$/)
       .required()
       .trim(),
+    timezone: Joi.string().trim(),
+    timezoneAbbrev: Joi.string().trim(),
     shippingSame: Joi.boolean().required(),
     shippingName: Joi.when('shippingSame', {
       is: true,
@@ -300,7 +303,6 @@ function validateUpdateMember(member) {
       then: Joi.ref('phone'),
       otherwise: Joi.string()
         .trim()
-        .regex(/^[0-9]{7,10}$/)
         .required()
     }),
     shippingEmail: Joi.when('shippingSame', {

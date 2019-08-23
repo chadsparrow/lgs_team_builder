@@ -34,7 +34,7 @@ export default {
 .dashboard {
   display: grid;
   grid-template-columns: 200px 1fr;
-  grid-template-rows: 50px auto;
+  grid-template-rows: 60px auto;
   width: 100%;
   height: 100vh;
   grid-template-areas:
@@ -46,18 +46,6 @@ export default {
   grid-area: content;
   padding: 1rem 1.5rem;
   overflow: auto;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition-duration: 0.1s;
-  transition-property: opacity;
-  transition-timing-function: ease;
-}
-
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
 }
 
 .breadcrumb {
