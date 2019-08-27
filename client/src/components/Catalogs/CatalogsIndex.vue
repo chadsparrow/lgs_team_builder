@@ -9,7 +9,7 @@
       </ol>
     </nav>
 
-    <span v-if="!catalogs">No Catalogs Found.</span>
+    <span v-if="catalogs && catalogs.length === 0">No Catalogs Found.</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

@@ -20,7 +20,7 @@ const {
 const { Email } = require('../models/Email');
 
 // GET /api/members
-router.get('/', auth, async (req, res) => {
+router.get('/', [auth, admin], async (req, res) => {
   const members = await Member.find().select('avatarUrl _id name email isAdmin');
 
   if (members && members.length === 0)

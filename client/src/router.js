@@ -9,6 +9,7 @@ import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
 import OrdersIndex from './components/Orders/OrdersIndex.vue';
 import MembersIndex from './components/Members/MembersIndex.vue';
+import MemberById from './components/Members/MemberById.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
 
@@ -109,6 +110,14 @@ let router = new Router({
           meta: {
             requiresAuth: true,
             isAdmin: true
+          }
+        },
+        {
+          path: 'members/:id',
+          name: 'memberid',
+          component: MemberById,
+          meta: {
+            requiresAuth: true
           }
         }
       ]

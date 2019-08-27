@@ -1,26 +1,33 @@
 <template>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <router-link class="active btn btn-sm btn-dark" tag="a" to="/dashboard/members">Members</router-link>
-      </li>
-    </ol>
-  </nav>
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <router-link class="active btn btn-sm btn-dark" tag="a" to="/dashboard/members">Members</router-link>
+        </li>
+      </ol>
+    </nav>
 
-  <span v-if="!members">No Members Found.</span>
+    <span v-if="!members">No Members Found.</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
           <tr
-            v-for="(member, index) of member"
+            v-for="(member, index) of members"
             :key="member._id"
             @click.prevent="loadMember(member._id)"
           >
             <th scope="row">{{ index + 1 }}</th>
-            <td>{{ member.avatarUrl }}</td>
+            <td>
+              <span v-if="member.avatarUrl">{{ member.avatarUrl }}</span>
+              <span v-else>No Avatar</span>
+            </td>
             <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
-            <td>{{ member.isAdmin }}</td>
+            <td>
+              <span v-if="member.isAdmin">Admin</span>
+              <span v-else>User</span>
+            </td>
             <td style="width: 100px;">
               <router-link
                 class="btn btn-sm btn-info"
@@ -31,6 +38,7 @@
         </tbody>
       </table>
     </div>
+  </div>
 </template>
 
 <script>
@@ -45,11 +53,14 @@ export default {
   },
   methods: {
     loadMember: function(id) {
-      this.$router.push({ name: 'catalogid', params: { id } });
+      this.$router.push({ name: 'memberid', params: { id } });
     }
   }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+tr:hover {
+  cursor: pointer;
+}
 </style>

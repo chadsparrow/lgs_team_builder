@@ -11,7 +11,9 @@ export default new Vuex.Store({
     token: localStorage.getItem('token') || '',
     member: sessionStorage.getItem('member') || null,
     catalogs: [],
-    catalog: {}
+    catalog: {},
+    members: [],
+    foundMember: {}
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -74,6 +76,28 @@ export default new Vuex.Store({
           reject(err);
         }
       });
+    },
+    getMembers({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get('/api/v1/members');
+          commit('SET_MEMBERS', res.data);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    getMember({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get(`/api/v1/members/${id}`);
+          commit('SET_MEMBER', res.data);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
   },
   mutations: {
@@ -98,6 +122,12 @@ export default new Vuex.Store({
     },
     SET_CATALOG(state, catalog) {
       state.catalog = catalog;
+    },
+    SET_MEMBERS(state, members) {
+      state.members = members;
+    },
+    SET_MEMBER(state, member) {
+      state.foundMember = member;
     }
   },
   getters: {
@@ -107,6 +137,8 @@ export default new Vuex.Store({
       return JSON.parse(state.member);
     },
     catalogs: state => state.catalogs,
-    catalog: state => state.catalog
+    catalog: state => state.catalog,
+    members: state => state.members,
+    foundMember: state => state.foundMember
   }
 });
