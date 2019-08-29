@@ -5,6 +5,7 @@
         <li class="breadcrumb-item">
           <router-link class="active btn btn-sm btn-dark" tag="a" to="/dashboard/members">Members</router-link>
         </li>
+        <router-link to="/dashboard/members/add" class="btn btn-sm btn-dark ml-auto">Add Member</router-link>
       </ol>
     </nav>
 
