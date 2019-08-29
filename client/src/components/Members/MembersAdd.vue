@@ -5,7 +5,7 @@
         <router-link tag="a" class="btn btn-sm" to="/dashboard/members">Members</router-link>
       </li>
       <li class="breadcrumb-item">
-        <router-link tag="a" to="/dashboard/members/add" class="btn btn-sm btn-light active">Add</router-link>
+        <router-link tag="a" to="/dashboard/members/add" class="btn btn-sm">Add Member</router-link>
       </li>
       <router-link to="/dashboard/members/" class="btn btn-sm ml-auto">Cancel</router-link>
     </ol>

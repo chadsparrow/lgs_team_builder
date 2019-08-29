@@ -6,7 +6,7 @@
       </li>
       <li class="breadcrumb-item">
         <router-link
-          class="btn btn-sm active"
+          class="btn btn-sm"
           tag="a"
           :to="`/dashboard/members/${id}`"
         >{{ foundMember.name }}</router-link>

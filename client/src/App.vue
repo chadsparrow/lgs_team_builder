@@ -56,7 +56,6 @@ html {
   font-size: 16px;
 
   a {
-    text-decoration: none;
     cursor: pointer;
   }
 }
@@ -77,5 +76,33 @@ body {
   height: 100vh;
   width: 100vw;
   background-image: linear-gradient(to bottom right, white, #d6d6d6);
+}
+
+tr:hover {
+  cursor: pointer;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+.table > tbody > tr > th {
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th,
+.table-hover tbody tr:hover a {
+  background-color: #111;
+  color: white;
+}
+
+.pagination > .active > a {
+  background-color: #111 !important;
+  color: white;
+  border: 0px solid grey;
+}
+
+.pagination > .page-item > a {
+  color: black;
 }
 </style>

@@ -1,11 +1,14 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
+const mongoose = require('mongoose');
+const _ = require('lodash');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
-const _ = require('lodash');
 const cryptr = require('../middleware/cryptr');
 const { Member, validateNewMember } = require('../models/Member');
+const { Email } = require('../models/Email');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
@@ -27,13 +30,25 @@ router.post('/login', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details);
 
-  const member = await Member.findOne({ email: req.body.email });
+  const member = await Member.findOne({ email: req.body.email }).select({});
   if (!member) return res.status(400).send([{ message: 'Invalid email or password.' }]);
 
   const validPassword = await bcrypt.compare(req.body.password, member.password);
   if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
   const token = member.generateAuthToken();
+
+  const emails = await Email.find({
+    $or: [
+      { recipients: { $elemMatch: { memberId: mongoose.Types.ObjectId(member._id) } } },
+      { messages: { $elemMatch: { senderId: mongoose.Types.ObjectId(member._id) } } }
+    ]
+  })
+    .populate({ path: 'senderId', select: 'name email' })
+    .populate({ path: 'recipients.memberId', select: 'name email' })
+    .populate({ path: 'messages.senderId', select: 'name email' })
+    .sort('-messages.date');
+
   return res.send([
     {
       token,
@@ -46,7 +61,8 @@ router.post('/login', async (req, res) => {
         'timezoneAbbrev',
         'avatarUrl'
       ]),
-      message: 'Welcome Back!'
+      message: 'Welcome Back!',
+      emails
     }
   ]);
 });

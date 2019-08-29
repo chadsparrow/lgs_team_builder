@@ -7,13 +7,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    isLoading: false,
     status: '',
     token: localStorage.getItem('token') || '',
     member: sessionStorage.getItem('member') || null,
     catalogs: [],
     catalog: {},
     members: [],
-    foundMember: {}
+    foundMember: {},
+    emails: [],
+    notifications: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -24,10 +27,11 @@ export default new Vuex.Store({
           const token = res.data[0].token;
           let member = res.data[0].member;
           member = JSON.stringify(member);
+          const emails = res.data[0].emails;
           localStorage.setItem('token', token);
           sessionStorage.setItem('member', member);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          commit('AUTH_SUCCESS', { token, member });
+          commit('AUTH_SUCCESS', { token, member, emails });
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
@@ -52,13 +56,16 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('LOGOUT');
         localStorage.removeItem('token');
+        sessionStorage.removeItem('member');
         resolve();
       });
     },
     getCatalogs({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
+          commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/catalogs');
+          commit('TOGGLE_LOADING');
           commit('SET_CATALOGS', res.data);
           resolve(res);
         } catch (err) {
@@ -69,7 +76,9 @@ export default new Vuex.Store({
     getCatalog({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
+          commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/catalogs/${id}`);
+          commit('TOGGLE_LOADING');
           commit('SET_CATALOG', res.data);
           resolve(res);
         } catch (err) {
@@ -80,7 +89,9 @@ export default new Vuex.Store({
     getMembers({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
+          commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/members');
+          commit('TOGGLE_LOADING');
           commit('SET_MEMBERS', res.data);
           resolve(res);
         } catch (err) {
@@ -91,7 +102,9 @@ export default new Vuex.Store({
     getMember({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
+          commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}`);
+          commit('TOGGLE_LOADING');
           commit('SET_MEMBER', res.data);
           resolve(res);
         } catch (err) {
@@ -101,13 +114,17 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    TOGGLE_LOADING(state) {
+      state.isLoading = !state.isLoading;
+    },
     AUTH_REQUEST(state) {
       state.status = 'loading';
     },
-    AUTH_SUCCESS(state, { token, member }) {
+    AUTH_SUCCESS(state, { token, member, emails }) {
       state.status = 'success';
       state.token = token;
       state.member = member;
+      state.emails = emails;
     },
     AUTH_ERROR(state) {
       state.status = 'error';
@@ -131,6 +148,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    isLoading: state => state.isLoading,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     getCurrentMember: state => {
@@ -139,6 +157,8 @@ export default new Vuex.Store({
     catalogs: state => state.catalogs,
     catalog: state => state.catalog,
     members: state => state.members,
-    foundMember: state => state.foundMember
+    foundMember: state => state.foundMember,
+    emails: state => state.emails,
+    notifications: state => state.notifications
   }
 });

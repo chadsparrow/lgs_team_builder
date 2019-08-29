@@ -6,7 +6,7 @@
       </li>
       <li class="breadcrumb-item">
         <router-link
-          class="btn btn-sm active"
+          class="btn btn-sm"
           tag="a"
           :to="`/dashboard/catalogs/${id}`"
         >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>

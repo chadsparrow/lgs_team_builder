@@ -1,69 +1,101 @@
 <template>
   <div>
+    <loading
+      :active.sync="isLoading"
+      :is-full-page="true"
+      color="#FFF"
+      background-color="#000"
+      :opacity="0.1"
+      loader="dots"
+    ></loading>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
+          <router-link class="btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
         </li>
         <router-link to="/dashboard/members/add" class="btn btn-sm btn-dark ml-auto">Add Member</router-link>
       </ol>
     </nav>
 
-    <span v-if="!members">No Members Found.</span>
+    <span v-if="!members">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
-          <tr
-            v-for="(member, index) of members"
-            :key="member._id"
-            @click.prevent="loadMember(member._id)"
-          >
-            <th scope="row">{{ index + 1 }}</th>
-            <td>{{ member.name }}</td>
+          <tr v-for="member of members" :key="member._id" @click.prevent="loadMember(member._id)">
+            <th scope="row">{{ member.name }}</th>
             <td>{{ member.email }}</td>
             <td>
               <span v-if="member.isAdmin">Admin</span>
               <span v-else>User</span>
             </td>
-            <td style="width: 100px;">
-              <router-link
-                class="btn btn-sm btn-info"
-                :to="`/dashboard/members/${member._id}`"
-              >View/Edit</router-link>
-            </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <paginate
+      v-model="currentPage"
+      :page-count="pageNumbers"
+      :container-class="'pagination'"
+      :page-class="'page-item'"
+      :page-link-class="'page-link'"
+      :prev-class="'page-item'"
+      :prev-link-class="'page-link'"
+      :next-class="'page-item'"
+      :next-link-class="'page-link'"
+      :hide-prev-next="true"
+      v-if="pageNumbers >= 1"
+    ></paginate>
   </div>
 </template>
 
 <script>
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+import Paginate from 'vuejs-paginate';
+
 export default {
+  components: {
+    Loading,
+    Paginate
+  },
+  data() {
+    return {
+      currentPage: 1,
+      itemsPerPage: 12
+    };
+  },
   created: async function() {
     await this.$store.dispatch('getMembers');
   },
   computed: {
     members: function() {
       return this.$store.getters.members;
+    },
+    isLoading: function() {
+      return this.$store.getters.isLoading;
     }
   },
   methods: {
     loadMember: function(id) {
       this.$router.push({ name: 'memberid', params: { id } }).catch(err => {});
+    },
+    indexOfLastItem: function() {
+      return this.currentPage * this.itemsPerPage;
+    },
+    indexOfFirstItem: function() {
+      return this.indexOfLastItem - this.itemsPerPage;
+    },
+    currentCatalogs: function() {
+      return this.members.slice(this.indexOfFirstItem, this.indexOfLastItem);
+    },
+    pageNumbers: function() {
+      const pageArray = [];
+      for (let i = 1; i <= Math.ceil(this.members.length / this.itemsPerPage); i++) {
+        pageArray.push(i);
+      }
+      return pageArray.length;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-tr:hover {
-  cursor: pointer;
-}
-.table > tbody > tr > td {
-  vertical-align: middle;
-}
-.table > tbody > tr > th {
-  vertical-align: middle;
-}
-</style>

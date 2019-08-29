@@ -16,7 +16,7 @@ router.get('/', auth, async (req, res) => {
       return res.status(400).send([{ message: 'Invalid year requested.' }]);
   }
 
-  const catalogs = await Catalog.find(filter);
+  const catalogs = await Catalog.find(filter).sort({ year: -1 });
   if (catalogs && catalogs.length === 0)
     return res.status(404).send([{ message: 'No catalogs found.' }]);
 

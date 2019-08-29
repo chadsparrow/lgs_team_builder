@@ -4,7 +4,6 @@ const express = require('express');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
 const cryptr = require('../middleware/cryptr');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
@@ -17,40 +16,17 @@ const {
   validateEmail,
   validatePassword
 } = require('../models/Member');
-const { Email } = require('../models/Email');
 
 // GET /api/members
 router.get('/', [auth, admin], async (req, res) => {
-  const members = await Member.find().select('_id name email isAdmin');
+  const members = await Member.find()
+    .select('_id name email isAdmin')
+    .sort({ name: 1 });
 
   if (members && members.length === 0)
     return res.status(404).send([{ message: 'There are no members in the database.' }]);
 
   return res.send(members);
-});
-
-router.get('/me', auth, async (req, res) => {
-  const emails = await Email.find({
-    $or: [
-      { recipients: { $elemMatch: { memberId: mongoose.Types.ObjectId(req.member._id) } } },
-      { messages: { $elemMatch: { senderId: mongoose.Types.ObjectId(req.member._id) } } }
-    ]
-  })
-    .populate({ path: 'senderId', select: 'name email' })
-    .populate({ path: 'recipients.memberId', select: 'name email' })
-    .populate({ path: 'messages.senderId', select: 'name email' })
-    .sort('-messages.date');
-
-  const member = await Member.findById(req.member._id);
-  if (!member)
-    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
-
-  return res.send([
-    {
-      member: _.pick(member, ['_id', 'name', 'email', 'isAdmin']),
-      emails
-    }
-  ]);
 });
 
 // GET /api/members/:id
