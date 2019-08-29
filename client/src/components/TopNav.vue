@@ -15,7 +15,7 @@
     <div class="collapse navbar-collapse" id="topNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <router-link to="#" v-if="member">
+          <router-link to="#" tag="a" v-if="member">
             <avatar
               :username="member.name"
               :size="41.28"

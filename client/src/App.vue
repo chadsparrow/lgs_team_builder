@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+    <loading
+      :active.sync="isLoading"
+      :is-full-page="true"
+      color="#FFF"
+      background-color="#000"
+      :opacity="0.1"
+      loader="dots"
+    ></loading>
     <transition name="fade" mode="out-in">
       <router-view />
     </transition>
@@ -7,10 +15,19 @@
 </template>
 
 <script>
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
+  components: {
+    Loading
+  },
   computed: {
     isLoggedIn: function() {
       return this.$store.getters.isLoggedIn;
+    },
+    isLoading: function() {
+      return this.$store.getters.isLoading;
     }
   },
   methods: {

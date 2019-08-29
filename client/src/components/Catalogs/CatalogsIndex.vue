@@ -1,13 +1,5 @@
 <template>
   <div>
-    <loading
-      :active.sync="isLoading"
-      :is-full-page="true"
-      color="#FFF"
-      background-color="#000"
-      :opacity="0.1"
-      loader="dots"
-    ></loading>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -55,7 +47,6 @@ import Paginate from 'vuejs-paginate';
 
 export default {
   components: {
-    Loading,
     Paginate
   },
   created: async function() {
@@ -70,9 +61,6 @@ export default {
   computed: {
     catalogs: function() {
       return this.$store.getters.catalogs;
-    },
-    isLoading: function() {
-      return this.$store.getters.isLoading;
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
