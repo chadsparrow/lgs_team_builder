@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm btn-dark" tag="a" to="/dashboard/catalogs">Catalogs</router-link>
+          <router-link class="active btn btn-sm" tag="a" to="/dashboard/catalogs">Catalogs</router-link>
         </li>
         <router-link to="/dashboard/catalogs/add" class="btn btn-sm btn-dark ml-auto">Add Catalog</router-link>
       </ol>
@@ -23,10 +23,7 @@
             <td>{{ catalog.year }}</td>
             <td>{{ catalog.season }}</td>
             <td style="width: 100px;">
-              <router-link
-                class="btn btn-sm btn-info"
-                :to="`/dashboard/catalogs/${catalog._id}`"
-              >View/Edit</router-link>
+              <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}`">View/Edit</router-link>
             </td>
           </tr>
         </tbody>
@@ -47,7 +44,7 @@ export default {
   },
   methods: {
     loadCatalog: function(id) {
-      this.$router.push({ name: 'catalogid', params: { id } });
+      this.$router.push({ name: 'catalogid', params: { id } }).catch(err => {});
     }
   }
 };
@@ -56,5 +53,12 @@ export default {
 <style lang="scss" scoped>
 tr:hover {
   cursor: pointer;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+.table > tbody > tr > th {
+  vertical-align: middle;
 }
 </style>

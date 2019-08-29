@@ -46,7 +46,7 @@ export default {
 
       try {
         const res = await this.$store.dispatch('login', { email, password });
-        this.$router.push({ name: 'dashboard' });
+        this.$router.push({ name: 'dashboard' }).catch(err => {});
         this.$toasted.success(res.data[0].message);
       } catch (err) {
         if (err.response.data[0].context) {

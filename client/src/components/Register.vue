@@ -354,7 +354,7 @@ export default {
       try {
         const res = await this.$store.dispatch('register', member);
         this.$toasted.success(res.data[0].message);
-        this.$router.push({ name: 'login' });
+        this.$router.push({ name: 'login' }).catch(err => {});
         this.$toasted.success('Please log in');
       } catch (err) {
         if (err.response.data[0].context) {

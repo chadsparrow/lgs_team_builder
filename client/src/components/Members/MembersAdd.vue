@@ -2,12 +2,12 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <router-link tag="a" class="btn btn-sm btn-dark" to="/dashboard/members">Members</router-link>
+        <router-link tag="a" class="btn btn-sm" to="/dashboard/members">Members</router-link>
       </li>
       <li class="breadcrumb-item">
         <router-link tag="a" to="/dashboard/members/add" class="btn btn-sm btn-light active">Add</router-link>
       </li>
-      <router-link to="/dashboard/members/" class="btn btn-sm btn-dark ml-auto">Cancel</router-link>
+      <router-link to="/dashboard/members/" class="btn btn-sm ml-auto">Cancel</router-link>
     </ol>
   </nav>
 </template>

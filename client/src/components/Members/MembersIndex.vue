@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm btn-dark" tag="a" to="/dashboard/members">Members</router-link>
+          <router-link class="active btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
         </li>
         <router-link to="/dashboard/members/add" class="btn btn-sm btn-dark ml-auto">Add Member</router-link>
       </ol>
@@ -19,10 +19,6 @@
             @click.prevent="loadMember(member._id)"
           >
             <th scope="row">{{ index + 1 }}</th>
-            <td>
-              <span v-if="member.avatarUrl">{{ member.avatarUrl }}</span>
-              <span v-else>No Avatar</span>
-            </td>
             <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
             <td>
@@ -54,7 +50,7 @@ export default {
   },
   methods: {
     loadMember: function(id) {
-      this.$router.push({ name: 'memberid', params: { id } });
+      this.$router.push({ name: 'memberid', params: { id } }).catch(err => {});
     }
   }
 };
@@ -63,5 +59,11 @@ export default {
 <style lang="scss" scoped>
 tr:hover {
   cursor: pointer;
+}
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+.table > tbody > tr > th {
+  vertical-align: middle;
 }
 </style>

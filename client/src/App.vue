@@ -16,7 +16,7 @@ export default {
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
-      this.$router.push({ name: 'login' });
+      this.$router.push({ name: 'login' }).catch(err => {});
     }
   },
   created: function() {
@@ -33,7 +33,7 @@ export default {
 
         localStorage.removeItem('token');
         this.$store.dispatch('logout');
-        this.$router.push({ name: 'login' });
+        this.$router.push({ name: 'login' }).catch(err => {});
 
         return new Promise((resolve, reject) => {
           reject(error);
@@ -53,6 +53,7 @@ html {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
+  font-size: 16px;
 
   a {
     text-decoration: none;

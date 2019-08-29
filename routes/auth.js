@@ -40,6 +40,7 @@ router.post('/login', async (req, res) => {
       member: _.pick(member, [
         '_id',
         'email',
+        'name',
         'isAdmin',
         'timezone',
         'timezoneAbbrev',

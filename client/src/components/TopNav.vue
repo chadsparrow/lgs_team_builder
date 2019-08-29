@@ -15,10 +15,18 @@
     <div class="collapse navbar-collapse" id="topNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <router-link class="nav-link btn btn-dark" to="#">Profile</router-link>
+          <router-link to="#" v-if="member">
+            <avatar
+              :username="member.name"
+              :size="41.28"
+              background-color="#E1E1E1"
+              color="#000"
+              :rounded="false"
+            ></avatar>
+          </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link btn btn-dark" @click="logout">Logout</a>
+          <a class="nav-link btn btn-danger" @click="logout">Logout</a>
         </li>
       </ul>
     </div>
@@ -26,8 +34,13 @@
 </template>
 
 <script>
+import Avatar from 'vue-avatar';
+
 export default {
   name: 'TopNav',
+  components: {
+    avatar: Avatar
+  },
   computed: {
     isLoggedIn: function() {
       return this.$store.getters.isLoggedIn;
@@ -39,7 +52,7 @@ export default {
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
-      this.$router.push({ name: 'login' });
+      this.$router.push({ name: 'login' }).catch(err => {});
       this.$toasted.clear();
       this.$toasted.success('Logged Out');
     }
@@ -51,16 +64,21 @@ export default {
 .navbar {
   background-color: #222 !important;
   color: white;
-  padding: 0.75em;
-  padding-right: 1.85em;
   grid-area: topnav;
 
   .nav-item {
-    margin-left: 0.5em;
-
-    a {
-      color: white;
-    }
+    margin-left: 0.9rem;
   }
+
+  .nav-link {
+    color: white !important;
+  }
+
+  .navbar-nav {
+    margin-right: 0.75rem;
+  }
+}
+.vue-avatar--wrapper {
+  border-radius: 4px !important;
 }
 </style>
