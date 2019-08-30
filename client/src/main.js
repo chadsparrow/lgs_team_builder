@@ -8,7 +8,7 @@ import VuejsDialog from 'vuejs-dialog';
 import 'vuejs-dialog/dist/vuejs-dialog.min.css';
 
 Vue.use(VuejsDialog);
-Vue.use(Toasted, { position: 'bottom-right', duration: 4000 });
+Vue.use(Toasted, { position: 'bottom-right', duration: 4000, singleton: true });
 
 Vue.config.productionTip = false;
 const token = localStorage.getItem('token');

@@ -12,6 +12,7 @@ import OrdersIndex from './components/Orders/OrdersIndex.vue';
 import MembersIndex from './components/Members/MembersIndex.vue';
 import MembersAdd from './components/Members/MembersAdd.vue';
 import MemberById from './components/Members/MemberById.vue';
+import MemberByIdEdit from './components/Members/MemberByIdEdit.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
 
@@ -75,7 +76,6 @@ let router = new Router({
           path: 'catalogs/:id',
           name: 'catalogid',
           component: CatalogById,
-          props: true,
           meta: {
             requiresAuth: true,
             isAdmin: true
@@ -85,7 +85,6 @@ let router = new Router({
           path: 'catalogs/:id/edit',
           name: 'catalogidedit',
           component: CatalogByIdEdit,
-          props: true,
           meta: {
             requiresAuth: true,
             isAdmin: true
@@ -137,6 +136,15 @@ let router = new Router({
           path: 'members/:id',
           name: 'memberid',
           component: MemberById,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
+          path: 'members/:id/edit',
+          name: 'memberidedit',
+          component: MemberByIdEdit,
           meta: {
             requiresAuth: true,
             isAdmin: true

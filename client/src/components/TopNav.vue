@@ -22,7 +22,7 @@
               background-color="#E1E1E1"
               color="#000"
               :rounded="false"
-              :src="`/images/avatars/${member._id}.jpg`"
+              :src="avatarUrl"
             ></avatar>
           </router-link>
         </li>
@@ -40,7 +40,7 @@ import Avatar from 'vue-avatar';
 export default {
   name: 'TopNav',
   components: {
-    avatar: Avatar
+    Avatar
   },
   computed: {
     isLoggedIn: function() {
@@ -48,6 +48,9 @@ export default {
     },
     member: function() {
       return this.$store.getters.getCurrentMember;
+    },
+    avatarUrl: function() {
+      return this.member.avatarUrl;
     }
   },
   methods: {

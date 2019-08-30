@@ -11,8 +11,11 @@
           }}
         </router-link>
       </li>
+      <li class="breadcrumb-item">
+        <router-link class="btn btn-sm" tag="a" to="#">Edit</router-link>
+      </li>
       <div class="ml-auto">
-        <router-link :to="`/dashboard/members/${id}/edit`" class="btn btn-sm btn-dark">Edit Profile</router-link>
+        <router-link to="#" class="btn btn-sm btn-danger">Delete Member</router-link>
       </div>
     </ol>
   </nav>

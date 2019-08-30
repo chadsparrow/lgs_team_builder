@@ -290,7 +290,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 
@@ -401,13 +401,14 @@ export default {
           this.country !== ''
         ) {
           // GEO CODE on backend to get timezone
-          const location = await axios.get(
+          const location = await this.$http.get(
             `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.city} ${this.stateProv} ${this.country}"},"options":{"thumbMaps":false}}`
           );
           if (location) {
             const lat = location.data.results[0].locations[0].latLng.lat;
             const lng = location.data.results[0].locations[0].latLng.lng;
-            const response = await axios.get(
+            delete this.$http.defaults.headers.common['Authorization'];
+            const response = await this.$http.get(
               `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
             );
             if (
