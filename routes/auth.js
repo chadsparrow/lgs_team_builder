@@ -59,7 +59,8 @@ router.post('/login', async (req, res) => {
         'isAdmin',
         'timezone',
         'timezoneAbbrev',
-        'avatarUrl'
+        'avatarUrl',
+        'createdAt'
       ]),
       message: 'Welcome Back!',
       emails

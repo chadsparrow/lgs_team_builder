@@ -15,14 +15,14 @@
     <div class="collapse navbar-collapse" id="topNav">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <router-link to="#" tag="a" v-if="member">
+          <router-link to="/dashboard/profile" tag="a" v-if="member">
             <avatar
               :username="member.name"
               :size="42"
               background-color="#E1E1E1"
               color="#000"
               :rounded="false"
-              :src="avatarUrl"
+              :src="member.avatarUrl"
             ></avatar>
           </router-link>
         </li>
@@ -43,14 +43,8 @@ export default {
     Avatar
   },
   computed: {
-    isLoggedIn: function() {
-      return this.$store.getters.isLoggedIn;
-    },
     member: function() {
       return this.$store.getters.getCurrentMember;
-    },
-    avatarUrl: function() {
-      return this.member.avatarUrl;
     }
   },
   methods: {

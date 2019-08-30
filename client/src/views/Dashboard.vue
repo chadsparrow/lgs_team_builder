@@ -2,10 +2,7 @@
   <div class="dashboard">
     <SideNav />
     <TopNav />
-    <transition
-      name="fade"
-      mode="out-in"
-    >
+    <transition name="fade" mode="out-in">
       <router-view class="mainContent"></router-view>
     </transition>
   </div>
@@ -20,9 +17,6 @@ export default {
   components: {
     SideNav,
     TopNav
-  },
-  data() {
-    return {};
   },
   computed: {
     isLoggedIn: function() {

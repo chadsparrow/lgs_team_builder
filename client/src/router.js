@@ -4,6 +4,8 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Dashboard from './views/Dashboard.vue';
 import PageNotFound from './views/PageNotFound.vue';
+import ProfilesIndex from './components/Profiles/ProfilesIndex.vue';
+import ProfilesEdit from './components/Profiles/ProfilesEdit.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
 import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
@@ -54,6 +56,22 @@ let router = new Router({
         requiresAuth: true
       },
       children: [
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfilesIndex,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'profile/edit',
+          name: 'profileedit',
+          component: ProfilesEdit,
+          meta: {
+            requiresAuth: true
+          }
+        },
         {
           path: 'catalogs',
           name: 'catalogs',

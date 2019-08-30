@@ -1,11 +1,10 @@
 <template>
   <div class="container">
     <div class="row">
-      <form @submit.prevent="login" novalidate class="col-sm-12 text-left">
+      <form @submit.prevent="login" novalidate class="col-sm-12">
         <div class="text-center mb-4">
           <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
         </div>
-        <h4 class="text-center mb-4">Log In</h4>
         <div class="form-group">
           <label for="email">Email address</label>
           <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
@@ -20,10 +19,16 @@
             v-model="password"
           />
         </div>
-        <button type="submit" class="btn btn-dark btn-block">Log In</button>
+        <button type="submit" class="btn btn-dark btn-block mt-2">Log In</button>
+        <div class="text-center mt-3 mb-0">
+          <small>Need to register or forgot your password?</small>
+        </div>
         <div class="underForm text-center">
-          <router-link tag="a" class="mr-4" to="/register">Register</router-link>
-          <router-link tag="a" to="#">Reset Password</router-link>
+          <router-link tag="a" class="mr-4 text-info" to="/register">Register</router-link>
+          <router-link tag="a" class="text-info" to="#">Reset Password</router-link>
+        </div>
+        <div class="col-sm-12 mt-2">
+          <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
         </div>
       </form>
     </div>
@@ -88,12 +93,11 @@ label {
 
 .underForm {
   display: flex;
-  margin-top: 1em;
   align-items: center;
   justify-content: center;
 
   a {
-    color: lightgray;
+    font-weight: 700;
   }
 }
 

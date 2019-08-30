@@ -2,13 +2,13 @@
   <div class="container">
     <div class="row text-center">
       <div class="col-sm-12 mb-4">
-        <img
-          src="@/assets/404_error.svg"
-          alt="404 Error Image"
-        />
+        <img src="@/assets/404_error.svg" alt="404 Error Image" />
       </div>
       <div class="col-sm-12">
         <h1>404 Page Not Found.</h1>
+      </div>
+      <div class="col-sm-12 mt-4">
+        <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
       </div>
     </div>
   </div>

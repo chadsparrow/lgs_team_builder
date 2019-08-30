@@ -6,7 +6,10 @@ import Axios from 'axios';
 import Toasted from 'vue-toasted';
 import VuejsDialog from 'vuejs-dialog';
 import 'vuejs-dialog/dist/vuejs-dialog.min.css';
+import VueMoment from 'vue-moment';
+import moment from 'moment-timezone';
 
+Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
 Vue.use(Toasted, { position: 'bottom-right', duration: 4000, singleton: true });
 
