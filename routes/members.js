@@ -227,6 +227,11 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member email updated' }]);
 });
 
+// PATCH /api/v1/members/avatar/:id
+router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
+  // allow upload of file and reset avatarUrl to relative URL
+});
+
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);

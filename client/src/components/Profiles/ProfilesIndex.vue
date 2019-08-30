@@ -15,16 +15,18 @@
     </nav>
 
     <div class="row">
-      <div class="col-sm-4">
-        <avatar
-          :username="member.name"
-          :size="225"
-          background-color="#E1E1E1"
-          color="#000"
-          :rounded="false"
-          :src="member.avatarUrl"
-          v-if="member"
-        ></avatar>
+      <div class="col-sm-4" v-if="member">
+        <div class="avatarWrapper">
+          <avatar
+            :username="member.name"
+            :size="225"
+            background-color="#E1E1E1"
+            color="#000"
+            :rounded="false"
+            :src="member.avatarUrl"
+          ></avatar>
+          <button id="avatarChange" class="btn btn-sm btn-block btn-info mt-2">Change Avatar</button>
+        </div>
         <div class="row p-1 mt-4">
           <small class="col-sm-12 text-info">My Timezone:</small>
           <span class="col-sm-12">{{member.timezone}}</span>
@@ -60,5 +62,10 @@ export default {
 <style lang="scss" scoped>
 .vue-avatar--wrapper {
   border-radius: 1rem !important;
+  position: relative;
+}
+
+#avatarChange {
+  width: 225px;
 }
 </style>

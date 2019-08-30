@@ -3,7 +3,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="#">My Profile</router-link>
+          <router-link class="active btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
         </li>
         <li class="breadcrumb-item">
           <router-link class="active btn btn-sm" tag="a" to="#">{{foundMember.name}}</router-link>
@@ -18,7 +18,7 @@
     </nav>
 
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-4" v-if="foundMember">
         <avatar
           :username="foundMember.name"
           :size="225"
@@ -26,7 +26,6 @@
           color="#000"
           :rounded="false"
           :src="foundMember.avatarUrl"
-          v-if="foundMember"
         ></avatar>
         <div class="row p-1 mt-4">
           <small class="col-sm-12 text-info">My Timezone:</small>
@@ -69,3 +68,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.vue-avatar--wrapper {
+  border-radius: 1rem !important;
+}
+</style>
