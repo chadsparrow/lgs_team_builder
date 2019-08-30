@@ -5,11 +5,11 @@
         <router-link tag="a" class="btn btn-sm" to="/dashboard/members">Members</router-link>
       </li>
       <li class="breadcrumb-item">
-        <router-link
-          class="btn btn-sm"
-          tag="a"
-          :to="`/dashboard/members/${id}`"
-        >{{ foundMember.name }}</router-link>
+        <router-link class="btn btn-sm" tag="a" :to="`/dashboard/members/${id}`">
+          {{
+          foundMember.name
+          }}
+        </router-link>
       </li>
     </ol>
   </nav>
@@ -25,10 +25,12 @@ export default {
       return this.foundMember._id;
     }
   },
-  created: function() {
-    this.$store.dispatch('getMember', this.$route.params.id);
+  created: async function() {
+    try {
+      await this.$store.dispatch('getMember', this.$route.params.id);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
   }
 };
 </script>
-
-

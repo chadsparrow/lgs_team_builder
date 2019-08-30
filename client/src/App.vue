@@ -8,7 +8,10 @@
       :opacity="0.1"
       loader="dots"
     ></loading>
-    <transition name="fade" mode="out-in">
+    <transition
+      name="fade"
+      mode="out-in"
+    >
       <router-view />
     </transition>
   </div>

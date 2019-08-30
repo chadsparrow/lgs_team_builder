@@ -11,6 +11,12 @@
           :to="`/dashboard/catalogs/${id}`"
         >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>
       </li>
+      <div class="ml-auto">
+        <router-link
+          :to="`/dashboard/catalogs/${id}/edit`"
+          class="btn btn-sm btn-dark"
+        >Edit Settings</router-link>
+      </div>
     </ol>
   </nav>
 </template>
@@ -25,10 +31,13 @@ export default {
       return this.catalog._id;
     }
   },
-  created: function() {
-    this.$store.dispatch('getCatalog', this.$route.params.id);
-  }
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalog', this.$route.params.id);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
+  },
+  methods: {}
 };
 </script>
-
-

@@ -136,7 +136,7 @@
               />
             </div>
             <div class="col-sm-3">
-              <label for="timezoneAbbrev">Abbr</label>
+              <label for="timezoneAbbrev">TZ Abbr</label>
               <input
                 id="timezoneAbbrev"
                 class="form-control form-control-sm"
@@ -354,7 +354,7 @@ export default {
       try {
         const res = await this.$store.dispatch('register', member);
         this.$toasted.success(res.data[0].message);
-        this.$router.push({ name: 'login' }).catch(err => {});
+        this.$router.push({ name: 'login' });
         this.$toasted.success('Please log in');
       } catch (err) {
         if (err.response.data[0].context) {
@@ -473,7 +473,7 @@ form {
 
 label {
   font-size: 0.9rem;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
   margin-top: 4px;
   color: #999;
 }

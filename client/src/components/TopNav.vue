@@ -18,10 +18,11 @@
           <router-link to="#" tag="a" v-if="member">
             <avatar
               :username="member.name"
-              :size="41.28"
+              :size="42"
               background-color="#E1E1E1"
               color="#000"
               :rounded="false"
+              :src="`/images/avatars/${member._id}.jpg`"
             ></avatar>
           </router-link>
         </li>
@@ -52,7 +53,7 @@ export default {
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
-      this.$router.push({ name: 'login' }).catch(err => {});
+      this.$router.push({ name: 'login' });
       this.$toasted.clear();
       this.$toasted.success('Logged Out');
     }
@@ -79,6 +80,6 @@ export default {
   }
 }
 .vue-avatar--wrapper {
-  border-radius: 4px !important;
+  border-radius: 0.25rem !important;
 }
 </style>

@@ -7,6 +7,7 @@ import PageNotFound from './views/PageNotFound.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
 import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
+import CatalogByIdEdit from './components/Catalogs/CatalogByIdEdit.vue';
 import OrdersIndex from './components/Orders/OrdersIndex.vue';
 import MembersIndex from './components/Members/MembersIndex.vue';
 import MembersAdd from './components/Members/MembersAdd.vue';
@@ -74,6 +75,16 @@ let router = new Router({
           path: 'catalogs/:id',
           name: 'catalogid',
           component: CatalogById,
+          props: true,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
+          path: 'catalogs/:id/edit',
+          name: 'catalogidedit',
+          component: CatalogByIdEdit,
           props: true,
           meta: {
             requiresAuth: true,

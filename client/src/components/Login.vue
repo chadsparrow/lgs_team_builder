@@ -23,7 +23,7 @@
         <button type="submit" class="btn btn-dark btn-block">Log In</button>
         <div class="underForm text-center">
           <router-link tag="a" class="mr-4" to="/register">Register</router-link>
-          <router-link tag="a" to="/reset">Reset Password</router-link>
+          <router-link tag="a" to="#">Reset Password</router-link>
         </div>
       </form>
     </div>
@@ -46,7 +46,7 @@ export default {
 
       try {
         const res = await this.$store.dispatch('login', { email, password });
-        this.$router.push({ name: 'dashboard' }).catch(err => {});
+        this.$router.push({ name: 'dashboard' }).catch(() => {});
         this.$toasted.success(res.data[0].message);
       } catch (err) {
         if (err.response.data[0].context) {
@@ -75,6 +75,7 @@ form {
 
 label {
   font-size: 0.9rem;
+  margin-bottom: 0px;
 }
 
 .container {
@@ -97,6 +98,6 @@ label {
 }
 
 #tbLogo {
-  width: 200px;
+  width: 150px;
 }
 </style>

@@ -67,8 +67,10 @@ export default new Vuex.Store({
           const res = await axios.get('/api/v1/catalogs');
           commit('TOGGLE_LOADING');
           commit('SET_CATALOGS', res.data);
+          commit('SET_CATALOG', {});
           resolve(res);
         } catch (err) {
+          commit('TOGGLE_LOADING');
           reject(err);
         }
       });
@@ -82,6 +84,33 @@ export default new Vuex.Store({
           commit('SET_CATALOG', res.data);
           resolve(res);
         } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    addCatalog({ commit }, catalog) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/catalogs`, catalog);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    editCatalog({ commit }, [id, catalog]) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/catalogs/${id}`, catalog);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
           reject(err);
         }
       });
@@ -95,6 +124,7 @@ export default new Vuex.Store({
           commit('SET_MEMBERS', res.data);
           resolve(res);
         } catch (err) {
+          commit('TOGGLE_LOADING');
           reject(err);
         }
       });
@@ -108,6 +138,7 @@ export default new Vuex.Store({
           commit('SET_MEMBER', res.data);
           resolve(res);
         } catch (err) {
+          commit('TOGGLE_LOADING');
           reject(err);
         }
       });

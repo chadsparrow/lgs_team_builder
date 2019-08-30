@@ -35,7 +35,7 @@
       :next-class="'page-item'"
       :next-link-class="'page-link'"
       :hide-prev-next="true"
-      v-if="pageNumbers >= 1"
+      v-if="pageNumbers > 1"
     ></paginate>
   </div>
 </template>
@@ -52,20 +52,19 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12
+      itemsPerPage: 15
     };
   },
   created: async function() {
-    await this.$store.dispatch('getMembers');
+    try {
+      await this.$store.dispatch('getMembers');
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
   },
   computed: {
     members: function() {
       return this.$store.getters.members;
-    }
-  },
-  methods: {
-    loadMember: function(id) {
-      this.$router.push({ name: 'memberid', params: { id } }).catch(err => {});
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
@@ -83,7 +82,11 @@ export default {
       }
       return pageArray.length;
     }
+  },
+  methods: {
+    loadMember: function(id) {
+      this.$router.push({ name: 'memberid', params: { id } }).catch(() => {});
+    }
   }
 };
 </script>
-

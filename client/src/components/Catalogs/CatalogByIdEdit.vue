@@ -6,31 +6,42 @@
           <router-link tag="a" class="btn btn-sm" to="/dashboard/catalogs">Catalogs</router-link>
         </li>
         <li class="breadcrumb-item">
-          <router-link tag="a" to="/dashboard/catalogs/add" class="btn btn-sm">Add Catalog</router-link>
+          <router-link
+            class="btn btn-sm"
+            tag="a"
+            :to="`/dashboard/catalogs/${id}`"
+          >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>
         </li>
-        <router-link to="/dashboard/catalogs/" class="btn btn-sm ml-auto">Cancel</router-link>
+        <li class="breadcrumb-item">
+          <router-link tag="a" class="btn btn-sm" to="#">Edit</router-link>
+        </li>
       </ol>
     </nav>
-    <form @submit.prevent="addCatalog" novalidate class="container">
+    <form @submit.prevent="editCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
           <label for="brand">Brand</label>
           <select
             class="form-control form-control-sm"
             id="brand"
-            v-model="brand"
+            v-model="catalog.brand"
             ref="brand"
             autofocus
           >
-            <option value="garneau">GARNEAU</option>
-            <option value="sugoi">SUGOI</option>
-            <option value="sombrio">SOMBRIO</option>
-            <option value="connec" disabled>CONNEC</option>
+            <option value="GARNEAU">GARNEAU</option>
+            <option value="SUGOI">SUGOI</option>
+            <option value="SOMBRIO">SOMBRIO</option>
+            <option value="CONNEC" disabled>CONNEC</option>
           </select>
         </div>
         <div class="col-sm-12 mb-2">
           <label for="season">Season</label>
-          <select class="form-control form-control-sm" id="season" v-model="season" ref="season">
+          <select
+            class="form-control form-control-sm"
+            id="season"
+            v-model="catalog.season"
+            ref="season"
+          >
             <option value="SPRING/SUMMER">SPRING/SUMMER</option>
             <option value="FALL/WINTER">FALL/WINTER</option>
             <option disabled="disabled">--------</option>
@@ -42,7 +53,7 @@
         </div>
         <div class="col-sm-12">
           <label for="year">Year</label>
-          <select class="form-control form-control-sm" id="year" v-model="year" ref="year">
+          <select class="form-control form-control-sm" id="year" v-model="catalog.year" ref="year">
             <option value="2030">2030</option>
             <option value="2029">2029</option>
             <option value="2028">2028</option>
@@ -69,10 +80,14 @@
       </div>
       <div class="row">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-dark">Add Catalog</button>
+          <button type="submit" class="btn btn-block btn-dark">Submit Changes</button>
         </div>
         <div class="col-sm-6">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">Cancel</router-link>
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            :to="`/dashboard/catalogs/${id}`"
+          >Cancel</router-link>
         </div>
       </div>
     </form>
@@ -81,25 +96,34 @@
 
 <script>
 export default {
-  name: 'catalogsadd',
-  data() {
-    return {
-      brand: '',
-      season: '',
-      year: '2020',
-      coverImg: ''
-    };
+  computed: {
+    catalog: function() {
+      return this.$store.getters.catalog;
+    },
+    id: function() {
+      return this.catalog._id;
+    }
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalog', this.$route.params.id);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
   },
   methods: {
-    addCatalog: async function() {
+    editCatalog: async function() {
       try {
-        await this.$store.dispatch('addCatalog', {
-          brand: this.brand,
-          season: this.season,
-          year: this.year
-        });
-        this.$toasted.success('Catalog Added');
-        this.$router.push({ name: 'catalogs' }).catch(() => {});
+        await this.$store.dispatch('editCatalog', [
+          this.id,
+          {
+            brand: this.catalog.brand,
+            season: this.catalog.season,
+            year: this.catalog.year
+          }
+        ]);
+        this.$toasted.success('Catalog Updated');
+        this.$router.push({ name: 'catalogid', params: this.id }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;

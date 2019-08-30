@@ -35,7 +35,7 @@
       :next-class="'page-item'"
       :next-link-class="'page-link'"
       :hide-prev-next="true"
-      v-if="pageNumbers >= 1"
+      v-if="pageNumbers > 1"
     ></paginate>
   </div>
 </template>
@@ -50,7 +50,11 @@ export default {
     Paginate
   },
   created: async function() {
-    await this.$store.dispatch('getCatalogs');
+    try {
+      await this.$store.dispatch('getCatalogs');
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
   },
   data() {
     return {
@@ -81,9 +85,8 @@ export default {
   },
   methods: {
     loadCatalog: function(id) {
-      this.$router.push({ name: 'catalogid', params: { id } }).catch(err => {});
+      this.$router.push({ name: 'catalogid', params: { id } }).catch(() => {});
     }
   }
 };
 </script>
-

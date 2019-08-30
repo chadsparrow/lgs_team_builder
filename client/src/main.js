@@ -4,8 +4,11 @@ import router from './router';
 import store from './store';
 import Axios from 'axios';
 import Toasted from 'vue-toasted';
+import VuejsDialog from 'vuejs-dialog';
+import 'vuejs-dialog/dist/vuejs-dialog.min.css';
 
-Vue.use(Toasted, { position: 'bottom-center', duration: 4000 });
+Vue.use(VuejsDialog);
+Vue.use(Toasted, { position: 'bottom-right', duration: 4000 });
 
 Vue.config.productionTip = false;
 const token = localStorage.getItem('token');

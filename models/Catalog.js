@@ -15,7 +15,6 @@ const CatalogSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ['SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER'],
       uppercase: true
     },
     year: {
