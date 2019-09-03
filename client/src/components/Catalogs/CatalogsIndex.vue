@@ -5,7 +5,9 @@
         <li class="breadcrumb-item">
           <router-link class="active btn btn-sm" tag="a" to="/dashboard/catalogs">Catalogs</router-link>
         </li>
-        <router-link to="/dashboard/catalogs/add" class="btn btn-sm btn-dark ml-auto">Add Catalog</router-link>
+        <router-link to="/dashboard/catalogs/add" class="btn btn-sm btn-dark ml-auto">
+          <i class="fas fa-plus" style="vertical-align: middle;"></i>
+        </router-link>
       </ol>
     </nav>
     <span v-if="currentCatalogs && currentCatalogs.length === 0">No Catalogs Found</span>

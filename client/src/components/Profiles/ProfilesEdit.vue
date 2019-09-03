@@ -12,7 +12,9 @@
           <router-link class="btn btn-sm" tag="a" to="#">Edit</router-link>
         </li>
         <div class="ml-auto">
-          <router-link to="#" class="btn btn-sm btn-danger">Close Account</router-link>
+          <router-link to="#" class="btn btn-sm btn-danger">
+            <i class="fas fa-trash" style="vertical-align: middle;"></i>
+          </router-link>
         </div>
       </ol>
     </nav>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" v-if="member">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
           <router-link class="active btn btn-sm" tag="a" to="#">My Profile</router-link>
@@ -9,13 +9,15 @@
           <router-link class="active btn btn-sm" tag="a" to="#">{{member.name}}</router-link>
         </li>
         <div class="ml-auto">
-          <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-dark">Edit Settings</router-link>
+          <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-dark">
+            <i class="fas fa-cog" style="vertical-align: middle;"></i>
+          </router-link>
         </div>
       </ol>
     </nav>
 
-    <div class="row">
-      <div class="col-sm-4" v-if="member">
+    <div class="row" v-if="member">
+      <div class="col-sm-4">
         <div class="avatarWrapper">
           <avatar
             :username="member.name"

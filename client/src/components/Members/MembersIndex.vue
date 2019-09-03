@@ -5,11 +5,13 @@
         <li class="breadcrumb-item">
           <router-link class="btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
         </li>
-        <router-link to="/dashboard/members/add" class="btn btn-sm btn-dark ml-auto">Add Member</router-link>
+        <router-link to="/dashboard/members/add" class="btn btn-sm btn-dark ml-auto">
+          <i class="fas fa-plus" style="vertical-align: middle;"></i>
+        </router-link>
       </ol>
     </nav>
 
-    <span v-if="!members">No Members Found</span>
+    <span v-if="members && members.length === 0">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

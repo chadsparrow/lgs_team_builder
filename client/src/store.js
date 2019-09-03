@@ -13,6 +13,7 @@ export default new Vuex.Store({
     member: sessionStorage.getItem('member') || null,
     catalogs: [],
     catalog: {},
+    catalogItems: [],
     members: [],
     foundMember: {},
     emails: [],
@@ -115,6 +116,20 @@ export default new Vuex.Store({
         }
       });
     },
+    getCatalogItems({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/catalogitems/catalog/${id}`);
+          commit('TOGGLE_LOADING');
+          commit('SET_CATALOG_ITEMS', res.data);
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getMembers({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -171,6 +186,9 @@ export default new Vuex.Store({
     SET_CATALOG(state, catalog) {
       state.catalog = catalog;
     },
+    SET_CATALOG_ITEMS(state, catalogitems) {
+      state.catalogItems = catalogitems;
+    },
     SET_MEMBERS(state, members) {
       state.members = members;
     },
@@ -187,6 +205,7 @@ export default new Vuex.Store({
     },
     catalogs: state => state.catalogs,
     catalog: state => state.catalog,
+    catalogItems: state => state.catalogItems,
     members: state => state.members,
     foundMember: state => state.foundMember,
     emails: state => state.emails,

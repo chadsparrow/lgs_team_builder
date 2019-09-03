@@ -7,7 +7,6 @@
       <li class="breadcrumb-item">
         <router-link tag="a" to="/dashboard/members/add" class="btn btn-sm">Add Member</router-link>
       </li>
-      <router-link to="/dashboard/members/" class="btn btn-sm ml-auto">Cancel</router-link>
     </ol>
   </nav>
 </template>

@@ -12,48 +12,67 @@
             :to="`/dashboard/catalogs/${id}`"
           >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>
         </li>
-        <div class="ml-auto">
-          <router-link
-            class="btn btn-sm btn-dark mr-2"
-            tag="a"
-            :to="`/dashboard/catalogs/${id}/add`"
-          >
-            <i class="fas fa-plus" style="vertical-align: middle;"></i>
-          </router-link>
-          <router-link class="btn btn-sm btn-dark" tag="a" :to="`/dashboard/catalogs/${id}/edit`">
-            <i class="fas fa-cog" style="vertical-align: middle;"></i>
-          </router-link>
-        </div>
+        <li class="breadcrumb-item">
+          <router-link tag="a" :to="`/dashboard/catalogs/${id}/add`" class="btn btn-sm">Add Item</router-link>
+        </li>
       </ol>
     </nav>
-
-    <span v-if="catalogItems && catalogItems.length === 0">No items found for this catalog</span>
-    <span v-else>Catalog Items</span>
+    <form @submit.prevent="addCatalogItem" novalidate class="container">
+      <div class="form-group row"></div>
+      <div class="row">
+        <div class="col-sm-6">
+          <button type="submit" class="btn btn-block btn-dark">Add Catalog Item</button>
+        </div>
+        <div class="col-sm-6">
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            :to="`/dashboard/catalogs/${id}`"
+          >Cancel</router-link>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'catalogsitemsadd',
+  data() {
+    return {};
+  },
   computed: {
     catalog: function() {
       return this.$store.getters.catalog;
     },
     id: function() {
       return this.catalog._id;
-    },
-    catalogItems: function() {
-      return this.$store.getters.catalogItems;
     }
   },
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-      await this.$store.dispatch('getCatalogItems', this.$route.params.id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
   },
-  methods: {}
+  methods: {
+    addCatalogItem: async function() {
+      //
+    }
+  }
 };
 </script>
 
+<style lang="scss" scoped>
+form {
+  margin-top: 40px;
+  width: 500px;
+  font-weight: 200;
+}
+
+label {
+  font-size: 0.9rem;
+  margin-bottom: 0px;
+}
+</style>
