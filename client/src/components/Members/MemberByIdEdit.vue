@@ -15,9 +15,9 @@
         <router-link class="btn btn-sm" tag="a" to="#">Edit</router-link>
       </li>
       <div class="ml-auto">
-        <router-link to="#" class="btn btn-sm btn-danger">
+        <button class="btn btn-sm btn-danger" @click.prevent="deleteMember">
           <i class="fas fa-trash" style="vertical-align: middle;"></i>
-        </router-link>
+        </button>
       </div>
     </ol>
   </nav>
@@ -39,6 +39,19 @@ export default {
       await this.$store.dispatch('getMember', this.$route.params.id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
+    }
+  },
+  methods: {
+    deleteMember: async function() {
+      try {
+        if (confirm('Are you sure?')) {
+          const res = await this.$store.dispatch('deleteMember', this.id);
+          this.$toasted.success(res.data[0].message);
+          this.$router.push({ name: 'members' });
+        }
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message);
+      }
     }
   }
 };

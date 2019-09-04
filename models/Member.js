@@ -140,7 +140,7 @@ const MemberSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-function validateNewMember(member) {
+function validateNewRegister(member) {
   const schema = {
     email: Joi.string()
       .email()
@@ -149,6 +149,71 @@ function validateNewMember(member) {
       .min(8)
       .required()
       .trim(),
+    name: Joi.string()
+      .min(5)
+      .max(50)
+      .required()
+      .trim(),
+    address1: Joi.string()
+      .min(10)
+      .required()
+      .trim(),
+    address2: Joi.string()
+      .trim()
+      .allow('', null),
+    city: Joi.string()
+      .required()
+      .trim(),
+    stateProv: Joi.string()
+      .min(2)
+      .required()
+      .trim(),
+    country: Joi.string()
+      .min(2)
+      .required()
+      .trim(),
+    zipPostal: Joi.string()
+      .required()
+      .trim(),
+    phone: Joi.string()
+      .trim()
+      .required(),
+    timezone: Joi.string().trim(),
+    timezoneAbbrev: Joi.string().trim(),
+    shippingName: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress1: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress2: Joi.string().trim(),
+    shippingCity: Joi.string()
+      .required()
+      .trim(),
+    shippingStateProv: Joi.string()
+      .required()
+      .trim(),
+    shippingCountry: Joi.string()
+      .required()
+      .trim(),
+    shippingZipPostal: Joi.string()
+      .required()
+      .trim(),
+    shippingPhone: Joi.string()
+      .required()
+      .trim(),
+    shippingEmail: Joi.string()
+      .required()
+      .email()
+  };
+
+  return Joi.validate(member, schema, joiOptions);
+}
+function validateNewMember(member) {
+  const schema = {
+    email: Joi.string()
+      .email()
+      .required(),
     name: Joi.string()
       .min(5)
       .max(50)
@@ -372,6 +437,7 @@ MemberSchema.methods.generateAuthToken = function() {
 };
 
 exports.Member = mongoose.model('members', MemberSchema);
+exports.validateNewRegister = validateNewRegister;
 exports.validateNewMember = validateNewMember;
 exports.validateUpdateMember = validateUpdateMember;
 exports.validateEmail = validateEmail;

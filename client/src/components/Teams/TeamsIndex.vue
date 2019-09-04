@@ -5,7 +5,11 @@
         <li class="breadcrumb-item">
           <router-link class="active btn btn-sm" tag="a" to="/dashboard/teams">Teams</router-link>
         </li>
-        <router-link to="/dashboard/teams/add" class="btn btn-sm btn-dark ml-auto">
+        <router-link
+          to="/dashboard/teams/add"
+          class="btn btn-sm btn-dark ml-auto"
+          v-if="member && member.isAdmin"
+        >
           <i class="fas fa-plus" style="vertical-align: middle;"></i>
         </router-link>
       </ol>
@@ -67,6 +71,9 @@ export default {
     }
   },
   computed: {
+    member: function() {
+      return this.$store.getters.getCurrentMember;
+    },
     teams: function() {
       return this.$store.getters.teams;
     },

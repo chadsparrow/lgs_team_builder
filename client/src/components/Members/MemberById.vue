@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -17,7 +17,7 @@
     </nav>
 
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-4 sidebar">
         <avatar
           :username="name"
           :size="225"
@@ -83,5 +83,9 @@ export default {
 <style lang="scss" scoped>
 .vue-avatar--wrapper {
   border-radius: 1rem !important;
+}
+
+.sidebar {
+  flex: 0 0 300px;
 }
 </style>

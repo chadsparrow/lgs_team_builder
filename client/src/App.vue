@@ -8,10 +8,7 @@
       :opacity="0.1"
       loader="dots"
     ></loading>
-    <transition
-      name="fade"
-      mode="out-in"
-    >
+    <transition name="fade" mode="out-in">
       <router-view />
     </transition>
   </div>
@@ -50,14 +47,6 @@ export default {
             reject(error);
           });
         }
-
-        localStorage.removeItem('token');
-        this.$store.dispatch('logout');
-        this.$router.push({ name: 'login' }).catch(err => {});
-
-        return new Promise((resolve, reject) => {
-          reject(error);
-        });
       }
     );
   }
@@ -65,7 +54,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css?family=Overpass:200,300,400,900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Overpass:200,300,400,700,900&display=swap');
 
 body,
 html {

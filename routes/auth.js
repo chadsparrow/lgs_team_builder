@@ -7,7 +7,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const cryptr = require('../middleware/cryptr');
-const { Member, validateNewMember } = require('../models/Member');
+const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
@@ -70,7 +70,7 @@ router.post('/login', async (req, res) => {
 
 // POST /api/members
 router.post('/register', async (req, res) => {
-  const { error } = validateNewMember(req.body);
+  const { error } = validateNewRegister(req.body);
   if (error) return res.status(400).send(error.details);
 
   const {

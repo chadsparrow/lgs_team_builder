@@ -347,15 +347,18 @@ export default {
 
       try {
         const res = await this.$store.dispatch('addMember', member);
-        this.$toasted.success(res.data[0].message);
         this.$router.push({ name: 'members' });
-        this.$toasted.success('Please log in');
+        this.$toasted.success('Member Added');
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
         this.$toasted.error(err.response.data[0].message);
+        if (err.response.data[0].message === 'Member already registered.') {
+          this.$refs['email'].value = '';
+          this.$refs['email'].focus();
+        }
       }
     },
     copyDetails: function() {

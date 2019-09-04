@@ -2,8 +2,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import VueAxios from 'vue-axios';
 
 Vue.use(Vuex);
+Vue.use(VueAxios, axios);
+
+const token = localStorage.getItem('token');
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 export default new Vuex.Store({
   state: {
@@ -164,6 +169,19 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.post('/api/v1/members/register', member);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    deleteMember({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.delete(`/api/v1/members/${id}`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {

@@ -74,7 +74,6 @@ router.post('/register', [auth, admin], async (req, res) => {
   const newMember = new Member({
     name,
     address1: cryptr.encrypt(address1),
-    address2: cryptr.encrypt(address2),
     city,
     stateProv,
     country,
@@ -85,6 +84,10 @@ router.post('/register', [auth, admin], async (req, res) => {
     timezoneAbbrev,
     isAdmin: false
   });
+
+  if (address2) {
+    newMember.address2 = cryptr.encrypt(address2);
+  }
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
   const password = generator.generate({ length: 10, numbers: true });
@@ -105,13 +108,16 @@ router.post('/register', [auth, admin], async (req, res) => {
   } else {
     newMember.shipping.name = shippingName;
     newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
-    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
     newMember.shipping.city = shippingCity;
     newMember.shipping.stateProv = shippingStateProv;
     newMember.shipping.country = shippingCountry;
     newMember.shipping.zipPostal = shippingZipPostal;
     newMember.shipping.phone = cryptr.encrypt(shippingPhone);
     newMember.shipping.email = shippingEmail;
+  }
+
+  if (shippingAddress2) {
+    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
   }
 
   await newMember.save();
