@@ -48,6 +48,7 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 import Paginate from 'vuejs-paginate';
 
 export default {
+  name: 'CatalogsIndex',
   components: {
     Paginate
   },
@@ -87,7 +88,7 @@ export default {
   },
   methods: {
     loadCatalog: function(id) {
-      this.$router.push({ name: 'catalogid', params: { id } }).catch(() => {});
+      this.$router.push({ name: 'catalogsById', params: { id } }).catch(() => {});
     }
   }
 };

@@ -18,6 +18,7 @@ import MemberById from './components/Members/MemberById.vue';
 import MemberByIdEdit from './components/Members/MemberByIdEdit.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
+import TeamsAdd from './components/Teams/TeamsAdd.vue';
 
 Vue.use(Router);
 
@@ -84,7 +85,7 @@ let router = new Router({
         },
         {
           path: 'catalogs/add',
-          name: 'addCatalog',
+          name: 'catalogsAdd',
           component: CatalogsAdd,
           meta: {
             requiresAuth: true,
@@ -93,7 +94,7 @@ let router = new Router({
         },
         {
           path: 'catalogs/:id',
-          name: 'catalogid',
+          name: 'catalogsById',
           component: CatalogById,
           meta: {
             requiresAuth: true,
@@ -102,7 +103,7 @@ let router = new Router({
         },
         {
           path: 'catalogs/:id/edit',
-          name: 'catalogidedit',
+          name: 'catalogsByIdEdit',
           component: CatalogByIdEdit,
           meta: {
             requiresAuth: true,
@@ -111,7 +112,7 @@ let router = new Router({
         },
         {
           path: 'catalogs/:id/add',
-          name: 'catalogitemsadd',
+          name: 'catalogsItemsAdd',
           component: CatalogItemsAdd,
           meta: {
             requiresAuth: true,
@@ -143,6 +144,15 @@ let router = new Router({
           }
         },
         {
+          path: 'teams/add',
+          name: 'teamsAdd',
+          component: TeamsAdd,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
           path: 'members',
           name: 'members',
           component: MembersIndex,
@@ -153,7 +163,7 @@ let router = new Router({
         },
         {
           path: 'members/add',
-          name: 'addMember',
+          name: 'membersAdd',
           component: MembersAdd,
           meta: {
             requiresAuth: true,
@@ -162,7 +172,7 @@ let router = new Router({
         },
         {
           path: 'members/:id',
-          name: 'memberid',
+          name: 'membersById',
           component: MemberById,
           meta: {
             requiresAuth: true,
@@ -171,7 +181,7 @@ let router = new Router({
         },
         {
           path: 'members/:id/edit',
-          name: 'memberidedit',
+          name: 'membersByIdEdit',
           component: MemberByIdEdit,
           meta: {
             requiresAuth: true,

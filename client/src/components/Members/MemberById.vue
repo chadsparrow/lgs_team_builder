@@ -27,7 +27,7 @@
           :src="avatarUrl"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info">My Timezone:</small>
+          <small class="col-sm-12 text-info">Member Timezone:</small>
           <span class="col-sm-12">{{timezone}}</span>
         </div>
         <div class="row p-1">

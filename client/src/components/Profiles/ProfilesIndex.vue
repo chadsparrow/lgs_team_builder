@@ -49,7 +49,7 @@
 import Avatar from 'vue-avatar';
 
 export default {
-  name: 'Profile',
+  name: 'ProfilesIndex',
   components: {
     Avatar
   },

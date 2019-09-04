@@ -32,6 +32,7 @@ router.get('/', auth, async (req, res) => {
 
     return res.send(teams);
   }
+
   teams = await Team.find({ $or: [{ managerId: req.member._id }, { members: req.member._id }] })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })

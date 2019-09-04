@@ -9,7 +9,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: 'StoresIndex'
+};
 </script>
 
 <style></style>

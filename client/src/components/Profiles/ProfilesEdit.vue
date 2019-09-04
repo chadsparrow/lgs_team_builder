@@ -26,7 +26,7 @@
 import Avatar from 'vue-avatar';
 
 export default {
-  name: 'Profile',
+  name: 'ProfilesEdit',
   components: {
     Avatar
   },

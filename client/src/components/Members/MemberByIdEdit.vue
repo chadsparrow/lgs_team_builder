@@ -25,6 +25,7 @@
 
 <script>
 export default {
+  name: 'MemberByIdEdit',
   computed: {
     foundMember: function() {
       return this.$store.getters.foundMember;

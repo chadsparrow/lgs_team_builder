@@ -43,11 +43,10 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
 import Paginate from 'vuejs-paginate';
 
 export default {
+  name: 'MembersIndex',
   components: {
     Paginate
   },
@@ -87,7 +86,7 @@ export default {
   },
   methods: {
     loadMember: function(id) {
-      this.$router.push({ name: 'memberid', params: { id } }).catch(() => {});
+      this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
     }
   }
 };

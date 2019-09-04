@@ -17,7 +17,8 @@ export default new Vuex.Store({
     members: [],
     foundMember: {},
     emails: [],
-    notifications: []
+    notifications: [],
+    teams: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -157,6 +158,33 @@ export default new Vuex.Store({
           reject(err);
         }
       });
+    },
+    addMember({ commit }, member) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post('/api/v1/members/register', member);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getTeams({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get('/api/v1/teams');
+          commit('TOGGLE_LOADING');
+          commit('SET_TEAMS', res.data);
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
     }
   },
   mutations: {
@@ -194,6 +222,9 @@ export default new Vuex.Store({
     },
     SET_MEMBER(state, member) {
       state.foundMember = member;
+    },
+    SET_TEAMS(state, teams) {
+      state.teams = teams;
     }
   },
   getters: {
@@ -209,6 +240,7 @@ export default new Vuex.Store({
     members: state => state.members,
     foundMember: state => state.foundMember,
     emails: state => state.emails,
-    notifications: state => state.notifications
+    notifications: state => state.notifications,
+    teams: state => state.teams
   }
 });

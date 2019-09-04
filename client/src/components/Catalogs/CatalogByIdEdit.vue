@@ -96,6 +96,7 @@
 
 <script>
 export default {
+  name: 'CatalogByIdEdit',
   computed: {
     catalog: function() {
       return this.$store.getters.catalog;
@@ -123,7 +124,7 @@ export default {
           }
         ]);
         this.$toasted.success('Catalog Updated');
-        this.$router.push({ name: 'catalogid', params: this.id }).catch(() => {});
+        this.$router.push({ name: 'catalogsById', params: this.id }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;

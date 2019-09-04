@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const _ = require('lodash');
 const express = require('express');
+const generator = require('generate-password');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -53,7 +54,6 @@ router.post('/register', [auth, admin], async (req, res) => {
     zipPostal,
     phone,
     email,
-    password,
     timezone,
     timezoneAbbrev,
     shippingSame,
@@ -67,14 +67,6 @@ router.post('/register', [auth, admin], async (req, res) => {
     shippingPhone,
     shippingEmail
   } = req.body;
-
-  const userEmail = email.split('@')[0];
-  if (password.includes('password'))
-    return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
-  if (password.includes(userEmail))
-    return res
-      .status(400)
-      .send([{ message: 'Please do not use your email username in your password' }]);
 
   const member = await Member.findOne({ email });
   if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
@@ -95,7 +87,8 @@ router.post('/register', [auth, admin], async (req, res) => {
   });
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
-
+  const password = generator.generate({ length: 10, numbers: true });
+  console.log(password);
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 
@@ -228,9 +221,9 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
 });
 
 // PATCH /api/v1/members/avatar/:id
-router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
-  // allow upload of file and reset avatarUrl to relative URL
-});
+// router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
+//   // allow upload of file and reset avatarUrl to relative URL
+// });
 
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {

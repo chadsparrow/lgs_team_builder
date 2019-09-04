@@ -34,6 +34,7 @@
 
 <script>
 export default {
+  name: 'CatalogById',
   computed: {
     catalog: function() {
       return this.$store.getters.catalog;

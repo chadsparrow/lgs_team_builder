@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  name: 'catalogsadd',
+  name: 'CatalogsAdd',
   data() {
     return {
       brand: '',
