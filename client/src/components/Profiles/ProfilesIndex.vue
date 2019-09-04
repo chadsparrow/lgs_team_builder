@@ -17,7 +17,7 @@
     </nav>
 
     <div class="row" v-if="member">
-      <div class="col-sm-4">
+      <div class="col sidebar">
         <div class="avatarWrapper">
           <avatar
             :username="member.name"
@@ -27,7 +27,7 @@
             :rounded="false"
             :src="member.avatarUrl"
           ></avatar>
-          <button id="avatarChange" class="btn btn-sm btn-block btn-info mt-2">Change Avatar</button>
+          <button id="avatarChange" class="btn btn-sm btn-block btn-info mt-2">Change Avatar - Soon!</button>
         </div>
         <div class="row p-1 mt-4">
           <small class="col-sm-12 text-info">My Timezone:</small>
@@ -40,7 +40,7 @@
           >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a-z")}}</span>
         </div>
       </div>
-      <div class="col-sm-8">Test</div>
+      <div class="col">Test</div>
     </div>
   </div>
 </template>
@@ -67,7 +67,7 @@ export default {
   position: relative;
 }
 
-#avatarChange {
-  width: 225px;
+.sidebar {
+  flex: 0 0 255px;
 }
 </style>

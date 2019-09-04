@@ -15,9 +15,11 @@
         <router-link class="btn btn-sm" tag="a" to="#">Edit</router-link>
       </li>
       <div class="ml-auto">
-        <button class="btn btn-sm btn-danger" @click.prevent="deleteMember">
-          <i class="fas fa-trash" style="vertical-align: middle;"></i>
-        </button>
+        <button
+          class="btn btn-sm btn-danger"
+          @click.prevent="deleteMember"
+          :disabled="foundMember.isAdmin"
+        >Delete Member</button>
       </div>
     </ol>
   </nav>

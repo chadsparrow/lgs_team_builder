@@ -17,7 +17,7 @@
     </nav>
 
     <div class="row">
-      <div class="col-sm-4 sidebar">
+      <div class="col sidebar">
         <avatar
           :username="name"
           :size="225"
@@ -37,7 +37,7 @@
           >{{memberSince | moment('timezone', timezone, "MMM Do YYYY - hh:ss a-z")}}</span>
         </div>
       </div>
-      <div class="col-sm-8">Test</div>
+      <div class="col">Test</div>
     </div>
   </div>
 </template>
@@ -86,6 +86,6 @@ export default {
 }
 
 .sidebar {
-  flex: 0 0 300px;
+  flex: 0 0 255px;
 }
 </style>

@@ -36,7 +36,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  return res.send(_.pick(member, ['_id', 'name', 'email', 'createdAt', 'avatarUrl', 'timezone']));
+  return res.send(
+    _.pick(member, ['_id', 'name', 'email', 'createdAt', 'avatarUrl', 'timezone', 'isAdmin'])
+  );
 });
 
 // POST /api/members
