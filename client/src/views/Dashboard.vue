@@ -48,4 +48,10 @@ export default {
 .breadcrumb {
   background-color: rgb(225, 225, 225);
 }
+
+@media (max-width: 575px) {
+  .dashboard {
+    grid-template-columns: 60px 1fr;
+  }
+}
 </style>

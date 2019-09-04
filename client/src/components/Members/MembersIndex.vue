@@ -56,7 +56,7 @@ export default {
       itemsPerPage: 15
     };
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getMembers');
     } catch (err) {

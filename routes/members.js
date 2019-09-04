@@ -41,6 +41,17 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   );
 });
 
+// GET /api/members/details/:id
+router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => {
+  const member = await Member.findById(req.params.id).select(
+    '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping avatarUrl isAdmin createdAt'
+  );
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+
+  return res.send(member);
+});
+
 // POST /api/members
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewMember(req.body);

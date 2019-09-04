@@ -63,7 +63,7 @@ export default {
       itemsPerPage: 15
     };
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getTeams');
     } catch (err) {

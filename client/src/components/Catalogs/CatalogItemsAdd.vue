@@ -49,7 +49,7 @@ export default {
       return this.catalog._id;
     }
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
     } catch (err) {

@@ -27,7 +27,10 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link btn btn-danger" @click="logout">Logout</a>
+          <a class="nav-link btn btn-danger" @click="logout">
+            <span>Logout</span>
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
         </li>
       </ul>
     </div>
@@ -74,6 +77,12 @@ export default {
 
   .navbar-nav {
     margin-right: 0.75rem;
+  }
+
+  a {
+    i {
+      margin-left: 0.5rem;
+    }
   }
 }
 .vue-avatar--wrapper {

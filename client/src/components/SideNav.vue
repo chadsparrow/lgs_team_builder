@@ -7,31 +7,60 @@
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/members"
+      tag="a"
       v-if="member && member.isAdmin"
-    >Members</router-link>
+    >
+      <i class="fas fa-user"></i>
+      <span>Members</span>
+    </router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/teams"
+      tag="a"
       v-if="member && member.isAdmin"
-    >Teams</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/teams" v-else>My Teams</router-link>
+    >
+      <i class="fas fa-users"></i>
+      <span>Teams</span>
+    </router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/teams" tag="a" v-else>
+      <i class="fas fa-users"></i>
+      <span>My Teams</span>
+    </router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/stores"
+      tag="a"
       v-if="member && member.isAdmin"
-    >Stores</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/stores" v-else>My Stores</router-link>
+    >
+      <i class="fas fa-store"></i>
+      <span>Stores</span>
+    </router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/stores" tag="a" v-else>
+      <i class="fas fa-store"></i>
+      <span>My Stores</span>
+    </router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/orders"
+      tag="a"
       v-if="member && member.isAdmin"
-    >Orders</router-link>
-    <router-link class="btn btn-block btn-dark" to="/dashboard/orders" v-else>My Orders</router-link>
+    >
+      <i class="fas fa-receipt"></i>
+      <span>Orders</span>
+    </router-link>
+    <router-link class="btn btn-block btn-dark" to="/dashboard/orders" tag="a" v-else>
+      <i class="fas fa-receipt"></i>
+      <span>My Orders</span>
+    </router-link>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/catalogs"
+      tag="a"
       v-if="member && member.isAdmin"
-    >Catalogs</router-link>
+    >
+      <i class="fas fa-book"></i>
+      <span>Catalogs</span>
+    </router-link>
 
     <div class="copyright text-center">
       <small>&copy; 2019 Garneau.com</small>
@@ -54,25 +83,54 @@ export default {
 .sidenav {
   background-color: #111;
   color: white;
-  padding-left: 0.75em;
-  padding-right: 0.75em;
-  padding-top: 0.75em;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 2em;
+  padding-bottom: 2em;
   grid-area: nav;
 
+  a {
+    i {
+      margin-right: 1rem;
+    }
+  }
+
   .logo {
-    width: 60%;
+    width: 70%;
+  }
+  .router-link-active {
+    background-color: rgb(225, 225, 225);
+    color: black;
+  }
+  .copyright {
+    position: absolute;
+    bottom: 1em;
+    left: 40px;
+    color: #999;
   }
 }
 
-.router-link-active {
-  background-color: rgb(225, 225, 225);
-  color: black;
-}
+@media (max-width: 575px) {
+  .sidenav {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    .logo {
+      display: none;
+    }
 
-.copyright {
-  position: absolute;
-  bottom: 15px;
-  left: 40px;
-  color: #999;
+    a {
+      span {
+        display: none;
+      }
+
+      i {
+        margin-right: 0rem;
+      }
+    }
+
+    .copyright {
+      display: none;
+    }
+  }
 }
 </style>

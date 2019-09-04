@@ -69,5 +69,9 @@ export default {
 
 .sidebar {
   flex: 0 0 255px;
+
+  span {
+    font-size: 0.8em;
+  }
 }
 </style>

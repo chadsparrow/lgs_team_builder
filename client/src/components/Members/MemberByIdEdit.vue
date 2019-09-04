@@ -36,7 +36,7 @@ export default {
       return this.foundMember._id;
     }
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getMember', this.$route.params.id);
     } catch (err) {

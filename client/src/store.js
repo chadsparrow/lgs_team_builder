@@ -15,7 +15,7 @@ export default new Vuex.Store({
     isLoading: false,
     status: '',
     token: localStorage.getItem('token') || '',
-    member: sessionStorage.getItem('member') || null,
+    member: localStorage.getItem('member') || null,
     catalogs: [],
     catalog: {},
     catalogItems: [],
@@ -36,7 +36,7 @@ export default new Vuex.Store({
           member = JSON.stringify(member);
           const emails = res.data[0].emails;
           localStorage.setItem('token', token);
-          sessionStorage.setItem('member', member);
+          localStorage.setItem('member', member);
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           commit('AUTH_SUCCESS', { token, member, emails });
           resolve(res);
@@ -63,7 +63,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('LOGOUT');
         localStorage.removeItem('token');
-        sessionStorage.removeItem('member');
+        localStorage.removeItem('member');
         resolve();
       });
     },
@@ -164,6 +164,25 @@ export default new Vuex.Store({
         }
       });
     },
+    getMemberDetails({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/members/${id}/details`);
+          commit('TOGGLE_LOADING');
+          commit('SET_MEMBER', res.data);
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    clearMemberDetails({ commit }) {
+      commit('TOGGLE_LOADING');
+      commit('CLEAR_MEMBER');
+      commit('TOGGLE_LOADING');
+    },
     addMember({ commit }, member) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -240,6 +259,9 @@ export default new Vuex.Store({
     },
     SET_MEMBER(state, member) {
       state.foundMember = member;
+    },
+    CLEAR_MEMBER(state) {
+      state.foundMember = {};
     },
     SET_TEAMS(state, teams) {
       state.teams = teams;

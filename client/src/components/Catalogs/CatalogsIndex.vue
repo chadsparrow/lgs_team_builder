@@ -52,7 +52,7 @@ export default {
   components: {
     Paginate
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getCatalogs');
     } catch (err) {

@@ -46,7 +46,7 @@ export default {
       return this.$store.getters.catalogItems;
     }
   },
-  created: async function() {
+  beforeCreate: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       await this.$store.dispatch('getCatalogItems', this.$route.params.id);
