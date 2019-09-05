@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Dashboard from './views/Dashboard.vue';
+import DashboardIndex from './components/Dashboard/DashboardIndex.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ProfilesIndex from './components/Profiles/ProfilesIndex.vue';
 import ProfilesEdit from './components/Profiles/ProfilesEdit.vue';
@@ -58,6 +59,12 @@ let router = new Router({
         requiresAuth: true
       },
       children: [
+        {
+          path: 'index',
+          name: 'dashboardindex',
+          component: DashboardIndex,
+          meta: { requiresAuth: true }
+        },
         {
           path: 'profile',
           name: 'profile',

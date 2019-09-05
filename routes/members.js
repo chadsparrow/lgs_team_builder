@@ -20,7 +20,7 @@ const {
 
 // GET /api/members
 router.get('/', [auth, admin], async (req, res) => {
-  const members = await Member.find()
+  const members = await Member.find({ _id: { $ne: req.member._id } })
     .select('_id name email isAdmin')
     .sort({ name: 1 });
 
@@ -31,7 +31,7 @@ router.get('/', [auth, admin], async (req, res) => {
 });
 
 // GET /api/members/:id
-router.get('/:id', [validateObjectId, auth], async (req, res) => {
+router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
@@ -46,9 +46,20 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
   const member = await Member.findById(req.params.id).select(
     '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping avatarUrl isAdmin createdAt'
   );
+
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
+  member.address1 = cryptr.decrypt(member.address1);
+  member.phone = cryptr.decrypt(member.phone);
+  if (member.address2) {
+    member.address2 = cryptr.decrypt(member.address2);
+  }
+  member.shipping.address1 = cryptr.decrypt(member.shipping.address1);
+  if (member.shipping.address2) {
+    member.shipping.address2 = cryptr.decrypt(member.shipping.address2);
+  }
+  member.shipping.phone = cryptr.decrypt(member.shipping.phone);
   return res.send(member);
 });
 
@@ -104,7 +115,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
   const password = generator.generate({ length: 10, numbers: true });
-  console.log(password);
+  // console.log(password);
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 
@@ -121,6 +132,9 @@ router.post('/register', [auth, admin], async (req, res) => {
   } else {
     newMember.shipping.name = shippingName;
     newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
+    if (shippingAddress2) {
+      newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
+    }
     newMember.shipping.city = shippingCity;
     newMember.shipping.stateProv = shippingStateProv;
     newMember.shipping.country = shippingCountry;
@@ -129,13 +143,9 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.shipping.email = shippingEmail;
   }
 
-  if (shippingAddress2) {
-    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
-  }
-
   await newMember.save();
 
-  return res.send(_.pick(newMember, ['_id', 'name', 'email', 'timezone']));
+  return res.status(201).send([{ message: 'Member Registered' }]);
 });
 
 // PUT /api/members/:id
@@ -173,7 +183,9 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   member.name = name;
   member.address1 = cryptr.encrypt(address1);
-  member.address2 = cryptr.encrypt(address2);
+  if (address2) {
+    member.address2 = cryptr.encrypt(address2);
+  }
   member.city = city;
   member.stateProv = stateProv;
   member.country = country;
@@ -183,18 +195,22 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   if (shippingSame) {
     member.shipping.name = member.name;
-    member.shipping.address1 = member.address1;
-    member.shipping.address2 = member.address2;
+    member.shipping.address1 = cryptr.encrypt(address1);
+    if (member.shipping.address2) {
+      member.shipping.address2 = cryptr.encrypt(address2);
+    }
     member.shipping.city = member.city;
     member.shipping.stateProv = member.stateProv;
     member.shipping.country = member.country;
     member.shipping.zipPostal = member.zipPostal;
-    member.shipping.phone = member.phone;
+    member.shipping.phone = cryptr.encrypt(member.phone);
     member.shipping.email = member.email;
   } else {
     member.shipping.name = shippingName;
     member.shipping.address1 = cryptr.encrypt(shippingAddress1);
-    member.shipping.address2 = cryptr.encrypt(shippingAddress2);
+    if (shippingAddress2) {
+      member.shipping.address2 = cryptr.encrypt(shippingAddress2);
+    }
     member.shipping.city = shippingCity;
     member.shipping.stateProv = shippingStateProv;
     member.shipping.country = shippingCountry;
@@ -205,7 +221,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   await member.save();
 
-  return res.send(_.pick(member, ['_id', 'name', 'email']));
+  return res.status(200).send([{ message: 'Member Updated' }]);
 });
 
 // PATCH /api/members/email/:id
@@ -240,9 +256,22 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
 });
 
 // PATCH /api/v1/members/avatar/:id
-// router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
-//   // allow upload of file and reset avatarUrl to relative URL
-// });
+router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
+  // allow upload of file and reset avatarUrl to relative URL
+  res.end();
+});
+
+// PATCH /api/v1/members/admin/:id
+router.patch('/admin/:id', [validateObjectId, auth, admin], async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found.' }]);
+
+  member.isAdmin = !member.isAdmin;
+
+  await member.save();
+
+  return res.status(200).send([{ message: 'Member Updated' }]);
+});
 
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {

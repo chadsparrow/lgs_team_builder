@@ -13,6 +13,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="topNav">
+      <router-link class="btn btn-small btn-dark nav-item" to="/dashboard/index">Home</router-link>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/dashboard/profile" tag="a" v-if="member">

@@ -47,6 +47,14 @@ export default {
             reject(error);
           });
         }
+
+        localStorage.removeItem('token');
+        this.$store.dispatch('logout');
+        this.$router.push({ name: 'login' });
+
+        return new Promise((resolve, reject) => {
+          reject(error);
+        });
       }
     );
   }

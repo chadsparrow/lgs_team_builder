@@ -37,7 +37,7 @@
           <small class="col-sm-12 text-info">Member Since:</small>
           <span
             class="col-sm-12"
-          >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a-z")}}</span>
+          >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a - z")}}</span>
         </div>
       </div>
       <div class="col">Test</div>

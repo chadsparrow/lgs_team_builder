@@ -19,8 +19,7 @@
             <th scope="row">{{ member.name }}</th>
             <td>{{ member.email }}</td>
             <td>
-              <span v-if="member.isAdmin">Admin</span>
-              <span v-else>User</span>
+              <span>{{member.isAdmin ? "Admin" : "Member"}}</span>
             </td>
           </tr>
         </tbody>

@@ -156,7 +156,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}`);
           commit('TOGGLE_LOADING');
-          commit('SET_MEMBER', res.data);
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -170,7 +169,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}/details`);
           commit('TOGGLE_LOADING');
-          commit('SET_MEMBER', res.data);
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -201,6 +199,19 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.delete(`/api/v1/members/${id}`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    toggleAdmin({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.patch(`/api/v1/members/admin/${id}`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -257,9 +268,6 @@ export default new Vuex.Store({
     SET_MEMBERS(state, members) {
       state.members = members;
     },
-    SET_MEMBER(state, member) {
-      state.foundMember = member;
-    },
     CLEAR_MEMBER(state) {
       state.foundMember = {};
     },
@@ -278,7 +286,6 @@ export default new Vuex.Store({
     catalog: state => state.catalog,
     catalogItems: state => state.catalogItems,
     members: state => state.members,
-    foundMember: state => state.foundMember,
     emails: state => state.emails,
     notifications: state => state.notifications,
     teams: state => state.teams

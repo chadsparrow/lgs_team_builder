@@ -26,10 +26,12 @@ const MemberSchema = new mongoose.Schema(
     },
     address1: {
       type: String,
-      required: true
+      required: true,
+      uppercase: true
     },
     address2: {
-      type: String
+      type: String,
+      uppercase: true
     },
     city: {
       type: String,
@@ -77,10 +79,12 @@ const MemberSchema = new mongoose.Schema(
         trim: true
       },
       address1: {
-        type: String
+        type: String,
+        uppercase: true
       },
       address2: {
-        type: String
+        type: String,
+        uppercase: true
       },
       city: {
         type: String,
