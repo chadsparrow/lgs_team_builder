@@ -61,7 +61,7 @@ let router = new Router({
       children: [
         {
           path: 'index',
-          name: 'dashboardindex',
+          name: 'dashboardIndex',
           component: DashboardIndex,
           meta: { requiresAuth: true }
         },
@@ -220,7 +220,7 @@ router.beforeEach((to, from, next) => {
           next();
         } else {
           Vue.toasted.error('Access Denied');
-          next({ name: 'dashboard' });
+          next({ name: 'dashboardIndex' });
         }
       } else {
         next();
@@ -230,7 +230,7 @@ router.beforeEach((to, from, next) => {
     if (localStorage.getItem('token') == null) {
       next();
     } else {
-      next({ name: 'dashboard' });
+      next({ name: 'dashboardIndex' });
     }
   } else {
     next();

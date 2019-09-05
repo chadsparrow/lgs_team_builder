@@ -30,22 +30,38 @@
         <hr />
         <small class="text-info">Actions</small>
         <button
-          class="btn btn-sm btn-block btn-success mt-2"
+          class="btn btn-sm btn-block btn-dark mt-2"
+          @click.prevent="updateMember"
+        >Update Member</button>
+        <router-link
+          :to="`/dashboard/members/${id}`"
+          class="btn btn-sm btn-block btn-danger mt-2"
+          @click.prevent="updateMember"
+        >Cancel</router-link>
+        <hr />
+        <button
+          class="btn btn-sm btn-block btn-secondary mt-2"
           @click.prevent="toggleAdmin"
           v-if="!isAdmin"
         >Give Admin Status</button>
         <button
-          class="btn btn-sm btn-block btn-danger mt-2"
+          class="btn btn-sm btn-block btn-secondary mt-2"
           @click.prevent="toggleAdmin"
           v-else
         >Revoke Admin Status</button>
         <button
-          class="btn btn-sm btn-block btn-danger mt-2 mb-4"
+          class="btn btn-sm btn-block btn-secondary mt-2 mb-4"
           @click.prevent="deleteMember"
         >Delete Member</button>
       </div>
-      <div class="col infoSection" v-if="name">
-        <h6>Member Information</h6>
+      <div class="col infoSection">
+        <div>
+          <h6>Member Information</h6>
+          <span class="badge badge-info">
+            <small>Double click to edit</small>
+          </span>
+        </div>
+
         <form>
           <div class="row">
             <div class="form-group col-sm-6">
@@ -55,7 +71,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="name"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -75,7 +93,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="address1"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-12" v-if="address2">
@@ -85,7 +105,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="address2"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -95,7 +117,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="city"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -105,7 +129,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="stateProv"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -115,7 +141,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="country"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -125,7 +153,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="zipPostal"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -135,7 +165,9 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="phone"
-                readonly
+                readonly="true"
+                ondblclick="this.readOnly='';"
+                onblur="this.readOnly='true';"
               />
             </div>
           </div>
@@ -244,7 +276,6 @@ export default {
   data() {
     return {
       id: '',
-      avatarUrl: null,
       timezone: '',
       timezoneAbbrev: '',
       createdAt: '',
@@ -266,7 +297,6 @@ export default {
       const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
       const {
         _id,
-        avatarUrl,
         timezone,
         timezoneAbbrev,
         createdAt,
@@ -284,7 +314,6 @@ export default {
       } = res.data;
 
       this.id = _id;
-      this.avatarUrl = avatarUrl ? avatarUrl : null;
       this.timezone = timezone;
       this.timezoneAbbrev = timezoneAbbrev;
       this.createdAt = createdAt;
