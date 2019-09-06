@@ -71,7 +71,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-6">
               <label for="address1">Address 1</label>
               <input
                 id="address1"
@@ -81,7 +81,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-12" v-if="address2">
+            <div class="form-group col-sm-6">
               <label for="address2">Address 2</label>
               <input
                 id="address2"
@@ -164,7 +164,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-6">
               <label for="shippingAddress1">Shipping Address 1</label>
               <input
                 id="shippingAddress1"
@@ -174,7 +174,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-12" v-if="shipping.address2">
+            <div class="form-group col-sm-6">
               <label for="shippingAddress2">Shipping Address 2</label>
               <input
                 id="shippingAddress2"
@@ -248,22 +248,22 @@ export default {
   name: 'MemberById',
   data() {
     return {
-      id: '',
-      avatarUrl: null,
-      timezone: '',
-      timezoneAbbrev: '',
-      createdAt: '',
+      id: undefined,
+      avatarUrl: undefined,
+      timezone: undefined,
+      timezoneAbbrev: undefined,
+      createdAt: undefined,
       isAdmin: false,
       name: '',
-      email: '',
-      address1: '',
-      address2: '',
-      city: '',
-      stateProv: '',
-      country: '',
-      zipPostal: '',
-      phone: '',
-      shipping: {}
+      email: undefined,
+      address1: undefined,
+      address2: undefined,
+      city: undefined,
+      stateProv: undefined,
+      country: undefined,
+      zipPostal: undefined,
+      phone: undefined,
+      shipping: undefined
     };
   },
   components: {

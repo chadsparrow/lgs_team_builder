@@ -3,7 +3,7 @@
     <form @submit.prevent="register" novalidate>
       <div class="form-wrapper row">
         <div class="form-title text-center mb-4 col-sm-12">
-          <h2 class="text-center">Become a Team Builder</h2>
+          <h1 class="text-center">Become a Team Builder</h1>
         </div>
         <div class="left-side col-sm-6">
           <h5>Member Details</h5>
@@ -49,7 +49,7 @@
               <VuePhoneNumberInput
                 v-model="phone"
                 id="phone"
-                :dark="true"
+                :dark="false"
                 default-country-code="CA"
                 ref="phone"
                 :clearable="true"
@@ -179,7 +179,7 @@
                 <VuePhoneNumberInput
                   v-model="shippingPhone"
                   id="shippingPhone"
-                  :dark="true"
+                  :dark="false"
                   default-country-code="CA"
                   ref="shippingPhone"
                   :clearable="true"
@@ -461,13 +461,8 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  margin-bottom: 100px;
+  margin-bottom: 150px;
   width: 850px;
-  background-color: black;
-  color: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 label {

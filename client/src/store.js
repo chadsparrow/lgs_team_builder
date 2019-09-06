@@ -207,6 +207,19 @@ export default new Vuex.Store({
         }
       });
     },
+    updateMember({ commit }, { updatedMember, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/members/${id}`, updatedMember);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     toggleAdmin({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {

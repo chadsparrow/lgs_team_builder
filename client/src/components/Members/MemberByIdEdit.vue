@@ -5,7 +5,7 @@
         <li class="breadcrumb-item">
           <router-link tag="a" class="btn btn-sm" to="/dashboard/members">Members</router-link>
         </li>
-        <li class="breadcrumb-item">
+        <li class="breadcrumb-item" v-if="name">
           <router-link class="btn btn-sm" tag="a" :to="`/dashboard/members/${id}`">
             {{
             name
@@ -30,39 +30,23 @@
         <hr />
         <small class="text-info">Actions</small>
         <button
-          class="btn btn-sm btn-block btn-dark mt-2"
-          @click.prevent="updateMember"
-        >Update Member</button>
-        <router-link
-          :to="`/dashboard/members/${id}`"
-          class="btn btn-sm btn-block btn-danger mt-2"
-          @click.prevent="updateMember"
-        >Cancel</router-link>
-        <hr />
-        <button
-          class="btn btn-sm btn-block btn-secondary mt-2"
+          class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
           v-if="!isAdmin"
         >Give Admin Status</button>
         <button
-          class="btn btn-sm btn-block btn-secondary mt-2"
+          class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
           v-else
         >Revoke Admin Status</button>
         <button
-          class="btn btn-sm btn-block btn-secondary mt-2 mb-4"
+          class="btn btn-sm btn-block btn-danger mt-2 mb-4"
           @click.prevent="deleteMember"
         >Delete Member</button>
       </div>
       <div class="col infoSection">
-        <div>
-          <h6>Member Information</h6>
-          <span class="badge badge-info">
-            <small>Double click to edit</small>
-          </span>
-        </div>
-
-        <form>
+        <h6 class="bg-secondary">Member Information</h6>
+        <form v-if="name">
           <div class="row">
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
@@ -71,107 +55,102 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="name"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="name"
+                @change="changeDetails"
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                class="form-control form-control-sm"
-                v-model="email"
-                readonly
+              <label for="phone">Phone</label>
+              <VuePhoneNumberInput
+                v-model="shipping.phone"
+                id="shippingPhone"
+                :dark="false"
+                default-country-code="CA"
+                ref="shippingPhone"
+                :clearable="true"
+                :no-use-browser-locale="false"
+                @update="copyPhone"
               />
             </div>
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-6">
               <label for="address1">Address 1</label>
               <input
                 id="address1"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="address1"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="address1"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-12" v-if="address2">
+            <div class="form-group col-sm-6">
               <label for="address2">Address 2</label>
               <input
                 id="address2"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="address2"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="address2"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="city">City</label>
               <input
                 id="city"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="city"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="city"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="stateProv">State/Province</label>
               <input
                 id="stateProv"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="stateProv"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="stateProv"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="country">Country</label>
               <input
                 id="country"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="country"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="country"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="zipPostal">Zip/Postal Code</label>
               <input
                 id="zipPostal"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="zipPostal"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                ref="zipPostal"
+                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="phone">Phone</label>
+            <div class="form-check col-sm-8 mt-4 text-center">
               <input
-                id="phone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="phone"
-                readonly="true"
-                ondblclick="this.readOnly='';"
-                onblur="this.readOnly='true';"
+                type="checkbox"
+                class="form-check-input"
+                id="shippingSame"
+                v-model="shippingSame"
+                @change="copyDetails"
+                ref="shippingSame"
               />
+              <label class="form-check-label" for="shippingSame">Use Member Details for Shipping</label>
             </div>
           </div>
-          <h6 class="mt-4">Member Shipping Details</h6>
+          <h6 class="mt-3 bg-secondary">Member Shipping Details</h6>
           <div class="row mb-4">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
@@ -180,88 +159,116 @@
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.name"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingName"
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Email</label>
+              <label for="shippingPhone">Shipping Phone</label>
               <input
-                id="shippingEmail"
                 type="text"
+                id="shippingPhone"
                 class="form-control form-control-sm"
-                v-model="shipping.email"
-                readonly
+                v-model="shipping.phone"
+                ref="shippingPhone"
+                :readonly="shippingSame"
+                v-if="shippingSame"
+              />
+              <VuePhoneNumberInput
+                v-model="shipping.phone"
+                id="shippingPhone"
+                :dark="false"
+                default-country-code="CA"
+                ref="shippingPhone"
+                :clearable="true"
+                :no-use-browser-locale="false"
+                v-else
               />
             </div>
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-6">
               <label for="shippingAddress1">Shipping Address 1</label>
               <input
                 id="shippingAddress1"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.address1"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingAddress1"
               />
             </div>
-            <div class="form-group col-sm-12" v-if="shipping.address2">
+            <div class="form-group col-sm-6">
               <label for="shippingAddress2">Shipping Address 2</label>
               <input
                 id="shippingAddress2"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.address2"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingAddress2"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingCity">Shipping City</label>
               <input
                 id="shippingCity"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.city"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingCity"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingStateProv">Shipping State/Province</label>
               <input
                 id="shippingStateProv"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.stateProv"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingStateProv"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingCountry">Shipping Country</label>
               <input
                 id="shippingCountry"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.country"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingCountry"
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
               <input
                 id="shippingZipPostal"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="shipping.zipPostal"
-                readonly
+                :readonly="shippingSame"
+                ref="shippingZipPostal"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingPhone">Shipping Phone</label>
+            <div class="form-group col-sm-8">
+              <label for="shippingName">Shipping Email</label>
               <input
-                id="shippingPhone"
+                id="shippingEmail"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.phone"
-                readonly
+                v-model="shipping.email"
+                :readonly="shippingSame"
+                ref="shippingEmail"
               />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-8">
+              <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
+            </div>
+            <div class="col-sm-4">
+              <router-link :to="`/dashboard/members/${id}`" class="btn btn-block btn-danger">Cancel</router-link>
             </div>
           </div>
         </form>
@@ -271,8 +278,14 @@
 </template>
 
 <script>
+import VuePhoneNumberInput from 'vue-phone-number-input';
+import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+
 export default {
   name: 'MemberByIdEdit',
+  components: {
+    VuePhoneNumberInput
+  },
   data() {
     return {
       id: '',
@@ -289,7 +302,8 @@ export default {
       country: '',
       zipPostal: '',
       phone: '',
-      shipping: {}
+      shipping: '',
+      shippingSame: false
     };
   },
   created: async function() {
@@ -357,6 +371,119 @@ export default {
       } catch (err) {
         this.$toasted.error(err.response.data[0].message);
       }
+    },
+    copyDetails: function() {
+      if (this.shippingSame === true) {
+        this.shipping.name = this.name;
+        this.shipping.address1 = this.address1;
+        this.shipping.address2 = this.address2;
+        this.shipping.city = this.city;
+        this.shipping.stateProv = this.stateProv;
+        this.shipping.country = this.country;
+        this.shipping.zipPostal = this.zipPostal;
+        this.shipping.phone = this.phone;
+        this.shipping.email = this.email;
+      }
+    },
+    changeDetails: async function(event) {
+      if (
+        event.target.id === 'country' ||
+        event.target.id === 'stateProv' ||
+        event.target.id === 'city'
+      ) {
+        if (
+          this.stateProv &&
+          (this.stateProv !== null || this.stateProv !== '') &&
+          (this.city && (this.city !== null || this.city !== '')) &&
+          (this.country && (this.country !== null || this.country !== ''))
+        ) {
+          // GEO CODE on backend to get timezone
+          const location = await this.$http.get(
+            `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.city} ${this.stateProv} ${this.country}"},"options":{"thumbMaps":false}}`
+          );
+          if (location) {
+            const lat = location.data.results[0].locations[0].latLng.lat;
+            const lng = location.data.results[0].locations[0].latLng.lng;
+            delete this.$http.defaults.headers.common['Authorization'];
+            const response = await this.$http.get(
+              `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
+            );
+            if (
+              response.data.zoneName &&
+              response.data.zoneName !== null &&
+              response.data.zoneName !== ''
+            ) {
+              this.timezone = response.data.zoneName;
+              this.timezoneAbbrev = response.data.abbreviation;
+            }
+          }
+        }
+      }
+
+      if (this.shippingSame) {
+        const target = event.target.id;
+        if (target === 'email') {
+          this.shipping.email = this.email;
+        } else if (target === 'name') {
+          this.shipping.name = this.name;
+        } else if (target === 'address1') {
+          this.shipping.address1 = this.address1;
+        } else if (target === 'address2') {
+          this.shipping.address2 = this.address2;
+        } else if (target === 'city') {
+          this.shipping.city = this.city;
+        } else if (target === 'stateProv') {
+          this.shipping.stateProv = this.stateProv;
+        } else if (target === 'country') {
+          this.shipping.country = this.country;
+        } else if (target === 'zipPostal') {
+          this.shipping.zipPostal = this.zipPostal;
+        }
+      }
+    },
+    copyPhone: function(event) {
+      if (event.phoneNumber && this.shippingSame) {
+        this.shipping.phone = event.phoneNumber;
+      }
+    },
+    updateMember: async function() {
+      const updatedMember = {
+        name: this.name,
+        phone: this.phone,
+        address1: this.address1,
+        address2: this.address2,
+        city: this.city,
+        stateProv: this.stateProv,
+        country: this.country,
+        zipPostal: this.zipPostal,
+        timezone: this.timezone,
+        timezoneAbbrev: this.timezoneAbbrev,
+        shippingSame: this.shippingSame,
+        shippingName: this.shipping.name,
+        shippingAddress1: this.shipping.address1,
+        shippingAddress2: this.shipping.address2,
+        shippingCity: this.shipping.city,
+        shippingStateProv: this.shipping.stateProv,
+        shippingCountry: this.shipping.country,
+        shippingZipPostal: this.shipping.zipPostal,
+        shippingPhone: this.shipping.phone,
+        shippingEmail: this.shipping.email
+      };
+
+      try {
+        const res = await this.$store.dispatch('updateMember', {
+          updatedMember,
+          id: this.id
+        });
+        this.$toasted.success(res.data[0].message);
+        this.$router.push({ name: 'membersById', params: { id: this.id } });
+      } catch (err) {
+        if (err.response.data[0].context) {
+          const key = err.response.data[0].context.key;
+          this.$refs[key].focus();
+        }
+        this.$toasted.error(err.response.data[0].message);
+      }
     }
   }
 };
@@ -389,7 +516,6 @@ export default {
   }
 
   h6 {
-    background-color: #111;
     color: white;
     padding: 0.5rem;
     border-radius: 4px;

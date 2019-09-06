@@ -54,10 +54,14 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
   member.phone = cryptr.decrypt(member.phone);
   if (member.address2) {
     member.address2 = cryptr.decrypt(member.address2);
+  } else {
+    member.address2 = '';
   }
   member.shipping.address1 = cryptr.decrypt(member.shipping.address1);
   if (member.shipping.address2) {
     member.shipping.address2 = cryptr.decrypt(member.shipping.address2);
+  } else {
+    member.shipping.address2 = '';
   }
   member.shipping.phone = cryptr.decrypt(member.shipping.phone);
   return res.send(member);
@@ -149,19 +153,20 @@ router.post('/register', [auth, admin], async (req, res) => {
 });
 
 // PUT /api/members/:id
-router.put('/:id', [validateObjectId, auth], async (req, res) => {
+router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).send(error.details);
-
   const {
     name,
+    phone,
     address1,
     address2,
     city,
     stateProv,
     country,
     zipPostal,
-    phone,
+    timezone,
+    timezoneAbbrev,
     shippingSame,
     shippingName,
     shippingAddress1,
@@ -171,55 +176,53 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail,
-    isAdmin
+    shippingEmail
   } = req.body;
 
-  if (!req.member.isAdmin && isAdmin) return res.status(403).send([{ message: 'Access Denied.' }]);
-
-  const member = await Member.findById(req.params.id);
-  if (!member)
+  const updateMember = await Member.findById(req.params.id);
+  if (!updateMember)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  member.name = name;
-  member.address1 = cryptr.encrypt(address1);
+  updateMember.name = name;
+  updateMember.address1 = cryptr.encrypt(address1);
   if (address2) {
-    member.address2 = cryptr.encrypt(address2);
+    updateMember.address2 = cryptr.encrypt(address2);
   }
-  member.city = city;
-  member.stateProv = stateProv;
-  member.country = country;
-  member.zipPostal = zipPostal;
-  member.phone = cryptr.encrypt(phone);
-  member.isAdmin = isAdmin;
+  updateMember.city = city;
+  updateMember.stateProv = stateProv;
+  updateMember.country = country;
+  updateMember.zipPostal = zipPostal;
+  updateMember.phone = cryptr.encrypt(phone);
+  updateMember.timezone = timezone;
+  updateMember.timezoneAbbrev = timezoneAbbrev;
 
   if (shippingSame) {
-    member.shipping.name = member.name;
-    member.shipping.address1 = cryptr.encrypt(address1);
-    if (member.shipping.address2) {
-      member.shipping.address2 = cryptr.encrypt(address2);
+    updateMember.shipping.name = updateMember.name;
+    updateMember.shipping.address1 = cryptr.encrypt(address1);
+    if (address2) {
+      updateMember.shipping.address2 = cryptr.encrypt(address2);
     }
-    member.shipping.city = member.city;
-    member.shipping.stateProv = member.stateProv;
-    member.shipping.country = member.country;
-    member.shipping.zipPostal = member.zipPostal;
-    member.shipping.phone = cryptr.encrypt(member.phone);
-    member.shipping.email = member.email;
+    updateMember.shipping.city = updateMember.city;
+    updateMember.shipping.stateProv = updateMember.stateProv;
+    updateMember.shipping.country = updateMember.country;
+    updateMember.shipping.zipPostal = updateMember.zipPostal;
+    updateMember.shipping.phone = cryptr.encrypt(phone);
+    updateMember.shipping.email = updateMember.email;
   } else {
-    member.shipping.name = shippingName;
-    member.shipping.address1 = cryptr.encrypt(shippingAddress1);
+    updateMember.shipping.name = shippingName;
+    updateMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
     if (shippingAddress2) {
-      member.shipping.address2 = cryptr.encrypt(shippingAddress2);
+      updateMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
     }
-    member.shipping.city = shippingCity;
-    member.shipping.stateProv = shippingStateProv;
-    member.shipping.country = shippingCountry;
-    member.shipping.zipPostal = shippingZipPostal;
-    member.shipping.phone = cryptr.encrypt(shippingPhone);
-    member.shipping.email = shippingEmail;
+    updateMember.shipping.city = shippingCity;
+    updateMember.shipping.stateProv = shippingStateProv;
+    updateMember.shipping.country = shippingCountry;
+    updateMember.shipping.zipPostal = shippingZipPostal;
+    updateMember.shipping.phone = cryptr.encrypt(shippingPhone);
+    updateMember.shipping.email = shippingEmail;
   }
 
-  await member.save();
+  await updateMember.save();
 
   return res.status(200).send([{ message: 'Member Updated' }]);
 });
