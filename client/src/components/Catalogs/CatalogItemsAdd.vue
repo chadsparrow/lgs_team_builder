@@ -1,22 +1,5 @@
 <template>
-  <div>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link tag="a" class="btn btn-sm" to="/dashboard/catalogs">Catalogs</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link
-            class="btn btn-sm"
-            tag="a"
-            :to="`/dashboard/catalogs/${id}`"
-          >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link tag="a" :to="`/dashboard/catalogs/${id}/add`" class="btn btn-sm">Add Item</router-link>
-        </li>
-      </ol>
-    </nav>
+  <div class="mt-4">
     <form @submit.prevent="addCatalogItem" novalidate class="container">
       <div class="form-group row"></div>
       <div class="row">
@@ -47,11 +30,29 @@ export default {
     },
     id: function() {
       return this.catalog._id;
+    },
+    breadcrumbs: function() {
+      return [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Catalogs',
+          link: '/dashboard/catalogs'
+        },
+        {
+          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
+          link: `/dashboard/catalogs/${this.id}`
+        },
+        {
+          text: 'Add Item',
+          link: '#'
+        }
+      ];
     }
   },
-  beforeCreate: async function() {
+  created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -66,13 +67,6 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  margin-top: 40px;
   width: 500px;
-  font-weight: 200;
-}
-
-label {
-  font-size: 0.9rem;
-  margin-bottom: 0px;
 }
 </style>

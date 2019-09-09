@@ -13,13 +13,13 @@
     </button>
 
     <div class="collapse navbar-collapse" id="topNav">
-      <router-link class="btn btn-small btn-dark nav-item" to="/dashboard/index">Home</router-link>
+      <Breadcrumbs />
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <router-link to="/dashboard/profile" tag="a" v-if="member">
             <avatar
               :username="member.name"
-              :size="42"
+              :size="41"
               background-color="#E1E1E1"
               color="#000"
               :rounded="false"
@@ -40,11 +40,13 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import Breadcrumbs from '../components/Breadcrumbs.vue';
 
 export default {
   name: 'TopNav',
   components: {
-    Avatar
+    Avatar,
+    Breadcrumbs
   },
   computed: {
     member: function() {

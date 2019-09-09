@@ -1,17 +1,6 @@
 <template>
-  <div class="container-fluid">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="/dashboard/members">Members</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="#">{{name}}</router-link>
-        </li>
-      </ol>
-    </nav>
-
-    <div class="row mt-4">
+  <div class="container-fluid mt-2">
+    <div class="row">
       <div class="col sidebar">
         <div v-if="name">
           <avatar
@@ -38,7 +27,7 @@
           </div>
           <router-link
             :to="`/dashboard/members/${id}/edit`"
-            class="btn btn-sm btn-block btn-dark mt-3 mb-4"
+            class="btn btn-sm btn-block btn-info mt-3 mb-4"
           >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member
           </router-link>
@@ -48,7 +37,7 @@
         </div>
       </div>
       <div class="col infoSection" v-if="name">
-        <h6>Member Information</h6>
+        <h6 class="bg-secondary">Member Information</h6>
         <form>
           <div class="row">
             <div class="form-group col-sm-6">
@@ -142,7 +131,7 @@
               />
             </div>
           </div>
-          <h6 class="mt-4">Member Shipping Details</h6>
+          <h6 class="mt-4 bg-secondary">Member Shipping Details</h6>
           <div class="row mb-4">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
@@ -269,6 +258,21 @@ export default {
   components: {
     Avatar
   },
+  computed: {
+    breadcrumbs: function() {
+      return [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Members',
+          link: '/dashboard/members'
+        },
+        {
+          text: `${this.name}`,
+          link: '#'
+        }
+      ];
+    }
+  },
   created: async function() {
     try {
       const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
@@ -307,6 +311,7 @@ export default {
       this.zipPostal = zipPostal;
       this.phone = phone;
       this.shipping = shipping;
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -338,21 +343,12 @@ export default {
 }
 
 .infoSection {
-  label {
-    font-size: 0.9rem;
-    margin-bottom: 0px;
-    margin-top: 4px;
-    color: #999;
-    margin-left: 4px;
-  }
-
   .form-group {
     margin-top: 1px;
     margin-bottom: 1px;
   }
 
   h6 {
-    background-color: #111;
     color: white;
     padding: 0.5rem;
     border-radius: 4px;

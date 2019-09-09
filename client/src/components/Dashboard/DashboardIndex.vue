@@ -3,8 +3,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      breadcrumbs: [{ text: 'Dashboard', link: '/dashboard/index' }]
+    };
+  },
+  created: async function() {
+    await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+  }
+};
 </script>
-
-<style>
-</style>

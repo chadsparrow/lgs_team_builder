@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-2">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
@@ -44,11 +44,25 @@ export default {
     },
     catalogItems: function() {
       return this.$store.getters.catalogItems;
+    },
+    breadcrumbs: function() {
+      return [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Catalogs',
+          link: '/dashboard/catalogs'
+        },
+        {
+          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
+          link: '#'
+        }
+      ];
     }
   },
-  beforeCreate: async function() {
+  created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       await this.$store.dispatch('getCatalogItems', this.$route.params.id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);

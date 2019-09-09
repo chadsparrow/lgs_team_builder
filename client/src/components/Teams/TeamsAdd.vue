@@ -1,19 +1,34 @@
 <template>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <router-link tag="a" class="btn btn-sm" to="/dashboard/teams">Teams</router-link>
-      </li>
-      <li class="breadcrumb-item">
-        <router-link tag="a" to="/dashboard/teams/add" class="btn btn-sm">Add Team</router-link>
-      </li>
-    </ol>
-  </nav>
+  <div class="mt-2">
+    <h1>Add Team</h1>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'TeamsAdd',
+  data() {
+    return {
+      breadcrumbs: [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Teams',
+          link: '/dashboard/teams'
+        },
+        {
+          text: 'Add Team',
+          link: '#'
+        }
+      ]
+    };
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
+  },
   computed: {}
 };
 </script>

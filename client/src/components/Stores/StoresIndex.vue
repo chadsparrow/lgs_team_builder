@@ -1,16 +1,28 @@
 <template>
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <router-link class="active btn btn-sm" tag="a" to="/dashboard/stores">Stores</router-link>
-      </li>
-    </ol>
-  </nav>
+  <h1>Stores</h1>
 </template>
 
 <script>
 export default {
-  name: 'StoresIndex'
+  name: 'StoresIndex',
+  data() {
+    return {
+      breadcrumbs: [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Stores',
+          link: '#'
+        }
+      ]
+    };
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
+  }
 };
 </script>
 

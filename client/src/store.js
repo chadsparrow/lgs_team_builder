@@ -7,9 +7,6 @@ import VueAxios from 'vue-axios';
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
 
-const token = localStorage.getItem('token');
-axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
 export default new Vuex.Store({
   state: {
     isLoading: false,
@@ -23,7 +20,8 @@ export default new Vuex.Store({
     foundMember: {},
     emails: [],
     notifications: [],
-    teams: []
+    teams: [],
+    breadcrumbs: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -37,7 +35,6 @@ export default new Vuex.Store({
           const emails = res.data[0].emails;
           localStorage.setItem('token', token);
           localStorage.setItem('member', member);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           commit('AUTH_SUCCESS', { token, member, emails });
           resolve(res);
         } catch (err) {
@@ -64,6 +61,12 @@ export default new Vuex.Store({
         commit('LOGOUT');
         localStorage.removeItem('token');
         localStorage.removeItem('member');
+        resolve();
+      });
+    },
+    setBreadcrumbs({ commit }, breadcrumbs) {
+      return new Promise((resolve, reject) => {
+        commit('SET_BREADCRUMBS', breadcrumbs);
         resolve();
       });
     },
@@ -286,6 +289,9 @@ export default new Vuex.Store({
     },
     SET_TEAMS(state, teams) {
       state.teams = teams;
+    },
+    SET_BREADCRUMBS(state, breadcrumbs) {
+      state.breadcrumbs = breadcrumbs;
     }
   },
   getters: {
@@ -301,6 +307,7 @@ export default new Vuex.Store({
     members: state => state.members,
     emails: state => state.emails,
     notifications: state => state.notifications,
-    teams: state => state.teams
+    teams: state => state.teams,
+    breadcrumbs: state => state.breadcrumbs
   }
 });

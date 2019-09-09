@@ -58,6 +58,20 @@ export default {
         });
       }
     );
+
+    this.$http.interceptors.request.use(
+      config => {
+        const token = localStorage.getItem('token');
+        if (token && config.url.includes('/api/v1')) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        return config;
+      },
+      err => {
+        return Promise.reject(err);
+      }
+    );
   }
 };
 </script>
@@ -122,5 +136,13 @@ tr:hover {
 
 .pagination > .page-item > a {
   color: black;
+}
+
+label {
+  font-size: 0.9rem;
+  margin-bottom: 0px;
+  margin-top: 4px;
+  color: #999;
+  margin-left: 4px;
 }
 </style>

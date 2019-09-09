@@ -1,19 +1,5 @@
 <template>
-  <div>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="/dashboard/teams">Teams</router-link>
-        </li>
-        <router-link
-          to="/dashboard/teams/add"
-          class="btn btn-sm btn-dark ml-auto"
-          v-if="member && member.isAdmin"
-        >
-          <i class="fas fa-plus" style="vertical-align: middle;"></i>
-        </router-link>
-      </ol>
-    </nav>
+  <div class="mt-2">
     <span v-if="teams && teams.length === 0">No Teams Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -46,6 +32,11 @@
       :hide-prev-next="true"
       v-if="pageNumbers > 1"
     ></paginate>
+    <p>
+      <router-link to="/dashboard/teams/add" class="btn btn-info mt-2">
+        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team
+      </router-link>
+    </p>
   </div>
 </template>
 
@@ -60,11 +51,19 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15
+      itemsPerPage: 15,
+      breadcrumbs: [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Teams',
+          link: '#'
+        }
+      ]
     };
   },
-  beforeCreate: async function() {
+  created: async function() {
     try {
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       await this.$store.dispatch('getTeams');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);

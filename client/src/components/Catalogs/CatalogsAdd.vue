@@ -1,15 +1,5 @@
 <template>
-  <div>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link tag="a" class="btn btn-sm" to="/dashboard/catalogs">Catalogs</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link tag="a" to="/dashboard/catalogs/add" class="btn btn-sm">Add Catalog</router-link>
-        </li>
-      </ol>
-    </nav>
+  <div class="mt-4">
     <form @submit.prevent="addCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
@@ -61,6 +51,13 @@
 <script>
 export default {
   name: 'CatalogsAdd',
+  created: async function() {
+    try {
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
+    }
+  },
   data() {
     return {
       brand: '',
@@ -89,6 +86,17 @@ export default {
         '2028',
         '2029',
         '2030'
+      ],
+      breadcrumbs: [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Catalogs',
+          link: '/dashboard/catalogs'
+        },
+        {
+          text: 'Add Catalog',
+          link: '#'
+        }
       ]
     };
   },
@@ -116,13 +124,6 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  margin-top: 40px;
   width: 500px;
-  font-weight: 200;
-}
-
-label {
-  font-size: 0.9rem;
-  margin-bottom: 0px;
 }
 </style>

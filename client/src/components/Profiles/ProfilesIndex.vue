@@ -1,47 +1,31 @@
 <template>
-  <div>
-    <nav aria-label="breadcrumb" v-if="member">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="#">My Profile</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link class="active btn btn-sm" tag="a" to="#">{{member.name}}</router-link>
-        </li>
-        <div class="ml-auto">
-          <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-dark">
-            <i class="fas fa-cog" style="vertical-align: middle;"></i>
-          </router-link>
-        </div>
-      </ol>
-    </nav>
-
-    <div class="row" v-if="member">
-      <div class="col sidebar">
-        <div class="avatarWrapper">
-          <avatar
-            :username="member.name"
-            :size="225"
-            background-color="#E1E1E1"
-            color="#000"
-            :rounded="false"
-            :src="member.avatarUrl"
-          ></avatar>
-          <button id="avatarChange" class="btn btn-sm btn-block btn-info mt-2">Change Avatar - Soon!</button>
-        </div>
-        <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info">My Timezone:</small>
-          <span class="col-sm-12">{{member.timezone}}</span>
-        </div>
-        <div class="row p-1">
-          <small class="col-sm-12 text-info">Member Since:</small>
-          <span
-            class="col-sm-12"
-          >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a - z")}}</span>
-        </div>
+  <div class="row mt-2" v-if="member">
+    <div class="col sidebar">
+      <div class="avatarWrapper">
+        <avatar
+          :username="member.name"
+          :size="225"
+          background-color="#E1E1E1"
+          color="#000"
+          :rounded="false"
+          :src="member.avatarUrl"
+        ></avatar>
       </div>
-      <div class="col">Test</div>
+      <div class="row p-1 mt-4">
+        <small class="col-sm-12 text-info">My Timezone:</small>
+        <span class="col-sm-12">{{member.timezone}}</span>
+      </div>
+      <div class="row p-1">
+        <small class="col-sm-12 text-info">Member Since:</small>
+        <span
+          class="col-sm-12"
+        >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a - z")}}</span>
+      </div>
+      <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-block btn-info mt-3 mb-4">
+        <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit My Profile
+      </router-link>
     </div>
+    <div class="col">Test</div>
   </div>
 </template>
 
@@ -53,9 +37,27 @@ export default {
   components: {
     Avatar
   },
+  data() {
+    return {
+      breadcrumbs: [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'My Profile',
+          link: '#'
+        }
+      ]
+    };
+  },
   computed: {
     member: function() {
       return this.$store.getters.getCurrentMember;
+    }
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message);
     }
   }
 };

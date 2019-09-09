@@ -405,7 +405,6 @@ export default {
           if (location) {
             const lat = location.data.results[0].locations[0].latLng.lat;
             const lng = location.data.results[0].locations[0].latLng.lng;
-            delete this.$http.defaults.headers.common['Authorization'];
             const response = await this.$http.get(
               `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
             );
