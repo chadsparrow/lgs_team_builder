@@ -1,49 +1,41 @@
 <template>
-  <div class="mt-2">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link tag="a" class="btn btn-sm" to="/dashboard/catalogs">Catalogs</router-link>
-        </li>
-        <li class="breadcrumb-item">
-          <router-link
-            class="btn btn-sm"
-            tag="a"
-            :to="`/dashboard/catalogs/${id}`"
-          >{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</router-link>
-        </li>
-        <div class="ml-auto">
-          <router-link
-            class="btn btn-sm btn-dark mr-2"
-            tag="a"
-            :to="`/dashboard/catalogs/${id}/add`"
-          >
-            <i class="fas fa-plus" style="vertical-align: middle;"></i>
-          </router-link>
-          <router-link class="btn btn-sm btn-dark" tag="a" :to="`/dashboard/catalogs/${id}/edit`">
-            <i class="fas fa-cog" style="vertical-align: middle;"></i>
-          </router-link>
-        </div>
-      </ol>
-    </nav>
-
-    <span v-if="catalogItems && catalogItems.length === 0">No items found for this catalog</span>
-    <span v-else>Catalog Items</span>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <router-link
+          class="btn btn-block btn-info"
+          :to="`/dashboard/catalogs/${id}/add`"
+          tag="a"
+        >Add Catalog Item</router-link>
+      </div>
+      <div class="col-sm-6">
+        <router-link
+          class="btn btn-block btn-info"
+          :to="`/dashboard/catalogs/${id}/edit`"
+          tag="a"
+        >Edit Catalog</router-link>
+      </div>
+      <div
+        class="col-sm-12 mt-4"
+        v-if="catalogItems && catalogItems.length === 0"
+      >No items found for this catalog</div>
+      <div class="col-sm-12 mt-4" v-else>Catalog Items</div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'CatalogById',
+  data() {
+    return {
+      catalog: {},
+      catalogItems: []
+    };
+  },
   computed: {
-    catalog: function() {
-      return this.$store.getters.catalog;
-    },
     id: function() {
       return this.catalog._id;
-    },
-    catalogItems: function() {
-      return this.$store.getters.catalogItems;
     },
     breadcrumbs: function() {
       return [
@@ -61,9 +53,12 @@ export default {
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getCatalog', this.$route.params.id);
+      const catalog = await this.$store.dispatch('getCatalog', this.$route.params.id);
+      this.catalog = catalog.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      await this.$store.dispatch('getCatalogItems', this.$route.params.id);
+
+      const catalogItems = await this.$store.dispatch('getCatalogItems', this.catalog._id);
+      this.catalogItems = catalogItems.data;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }

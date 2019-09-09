@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div class="mt-2">
     <form @submit.prevent="addCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">

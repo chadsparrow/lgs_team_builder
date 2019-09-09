@@ -13,14 +13,10 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     member: localStorage.getItem('member') || null,
-    catalogs: [],
     catalog: {},
     catalogItems: [],
-    members: [],
-    foundMember: {},
     emails: [],
     notifications: [],
-    teams: [],
     breadcrumbs: []
   },
   actions: {
@@ -76,8 +72,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/catalogs');
           commit('TOGGLE_LOADING');
-          commit('SET_CATALOGS', res.data);
-          commit('SET_CATALOG', {});
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -91,7 +85,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/catalogs/${id}`);
           commit('TOGGLE_LOADING');
-          commit('SET_CATALOG', res.data);
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -131,7 +124,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/catalogitems/catalog/${id}`);
           commit('TOGGLE_LOADING');
-          commit('SET_CATALOG_ITEMS', res.data);
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -145,7 +137,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/members');
           commit('TOGGLE_LOADING');
-          commit('SET_MEMBERS', res.data);
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -178,11 +169,6 @@ export default new Vuex.Store({
           reject(err);
         }
       });
-    },
-    clearMemberDetails({ commit }) {
-      commit('TOGGLE_LOADING');
-      commit('CLEAR_MEMBER');
-      commit('TOGGLE_LOADING');
     },
     addMember({ commit }, member) {
       return new Promise(async (resolve, reject) => {
@@ -242,7 +228,32 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/teams');
           commit('TOGGLE_LOADING');
-          commit('SET_TEAMS', res.data);
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getStores({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get('/api/v1/stores');
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getOrders({ commit }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get('/api/v1/orders');
+          commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
           commit('TOGGLE_LOADING');
@@ -272,24 +283,6 @@ export default new Vuex.Store({
       state.token = '';
       state.member = null;
     },
-    SET_CATALOGS(state, catalogs) {
-      state.catalogs = catalogs;
-    },
-    SET_CATALOG(state, catalog) {
-      state.catalog = catalog;
-    },
-    SET_CATALOG_ITEMS(state, catalogitems) {
-      state.catalogItems = catalogitems;
-    },
-    SET_MEMBERS(state, members) {
-      state.members = members;
-    },
-    CLEAR_MEMBER(state) {
-      state.foundMember = {};
-    },
-    SET_TEAMS(state, teams) {
-      state.teams = teams;
-    },
     SET_BREADCRUMBS(state, breadcrumbs) {
       state.breadcrumbs = breadcrumbs;
     }
@@ -301,13 +294,8 @@ export default new Vuex.Store({
     getCurrentMember: state => {
       return JSON.parse(state.member);
     },
-    catalogs: state => state.catalogs,
-    catalog: state => state.catalog,
-    catalogItems: state => state.catalogItems,
-    members: state => state.members,
     emails: state => state.emails,
     notifications: state => state.notifications,
-    teams: state => state.teams,
     breadcrumbs: state => state.breadcrumbs
   }
 });

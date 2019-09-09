@@ -2,8 +2,8 @@
   <div class="container">
     <form @submit.prevent="register" novalidate>
       <div class="form-wrapper row">
-        <div class="form-title text-center mb-4 col-sm-12">
-          <h1 class="text-center">Become a Team Builder</h1>
+        <div class="form-title mb-5 col-sm-12">
+          <h1>Become a Team Builder</h1>
         </div>
         <div class="left-side col-sm-6">
           <h5>Member Details</h5>
@@ -462,13 +462,6 @@ export default {
 form {
   margin-bottom: 150px;
   width: 850px;
-}
-
-label {
-  font-size: 0.9rem;
-  margin-bottom: 0px;
-  margin-top: 4px;
-  color: #999;
 }
 
 .container {

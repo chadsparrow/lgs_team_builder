@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div class="mt-2">
     <form @submit.prevent="editCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
@@ -37,27 +37,7 @@
         <div class="col-sm-12">
           <label for="year">Year</label>
           <select class="form-control form-control-sm" id="year" v-model="catalog.year" ref="year">
-            <option value="2030">2030</option>
-            <option value="2029">2029</option>
-            <option value="2028">2028</option>
-            <option value="2027">2027</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-            <option value="2018">2018</option>
-            <option value="2017">2017</option>
-            <option value="2016">2016</option>
-            <option value="2015">2015</option>
-            <option value="2014">2014</option>
-            <option value="2013">2013</option>
-            <option value="2012">2012</option>
-            <option value="2011">2011</option>
-            <option value="2010">2010</option>
+            <option v-for="date of daterange" :key="date" :value="date">{{date}}</option>
           </select>
         </div>
       </div>
@@ -80,9 +60,23 @@
 <script>
 export default {
   name: 'CatalogByIdEdit',
+  data() {
+    return {
+      catalog: {}
+    };
+  },
   computed: {
-    catalog: function() {
-      return this.$store.getters.catalog;
+    daterange: function() {
+      let daterangeStart = 1975;
+      let daterangeEnd = 2030;
+
+      let dateArray = [];
+
+      for (let i = daterangeStart; i <= daterangeEnd; i++) {
+        dateArray.push(i.toString());
+      }
+
+      return dateArray.reverse();
     },
     id: function() {
       return this.catalog._id;
@@ -107,7 +101,8 @@ export default {
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getCatalog', this.$route.params.id);
+      const catalog = await this.$store.dispatch('getCatalog', this.$route.params.id);
+      this.catalog = catalog.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);

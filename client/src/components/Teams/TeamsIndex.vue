@@ -1,6 +1,13 @@
 <template>
-  <div class="mt-2">
-    <span v-if="teams && teams.length === 0">No Teams Found</span>
+  <div>
+    <router-link
+      to="/dashboard/teams/add"
+      class="btn btn-block btn-info mb-4"
+      v-if="member && member.isAdmin"
+    >
+      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team
+    </router-link>
+    <span v-if="currentTeams && currentTeams.length === 0">No Teams Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -10,7 +17,7 @@
             <th>Contact</th>
             <th>Members</th>
           </tr>
-          <tr v-for="team of teams" :key="team._id" @click.prevent="loadTeam(team._id)">
+          <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
             <th scope="row">{{ team.name }}</th>
             <td>{{ team.adminId }}</td>
             <td>{{ team.mainContact.name }}</td>
@@ -32,11 +39,6 @@
       :hide-prev-next="true"
       v-if="pageNumbers > 1"
     ></paginate>
-    <p>
-      <router-link to="/dashboard/teams/add" class="btn btn-info mt-2">
-        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team
-      </router-link>
-    </p>
   </div>
 </template>
 
@@ -58,13 +60,15 @@ export default {
           text: 'Teams',
           link: '#'
         }
-      ]
+      ],
+      teams: []
     };
   },
   created: async function() {
     try {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      await this.$store.dispatch('getTeams');
+      const teams = await this.$store.dispatch('getTeams');
+      this.teams = teams.data;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -73,16 +77,13 @@ export default {
     member: function() {
       return this.$store.getters.getCurrentMember;
     },
-    teams: function() {
-      return this.$store.getters.teams;
-    },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
     indexOfFirstItem: function() {
       return this.indexOfLastItem - this.itemsPerPage;
     },
-    currentCatalogs: function() {
+    currentTeams: function() {
       return this.teams.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {

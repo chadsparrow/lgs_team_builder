@@ -1,5 +1,5 @@
 <template>
-  <div class="row mt-2" v-if="member">
+  <div class="row" v-if="member">
     <div class="col sidebar">
       <div class="avatarWrapper">
         <avatar
@@ -45,7 +45,8 @@ export default {
           text: 'My Profile',
           link: '#'
         }
-      ]
+      ],
+      memberDetails: {}
     };
   },
   computed: {
@@ -56,6 +57,8 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      const foundMember = await this.$store.dispatch('getMemberDetails', this.member._id);
+      this.memberDetails = foundMember.data;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }

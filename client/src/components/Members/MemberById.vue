@@ -1,12 +1,12 @@
 <template>
-  <div class="container-fluid mt-2">
+  <div class="container-fluid">
     <div class="row">
       <div class="col sidebar">
         <div v-if="name">
           <avatar
             :username="name"
             :size="225"
-            background-color="#E1E1E1"
+            background-color="#FFF"
             color="#000"
             :rounded="false"
             :src="avatarUrl"
@@ -315,9 +315,6 @@ export default {
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('clearMemberDetails');
   }
 };
 </script>

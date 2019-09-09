@@ -18,8 +18,27 @@ function validateId(id) {
 }
 
 router.get('/', auth, async (req, res) => {
-  const stores = await Store.find();
-  if (stores && stores.length === 0) return res.status(404).send([{ message: 'No stores found.' }]);
+  let stores = [];
+  if (req.member.isAdmin) {
+    stores = await Store.find()
+      .populate({ path: 'managerId', select: 'name email' })
+      .populate({ path: 'adminId', select: 'name email' })
+      .populate({ path: 'teamId', select: 'name' })
+      .select('-updatedAt -__v ');
+    if (stores && stores.length === 0)
+      return res.status(404).send([{ message: 'No Stores found.' }]);
+
+    return res.send(stores);
+  }
+
+  stores = await Store.find({
+    $or: [{ managerId: req.member._id }, { members: req.member._id }]
+  })
+    .populate({ path: 'managerId', select: 'name email' })
+    .select('-updatedAt -__v');
+
+  if (stores && stores.length === 0)
+    return res.status(404).send([{ message: 'You currently do not have any stores.' }]);
 
   return res.send(stores);
 });

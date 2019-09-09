@@ -10,15 +10,31 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
-router.get('/all', [auth, admin], async (req, res) => {
-  const orders = await Order.find();
-  if (orders && orders.length === 0) return res.status(404).send([{ message: 'No orders found' }]);
+router.get('/', auth, async (req, res) => {
+  let orders = [];
+  if (req.member.isAdmin) {
+    orders = await Order.find()
+      .populate({ path: 'memberId', select: 'name email' })
+      .populate({ path: 'teamId', select: 'name' })
+      .select('-updatedAt -__v ');
+    if (orders && orders.length === 0)
+      return res.status(404).send([{ message: 'No Orders found.' }]);
+
+    return res.send(orders);
+  }
+
+  orders = await Order.find({ memberId: req.member._id })
+    .populate({ path: 'memberId', select: 'name email' })
+    .select('-updatedAt -__v');
+
+  if (orders && orders.length === 0)
+    return res.status(404).send([{ message: 'You currently do not have any orders.' }]);
 
   return res.send(orders);
 });
 
-router.get('/me', [auth], async (req, res) => {
-  const orders = await Order.find({ memberId: req.member._id });
+router.get('/all', [auth, admin], async (req, res) => {
+  const orders = await Order.find();
   if (orders && orders.length === 0) return res.status(404).send([{ message: 'No orders found' }]);
 
   return res.send(orders);

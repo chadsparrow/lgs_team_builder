@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-2">
+  <div class="container">
     <form @submit.prevent="addMember" novalidate>
       <div class="form-wrapper row">
         <div class="left-side col-sm-6">

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <form @submit.prevent="login" novalidate class="col-sm-12">
-        <div class="text-center mb-4">
+        <div class="text-center mb-4 mt-2">
           <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
         </div>
         <div class="form-group">
@@ -20,14 +20,14 @@
           />
         </div>
         <button type="submit" class="btn btn-dark btn-block mt-2">Log In</button>
-        <div class="text-center mt-3 mb-0">
+        <div class="text-center mt-4 mb-0">
           <small>Need to register or forgot your password?</small>
         </div>
         <div class="underForm text-center">
           <router-link tag="a" class="mr-4 text-info" to="/register">Register</router-link>
           <router-link tag="a" class="text-info" to="#">Reset Password</router-link>
         </div>
-        <div class="col-sm-12 mt-2">
+        <div class="col-sm-12 mt-4 text-center">
           <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
         </div>
       </form>
@@ -68,19 +68,14 @@ export default {
 <style lang="scss" scoped>
 form {
   margin-bottom: 100px;
-  width: 300px;
+  width: 400px;
   background-color: black;
   color: white;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 1.5rem;
   position: relative;
   font-weight: 200;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-}
-
-label {
-  font-size: 0.9rem;
-  margin-bottom: 0px;
 }
 
 .container {

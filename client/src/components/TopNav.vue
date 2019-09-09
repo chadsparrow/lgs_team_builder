@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
+  <nav class="navbar navbar-expand navbar-dark p-4">
     <button
       class="navbar-toggler"
       type="button"
@@ -19,8 +19,8 @@
           <router-link to="/dashboard/profile" tag="a" v-if="member">
             <avatar
               :username="member.name"
-              :size="41"
-              background-color="#E1E1E1"
+              :size="42"
+              background-color="#FFF"
               color="#000"
               :rounded="false"
               :src="member.avatarUrl"
@@ -66,8 +66,6 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  background-color: #222 !important;
-  color: white;
   grid-area: topnav;
 
   .nav-item {
@@ -78,16 +76,13 @@ export default {
     color: white !important;
   }
 
-  .navbar-nav {
-    margin-right: 0.75rem;
-  }
-
   a {
     i {
       margin-left: 0.5rem;
     }
   }
 }
+
 .vue-avatar--wrapper {
   border-radius: 0.25rem !important;
 }

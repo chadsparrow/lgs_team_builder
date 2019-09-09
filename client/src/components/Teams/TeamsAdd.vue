@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-2">
+  <div>
     <h1>Add Team</h1>
   </div>
 </template>

@@ -1,5 +1,8 @@
 <template>
-  <div class="mt-2">
+  <div>
+    <router-link to="/dashboard/members/add" class="btn btn-block btn-info mb-4">
+      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Member
+    </router-link>
     <span v-if="members && members.length === 0">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -27,11 +30,6 @@
       :hide-prev-next="true"
       v-if="pageNumbers > 1"
     ></paginate>
-    <p>
-      <router-link to="/dashboard/members/add" class="btn btn-info">
-        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Member
-      </router-link>
-    </p>
   </div>
 </template>
 
@@ -53,21 +51,20 @@ export default {
           text: 'Members',
           link: '#'
         }
-      ]
+      ],
+      members: []
     };
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getMembers');
+      const members = await this.$store.dispatch('getMembers');
+      this.members = members.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
   },
   computed: {
-    members: function() {
-      return this.$store.getters.members;
-    },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },

@@ -3,9 +3,9 @@
     <loading
       :active.sync="isLoading"
       :is-full-page="true"
-      color="#FFF"
+      color="#111"
       background-color="#000"
-      :opacity="0.1"
+      :opacity="0.0"
       loader="dots"
     ></loading>
     <transition name="fade" mode="out-in">
