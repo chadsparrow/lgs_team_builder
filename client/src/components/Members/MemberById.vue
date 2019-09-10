@@ -340,12 +340,16 @@ export default {
 }
 
 .infoSection {
+  form {
+    max-width: 800px;
+  }
   .form-group {
     margin-top: 1px;
     margin-bottom: 1px;
   }
 
   h6 {
+    max-width: 800px;
     color: white;
     padding: 0.5rem;
     border-radius: 4px;

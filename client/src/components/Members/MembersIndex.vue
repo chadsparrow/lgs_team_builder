@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15,
+      itemsPerPage: 12,
       breadcrumbs: [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

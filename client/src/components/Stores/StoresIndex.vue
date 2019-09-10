@@ -1,10 +1,12 @@
 <template>
   <div>
-    <router-link to="/dashboard/stores/add" class="btn btn-info" v-if="member && member.isAdmin">
-      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Store
-    </router-link>
-    <br />
-    <br />
+    <div v-if="member && member.isAdmin">
+      <router-link to="/dashboard/stores/add" class="btn btn-info">
+        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Store
+      </router-link>
+      <br />
+      <br />
+    </div>
     <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -57,7 +59,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15,
+      itemsPerPage: 12,
       breadcrumbs: [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

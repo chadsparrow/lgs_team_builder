@@ -14,7 +14,8 @@ const TeamSchema = new mongoose.Schema(
     },
     logo: {
       type: String,
-      trim: true
+      trim: true,
+      default: null
     },
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -139,6 +140,9 @@ const TeamSchema = new mongoose.Schema(
       }
     ],
     timezone: {
+      type: String
+    },
+    timezoneAbbrev: {
       type: String
     }
   },

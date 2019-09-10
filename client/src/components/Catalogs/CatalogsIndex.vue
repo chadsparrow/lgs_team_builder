@@ -1,8 +1,10 @@
 <template>
   <div>
-    <router-link to="/dashboard/catalogs/add" class="btn btn-block btn-info mb-4">
+    <router-link to="/dashboard/catalogs/add" class="btn btn-info">
       <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Catalog
     </router-link>
+    <br />
+    <br />
     <span v-if="currentCatalogs && currentCatalogs.length === 0">No Catalogs Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -57,7 +59,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15,
+      itemsPerPage: 12,
       breadcrumbs: [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

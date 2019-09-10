@@ -20,6 +20,7 @@ import MemberByIdEdit from './components/Members/MemberByIdEdit.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
 import TeamsAdd from './components/Teams/TeamsAdd.vue';
+import TeamsById from './components/Teams/TeamsById.vue';
 
 Vue.use(Router);
 
@@ -157,6 +158,14 @@ let router = new Router({
           meta: {
             requiresAuth: true,
             isAdmin: true
+          }
+        },
+        {
+          path: 'teams/:id',
+          name: 'teamsById',
+          component: TeamsById,
+          meta: {
+            requiresAuth: true
           }
         },
         {

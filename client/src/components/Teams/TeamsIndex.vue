@@ -1,12 +1,14 @@
 <template>
   <div>
-    <router-link to="/dashboard/teams/add" class="btn btn-info" v-if="member && member.isAdmin">
-      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team Name
-    </router-link>
-    <br />
-    <br />
+    <div v-if="member && member.isAdmin">
+      <router-link to="/dashboard/teams/add" class="btn btn-info">
+        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team Name
+      </router-link>
+      <br />
+      <br />
+    </div>
     <div class="table-responsive mb-2" v-if="unfinishedTeams && unfinishedTeams.length >0">
-      <h5 class="ml-2 text-info">Reserved Team Names</h5>
+      <h5 class="text-info">Reserved Team Names</h5>
       <table class="table table-hover table-striped">
         <tbody>
           <tr
@@ -65,7 +67,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15,
+      itemsPerPage: 12,
       breadcrumbs: [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
