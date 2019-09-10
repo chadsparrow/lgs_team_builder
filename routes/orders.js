@@ -33,13 +33,6 @@ router.get('/', auth, async (req, res) => {
   return res.send(orders);
 });
 
-router.get('/all', [auth, admin], async (req, res) => {
-  const orders = await Order.find();
-  if (orders && orders.length === 0) return res.status(404).send([{ message: 'No orders found' }]);
-
-  return res.send(orders);
-});
-
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);

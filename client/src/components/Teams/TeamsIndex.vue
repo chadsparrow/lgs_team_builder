@@ -1,12 +1,24 @@
 <template>
   <div>
-    <router-link
-      to="/dashboard/teams/add"
-      class="btn btn-block btn-info mb-4"
-      v-if="member && member.isAdmin"
-    >
-      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team
+    <router-link to="/dashboard/teams/add" class="btn btn-info" v-if="member && member.isAdmin">
+      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team Name
     </router-link>
+    <br />
+    <br />
+    <div class="table-responsive mb-2" v-if="unfinishedTeams && unfinishedTeams.length >0">
+      <h5 class="ml-2 text-info">Reserved Team Names</h5>
+      <table class="table table-hover table-striped">
+        <tbody>
+          <tr
+            v-for="unfinished of unfinishedTeams"
+            :key="unfinished._id"
+            @click.prevent="loadTeam(unfinished._id)"
+          >
+            <th>{{ unfinished.name }}</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <span v-if="currentTeams && currentTeams.length === 0">No Teams Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -29,7 +41,7 @@
     <paginate
       v-model="currentPage"
       :page-count="pageNumbers"
-      :container-class="'pagination'"
+      :container-class="'pagination pagination-sm'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
       :prev-class="'page-item'"
@@ -61,14 +73,16 @@ export default {
           link: '#'
         }
       ],
-      teams: []
+      teams: [],
+      unfinishedTeams: []
     };
   },
   created: async function() {
     try {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      const teams = await this.$store.dispatch('getTeams');
-      this.teams = teams.data;
+      const res = await this.$store.dispatch('getTeams');
+      this.teams = res.data.teams;
+      this.unfinishedTeams = res.data.unfinishedTeams;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }

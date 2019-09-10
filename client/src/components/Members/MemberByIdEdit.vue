@@ -248,7 +248,10 @@
           </div>
           <div class="row">
             <div class="col-sm-8">
-              <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
+              <button
+                class="btn btn-block btn-info mb-2"
+                @click.prevent="updateMember"
+              >Update Member</button>
             </div>
             <div class="col-sm-4">
               <router-link :to="`/dashboard/members/${id}`" class="btn btn-block btn-danger">Cancel</router-link>

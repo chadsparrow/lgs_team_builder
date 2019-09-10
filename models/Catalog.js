@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
-const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: true, language: { key: '{{key}} ' } };
 
 const CatalogSchema = new mongoose.Schema(
   {

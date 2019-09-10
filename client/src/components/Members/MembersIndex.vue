@@ -1,8 +1,10 @@
 <template>
   <div>
-    <router-link to="/dashboard/members/add" class="btn btn-block btn-info mb-4">
+    <router-link to="/dashboard/members/add" class="btn btn-info">
       <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Member
     </router-link>
+    <br />
+    <br />
     <span v-if="members && members.length === 0">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -20,7 +22,7 @@
     <paginate
       v-model="currentPage"
       :page-count="pageNumbers"
-      :container-class="'pagination'"
+      :container-class="'pagination pagination-sm'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
       :prev-class="'page-item'"

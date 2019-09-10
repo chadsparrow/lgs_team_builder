@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('mongoose');
-const _ = require('lodash');
 const swearjar = require('swearjar');
 const { Member } = require('../models/Member');
 const { Team, validateTeam, validateTeamName, validateAddMember } = require('../models/Team');
@@ -14,6 +13,8 @@ const validateObjectId = require('../middleware/validateObjectId');
 // GET /api/teams
 router.get('/', auth, async (req, res) => {
   let teams = [];
+  const completedTeams = [];
+  const unfinishedTeams = [];
   if (req.member.isAdmin) {
     teams = await Team.find()
       .populate({ path: 'managerId', select: 'name email' })
@@ -28,9 +29,24 @@ router.get('/', auth, async (req, res) => {
         select: 'name address1 address2 city stateProv country zipPostal email phone'
       })
       .select('-updatedAt -__v ');
-    if (teams && teams.length === 0) return res.status(404).send([{ message: 'No Teams found.' }]);
 
-    return res.send(teams);
+    teams.forEach(team => {
+      if (team.adminId) {
+        completedTeams.push(team);
+      } else {
+        unfinishedTeams.push(team);
+      }
+    });
+
+    if (
+      completedTeams &&
+      completedTeams.length === 0 &&
+      unfinishedTeams &&
+      unfinishedTeams.length === 0
+    )
+      return res.status(404).send([{ message: 'No Teams found.' }]);
+
+    return res.send({ teams: completedTeams, unfinishedTeams });
   }
 
   teams = await Team.find({ $or: [{ managerId: req.member._id }, { members: req.member._id }] })
@@ -91,17 +107,25 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 // POST /api/teams
 router.post('/', [auth, admin], async (req, res) => {
   if (swearjar.profane(req.body.name))
-    return res.status(400).send([{ message: 'Team name must not contain profanity.' }]);
+    return res
+      .status(400)
+      .send([{ message: 'Team name must not contain profanity.', context: { key: 'name' } }]);
 
   const { error } = validateTeamName(req.body);
   if (error) return res.status(400).send(error.details);
 
-  const team = await Team.findOne({ name: req.body.name });
-  if (team) return res.status(400).send([{ message: 'Team name already registered' }]);
+  let teamName = req.body.name;
+  teamName = teamName.toUpperCase();
 
-  const newTeam = new Team({ name: req.body.name });
-  await newTeam.save();
-  return res.send(_.pick(newTeam, ['_id', 'name']));
+  let team = await Team.findOne({ name: teamName });
+  if (team)
+    return res
+      .status(400)
+      .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
+
+  team = new Team({ name: req.body.name });
+  await team.save();
+  return res.send([{ message: 'Team Added' }]);
 });
 
 // PUT /api/teams/:id

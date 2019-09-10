@@ -3,7 +3,7 @@
     <form @submit.prevent="addMember" novalidate>
       <div class="form-wrapper row">
         <div class="left-side col-sm-6">
-          <h5>Member Details</h5>
+          <h6 class="bg-secondary">Member Details</h6>
           <div class="form-group row">
             <div class="col-sm-12">
               <label for="email">Email address</label>
@@ -132,8 +132,8 @@
           </div>
         </div>
         <div class="right-side col-sm-6">
-          <h5 class="mb-4">Shipping Details</h5>
-          <div class="form-group">
+          <h6 class="mb-4 bg-secondary">Shipping Details</h6>
+          <div class="form-group text-center">
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -174,7 +174,7 @@
                   v-else
                   type="text"
                   id="shippingPhone"
-                  class="form-control form-control-sm"
+                  class="form-control mb-1"
                   v-model="shippingPhone"
                   ref="shippingPhone"
                   readonly
@@ -260,10 +260,10 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-9 mt-2">
-          <button type="submit" class="btn btn-block btn-dark">Add Member</button>
+        <div class="col-sm-6 mt-2">
+          <button type="submit" class="btn btn-block btn-info">Add Member</button>
         </div>
-        <div class="col-sm-3 mt-2">
+        <div class="col-sm-6 mt-2">
           <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/members">Cancel</router-link>
         </div>
       </div>
@@ -461,3 +461,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+h6 {
+  color: white;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+</style>

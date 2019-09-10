@@ -22,7 +22,7 @@
     <paginate
       v-model="currentPage"
       :page-count="pageNumbers"
-      :container-class="'pagination'"
+      :container-class="'pagination pagination-sm'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
       :prev-class="'page-item'"

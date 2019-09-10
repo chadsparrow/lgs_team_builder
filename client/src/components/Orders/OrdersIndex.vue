@@ -22,7 +22,7 @@
     <paginate
       v-model="currentPage"
       :page-count="pageNumbers"
-      :container-class="'pagination'"
+      :container-class="'pagination pagination-sm'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
       :prev-class="'page-item'"
@@ -77,14 +77,11 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentOrders: function() {
-      if (orders.length > 0) {
-        return this.orders.slice(this.indexOfFirstItem, this.indexOfLastItem);
-      }
-      return [];
+      return this.orders.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.teams.length / this.itemsPerPage); i++) {
+      for (let i = 1; i <= Math.ceil(this.orders.length / this.itemsPerPage); i++) {
         pageArray.push(i);
       }
       return pageArray.length;

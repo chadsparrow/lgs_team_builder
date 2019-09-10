@@ -1,12 +1,10 @@
 <template>
   <div>
-    <router-link
-      to="/dashboard/stores/add"
-      class="btn btn-block btn-info mb-4"
-      v-if="member && member.isAdmin"
-    >
+    <router-link to="/dashboard/stores/add" class="btn btn-info" v-if="member && member.isAdmin">
       <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Store
     </router-link>
+    <br />
+    <br />
     <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -35,7 +33,7 @@
     <paginate
       v-model="currentPage"
       :page-count="pageNumbers"
-      :container-class="'pagination'"
+      :container-class="'pagination pagination-sm'"
       :page-class="'page-item'"
       :page-link-class="'page-link'"
       :prev-class="'page-item'"

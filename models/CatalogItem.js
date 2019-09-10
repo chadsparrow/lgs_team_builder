@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const Float = require('mongoose-float').loadType(mongoose);
 
-const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
+const joiOptions = { abortEarly: true, language: { key: '{{key}} ' } };
 
 const CatalogItemSchema = new mongoose.Schema(
   {
