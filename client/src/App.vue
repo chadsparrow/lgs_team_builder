@@ -124,12 +124,12 @@ tr:hover {
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th,
 .table-hover tbody tr:hover a {
-  background-color: #111;
+  background-color: #17a2b8;
   color: white;
 }
 
 .pagination > .active > a {
-  background-color: #111 !important;
+  background-color: #17a2b8 !important;
   color: white;
   border: 0px solid grey;
 }

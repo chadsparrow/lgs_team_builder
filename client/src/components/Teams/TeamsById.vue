@@ -21,13 +21,37 @@
               class="col-sm-12"
             >{{createdAt | moment('timezone', timezone, "MMM Do YYYY / hh:ss a - z")}}</span>
           </div>
+          <div class="row p-1" v-if="adminName">
+            <small class="col-sm-12 text-info">Team Admin:</small>
+            <span class="col-sm-12">{{adminName}} - {{adminEmail}}</span>
+          </div>
+          <div class="row p-1" v-if="managerName">
+            <small class="col-sm-12 text-info">Team Manager:</small>
+            <span class="col-sm-12">{{managerName}} - {{managerEmail}}</span>
+          </div>
           <router-link
-            :to="`/dashboard/members/${id}/edit`"
+            :to="`/dashboard/teams/${id}/edit`"
             class="btn btn-sm btn-block btn-info mt-3 mb-4"
             v-if="member && member.isAdmin"
           >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team
           </router-link>
+          <div v-if="members && members.length >0">
+            <small class="text-info ml-2 mb-2">Member List:</small>
+            <ul class="list-group">
+              <li
+                class="list-group-item list-group-item-action"
+                v-for="membr of members"
+                :key="membr._id"
+                @click.prevent="loadMember(membr._id)"
+              >{{membr.name}}</li>
+            </ul>
+          </div>
+          <div v-else>
+            <small class="text-info">Member List:</small>
+            <br />
+            <span>No Members</span>
+          </div>
         </div>
         <div v-else>
           <div class="placeholderImg"></div>
@@ -36,7 +60,18 @@
       <div class="col infoSection" v-if="name">
         <h6 class="bg-secondary">Team Information</h6>
         <form>
-          <div class="row"></div>
+          <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="name">Name</label>
+              <input
+                id="name"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="name"
+                readonly
+              />
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -53,8 +88,10 @@ export default {
       id: '',
       name: '',
       logo: null,
-      adminId: '',
-      managerId: '',
+      adminName: '',
+      adminEmail: '',
+      managerName: '',
+      managerEmail: '',
       mainContact: {},
       bulkShipping: {},
       members: [],
@@ -74,7 +111,7 @@ export default {
       return [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
-          text: 'Members',
+          text: 'Teams',
           link: '/dashboard/teams'
         },
         {
@@ -86,7 +123,6 @@ export default {
   },
   created: async function() {
     try {
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       const res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const {
         _id,
@@ -101,19 +137,34 @@ export default {
         timezoneAbbrev,
         createdAt
       } = res.data;
+
       this.id = _id;
       this.name = name;
       this.logo = logo;
-      this.adminId = adminId;
-      this.managerId = managerId;
+      if (adminId) {
+        this.adminName = adminId.name;
+        this.adminEmail = adminId.email;
+      }
+
+      if (managerId) {
+        this.managerName = managerId.name;
+        this.managerEmail = managerId.email;
+      }
+
       this.mainContact = mainContact;
       this.bulkShipping = bulkShipping;
       this.members = members;
       this.timezone = timezone;
       this.timezoneAbbrev = timezoneAbbrev;
       this.createdAt = createdAt;
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
+    }
+  },
+  methods: {
+    loadMember: function(id) {
+      this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
     }
   }
 };
@@ -136,6 +187,22 @@ export default {
     background-color: white;
     width: 225px;
     height: 225px;
+  }
+
+  .list-group {
+    width: 100%;
+    overflow: auto;
+    max-height: 250px;
+
+    .list-group-item {
+      height: 35px;
+      padding: 5px 15px;
+      &:hover {
+        background-color: #17a2b8;
+        color: white;
+        cursor: pointer;
+      }
+    }
   }
 }
 

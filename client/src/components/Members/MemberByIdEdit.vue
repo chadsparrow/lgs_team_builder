@@ -330,7 +330,7 @@ export default {
         zipPostal,
         phone,
         shipping
-      } = res.data;
+      } = res.data.member;
 
       this.id = _id;
       this.timezone = timezone;

@@ -1,13 +1,6 @@
 <template>
   <div>
-    <div v-if="member && member.isAdmin">
-      <router-link to="/dashboard/teams/add" class="btn btn-info">
-        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Team Name
-      </router-link>
-      <br />
-      <br />
-    </div>
-    <div class="table-responsive mb-2" v-if="unfinishedTeams && unfinishedTeams.length >0">
+    <div class="table-responsive" v-if="unfinishedTeams && unfinishedTeams.length >0">
       <h5 class="text-info">Reserved Team Names</h5>
       <table class="table table-hover table-striped">
         <tbody>
@@ -20,6 +13,13 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-if="member && member.isAdmin">
+      <router-link to="/dashboard/teams/add" class="btn btn-info">
+        <i class="fas fa-plus"></i> Reserve Team Name
+      </router-link>
+      <br />
+      <br />
     </div>
     <span v-if="currentTeams && currentTeams.length === 0">No Teams Found</span>
     <div class="table-responsive" v-else>

@@ -25,12 +25,17 @@
             <small class="col-sm-12 text-info">Member Role:</small>
             <span class="col-sm-12">{{isAdmin ? 'Admin' : 'Member'}}</span>
           </div>
-          <router-link
-            :to="`/dashboard/members/${id}/edit`"
-            class="btn btn-sm btn-block btn-info mt-3 mb-4"
-          >
-            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member
-          </router-link>
+          <div v-if="teams && teams.length >0">
+            <small class="text-info ml-1 mb-2">Member of Teams:</small>
+            <ul class="list-group">
+              <li
+                class="list-group-item list-group-item-action"
+                v-for="team of teams"
+                :key="team._id"
+                @click.prevent="loadTeam(team._id)"
+              >{{team.name}}</li>
+            </ul>
+          </div>
         </div>
         <div v-else>
           <div class="placeholderImg"></div>
@@ -224,6 +229,9 @@
               />
             </div>
           </div>
+          <router-link :to="`/dashboard/members/${id}/edit`" class="btn btn-block btn-info mt-2">
+            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member Details
+          </router-link>
         </form>
       </div>
     </div>
@@ -252,7 +260,8 @@ export default {
       country: undefined,
       zipPostal: undefined,
       phone: undefined,
-      shipping: undefined
+      shipping: undefined,
+      teams: []
     };
   },
   components: {
@@ -293,7 +302,9 @@ export default {
         zipPostal,
         phone,
         shipping
-      } = res.data;
+      } = res.data.member;
+
+      this.teams = res.data.teams;
 
       this.id = _id;
       this.avatarUrl = avatarUrl ? avatarUrl : null;
@@ -314,6 +325,11 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
+    }
+  },
+  methods: {
+    loadTeam: function(id) {
+      this.$router.push({ name: 'teamsById', params: { id } }).catch(() => {});
     }
   }
 };
@@ -336,6 +352,22 @@ export default {
     background-color: white;
     width: 225px;
     height: 225px;
+  }
+
+  .list-group {
+    width: 100%;
+    overflow: auto;
+    max-height: 250px;
+
+    .list-group-item {
+      height: 35px;
+      padding: 5px 15px;
+      &:hover {
+        background-color: #17a2b8;
+        color: white;
+        cursor: pointer;
+      }
+    }
   }
 }
 
