@@ -142,7 +142,9 @@
                 v-model="shippingSame"
                 @change="copyDetails"
               />
-              <label class="form-check-label" for="shippingSame">Use Member details for Shipping</label>
+              <label class="form-check-label" for="shippingSame"
+                >Use Member details for Shipping</label
+              >
             </div>
           </div>
           <div class="shippingDetails mt-2">
@@ -264,7 +266,9 @@
           <button type="submit" class="btn btn-block btn-info">Add Member</button>
         </div>
         <div class="col-sm-6 mt-2">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/members">Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/members"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>
@@ -351,7 +355,7 @@ export default {
       };
 
       try {
-        const res = await this.$store.dispatch('addMember', member);
+        await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
         this.$toasted.success('Member Added');
       } catch (err) {

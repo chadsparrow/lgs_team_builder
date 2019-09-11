@@ -12,45 +12,50 @@
             :src="logo"
           ></avatar>
           <div class="row p-1 mt-4">
-            <small class="col-sm-12 text-info">Team Timezone:</small>
-            <span class="col-sm-12">{{timezone}}</span>
+            <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
+            <span class="col-sm-12">{{ timezone }}</span>
           </div>
           <div class="row p-1">
             <small class="col-sm-12 text-info">Team Since:</small>
-            <span
-              class="col-sm-12"
-            >{{createdAt | moment('timezone', timezone, "MMM Do YYYY / hh:ss a - z")}}</span>
+            <span class="col-sm-12">
+              {{
+              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:ss a - z')
+              }}
+            </span>
           </div>
-          <div class="row p-1" v-if="adminName">
+          <div class="row p-1" v-if="adminId.name">
             <small class="col-sm-12 text-info">Team Admin:</small>
-            <span class="col-sm-12">{{adminName}} - {{adminEmail}}</span>
+            <span class="col-sm-12">
+              {{ adminId.name }}
+              <br />
+              {{ adminId.email }}
+            </span>
           </div>
-          <div class="row p-1" v-if="managerName">
+          <div class="row p-1" v-if="managerId.name">
             <small class="col-sm-12 text-info">Team Manager:</small>
-            <span class="col-sm-12">{{managerName}} - {{managerEmail}}</span>
+            <span class="col-sm-12">
+              {{ managerId.name }}
+              <br />
+              {{ managerId.email }}
+            </span>
           </div>
-          <router-link
-            :to="`/dashboard/teams/${id}/edit`"
-            class="btn btn-sm btn-block btn-info mt-3 mb-4"
-            v-if="member && member.isAdmin"
-          >
-            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team
-          </router-link>
-          <div v-if="members && members.length >0">
-            <small class="text-info ml-2 mb-2">Member List:</small>
-            <ul class="list-group">
+          <div class="row p-1 mt-4" v-if="members && members.length > 0">
+            <small class="col-sm-12 text-info">Member List:</small>
+            <ul class="list-group col-sm-12">
               <li
                 class="list-group-item list-group-item-action"
                 v-for="membr of members"
                 :key="membr._id"
                 @click.prevent="loadMember(membr._id)"
-              >{{membr.name}}</li>
+              >
+                <i class="fas fa-certificate text-warning mr-1" v-if="managerId._id === membr._id"></i>
+                {{ membr.name }}
+              </li>
             </ul>
           </div>
-          <div v-else>
-            <small class="text-info">Member List:</small>
-            <br />
-            <span>No Members</span>
+          <div class="row p-1 mt-4" v-else>
+            <small class="col-sm-12 text-info">Member List:</small>
+            <span class="col-sm-12">No Members</span>
           </div>
         </div>
         <div v-else>
@@ -58,11 +63,10 @@
         </div>
       </div>
       <div class="col infoSection" v-if="name">
-        <h6 class="bg-secondary">Team Information</h6>
-        <form>
+        <form novalidate>
           <div class="row">
             <div class="form-group col-sm-12">
-              <label for="name">Name</label>
+              <label for="name">Team Name</label>
               <input
                 id="name"
                 type="text"
@@ -71,7 +75,196 @@
                 readonly
               />
             </div>
+            <div class="form-group col-sm-6 mt-2">
+              <label for="contactName">Name</label>
+              <input
+                id="contactName"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.name"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6 mt-2">
+              <label for="contactEmail">Email</label>
+              <input
+                id="contactEmail"
+                type="email"
+                class="form-control form-control-sm"
+                v-model="mainContact.email"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="contactAddress1">Address 1</label>
+              <input
+                id="contactAddress1"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.address1"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="contactAddress2">Address 2</label>
+              <input
+                id="contactAddress2"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.address2"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="contactCity">City</label>
+              <input
+                id="contactCity"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.city"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="stateProv">State/Province</label>
+              <input
+                id="stateProv"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.stateProv"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="country">Country</label>
+              <input
+                id="country"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.country"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="zipPostal">Zip/Postal Code</label>
+              <input
+                id="zipPostal"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.zipPostal"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="phone">Phone</label>
+              <input
+                id="phone"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="mainContact.phone"
+                readonly
+              />
+            </div>
           </div>
+          <hr />
+          <label
+            class="mb-2"
+          >Details below are needed for team stores set to "BULK" shipping and to determine team timezone</label>
+          <div class="row mb-4">
+            <div class="form-group col-sm-6">
+              <label for="shippingName">Shipping Name</label>
+              <input
+                id="shippingName"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.name"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="shippingName">Shipping Email</label>
+              <input
+                id="shippingEmail"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.email"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="shippingAddress1">Shipping Address 1</label>
+              <input
+                id="shippingAddress1"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.address1"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="shippingAddress2">Shipping Address 2</label>
+              <input
+                id="shippingAddress2"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.address2"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="shippingCity">Shipping City</label>
+              <input
+                id="shippingCity"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.city"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="shippingStateProv">Shipping State/Province</label>
+              <input
+                id="shippingStateProv"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.stateProv"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="shippingCountry">Shipping Country</label>
+              <input
+                id="shippingCountry"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.country"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
+              <input
+                id="shippingZipPostal"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.zipPostal"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="shippingPhone">Shipping Phone</label>
+              <input
+                id="shippingPhone"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="bulkShipping.phone"
+                readonly
+              />
+            </div>
+          </div>
+          <router-link :to="`/dashboard/teams/${id}/edit`" class="btn btn-block btn-info mt-2">
+            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
+          </router-link>
         </form>
       </div>
     </div>
@@ -83,15 +276,16 @@ import Avatar from 'vue-avatar';
 
 export default {
   name: 'TeamById',
+  components: {
+    Avatar
+  },
   data() {
     return {
       id: '',
       name: '',
       logo: null,
-      adminName: '',
-      adminEmail: '',
-      managerName: '',
-      managerEmail: '',
+      adminId: {},
+      managerId: {},
       mainContact: {},
       bulkShipping: {},
       members: [],
@@ -142,17 +336,36 @@ export default {
       this.name = name;
       this.logo = logo;
       if (adminId) {
-        this.adminName = adminId.name;
-        this.adminEmail = adminId.email;
+        this.adminId = adminId;
       }
 
       if (managerId) {
-        this.managerName = managerId.name;
-        this.managerEmail = managerId.email;
+        this.managerId = managerId;
       }
-
-      this.mainContact = mainContact;
-      this.bulkShipping = bulkShipping;
+      if (mainContact) {
+        this.mainContact.id = mainContact.memberId;
+        this.mainContact.name = mainContact.name;
+        this.mainContact.address1 = mainContact.address1;
+        this.mainContact.address2 = mainContact.address2;
+        this.mainContact.city = mainContact.city;
+        this.mainContact.stateProv = mainContact.stateProv;
+        this.mainContact.country = mainContact.country;
+        this.mainContact.zipPostal = mainContact.zipPostal;
+        this.mainContact.phone = mainContact.phone;
+        this.mainContact.email = mainContact.email;
+      }
+      if (bulkShipping) {
+        this.bulkShipping.id = bulkShipping.memberId;
+        this.bulkShipping.name = bulkShipping.name;
+        this.bulkShipping.address1 = bulkShipping.address1;
+        this.bulkShipping.address2 = bulkShipping.address2;
+        this.bulkShipping.city = bulkShipping.city;
+        this.bulkShipping.stateProv = bulkShipping.stateProv;
+        this.bulkShipping.country = bulkShipping.country;
+        this.bulkShipping.zipPostal = bulkShipping.zipPostal;
+        this.bulkShipping.phone = bulkShipping.phone;
+        this.bulkShipping.email = bulkShipping.email;
+      }
       this.members = members;
       this.timezone = timezone;
       this.timezoneAbbrev = timezoneAbbrev;
@@ -211,7 +424,6 @@ export default {
     max-width: 800px;
   }
   .form-group {
-    margin-top: 1px;
     margin-bottom: 1px;
   }
 

@@ -5,13 +5,8 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar';
-
 export default {
   name: 'ProfilesEdit',
-  components: {
-    Avatar
-  },
   data() {
     return {
       breadcrumbs: [

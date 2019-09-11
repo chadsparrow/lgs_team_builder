@@ -15,6 +15,7 @@ router.get('/', auth, async (req, res) => {
   let teams = [];
   const completedTeams = [];
   const unfinishedTeams = [];
+
   if (req.member.isAdmin) {
     teams = await Team.find()
       .populate({ path: 'managerId', select: 'name email' })
@@ -31,7 +32,7 @@ router.get('/', auth, async (req, res) => {
       .select('-updatedAt -__v ');
 
     teams.forEach(team => {
-      if (team.adminId) {
+      if (team.mainContact.memberId) {
         completedTeams.push(team);
       } else {
         unfinishedTeams.push(team);
@@ -52,6 +53,7 @@ router.get('/', auth, async (req, res) => {
   teams = await Team.find({ $or: [{ managerId: req.member._id }, { members: req.member._id }] })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
+    .populate({ path: 'adminId', select: 'name email' })
     .populate({
       path: 'mainContact.memberId',
       select: 'name address1 address2 city stateProv country zipPostal email phone'
@@ -60,12 +62,19 @@ router.get('/', auth, async (req, res) => {
       path: 'bulkShipping.memberId',
       select: 'name address1 address2 city stateProv country zipPostal email phone'
     })
-    .select('-updatedAt -__v -adminId');
+    .select('-updatedAt -__v');
 
-  if (teams && teams.length === 0)
+  teams.forEach(team => {
+    if (team.mainContact.memberId) {
+      completedTeams.push(team);
+    } else {
+      unfinishedTeams.push(team);
+    }
+  });
+
+  if (completedTeams && completedTeams.length === 0)
     return res.status(404).send([{ message: 'You are currently not a member of any teams' }]);
-
-  return res.send(teams);
+  return res.send({ teams: completedTeams, unfinishedTeams });
 });
 
 // GET /api/teams/:id
@@ -123,7 +132,7 @@ router.post('/', [auth, admin], async (req, res) => {
       .status(400)
       .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
 
-  team = new Team({ name: req.body.name });
+  team = new Team({ name: req.body.name, adminId: req.body.adminId });
   await team.save();
   return res.send([{ message: 'Team Added' }]);
 });

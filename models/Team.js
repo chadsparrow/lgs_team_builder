@@ -151,7 +151,8 @@ const TeamSchema = new mongoose.Schema(
 
 function validateTeamName(team) {
   const schema = {
-    name: Joi.string().required()
+    name: Joi.string().required(),
+    adminId: Joi.objectId()
   };
   return Joi.validate(team, schema, joiOptions);
 }
@@ -162,8 +163,8 @@ function validateTeam(team) {
       .uri()
       .allow('', null),
     adminId: Joi.objectId().required(),
-    managerId: Joi.objectId().required(),
-    useManagerDetails: Joi.boolean().required(),
+    managerId: Joi.objectId(),
+    useManagerDetails: Joi.boolean(),
     contactName: Joi.when('useManagerDetails', {
       is: false,
       then: Joi.string()

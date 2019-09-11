@@ -7,11 +7,9 @@
           <button type="submit" class="btn btn-block btn-dark">Add Catalog Item</button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/catalogs/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/catalogs/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>

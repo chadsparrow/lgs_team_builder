@@ -18,7 +18,11 @@
       </div>
       <div class="row mt-4">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-info">Add Team</button>
+          <button
+            type="submit"
+            class="btn btn-block btn-info"
+            :disabled="member && !member.isAdmin"
+          >Add Team</button>
         </div>
         <div class="col-sm-6">
           <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/teams">Cancel</router-link>
@@ -54,10 +58,16 @@ export default {
       ]
     };
   },
+  computed: {
+    member: function() {
+      return this.$store.getters.getCurrentMember;
+    }
+  },
   methods: {
     addTeam: async function() {
       const team = {
-        name: this.name
+        name: this.name,
+        adminId: this.member._id
       };
       try {
         const res = await this.$store.dispatch('addTeam', team);

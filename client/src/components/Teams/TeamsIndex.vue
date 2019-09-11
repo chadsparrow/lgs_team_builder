@@ -1,18 +1,21 @@
 <template>
   <div>
-    <div class="table-responsive" v-if="unfinishedTeams && unfinishedTeams.length >0">
-      <h5 class="text-info">Reserved Team Names</h5>
-      <table class="table table-hover table-striped">
-        <tbody>
-          <tr
-            v-for="unfinished of unfinishedTeams"
-            :key="unfinished._id"
-            @click.prevent="loadTeam(unfinished._id)"
-          >
-            <th>{{ unfinished.name }}</th>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="member && member.isAdmin">
+      <div class="table-responsive" v-if="unfinishedTeams && unfinishedTeams.length > 0">
+        <h5 class="text-info">Reserved Team Names</h5>
+        <table class="table table-hover table-striped">
+          <tbody>
+            <tr
+              v-for="unfinished of unfinishedTeams"
+              :key="unfinished._id"
+              @click.prevent="loadTeam(unfinished._id)"
+            >
+              <th>{{ unfinished.name }}</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <span v-else>No Reserved Team Names</span>
     </div>
     <div v-if="member && member.isAdmin">
       <router-link to="/dashboard/teams/add" class="btn btn-info">
@@ -21,7 +24,12 @@
       <br />
       <br />
     </div>
-    <span v-if="currentTeams && currentTeams.length === 0">No Teams Found</span>
+    <span
+      v-if="currentTeams && currentTeams.length === 0 && member && member.isAdmin"
+    >No Teams Found</span>
+    <span
+      v-else-if="currentTeams && currentTeams.length === 0"
+    >No Teams Found - Contact your team manager to add you</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

@@ -13,19 +13,19 @@
           ></avatar>
           <div class="row p-1 mt-4">
             <small class="col-sm-12 text-info">Member Timezone:</small>
-            <span class="col-sm-12">{{timezone}}</span>
+            <span class="col-sm-12">{{ timezone }}</span>
           </div>
           <div class="row p-1">
             <small class="col-sm-12 text-info">Member Since:</small>
-            <span
-              class="col-sm-12"
-            >{{createdAt | moment('timezone', timezone, "MMM Do YYYY / hh:ss a - z")}}</span>
+            <span class="col-sm-12">{{
+              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:ss a - z')
+            }}</span>
           </div>
           <div class="row p-1">
             <small class="col-sm-12 text-info">Member Role:</small>
-            <span class="col-sm-12">{{isAdmin ? 'Admin' : 'Member'}}</span>
+            <span class="col-sm-12">{{ isAdmin ? 'Admin' : 'Member' }}</span>
           </div>
-          <div v-if="teams && teams.length >0">
+          <div v-if="teams && teams.length > 0">
             <small class="text-info ml-1 mb-2">Member of Teams:</small>
             <ul class="list-group">
               <li
@@ -33,7 +33,9 @@
                 v-for="team of teams"
                 :key="team._id"
                 @click.prevent="loadTeam(team._id)"
-              >{{team.name}}</li>
+              >
+                {{ team.name }}
+              </li>
             </ul>
           </div>
         </div>

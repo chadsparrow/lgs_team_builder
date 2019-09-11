@@ -1,19 +1,15 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-6">
-        <router-link
-          class="btn btn-block btn-info"
-          :to="`/dashboard/catalogs/${id}/add`"
-          tag="a"
-        >Add Catalog Item</router-link>
+      <div class="col-sm-2">
+        <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/add`" tag="a">
+          <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
+        </router-link>
       </div>
-      <div class="col-sm-6">
-        <router-link
-          class="btn btn-block btn-info"
-          :to="`/dashboard/catalogs/${id}/edit`"
-          tag="a"
-        >Edit Catalog</router-link>
+      <div class="col-sm-2">
+        <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/edit`" tag="a">
+          <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
+        </router-link>
       </div>
       <div
         class="col-sm-12 mt-4"
@@ -66,4 +62,3 @@ export default {
   methods: {}
 };
 </script>
-

@@ -433,7 +433,7 @@ function validateNotification(notification) {
 // eslint-disable-next-line func-names
 MemberSchema.methods.generateAuthToken = function() {
   const signOptions = {
-    expiresIn: '1h' // *****   change to 8h for production
+    expiresIn: '4h' // *****   change to 8h for production
   };
   // eslint-disable-next-line no-underscore-dangle
   const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'), signOptions);

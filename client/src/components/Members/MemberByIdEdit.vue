@@ -4,11 +4,11 @@
       <div class="col sidebar">
         <div class="row p-1">
           <small class="col-sm-12 text-info">Member Timezone:</small>
-          <span class="col-sm-12">{{timezone}}</span>
+          <span class="col-sm-12">{{ timezone }}</span>
         </div>
         <div class="row p-1">
           <small class="col-sm-12 text-info">Member Role:</small>
-          <span class="col-sm-12">{{isAdmin ? 'Admin' : 'Member'}}</span>
+          <span class="col-sm-12">{{ isAdmin ? 'Admin' : 'Member' }}</span>
         </div>
         <hr />
         <small class="text-info">Actions</small>
@@ -16,16 +16,15 @@
           class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
           v-if="!isAdmin"
-        >Give Admin Status</button>
-        <button
-          class="btn btn-sm btn-block btn-info mt-2"
-          @click.prevent="toggleAdmin"
-          v-else
-        >Revoke Admin Status</button>
-        <button
-          class="btn btn-sm btn-block btn-danger mt-2 mb-4"
-          @click.prevent="deleteMember"
-        >Delete Member</button>
+        >
+          Give Admin Status
+        </button>
+        <button class="btn btn-sm btn-block btn-info mt-2" @click.prevent="toggleAdmin" v-else>
+          Revoke Admin Status
+        </button>
+        <button class="btn btn-sm btn-block btn-danger mt-2 mb-4" @click.prevent="deleteMember">
+          Delete Member
+        </button>
       </div>
       <div class="col infoSection">
         <h6 class="bg-secondary">Member Information</h6>
@@ -130,7 +129,9 @@
                 @change="copyDetails"
                 ref="shippingSame"
               />
-              <label class="form-check-label" for="shippingSame">Use Member Details for Shipping</label>
+              <label class="form-check-label" for="shippingSame"
+                >Use Member Details for Shipping</label
+              >
             </div>
           </div>
           <h6 class="mt-3 bg-secondary">Member Shipping Details</h6>
@@ -248,13 +249,14 @@
           </div>
           <div class="row">
             <div class="col-sm-8">
-              <button
-                class="btn btn-block btn-info mb-2"
-                @click.prevent="updateMember"
-              >Update Member</button>
+              <button class="btn btn-block btn-info mb-2" @click.prevent="updateMember">
+                Update Member
+              </button>
             </div>
             <div class="col-sm-4">
-              <router-link :to="`/dashboard/members/${id}`" class="btn btn-block btn-danger">Cancel</router-link>
+              <router-link :to="`/dashboard/members/${id}`" class="btn btn-block btn-danger"
+                >Cancel</router-link
+              >
             </div>
           </div>
         </form>
@@ -528,4 +530,3 @@ export default {
   }
 }
 </style>
-

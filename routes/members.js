@@ -17,6 +17,7 @@ const {
   validateEmail,
   validatePassword
 } = require('../models/Member');
+const { Team } = require('../models/Team');
 
 // GET /api/members
 router.get('/', [auth, admin], async (req, res) => {
@@ -28,6 +29,11 @@ router.get('/', [auth, admin], async (req, res) => {
     return res.status(404).send([{ message: 'There are no members in the database.' }]);
 
   return res.send(members);
+});
+
+router.get('/admins', auth, async (req, res) => {
+  const admins = await Member.find({ isAdmin: true }).select('_id name email');
+  return res.status(200).send(admins);
 });
 
 // GET /api/members/:id
@@ -47,6 +53,8 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
     '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping avatarUrl isAdmin createdAt'
   );
 
+  const teams = await Team.find({ members: req.params.id }).select('name _id');
+
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
@@ -64,7 +72,7 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
     member.shipping.address2 = '';
   }
   member.shipping.phone = cryptr.decrypt(member.shipping.phone);
-  return res.send(member);
+  return res.send({ member, teams });
 });
 
 // POST /api/members

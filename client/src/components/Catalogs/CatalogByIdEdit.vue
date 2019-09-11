@@ -37,18 +37,18 @@
         <div class="col-sm-12">
           <label for="year">Year</label>
           <select class="form-control form-control-sm" id="year" v-model="catalog.year" ref="year">
-            <option v-for="date of daterange" :key="date" :value="date">{{date}}</option>
+            <option v-for="date of daterange" :key="date" :value="date">{{ date }}</option>
           </select>
         </div>
       </div>
-      <div class="row">
+      <div class="row mt-4">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-dark">Submit Changes</button>
+          <button type="submit" class="btn btn-block btn-info">Submit Changes</button>
         </div>
         <div class="col-sm-6">
           <router-link
             tag="a"
-            class="btn btn-danger btn-block"
+            class="btn btn-block btn-danger"
             :to="`/dashboard/catalogs/${id}`"
           >Cancel</router-link>
         </div>

@@ -7,7 +7,9 @@
       <br />
       <br />
     </div>
-    <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
+    <span class="text-center" v-if="currentStores && currentStores.length === 0"
+      >No Stores Found</span
+    >
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

@@ -158,7 +158,9 @@
                 v-model="shippingSame"
                 @change="copyDetails"
               />
-              <label class="form-check-label" for="shippingSame">Use Member details for Shipping</label>
+              <label class="form-check-label" for="shippingSame"
+                >Use Member details for Shipping</label
+              >
             </div>
           </div>
           <div class="shippingDetails mt-2">
@@ -280,7 +282,9 @@
           <button type="submit" class="btn btn-block btn-dark">Register</button>
         </div>
         <div class="col-sm-3 mt-2">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/login">Already Registered</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" to="/login"
+            >Already Registered</router-link
+          >
         </div>
       </div>
     </form>

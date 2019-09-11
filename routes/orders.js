@@ -18,7 +18,7 @@ router.get('/', auth, async (req, res) => {
       .populate({ path: 'teamId', select: 'name' })
       .select('-updatedAt -__v ');
     if (orders && orders.length === 0)
-      return res.status(404).send([{ message: 'No Orders found.' }]);
+      return res.status(404).send([{ message: 'No orders found.' }]);
 
     return res.send(orders);
   }
@@ -42,7 +42,7 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
 
   const orders = await Order.find({ teamId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).send([{ message: 'No orders found for the given Team ID' }]);
+    return res.status(404).send([{ message: 'No orders found for the given team ID' }]);
 
   return res.send(orders);
 });
@@ -53,7 +53,7 @@ router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   const orders = await Order.find({ memberId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).send([{ message: 'No orders found for the given Member ID' }]);
+    return res.status(404).send([{ message: 'No orders found for the given member ID' }]);
 
   return res.send(orders);
 });
@@ -67,7 +67,7 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
 
   const orders = await Order.find({ storeId: req.params.id });
   if (orders && orders.length === 0)
-    return res.status(404).send([{ message: 'No orders found for the given Store ID' }]);
+    return res.status(404).send([{ message: 'No orders found for the given store ID' }]);
 
   return res.send(orders);
 });

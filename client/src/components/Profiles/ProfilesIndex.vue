@@ -13,13 +13,13 @@
       </div>
       <div class="row p-1 mt-4">
         <small class="col-sm-12 text-info">My Timezone:</small>
-        <span class="col-sm-12">{{member.timezone}}</span>
+        <span class="col-sm-12">{{ member.timezone }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Member Since:</small>
-        <span
-          class="col-sm-12"
-        >{{member.createdAt | moment('timezone', member.timezone, "MMM Do YYYY - hh:ss a - z")}}</span>
+        <span class="col-sm-12">{{
+          member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY - hh:ss a - z')
+        }}</span>
       </div>
       <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-block btn-info mt-3 mb-4">
         <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit My Profile

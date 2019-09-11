@@ -13,7 +13,7 @@
             <th scope="row">{{ member.name }}</th>
             <td>{{ member.email }}</td>
             <td>
-              <span>{{member.isAdmin ? "Admin" : "Member"}}</span>
+              <span>{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
             </td>
           </tr>
         </tbody>
