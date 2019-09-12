@@ -17,9 +17,11 @@
           </div>
           <div class="row p-1">
             <small class="col-sm-12 text-info">Member Since:</small>
-            <span class="col-sm-12">{{
+            <span class="col-sm-12">
+              {{
               createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:ss a - z')
-            }}</span>
+              }}
+            </span>
           </div>
           <div class="row p-1">
             <small class="col-sm-12 text-info">Member Role:</small>
@@ -33,9 +35,7 @@
                 v-for="team of teams"
                 :key="team._id"
                 @click.prevent="loadTeam(team._id)"
-              >
-                {{ team.name }}
-              </li>
+              >{{ team.name }}</li>
             </ul>
           </div>
         </div>

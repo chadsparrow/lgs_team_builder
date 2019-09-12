@@ -584,57 +584,35 @@ export default {
       if (this.useManagerDetails) {
         this.backupContact = this.mainContact;
         this.mainContact = this.managerDetails;
+        this.geoTimezone();
       } else {
         this.mainContact = this.backupContact;
+        this.geoTimezone();
       }
     },
     copyMaintoBulk: function() {
       if (this.bulkUseAboveDetails) {
         this.backupBulk = this.bulkShipping;
         this.bulkShipping = this.mainContact;
+        this.geoTimezone();
       } else {
         this.bulkShipping = this.backupBulk;
+        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
+      const target = event.target.id;
       if (
-        (event.target.id === 'shippingCountry' ||
-          event.target.id === 'shippingStateProv' ||
-          event.target.id === 'shippingCity') &&
-        this.bulkUseAboveDetails
+        (target === 'shippingCountry' ||
+          target === 'shippingStateProv' ||
+          target === 'shippingCity') &&
+        (this.bulkShipping.stateProv && this.bulkShipping.city && this.bulkShipping.country)
       ) {
-        if (
-          this.bulkShipping.stateProv &&
-          (this.bulkShipping.stateProv !== null || this.bulkShipping.stateProv !== '') &&
-          (this.bulkShipping.city &&
-            (this.bulkShipping.city !== null || this.bulkShipping.city !== '')) &&
-          (this.bulkShipping.country &&
-            (this.bulkShipping.country !== null || this.bulkShipping.country !== ''))
-        ) {
-          // GEO CODE on backend to get timezone
-          const location = await this.$http.get(
-            `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.city} ${this.stateProv} ${this.country}"},"options":{"thumbMaps":false}}`
-          );
-          if (location) {
-            const lat = location.data.results[0].locations[0].latLng.lat;
-            const lng = location.data.results[0].locations[0].latLng.lng;
-            const response = await this.$http.get(
-              `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
-            );
-            if (
-              response.data.zoneName &&
-              response.data.zoneName !== null &&
-              response.data.zoneName !== ''
-            ) {
-              this.timezone = response.data.zoneName;
-              this.timezoneAbbrev = response.data.abbreviation;
-            }
-          }
-        }
+        this.geoTimezone();
       }
 
       if (this.bulkUseAboveDetails) {
-        const target = event.target.id;
+        console.log(target);
         if (target === 'contactEmail') {
           this.bulkShipping.email = this.mainContact.email;
         } else if (target === 'contactname') {
@@ -645,10 +623,13 @@ export default {
           this.bulkShipping.address2 = this.mainContact.address2;
         } else if (target === 'contactcity') {
           this.bulkShipping.city = this.mainContact.city;
+          this.geoTimezone();
         } else if (target === 'contactstateProv') {
           this.bulkShipping.stateProv = this.mainContact.stateProv;
+          this.geoTimezone();
         } else if (target === 'contactcountry') {
           this.bulkShipping.country = this.mainContact.country;
+          this.geoTimezone();
         } else if (target === 'contactzipPostal') {
           this.bulkShipping.zipPostal = this.mainContact.zipPostal;
         }
@@ -657,6 +638,31 @@ export default {
     copyPhone: function(event) {
       if (this.bulkUseAboveDetails && event.phoneNumber) {
         this.bulkShipping.phone = event.phoneNumber;
+      }
+    },
+    geoTimezone: async function() {
+      if (this.bulkShipping.stateProv && this.bulkShipping.city && this.bulkShipping.country) {
+        const location = await this.$http.get(
+          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.bulkShipping.city} ${this.bulkShipping.stateProv} ${this.bulkShipping.country}"},"options":{"thumbMaps":false}}`
+        );
+        if (location) {
+          const lat = location.data.results[0].locations[0].latLng.lat;
+          const lng = location.data.results[0].locations[0].latLng.lng;
+          const response = await this.$http.get(
+            `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
+          );
+          if (
+            response.data.zoneName &&
+            response.data.zoneName !== null &&
+            response.data.zoneName !== ''
+          ) {
+            this.timezone = response.data.zoneName;
+            this.timezoneAbbrev = response.data.abbreviation;
+          }
+        }
+      } else {
+        this.timezone = '';
+        this.timezoneAbbrev = '';
       }
     }
   }
