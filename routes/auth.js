@@ -6,7 +6,6 @@ const _ = require('lodash');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
-const cryptr = require('../middleware/cryptr');
 const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
 
@@ -86,6 +85,7 @@ router.post('/register', async (req, res) => {
     phone,
     timezone,
     timezoneAbbrev,
+    shippingSame,
     shippingName,
     shippingAddress1,
     shippingAddress2,
@@ -94,7 +94,17 @@ router.post('/register', async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail
+    shippingEmail,
+    billingSame,
+    billingName,
+    billingAddress1,
+    billingAddress2,
+    billingCity,
+    billingStateProv,
+    billingCountry,
+    billingZipPostal,
+    billingPhone,
+    billingEmail
   } = req.body;
 
   const userEmail = email.split('@')[0];
@@ -110,32 +120,62 @@ router.post('/register', async (req, res) => {
 
   const newMember = new Member({
     name,
-    address1: cryptr.encrypt(address1),
+    address1,
+    address2,
     city,
     stateProv,
     country,
     zipPostal,
-    phone: cryptr.encrypt(phone),
+    phone,
     email,
     timezone,
     timezoneAbbrev,
     isAdmin: false
   });
 
-  if (address2) {
-    newMember.address2 = cryptr.encrypt(address2);
+  if (shippingSame) {
+    newMember.shipping.name = name;
+    newMember.shipping.address1 = address1;
+    newMember.shipping.address2 = address2;
+    newMember.shipping.city = city;
+    newMember.shipping.stateProv = stateProv;
+    newMember.shipping.country = country;
+    newMember.shipping.zipPostal = zipPostal;
+    newMember.shipping.phone = phone;
+    newMember.shipping.email = email;
+  } else {
+    newMember.shipping.name = shippingName;
+    newMember.shipping.address1 = shippingAddress1;
+    newMember.shipping.address2 = shippingAddress2;
+    newMember.shipping.city = shippingCity;
+    newMember.shipping.stateProv = shippingStateProv;
+    newMember.shipping.country = shippingCountry;
+    newMember.shipping.zipPostal = shippingZipPostal;
+    newMember.shipping.phone = shippingPhone;
+    newMember.shipping.email = shippingEmail;
   }
-  newMember.shipping.name = shippingName;
-  newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
-  if (shippingAddress2) {
-    newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
+
+  if (billingSame) {
+    newMember.billing.name = name;
+    newMember.billing.address1 = address1;
+    newMember.billing.address2 = address2;
+    newMember.billing.city = city;
+    newMember.billing.stateProv = stateProv;
+    newMember.billing.country = country;
+    newMember.billing.zipPostal = zipPostal;
+    newMember.billing.phone = phone;
+    newMember.billing.email = email;
+  } else {
+    newMember.billing.name = billingName;
+    newMember.billing.address1 = billingAddress1;
+    newMember.billing.address2 = billingAddress2;
+    newMember.billing.city = billingCity;
+    newMember.billing.stateProv = billingStateProv;
+    newMember.billing.country = billingCountry;
+    newMember.billing.zipPostal = billingZipPostal;
+    newMember.billing.phone = billingPhone;
+    newMember.billing.email = billingEmail;
   }
-  newMember.shipping.city = shippingCity;
-  newMember.shipping.stateProv = shippingStateProv;
-  newMember.shipping.country = shippingCountry;
-  newMember.shipping.zipPostal = shippingZipPostal;
-  newMember.shipping.phone = cryptr.encrypt(shippingPhone);
-  newMember.shipping.email = shippingEmail;
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 

@@ -5,7 +5,6 @@ const generator = require('generate-password');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const cryptr = require('../middleware/cryptr');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -58,20 +57,6 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  member.address1 = cryptr.decrypt(member.address1);
-  member.phone = cryptr.decrypt(member.phone);
-  if (member.address2) {
-    member.address2 = cryptr.decrypt(member.address2);
-  } else {
-    member.address2 = '';
-  }
-  member.shipping.address1 = cryptr.decrypt(member.shipping.address1);
-  if (member.shipping.address2) {
-    member.shipping.address2 = cryptr.decrypt(member.shipping.address2);
-  } else {
-    member.shipping.address2 = '';
-  }
-  member.shipping.phone = cryptr.decrypt(member.shipping.phone);
   return res.send({ member, teams });
 });
 
@@ -101,7 +86,17 @@ router.post('/register', [auth, admin], async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail
+    shippingEmail,
+    billingSame,
+    billingName,
+    billingAddress1,
+    billingAddress2,
+    billingCity,
+    billingStateProv,
+    billingCountry,
+    billingZipPostal,
+    billingPhone,
+    billingEmail
   } = req.body;
 
   const member = await Member.findOne({ email });
@@ -109,21 +104,18 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   const newMember = new Member({
     name,
-    address1: cryptr.encrypt(address1),
+    address1,
+    address2,
     city,
     stateProv,
     country,
     zipPostal,
-    phone: cryptr.encrypt(phone),
+    phone,
     email,
     timezone,
     timezoneAbbrev,
     isAdmin: false
   });
-
-  if (address2) {
-    newMember.address2 = cryptr.encrypt(address2);
-  }
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
   const password = generator.generate({ length: 10, numbers: true });
@@ -143,16 +135,36 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.shipping.email = newMember.email;
   } else {
     newMember.shipping.name = shippingName;
-    newMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
-    if (shippingAddress2) {
-      newMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
-    }
+    newMember.shipping.address1 = shippingAddress1;
+    newMember.shipping.address2 = shippingAddress2;
     newMember.shipping.city = shippingCity;
     newMember.shipping.stateProv = shippingStateProv;
     newMember.shipping.country = shippingCountry;
     newMember.shipping.zipPostal = shippingZipPostal;
-    newMember.shipping.phone = cryptr.encrypt(shippingPhone);
+    newMember.shipping.phone = shippingPhone;
     newMember.shipping.email = shippingEmail;
+  }
+
+  if (billingSame) {
+    newMember.billing.name = newMember.name;
+    newMember.billing.address1 = newMember.address1;
+    newMember.billing.address2 = newMember.address2;
+    newMember.billing.city = newMember.city;
+    newMember.billing.stateProv = newMember.stateProv;
+    newMember.billing.country = newMember.country;
+    newMember.billing.zipPostal = newMember.zipPostal;
+    newMember.billing.phone = newMember.phone;
+    newMember.billing.email = newMember.email;
+  } else {
+    newMember.billing.name = billingName;
+    newMember.billing.address1 = billingAddress1;
+    newMember.billing.address2 = billingAddress2;
+    newMember.billing.city = billingCity;
+    newMember.billing.stateProv = billingStateProv;
+    newMember.billing.country = billingCountry;
+    newMember.billing.zipPostal = billingZipPostal;
+    newMember.billing.phone = billingPhone;
+    newMember.billing.email = billingEmail;
   }
 
   await newMember.save();
@@ -184,7 +196,17 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail
+    shippingEmail,
+    billingSame,
+    billingName,
+    billingAddress1,
+    billingAddress2,
+    billingCity,
+    billingStateProv,
+    billingCountry,
+    billingZipPostal,
+    billingPhone,
+    billingEmail
   } = req.body;
 
   const updateMember = await Member.findById(req.params.id);
@@ -192,42 +214,58 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   updateMember.name = name;
-  updateMember.address1 = cryptr.encrypt(address1);
-  if (address2) {
-    updateMember.address2 = cryptr.encrypt(address2);
-  }
+  updateMember.address1 = address1;
+  updateMember.address2 = address2;
   updateMember.city = city;
   updateMember.stateProv = stateProv;
   updateMember.country = country;
   updateMember.zipPostal = zipPostal;
-  updateMember.phone = cryptr.encrypt(phone);
+  updateMember.phone = phone;
   updateMember.timezone = timezone;
   updateMember.timezoneAbbrev = timezoneAbbrev;
 
   if (shippingSame) {
     updateMember.shipping.name = updateMember.name;
-    updateMember.shipping.address1 = cryptr.encrypt(address1);
-    if (address2) {
-      updateMember.shipping.address2 = cryptr.encrypt(address2);
-    }
+    updateMember.shipping.address1 = address1;
+    updateMember.shipping.address2 = address2;
     updateMember.shipping.city = updateMember.city;
     updateMember.shipping.stateProv = updateMember.stateProv;
     updateMember.shipping.country = updateMember.country;
     updateMember.shipping.zipPostal = updateMember.zipPostal;
-    updateMember.shipping.phone = cryptr.encrypt(phone);
+    updateMember.shipping.phone = updateMember.phone; // DOUBLE CHECK THIS WORKS
     updateMember.shipping.email = updateMember.email;
   } else {
     updateMember.shipping.name = shippingName;
-    updateMember.shipping.address1 = cryptr.encrypt(shippingAddress1);
-    if (shippingAddress2) {
-      updateMember.shipping.address2 = cryptr.encrypt(shippingAddress2);
-    }
+    updateMember.shipping.address1 = shippingAddress1;
+    updateMember.shipping.address2 = shippingAddress2;
     updateMember.shipping.city = shippingCity;
     updateMember.shipping.stateProv = shippingStateProv;
     updateMember.shipping.country = shippingCountry;
     updateMember.shipping.zipPostal = shippingZipPostal;
-    updateMember.shipping.phone = cryptr.encrypt(shippingPhone);
+    updateMember.shipping.phone = shippingPhone;
     updateMember.shipping.email = shippingEmail;
+  }
+
+  if (billingSame) {
+    updateMember.billing.name = updateMember.name;
+    updateMember.billing.address1 = address1;
+    updateMember.billing.address2 = address2;
+    updateMember.billing.city = updateMember.city;
+    updateMember.billing.stateProv = updateMember.stateProv;
+    updateMember.billing.country = updateMember.country;
+    updateMember.billing.zipPostal = updateMember.zipPostal;
+    updateMember.billing.phone = updateMember.phone; // DOUBLE CHECK THIS WORKS
+    updateMember.billing.email = updateMember.email;
+  } else {
+    updateMember.billing.name = billingName;
+    updateMember.billing.address1 = billingAddress1;
+    updateMember.billing.address2 = billingAddress2;
+    updateMember.billing.city = billingCity;
+    updateMember.billing.stateProv = billingStateProv;
+    updateMember.billing.country = billingCountry;
+    updateMember.billing.zipPostal = billingZipPostal;
+    updateMember.billing.phone = billingPhone;
+    updateMember.billing.email = billingEmail;
   }
 
   await updateMember.save();

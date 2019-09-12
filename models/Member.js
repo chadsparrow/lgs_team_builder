@@ -71,6 +71,50 @@ const MemberSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    billing: {
+      name: {
+        type: String,
+        minlength: 5,
+        uppercase: true,
+        trim: true
+      },
+      address1: {
+        type: String,
+        uppercase: true
+      },
+      address2: {
+        type: String,
+        uppercase: true
+      },
+      city: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      stateProv: {
+        type: String,
+        uppercase: true,
+        minlength: 2,
+        trim: true
+      },
+      country: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      zipPostal: {
+        type: String,
+        uppercase: true,
+        minlength: 5,
+        trim: true
+      },
+      phone: {
+        type: String
+      },
+      email: {
+        type: String
+      }
+    },
     shipping: {
       name: {
         type: String,
@@ -184,6 +228,7 @@ function validateNewRegister(member) {
       .required(),
     timezone: Joi.string().trim(),
     timezoneAbbrev: Joi.string().trim(),
+    shippingSame: Joi.boolean(),
     shippingName: Joi.string()
       .required()
       .trim(),
@@ -207,6 +252,32 @@ function validateNewRegister(member) {
       .required()
       .trim(),
     shippingEmail: Joi.string()
+      .required()
+      .email(),
+    billingSame: Joi.boolean(),
+    billingName: Joi.string()
+      .required()
+      .trim(),
+    billingAddress1: Joi.string()
+      .required()
+      .trim(),
+    billingAddress2: Joi.string().trim(),
+    billingCity: Joi.string()
+      .required()
+      .trim(),
+    billingStateProv: Joi.string()
+      .required()
+      .trim(),
+    billingCountry: Joi.string()
+      .required()
+      .trim(),
+    billingZipPostal: Joi.string()
+      .required()
+      .trim(),
+    billingPhone: Joi.string()
+      .required()
+      .trim(),
+    billingEmail: Joi.string()
       .required()
       .email()
   };
@@ -249,6 +320,7 @@ function validateNewMember(member) {
       .required(),
     timezone: Joi.string().trim(),
     timezoneAbbrev: Joi.string().trim(),
+    shippingSame: Joi.boolean(),
     shippingName: Joi.string()
       .required()
       .trim(),
@@ -272,6 +344,32 @@ function validateNewMember(member) {
       .required()
       .trim(),
     shippingEmail: Joi.string()
+      .required()
+      .email(),
+    billingSame: Joi.boolean(),
+    billingName: Joi.string()
+      .required()
+      .trim(),
+    billingAddress1: Joi.string()
+      .required()
+      .trim(),
+    billingAddress2: Joi.string().trim(),
+    billingCity: Joi.string()
+      .required()
+      .trim(),
+    billingStateProv: Joi.string()
+      .required()
+      .trim(),
+    billingCountry: Joi.string()
+      .required()
+      .trim(),
+    billingZipPostal: Joi.string()
+      .required()
+      .trim(),
+    billingPhone: Joi.string()
+      .required()
+      .trim(),
+    billingEmail: Joi.string()
       .required()
       .email()
   };
@@ -375,6 +473,79 @@ function validateUpdateMember(member) {
         .required()
     }),
     shippingEmail: Joi.when('shippingSame', {
+      is: true,
+      then: Joi.string()
+        .trim()
+        .allow('', null)
+        .email(),
+      otherwise: Joi.string()
+        .trim()
+        .email()
+        .required()
+    }),
+    billingSame: Joi.boolean().required(),
+    billingName: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('name'),
+      otherwise: Joi.string()
+        .min(5)
+        .max(50)
+        .required()
+        .trim()
+    }),
+    billingAddress1: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('address1'),
+      otherwise: Joi.string()
+        .min(10)
+        .required()
+        .trim()
+    }),
+    billingAddress2: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('address2'),
+      otherwise: Joi.string()
+        .trim()
+        .allow('', null)
+    }),
+    billingCity: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('city'),
+      otherwise: Joi.string()
+        .required()
+        .trim()
+    }),
+    billingStateProv: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('stateProv'),
+      otherwise: Joi.string()
+        .min(2)
+        .required()
+        .trim()
+    }),
+    billingCountry: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('country'),
+      otherwise: Joi.string()
+        .min(2)
+        .required()
+        .trim()
+    }),
+    billingZipPostal: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('zipPostal'),
+      otherwise: Joi.string()
+        .required()
+        .trim()
+    }),
+    billingPhone: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('phone'),
+      otherwise: Joi.string()
+        .trim()
+        .required()
+    }),
+    billingEmail: Joi.when('billingSame', {
       is: true,
       then: Joi.string()
         .trim()
