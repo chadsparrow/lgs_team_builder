@@ -2,7 +2,6 @@
 const mongoose = require('mongoose');
 const config = require('config');
 const bcrypt = require('bcryptjs');
-const cryptr = require('../middleware/cryptr');
 const logger = require('../middleware/logger');
 const { Member } = require('../models/Member');
 
@@ -27,21 +26,21 @@ module.exports = async function(DB_HOST) {
     const rootEmail = config.get('app.rootEmail');
     const newAdmin = new Member({
       name: 'rootuser',
-      address1: cryptr.encrypt('123 Any Street'),
+      address1: '123 Any Street',
       city: 'city',
       stateProv: 'state_prov',
       country: 'country',
       zipPostal: 'zip_postal',
-      phone: cryptr.encrypt('1111111111'),
+      phone: '1111111111',
       email: rootEmail,
       shipping: {
         name: 'rootuser',
-        address1: cryptr.encrypt('123 Any Street'),
+        address1: '123 Any Street',
         city: 'city',
         stateProv: 'stateProv',
         country: 'country',
         zipPostal: 'zipPostal',
-        phone: cryptr.encrypt('1111111111'),
+        phone: '1111111111',
         email: rootEmail
       },
       isAdmin: true

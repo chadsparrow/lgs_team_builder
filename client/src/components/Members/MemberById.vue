@@ -44,9 +44,11 @@
         </div>
       </div>
       <div class="col infoSection" v-if="name">
-        <h6 class="bg-secondary">Member Information</h6>
-        <form>
-          <div class="row">
+        <form class="mb-4">
+          <div class="section-header mb-2 bg-secondary">
+            <span class="text-white">Contact Info</span>
+          </div>
+          <div class="row mb-3">
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input
@@ -87,7 +89,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="city">City</label>
               <input
                 id="city"
@@ -97,7 +99,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="stateProv">State/Province</label>
               <input
                 id="stateProv"
@@ -107,7 +109,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="country">Country</label>
               <input
                 id="country"
@@ -138,7 +140,104 @@
               />
             </div>
           </div>
-          <h6 class="mt-4 bg-secondary">Member Shipping Details</h6>
+          <div class="section-header my-2 bg-secondary">
+            <span class="text-white">Billing Details</span>
+          </div>
+          <div class="row mb-3">
+            <div class="form-group col-sm-6">
+              <label for="billingName">Billing Name</label>
+              <input
+                id="billingName"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.name"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="billingName">Billing Email</label>
+              <input
+                id="billingEmail"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.email"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="billingAddress1">Billing Address 1</label>
+              <input
+                id="billingAddress1"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.address1"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="billingAddress2">Billing Address 2</label>
+              <input
+                id="billingAddress2"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.address2"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="billingCity">Billing City</label>
+              <input
+                id="billingCity"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.city"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="billingStateProv">Billing State/Province</label>
+              <input
+                id="billingStateProv"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.stateProv"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="billingCountry">Billing Country</label>
+              <input
+                id="billingCountry"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.country"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="billingZipPostal">Billing Zip/Postal Code</label>
+              <input
+                id="billingZipPostal"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.zipPostal"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="billingPhone">Billing Phone</label>
+              <input
+                id="billingPhone"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="billing.phone"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="section-header my-2 bg-secondary">
+            <span class="text-white">Shipping Details</span>
+          </div>
           <div class="row mb-4">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
@@ -180,7 +279,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingCity">Shipping City</label>
               <input
                 id="shippingCity"
@@ -190,7 +289,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingStateProv">Shipping State/Province</label>
               <input
                 id="shippingStateProv"
@@ -200,7 +299,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
               <label for="shippingCountry">Shipping Country</label>
               <input
                 id="shippingCountry"
@@ -247,22 +346,23 @@ export default {
   name: 'MemberById',
   data() {
     return {
-      id: undefined,
-      avatarUrl: undefined,
-      timezone: undefined,
-      timezoneAbbrev: undefined,
-      createdAt: undefined,
+      id: '',
+      avatarUrl: '',
+      timezone: '',
+      timezoneAbbrev: '',
+      createdAt: '',
       isAdmin: false,
       name: '',
-      email: undefined,
-      address1: undefined,
-      address2: undefined,
-      city: undefined,
-      stateProv: undefined,
-      country: undefined,
-      zipPostal: undefined,
-      phone: undefined,
-      shipping: undefined,
+      email: '',
+      address1: '',
+      address2: '',
+      city: '',
+      stateProv: '',
+      country: '',
+      zipPostal: '',
+      phone: '',
+      shipping: {},
+      billing: {},
       teams: []
     };
   },
@@ -303,7 +403,8 @@ export default {
         country,
         zipPostal,
         phone,
-        shipping
+        shipping,
+        billing
       } = res.data.member;
 
       this.teams = res.data.teams;
@@ -324,6 +425,7 @@ export default {
       this.zipPostal = zipPostal;
       this.phone = phone;
       this.shipping = shipping;
+      this.billing = billing;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
@@ -336,63 +438,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.vue-avatar--wrapper {
-  border-radius: 1rem !important;
-}
-
-.sidebar {
-  flex: 0 0 255px;
-
-  span {
-    font-size: 0.8em;
-  }
-
-  .placeholderImg {
-    border-radius: 1rem;
-    background-color: white;
-    width: 225px;
-    height: 225px;
-  }
-
-  .list-group {
-    width: 100%;
-    overflow: auto;
-    max-height: 250px;
-
-    .list-group-item {
-      height: 35px;
-      padding: 5px 15px;
-      &:hover {
-        background-color: #17a2b8;
-        color: white;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
-.infoSection {
-  form {
-    max-width: 800px;
-  }
-  .form-group {
-    margin-top: 1px;
-    margin-bottom: 1px;
-  }
-
-  h6 {
-    max-width: 800px;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 4px;
-  }
-}
-
-@media (max-width: 575px) {
-  .sidebar {
-    flex: none;
-  }
-}
-</style>

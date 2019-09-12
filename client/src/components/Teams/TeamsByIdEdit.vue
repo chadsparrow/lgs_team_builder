@@ -612,7 +612,6 @@ export default {
       }
 
       if (this.bulkUseAboveDetails) {
-        console.log(target);
         if (target === 'contactEmail') {
           this.bulkShipping.email = this.mainContact.email;
         } else if (target === 'contactname') {

@@ -145,4 +145,61 @@ label {
   color: #999;
   margin-left: 4px;
 }
+
+.vue-avatar--wrapper {
+  border-radius: 1rem !important;
+}
+
+.sidebar {
+  flex: 0 0 255px;
+
+  span {
+    font-size: 0.8em;
+  }
+
+  .placeholderImg {
+    border-radius: 1rem;
+    background-color: white;
+    width: 225px;
+    height: 225px;
+  }
+
+  .list-group {
+    width: 100%;
+    overflow: auto;
+    max-height: 250px;
+
+    .list-group-item {
+      height: 35px;
+      padding: 5px 15px;
+      &:hover {
+        background-color: #17a2b8;
+        color: white;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.infoSection {
+  form {
+    max-width: 800px;
+  }
+  .form-group {
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
+
+  .section-header {
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 575px) {
+  .sidebar {
+    flex: none;
+  }
+}
 </style>

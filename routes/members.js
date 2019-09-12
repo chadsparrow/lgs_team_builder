@@ -49,7 +49,7 @@ router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
 // GET /api/members/details/:id
 router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
-    '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping avatarUrl isAdmin createdAt'
+    '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping billing avatarUrl isAdmin createdAt'
   );
 
   const teams = await Team.find({ members: req.params.id }).select('name _id');
