@@ -37,6 +37,8 @@ export default {
   grid-template-areas:
     'nav topnav'
     'nav content';
+
+  background-image: linear-gradient(to bottom right, white, #d6d6d6);
 }
 
 .mainContent {

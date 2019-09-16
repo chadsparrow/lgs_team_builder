@@ -104,12 +104,6 @@ html {
   opacity: 0;
 }
 
-body {
-  height: 100vh;
-  width: 100vw;
-  background-image: linear-gradient(to bottom right, white, #d6d6d6);
-}
-
 tr:hover {
   cursor: pointer;
 }
