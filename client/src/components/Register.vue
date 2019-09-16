@@ -1,10 +1,10 @@
 <template>
-  <div class="container mt-4 mb-5">
+  <div class="container my-5">
     <h1 class="mb-4 text-center">Become a Team Builder</h1>
     <form class="mb-4">
       <div class="section-header bg-secondary mb-2">Contact Information</div>
       <div class="row">
-        <div class="form-group col-sm-12">
+        <div class="form-group col-sm-6">
           <label for="email">Email/Username</label>
           <input
             id="email"
@@ -16,6 +16,16 @@
           />
         </div>
         <div class="form-group col-sm-6">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            class="form-control form-control-sm"
+            v-model="password"
+            ref="password"
+          />
+        </div>
+        <div class="form-group col-sm-12">
           <label for="name">Name</label>
           <input
             id="name"
@@ -26,19 +36,7 @@
             @change="changeDetails"
           />
         </div>
-        <div class="form-group col-sm-6">
-          <label for="phone">Phone</label>
-          <VuePhoneNumberInput
-            v-model="phone"
-            id="phone"
-            :dark="false"
-            default-country-code="CA"
-            ref="phone"
-            :clearable="true"
-            :no-use-browser-locale="false"
-            @update="copyPhone"
-          />
-        </div>
+
         <div class="form-group col-sm-6">
           <label for="address1">Address 1</label>
           <input
@@ -90,6 +88,7 @@
             type="text"
             class="form-control form-control-sm"
             v-model="country"
+            maxlength="2"
             ref="country"
             @change="changeDetails"
           />
@@ -103,6 +102,19 @@
             v-model="zipPostal"
             ref="zipPostal"
             @change="changeDetails"
+          />
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="phone">Phone</label>
+          <VuePhoneNumberInput
+            v-model="phone"
+            id="phone"
+            :dark="false"
+            :preferred-countries="['US', 'CA']"
+            ref="phone"
+            :clearable="true"
+            :no-use-browser-locale="false"
+            @update="copyPhone"
           />
         </div>
       </div>
@@ -195,13 +207,14 @@
           <input
             id="billingCountry"
             type="text"
+            maxlength="2"
             class="form-control form-control-sm"
             v-model="billingCountry"
             :readonly="billingSame"
             ref="billingCountry"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-6">
           <label for="billingZipPostal">Billing Zip/Postal Code</label>
           <input
             id="billingZipPostal"
@@ -227,7 +240,7 @@
             v-model="billingPhone"
             id="billingPhone"
             :dark="false"
-            default-country-code="CA"
+            :preferred-countries="['US', 'CA']"
             ref="billingPhone"
             :clearable="true"
             :no-use-browser-locale="false"
@@ -325,12 +338,13 @@
             id="shippingCountry"
             type="text"
             class="form-control form-control-sm"
+            maxlength="2"
             v-model="shippingCountry"
             :readonly="shippingSame"
             ref="shippingCountry"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-6">
           <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
           <input
             id="shippingZipPostal"
@@ -356,7 +370,7 @@
             v-model="shippingPhone"
             id="shippingPhone"
             :dark="false"
-            default-country-code="CA"
+            :preferred-countries="['US', 'CA']"
             ref="shippingPhone"
             :clearable="true"
             :no-use-browser-locale="false"
@@ -364,9 +378,9 @@
           />
         </div>
       </div>
-      <div class="row mb-4">
+      <div class="row mb-5">
         <div class="col-sm-8">
-          <button class="btn btn-block btn-info mb-2" @click.prevent="register">Register</button>
+          <button class="btn btn-block btn-info" @click.prevent="register">Register</button>
         </div>
         <div class="col-sm-4">
           <router-link to="/login" class="btn btn-block btn-danger">Cancel</router-link>
@@ -424,41 +438,43 @@ export default {
   },
   methods: {
     register: async function() {
-      const member = {
-        email: this.email,
-        name: this.name,
-        address1: this.address1,
-        address2: this.address2,
-        city: this.city,
-        stateProv: this.stateProv,
-        country: this.country,
-        zipPostal: this.zipPostal,
-        phone: this.phone,
-        timezone: this.timezone,
-        timezoneAbbrev: this.timezoneAbbrev,
-        shippingSame: this.shippingSame,
-        shippingName: this.shippingName,
-        shippingAddress1: this.shippingAddress1,
-        shippingAddress2: this.shippingAddress2,
-        shippingCity: this.shippingCity,
-        shippingStateProv: this.shippingStateProv,
-        shippingCountry: this.shippingCountry,
-        shippingZipPostal: this.shippingZipPostal,
-        shippingPhone: this.shippingPhone,
-        shippingEmail: this.shippingEmail,
-        billingSame: this.billingSame,
-        billingName: this.billingName,
-        billingAddress1: this.billingAddress1,
-        billingAddress2: this.billingAddress2,
-        billingCity: this.billingCity,
-        billingStateProv: this.billingStateProv,
-        billingCountry: this.billingCountry,
-        billingZipPostal: this.billingZipPostal,
-        billingPhone: this.billingPhone,
-        billingEmail: this.billingEmail
-      };
-
       try {
+        await this.geoTimezone();
+        const member = {
+          email: this.email,
+          password: this.password,
+          name: this.name,
+          address1: this.address1,
+          address2: this.address2,
+          city: this.city,
+          stateProv: this.stateProv,
+          country: this.country,
+          zipPostal: this.zipPostal,
+          phone: this.phone,
+          timezone: this.timezone,
+          timezoneAbbrev: this.timezoneAbbrev,
+          shippingSame: this.shippingSame,
+          shippingName: this.shippingName,
+          shippingAddress1: this.shippingAddress1,
+          shippingAddress2: this.shippingAddress2,
+          shippingCity: this.shippingCity,
+          shippingStateProv: this.shippingStateProv,
+          shippingCountry: this.shippingCountry,
+          shippingZipPostal: this.shippingZipPostal,
+          shippingPhone: this.shippingPhone,
+          shippingEmail: this.shippingEmail,
+          billingSame: this.billingSame,
+          billingName: this.billingName,
+          billingAddress1: this.billingAddress1,
+          billingAddress2: this.billingAddress2,
+          billingCity: this.billingCity,
+          billingStateProv: this.billingStateProv,
+          billingCountry: this.billingCountry,
+          billingZipPostal: this.billingZipPostal,
+          billingPhone: this.billingPhone,
+          billingEmail: this.billingEmail
+        };
+
         await this.$store.dispatch('register', member);
         this.$router.push({ name: 'login' });
         this.$toasted.success('You are now registered - go ahead and login!');
@@ -485,7 +501,6 @@ export default {
         this.shippingZipPostal = this.zipPostal;
         this.shippingPhone = this.phone;
         this.shippingEmail = this.email;
-        this.geoTimezone();
       } else {
         this.shippingName = '';
         this.shippingAddress1 = '';
@@ -496,7 +511,6 @@ export default {
         this.shippingZipPostal = '';
         this.shippingPhone = '';
         this.shippingEmail = '';
-        this.geoTimezone();
       }
     },
     copyMembertoBilling: function() {
@@ -510,7 +524,6 @@ export default {
         this.billingZipPostal = this.zipPostal;
         this.billingPhone = this.phone;
         this.billingEmail = this.email;
-        this.geoTimezone();
       } else {
         this.billingName = '';
         this.billingAddress1 = '';
@@ -521,15 +534,14 @@ export default {
         this.billingZipPostal = '';
         this.billingPhone = '';
         this.billingEmail = '';
-        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
       if (
-        target === 'shippingCountry' ||
         target === 'shippingCity' ||
-        target === 'shippingStateProv'
+        target === 'shippingStateProv' ||
+        target === 'shippingCountry'
       ) {
         this.geoTimezone();
       }
@@ -550,15 +562,12 @@ export default {
             break;
           case 'city':
             this.shippingCity = this.city;
-            this.geoTimezone();
             break;
           case 'stateProv':
             this.shippingStateProv = this.stateProv;
-            this.geoTimezone();
             break;
           case 'country':
             this.shippingCountry = this.country;
-            this.geoTimezone();
             break;
           case 'zipPostal':
             this.shippingZipPostal = this.zipPostal;
@@ -581,15 +590,12 @@ export default {
             break;
           case 'city':
             this.billingCity = this.city;
-            this.geoTimeZone();
             break;
           case 'stateProv':
             this.billingStateProv = this.stateProv;
-            this.geoTimeZone();
             break;
           case 'country':
             this.billingCountry = this.country;
-            this.geoTimeZone();
             break;
           case 'zipPostal':
             this.billingZipPostal = this.zipPostal;
@@ -597,7 +603,7 @@ export default {
         }
       }
 
-      const codeCountries = this.$refs.contactPhone.codesCountries;
+      const codeCountries = this.$refs.phone.codesCountries;
       let valid = false;
       if (target === 'country' && this.country) {
         let countryCode = this.country;
@@ -610,6 +616,7 @@ export default {
 
         if (valid) {
           this.$refs.phone.countryCode = countryCode;
+          this.$refs.zipPostal.focus();
         } else {
           this.country = '';
           this.$refs.country.focus();
@@ -628,8 +635,9 @@ export default {
 
         if (valid) {
           this.$refs.billingPhone.countryCode = countryCode;
+          this.$refs.billingZipPostal.focus();
         } else {
-          this.country = '';
+          this.billingCountry = '';
           this.$refs.billingCountry.focus();
           this.$toasted.error('Billing Country Code Invalid');
         }
@@ -646,10 +654,11 @@ export default {
 
         if (valid) {
           this.$refs.shippingPhone.countryCode = countryCode;
+          this.$refs.shippingZipPostal.focus();
         } else {
-          this.country = '';
-          this.$refs.shippingCountry.focus();
-          this.$toasted.error('Shipping Country Code Invalid');
+          this.shippingCountry = '';
+          this.$refs.shipingCountry.focus();
+          this.$toasted.error('Billing Country Code Invalid');
         }
       }
     },
@@ -663,7 +672,11 @@ export default {
       }
     },
     geoTimezone: async function() {
-      if (this.shippingStateProv && this.shippingCity && this.shippingCountry) {
+      if (
+        this.shippingCity !== '' &&
+        this.shippingStateProv !== '' &&
+        this.shippingCountry !== ''
+      ) {
         const location = await this.$http.get(
           `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.shippingCity} ${this.shippingStateProv} ${this.shippingCountry}"},"options":{"thumbMaps":false}}`
         );
@@ -680,6 +693,9 @@ export default {
           ) {
             this.timezone = response.data.zoneName;
             this.timezoneAbbrev = response.data.abbreviation;
+          } else {
+            this.timezone = '';
+            this.timezoneAbbrev = '';
           }
         }
       } else {
@@ -697,8 +713,8 @@ export default {
 }
 
 .form-group {
-  margin-top: 1px;
-  margin-bottom: 1px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .section-header {

@@ -322,8 +322,12 @@ function validateNewMember(member) {
     phone: Joi.string()
       .trim()
       .required(),
-    timezone: Joi.string().trim(),
-    timezoneAbbrev: Joi.string().trim(),
+    timezone: Joi.string()
+      .allow('', null)
+      .trim(),
+    timezoneAbbrev: Joi.string()
+      .allow('', null)
+      .trim(),
     shippingSame: Joi.boolean(),
     shippingName: Joi.string()
       .required()
@@ -416,8 +420,12 @@ function validateUpdateMember(member) {
     phone: Joi.string()
       .required()
       .trim(),
-    timezone: Joi.string().trim(),
-    timezoneAbbrev: Joi.string().trim(),
+    timezone: Joi.string()
+      .allow('', null)
+      .trim(),
+    timezoneAbbrev: Joi.string()
+      .allow('', null)
+      .trim(),
     shippingSame: Joi.boolean().required(),
     shippingName: Joi.when('shippingSame', {
       is: true,

@@ -19,7 +19,7 @@
             <small class="col-sm-12 text-info">Member Since:</small>
             <span class="col-sm-12">
               {{
-              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:ss a - z')
+              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </span>
           </div>

@@ -127,7 +127,8 @@
                 v-model="phone"
                 id="phone"
                 :dark="false"
-                default-country-code="CA"
+                :default-country-code="country || null"
+                :preferred-countries="['US', 'CA']"
                 ref="phone"
                 :clearable="true"
                 :no-use-browser-locale="false"
@@ -227,6 +228,7 @@
                 class="form-control form-control-sm"
                 v-model="billing.country"
                 ref="billingCountry"
+                @change="changeDetails"
                 :readonly="billingSame"
               />
             </div>
@@ -258,7 +260,8 @@
                 v-model="billing.phone"
                 id="billingPhone"
                 :dark="false"
-                default-country-code="CA"
+                :default-country-code="country || null"
+                :preferred-countries="['US', 'CA']"
                 ref="billingPhone"
                 :clearable="true"
                 :no-use-browser-locale="false"
@@ -335,6 +338,7 @@
                 class="form-control form-control-sm"
                 v-model="shipping.city"
                 ref="shippingCity"
+                @change="changeDetails"
                 :readonly="shippingSame"
               />
             </div>
@@ -346,6 +350,7 @@
                 class="form-control form-control-sm"
                 v-model="shipping.stateProv"
                 ref="shippingStateProv"
+                @change="changeDetails"
                 :readonly="shippingSame"
               />
             </div>
@@ -357,6 +362,7 @@
                 class="form-control form-control-sm"
                 v-model="shipping.country"
                 ref="shippingCountry"
+                @change="changeDetails"
                 :readonly="shippingSame"
               />
             </div>
@@ -388,7 +394,7 @@
                 v-model="shipping.phone"
                 id="shippingPhone"
                 :dark="false"
-                default-country-code="CA"
+                :preferred-countries="['US', 'CA']"
                 ref="shippingPhone"
                 :clearable="true"
                 :no-use-browser-locale="false"
@@ -607,11 +613,75 @@ export default {
           this.billing.zipPostal = this.zipPostal;
         }
       }
+
+      const codeCountries = this.$refs.phone.codesCountries;
+      let valid = false;
+      let countryCode = '';
+
+      if (target === 'country' && this.country) {
+        countryCode = this.country;
+        countryCode = countryCode.toUpperCase();
+        codeCountries.forEach(country => {
+          if (country.iso2 === countryCode) {
+            valid = true;
+          }
+        });
+
+        if (valid) {
+          this.$refs.phone.countryCode = countryCode;
+          this.$refs.zipPostal.focus();
+        } else {
+          this.country = '';
+          this.$refs.country.focus();
+          this.$toasted.error('Contact Country Code Invalid');
+        }
+      }
+
+      if (target === 'billingCountry' && this.billing.country) {
+        valid = false;
+        countryCode = this.billing.country;
+        countryCode = countryCode.toUpperCase();
+        codeCountries.forEach(country => {
+          if (country.iso2 === countryCode) {
+            valid = true;
+          }
+        });
+
+        if (valid) {
+          this.$refs.billingPhone.countryCode = countryCode;
+          this.$refs.billingZipPostal.focus();
+        } else {
+          this.billing.country = '';
+          this.$refs.billingCountry.focus();
+          this.$toasted.error('Billing Country Code Invalid');
+        }
+      }
+
+      if (target === 'shippingCountry' && this.shipping.country) {
+        valid = false;
+        countryCode = this.shipping.country;
+        countryCode = countryCode.toUpperCase();
+        codeCountries.forEach(country => {
+          if (country.iso2 === countryCode) {
+            valid = true;
+          }
+        });
+
+        if (valid) {
+          this.$refs.shippingPhone.countryCode = countryCode;
+          this.$refs.shippingZipPostal.focus();
+        } else {
+          this.shipping.country = '';
+          this.$refs.shippingCountry.focus();
+          this.$toasted.error('Shipping Country Code Invalid');
+        }
+      }
     },
     copyPhone: function(event) {
       if (this.shippingSame && event.phoneNumber) {
         this.shipping.phone = event.phoneNumber;
       }
+
       if (this.billingSame && event.phoneNumber) {
         this.billing.phone = event.phoneNumber;
       }
@@ -630,10 +700,8 @@ export default {
           zipPostal: this.zipPostal,
           phone: this.phone
         };
-        this.geoTimezone();
       } else {
         this.billing = this.backupBilling;
-        this.geoTimezone();
       }
     },
     copyContacttoShipping: function() {
@@ -674,6 +742,9 @@ export default {
           ) {
             this.timezone = response.data.zoneName;
             this.timezoneAbbrev = response.data.abbreviation;
+          } else {
+            this.timezone = '';
+            this.timezoneAbbrev = '';
           }
         }
       }
