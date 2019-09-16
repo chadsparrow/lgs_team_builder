@@ -235,7 +235,9 @@ function validateNewRegister(member) {
     shippingAddress1: Joi.string()
       .required()
       .trim(),
-    shippingAddress2: Joi.string().trim(),
+    shippingAddress2: Joi.string()
+      .allow('', null)
+      .trim(),
     shippingCity: Joi.string()
       .required()
       .trim(),
@@ -261,7 +263,9 @@ function validateNewRegister(member) {
     billingAddress1: Joi.string()
       .required()
       .trim(),
-    billingAddress2: Joi.string().trim(),
+    billingAddress2: Joi.string()
+      .allow('', null)
+      .trim(),
     billingCity: Joi.string()
       .required()
       .trim(),
@@ -327,7 +331,9 @@ function validateNewMember(member) {
     shippingAddress1: Joi.string()
       .required()
       .trim(),
-    shippingAddress2: Joi.string().trim(),
+    shippingAddress2: Joi.string()
+      .allow('', null)
+      .trim(),
     shippingCity: Joi.string()
       .required()
       .trim(),
@@ -353,7 +359,9 @@ function validateNewMember(member) {
     billingAddress1: Joi.string()
       .required()
       .trim(),
-    billingAddress2: Joi.string().trim(),
+    billingAddress2: Joi.string()
+      .allow('', null)
+      .trim(),
     billingCity: Joi.string()
       .required()
       .trim(),

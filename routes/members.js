@@ -49,7 +49,7 @@ router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
 // GET /api/members/details/:id
 router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
-    '_id name email address1 address2 city stateProv country zipPostal phone timezone timezoneAbbrev shipping billing avatarUrl isAdmin createdAt'
+    '-__v -updatedAt -password -notifications'
   );
 
   const teams = await Team.find({ members: req.params.id }).select('name _id');
@@ -119,7 +119,6 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
   const password = generator.generate({ length: 10, numbers: true });
-  // console.log(password);
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 

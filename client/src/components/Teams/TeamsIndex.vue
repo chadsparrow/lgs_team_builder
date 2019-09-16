@@ -22,7 +22,7 @@
         <i class="fas fa-plus"></i> Reserve Team Name
       </router-link>
     </div>
-    <hr>
+    <hr />
     <span
       v-if="currentTeams && currentTeams.length === 0 && member && member.isAdmin"
     >No Teams Found</span>
@@ -40,8 +40,8 @@
           </tr>
           <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
             <th scope="row">{{ team.name }}</th>
-            <td>{{ team.adminId }}</td>
-            <td>{{ team.mainContact.name }}</td>
+            <td>{{ team.adminId.name }}</td>
+            <td>{{ team.mainContact.memberId.name }}</td>
             <td>{{ team.members.length }}</td>
           </tr>
         </tbody>

@@ -15,7 +15,7 @@
             <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
             <span class="col-sm-12">{{ timezone }}</span>
           </div>
-          <div class="row p-1">
+          <div class="row p-1" v-if="createdAt && timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
               {{
@@ -334,7 +334,13 @@ export default {
 
       this.id = _id;
       this.name = name;
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      this.timezone = timezone;
+      this.timezoneAbbrev = timezoneAbbrev;
       this.logo = logo;
+      this.createdAt = createdAt;
+
+      this.members = members;
       if (adminId) {
         this.adminId = adminId;
       }
@@ -342,35 +348,14 @@ export default {
       if (managerId) {
         this.managerId = managerId;
       }
+
       if (mainContact) {
-        this.mainContact.id = mainContact.memberId;
-        this.mainContact.name = mainContact.name;
-        this.mainContact.address1 = mainContact.address1;
-        this.mainContact.address2 = mainContact.address2;
-        this.mainContact.city = mainContact.city;
-        this.mainContact.stateProv = mainContact.stateProv;
-        this.mainContact.country = mainContact.country;
-        this.mainContact.zipPostal = mainContact.zipPostal;
-        this.mainContact.phone = mainContact.phone;
-        this.mainContact.email = mainContact.email;
+        this.mainContact = mainContact.memberId;
       }
+
       if (bulkShipping) {
-        this.bulkShipping.id = bulkShipping.memberId;
-        this.bulkShipping.name = bulkShipping.name;
-        this.bulkShipping.address1 = bulkShipping.address1;
-        this.bulkShipping.address2 = bulkShipping.address2;
-        this.bulkShipping.city = bulkShipping.city;
-        this.bulkShipping.stateProv = bulkShipping.stateProv;
-        this.bulkShipping.country = bulkShipping.country;
-        this.bulkShipping.zipPostal = bulkShipping.zipPostal;
-        this.bulkShipping.phone = bulkShipping.phone;
-        this.bulkShipping.email = bulkShipping.email;
+        this.bulkShipping = bulkShipping.memberId;
       }
-      this.members = members;
-      this.timezone = timezone;
-      this.timezoneAbbrev = timezoneAbbrev;
-      this.createdAt = createdAt;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }

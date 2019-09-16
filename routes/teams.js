@@ -85,14 +85,13 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
     .populate({ path: 'members', select: 'name email' })
     .populate({
       path: 'mainContact.memberId',
-      select:
-        'name address1 address2 city stateProv country zipPostal email phone timezone timezoneAbbrev createdAt'
+      select: '-__v -updatedAt -password -avatarUrl -createdAt -isAdmin -notifications'
     })
     .populate({
       path: 'bulkShipping.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
+      select: '-__v -updatedAt -password -avatarUrl -createdAt -isAdmin -notifications'
     })
-    .select('-updatedAt -__v ');
+    .select('-updatedAt -__v');
   if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
 
   return res.send(team);

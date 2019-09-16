@@ -119,7 +119,7 @@
                   v-model="useManagerDetails"
                   @change="copyManagertoMain"
                   ref="useManagerDetails"
-                  :disabled="!managerDetails.memberId"
+                  :disabled="!managerId._id"
                 />
                 <label
                   class="form-check-label text-white"
@@ -200,13 +200,14 @@
               />
             </div>
             <div class="form-group col-sm-4">
-              <label for="contactCountry">Country</label>
+              <label for="contactCountry">Country - 2 digit code</label>
               <input
                 id="contactCountry"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="mainContact.country"
                 ref="contactCountry"
+                maxlength="2"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
               />
@@ -239,7 +240,7 @@
                 v-model="mainContact.phone"
                 id="contactPhone"
                 :dark="false"
-                default-country-code="CA"
+                :preferred-countries="['US', 'CA']"
                 ref="contactPhone"
                 :clearable="true"
                 :no-use-browser-locale="false"
@@ -253,19 +254,46 @@
               <strong>
                 <em>Bulk Shipping Details</em>
               </strong>
-              <div class="form-check text-center">
+              <br />
+              <div class="form-check form-check-inline mr-4">
                 <input
-                  type="checkbox"
-                  class="form-check-input mt-2"
-                  id="bulkUseAboveDetails"
-                  v-model="bulkUseAboveDetails"
-                  ref="bulkUseAboveDetails"
-                  @change="copyMaintoBulk"
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useAboveDetails"
+                  value="above"
+                  v-model="bulkUseDetails"
+                  @change="copytoBulk"
+                />
+                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+              </div>
+              <div class="form-check form-check-inline mr-4">
+                <input
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useManagerDetails"
+                  value="manager"
+                  v-model="bulkUseDetails"
+                  :disabled="!managerId._id"
+                  @change="copytoBulk"
                 />
                 <label
                   class="form-check-label text-white"
                   for="useManagerDetails"
-                >Use above details for Bulk Shipping</label>
+                >Use Manager's Shipping Address</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useNewDetails"
+                  value="other"
+                  v-model="bulkUseDetails"
+                  @change="copytoBulk"
+                />
+                <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
               </div>
             </label>
             <div class="form-group col-sm-6">
@@ -276,7 +304,7 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.name"
                 ref="shippingName"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -287,7 +315,7 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.email"
                 ref="shippingEmail"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -298,7 +326,7 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.address1"
                 ref="shippingAddress1"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -309,7 +337,7 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.address2"
                 ref="shippingAddress2"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-4">
@@ -321,7 +349,7 @@
                 v-model="bulkShipping.city"
                 @change="changeDetails"
                 ref="shippingCity"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-4">
@@ -333,19 +361,20 @@
                 v-model="bulkShipping.stateProv"
                 ref="shippingStateProv"
                 @change="changeDetails"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-4">
-              <label for="shippingCountry">Shipping Country</label>
+              <label for="shippingCountry">Shipping Country - 2 digit code</label>
               <input
                 id="shippingCountry"
                 type="text"
                 class="form-control form-control-sm"
+                maxlength="2"
                 v-model="bulkShipping.country"
                 ref="shippingCountry"
                 @change="changeDetails"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -356,17 +385,17 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.zipPostal"
                 ref="shippingZipPostal"
-                :readonly="bulkUseAboveDetails"
+                :readonly="bulkUseDetails!== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6" v-if="bulkUseAboveDetails">
+            <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
               <label for="shippingPhone">Shipping Phone</label>
               <input
                 id="shippingPhone"
                 type="text"
                 class="form-control form-control-sm"
                 v-model="bulkShipping.phone"
-                :readonly="bulkUseAboveDetails"
+                readonly
               />
             </div>
             <div class="form-group col-sm-6" v-else>
@@ -375,7 +404,6 @@
                 v-model="bulkShipping.phone"
                 id="shippingPhone"
                 :dark="false"
-                default-country-code="CA"
                 ref="shippingPhone"
                 :clearable="true"
                 :no-use-browser-locale="false"
@@ -434,7 +462,7 @@ export default {
         email: '',
         phone: ''
       },
-      bulkUseAboveDetails: false,
+      bulkUseDetails: 'other',
       bulkShipping: {
         memberId: '',
         name: '',
@@ -482,8 +510,7 @@ export default {
     try {
       const admins = await this.$store.dispatch('getAdmins');
       this.adminsList = admins.data;
-
-      const team = await this.$store.dispatch('getTeam', this.$route.params.id);
+      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const {
         _id,
         name,
@@ -493,12 +520,21 @@ export default {
         mainContact,
         bulkShipping,
         members,
+        timezone,
+        timezoneAbbrev,
         createdAt
-      } = team.data;
+      } = res.data;
 
       this.id = _id;
       this.name = name;
+      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       this.logo = logo;
+      this.timezone = timezone;
+      this.timezoneAbbrev = timezoneAbbrev;
+      this.createdAt = createdAt;
+
+      this.members = members;
+
       if (adminId) {
         this.adminId = adminId;
       }
@@ -507,35 +543,14 @@ export default {
         this.managerId = managerId;
         this.getManagerDetails();
       }
-      if (mainContact) {
-        this.mainContact.memberId = mainContact.memberId;
-        this.mainContact.name = mainContact.name;
-        this.mainContact.address1 = mainContact.address1;
-        this.mainContact.address2 = mainContact.address2;
-        this.mainContact.city = mainContact.city;
-        this.mainContact.stateProv = mainContact.stateProv;
-        this.mainContact.country = mainContact.country;
-        this.mainContact.zipPostal = mainContact.zipPostal;
-        this.mainContact.phone = mainContact.phone;
-        this.mainContact.email = mainContact.email;
+
+      if (mainContact && mainContact.memberId) {
+        this.mainContact = mainContact.memberId;
       }
-      if (bulkShipping) {
-        this.bulkShipping.memberId = bulkShipping.memberId;
-        this.bulkShipping.name = bulkShipping.name;
-        this.bulkShipping.address1 = bulkShipping.address1;
-        this.bulkShipping.address2 = bulkShipping.address2;
-        this.bulkShipping.city = bulkShipping.city;
-        this.bulkShipping.stateProv = bulkShipping.stateProv;
-        this.bulkShipping.country = bulkShipping.country;
-        this.bulkShipping.zipPostal = bulkShipping.zipPostal;
-        this.bulkShipping.phone = bulkShipping.phone;
-        this.bulkShipping.email = bulkShipping.email;
+
+      if (bulkShipping && bulkShipping.memberId) {
+        this.bulkShipping = bulkShipping.memberId;
       }
-      this.members = members;
-      this.timezone = timezone;
-      this.timezoneAbbrev = timezoneAbbrev;
-      this.createdAt = createdAt;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -548,6 +563,7 @@ export default {
       try {
         const res = await this.$store.dispatch('getMemberDetails', this.managerId._id);
         const manager = res.data.member;
+
         const {
           _id,
           name,
@@ -560,7 +576,8 @@ export default {
           email,
           phone,
           timezone,
-          timezoneAbbrev
+          timezoneAbbrev,
+          shipping
         } = manager;
 
         this.managerDetails = {
@@ -575,11 +592,12 @@ export default {
           email,
           phone,
           timezone,
-          timezoneAbbrev
+          timezoneAbbrev,
+          shipping
         };
 
         if (this.useManagerDetails) this.copyManagertoMain();
-        if (this.bulkUseAboveDetails) this.copyMaintoBulk();
+        if (this.bulkUseDetails === 'manager') this.copytoBulk();
       } catch (err) {
         this.$toasted.error(err.response.data[0].message);
       }
@@ -593,15 +611,27 @@ export default {
         this.mainContact = this.backupContact;
         this.geoTimezone();
       }
+
+      if (this.bulkUseDetails === 'above') {
+        this.backupShipping = this.bulkShipping;
+        this.bulkShipping = this.mainContact;
+        this.geoTimezone();
+      }
     },
-    copyMaintoBulk: function() {
-      if (this.bulkUseAboveDetails) {
+    copytoBulk: function() {
+      if (this.bulkUseDetails === 'manager') {
+        this.backupBulk = this.bulkShipping;
+        this.bulkShipping = this.managerDetails.shipping;
+        this.timezone = this.managerDetails.timezone;
+        this.timezoneAbbrev = this.managerDetails.timezoneAbbrev;
+      } else if (this.bulkUseDetails === 'above') {
         this.backupBulk = this.bulkShipping;
         this.bulkShipping = this.mainContact;
         this.geoTimezone();
       } else {
-        this.bulkShipping = this.backupBulk;
-        this.geoTimezone();
+        this.bulkShipping = {};
+        this.timezone = '';
+        this.timezoneAbbrev = '';
       }
     },
     changeDetails: async function(event) {
@@ -615,31 +645,68 @@ export default {
         this.geoTimezone();
       }
 
-      if (this.bulkUseAboveDetails) {
+      if (this.bulkUseDetails === 'above') {
         if (target === 'contactEmail') {
           this.bulkShipping.email = this.mainContact.email;
-        } else if (target === 'contactname') {
+        } else if (target === 'contactName') {
           this.bulkShipping.name = this.mainContact.name;
-        } else if (target === 'contactaddress1') {
+        } else if (target === 'contactAddress1') {
           this.bulkShipping.address1 = this.mainContact.address1;
-        } else if (target === 'contactaddress2') {
+        } else if (target === 'contactAddress2') {
           this.bulkShipping.address2 = this.mainContact.address2;
-        } else if (target === 'contactcity') {
+        } else if (target === 'contactCity') {
           this.bulkShipping.city = this.mainContact.city;
           this.geoTimezone();
-        } else if (target === 'contactstateProv') {
+        } else if (target === 'contactStateProv') {
           this.bulkShipping.stateProv = this.mainContact.stateProv;
           this.geoTimezone();
-        } else if (target === 'contactcountry') {
+        } else if (target === 'contactCountry') {
           this.bulkShipping.country = this.mainContact.country;
           this.geoTimezone();
-        } else if (target === 'contactzipPostal') {
+        } else if (target === 'contactZipPostal') {
           this.bulkShipping.zipPostal = this.mainContact.zipPostal;
+        }
+      }
+      const codeCountries = this.$refs.contactPhone.codesCountries;
+      let valid = false;
+      if (target === 'contactCountry' && this.mainContact.country) {
+        let countryCode = this.mainContact.country;
+        countryCode = countryCode.toUpperCase();
+        codeCountries.forEach(country => {
+          if (country.iso2 === countryCode) {
+            valid = true;
+          }
+        });
+
+        if (valid) {
+          this.$refs.contactPhone.countryCode = countryCode;
+        } else {
+          this.mainContact.country = '';
+          this.$refs.contactCountry.focus();
+          this.$toasted.error('Main Contact Country Code Invalid');
+        }
+      }
+
+      if (target === 'shippingCountry' && this.bulkShipping.country) {
+        let countryCode = this.bulkShipping.country;
+        countryCode = countryCode.toUpperCase();
+        codeCountries.forEach(country => {
+          if (country.iso2 === countryCode) {
+            valid = true;
+          }
+        });
+
+        if (valid) {
+          this.$refs.shippingPhone.countryCode = countryCode;
+        } else {
+          this.bulkShipping.country = '';
+          this.$refs.shippingCountry.focus();
+          this.$toasted.error('Shipping Country Code Invalid');
         }
       }
     },
     copyPhone: function(event) {
-      if (this.bulkUseAboveDetails && event.phoneNumber) {
+      if (this.bulkUseDetails === 'above' && event.phoneNumber) {
         this.bulkShipping.phone = event.phoneNumber;
       }
     },
