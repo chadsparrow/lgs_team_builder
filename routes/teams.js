@@ -79,35 +79,20 @@ router.get('/', auth, async (req, res) => {
 
 // GET /api/teams/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  let team = {};
-  if (req.member.isAdmin) {
-    team = await Team.findById(req.params.id)
-      .populate({ path: 'managerId', select: 'name email' })
-      .populate({ path: 'adminId', select: 'name email' })
-      .populate({ path: 'members', select: 'name email' })
-      .populate({
-        path: 'mainContact.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
-      .populate({
-        path: 'bulkShipping.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
-      .select('-updatedAt -__v ');
-  } else {
-    team = await Team.findById(req.params.id)
-      .populate({ path: 'managerId', select: 'name email' })
-      .populate({ path: 'members', select: 'name email' })
-      .populate({
-        path: 'mainContact.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
-      .populate({
-        path: 'bulkShipping.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
-      .select('-updatedAt -__v -adminId');
-  }
+  const team = await Team.findById(req.params.id)
+    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'adminId', select: 'name email' })
+    .populate({ path: 'members', select: 'name email' })
+    .populate({
+      path: 'mainContact.memberId',
+      select:
+        'name address1 address2 city stateProv country zipPostal email phone timezone timezoneAbbrev createdAt'
+    })
+    .populate({
+      path: 'bulkShipping.memberId',
+      select: 'name address1 address2 city stateProv country zipPostal email phone'
+    })
+    .select('-updatedAt -__v ');
   if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
 
   return res.send(team);

@@ -15,7 +15,7 @@
             <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
             <span class="col-sm-12">{{ timezone }}</span>
           </div>
-          <div class="row p-1">
+          <div class="row p-1" v-if="createdAt && timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
               {{
@@ -84,7 +84,7 @@
               <span>{{adminId.name}} - {{adminId.email}}</span>
             </div>
             <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-4" v-if="member && member.isAdmin">
+            <div class="form-group col-sm-4" v-if="member && member.isAdmin && members">
               <label for="managerId">Manager</label>
               <select
                 class="form-control form-control-sm"
@@ -480,6 +480,9 @@ export default {
   },
   created: async function() {
     try {
+      const admins = await this.$store.dispatch('getAdmins');
+      this.adminsList = admins.data;
+
       const team = await this.$store.dispatch('getTeam', this.$route.params.id);
       const {
         _id,
@@ -490,8 +493,6 @@ export default {
         mainContact,
         bulkShipping,
         members,
-        timezone,
-        timezoneAbbrev,
         createdAt
       } = team.data;
 
@@ -504,6 +505,7 @@ export default {
 
       if (managerId) {
         this.managerId = managerId;
+        this.getManagerDetails();
       }
       if (mainContact) {
         this.mainContact.memberId = mainContact.memberId;
@@ -533,15 +535,13 @@ export default {
       this.timezone = timezone;
       this.timezoneAbbrev = timezoneAbbrev;
       this.createdAt = createdAt;
-      const admins = await this.$store.dispatch('getAdmins');
-      this.adminsList = admins.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
   },
   methods: {
-    updateTeam: function(id) {
+    updateTeam: function() {
       // Update Team
     },
     getManagerDetails: async function() {
@@ -558,7 +558,9 @@ export default {
           country,
           zipPostal,
           email,
-          phone
+          phone,
+          timezone,
+          timezoneAbbrev
         } = manager;
 
         this.managerDetails = {
@@ -571,7 +573,9 @@ export default {
           country,
           zipPostal,
           email,
-          phone
+          phone,
+          timezone,
+          timezoneAbbrev
         };
 
         if (this.useManagerDetails) this.copyManagertoMain();
@@ -640,7 +644,11 @@ export default {
       }
     },
     geoTimezone: async function() {
-      if (this.bulkShipping.stateProv && this.bulkShipping.city && this.bulkShipping.country) {
+      if (
+        this.bulkShipping.stateProv !== '' &&
+        this.bulkShipping.city !== '' &&
+        this.bulkShipping.country !== ''
+      ) {
         const location = await this.$http.get(
           `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.bulkShipping.city} ${this.bulkShipping.stateProv} ${this.bulkShipping.country}"},"options":{"thumbMaps":false}}`
         );

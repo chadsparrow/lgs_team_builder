@@ -21,9 +21,8 @@
       <router-link to="/dashboard/teams/add" class="btn btn-info">
         <i class="fas fa-plus"></i> Reserve Team Name
       </router-link>
-      <br />
-      <br />
     </div>
+    <hr>
     <span
       v-if="currentTeams && currentTeams.length === 0 && member && member.isAdmin"
     >No Teams Found</span>
