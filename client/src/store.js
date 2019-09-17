@@ -170,6 +170,19 @@ export default new Vuex.Store({
         }
       });
     },
+    getMe({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/members/${id}/me`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getMemberTeams({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -226,7 +239,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
-          const res = await axios.get(`/api/v1/members/admins`);
+          const res = await axios.get('/api/v1/members/admins');
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -279,6 +292,19 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.post('/api/v1/teams', team);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    updateTeam({ commit }, { updatedTeam, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/teams/${id}`, updatedTeam);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {

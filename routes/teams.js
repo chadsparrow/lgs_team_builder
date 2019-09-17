@@ -21,18 +21,10 @@ router.get('/', auth, async (req, res) => {
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'members', select: 'name email' })
-      .populate({
-        path: 'mainContact.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
-      .populate({
-        path: 'bulkShipping.memberId',
-        select: 'name address1 address2 city stateProv country zipPostal email phone'
-      })
       .select('-updatedAt -__v ');
 
     teams.forEach(team => {
-      if (team.mainContact.memberId) {
+      if (team.bulkShipping.address1) {
         completedTeams.push(team);
       } else {
         unfinishedTeams.push(team);
@@ -54,18 +46,10 @@ router.get('/', auth, async (req, res) => {
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
-    .populate({
-      path: 'mainContact.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
-    .populate({
-      path: 'bulkShipping.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
     .select('-updatedAt -__v');
 
   teams.forEach(team => {
-    if (team.mainContact.memberId) {
+    if (team.mainContact.address1) {
       completedTeams.push(team);
     } else {
       unfinishedTeams.push(team);
@@ -83,14 +67,6 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
-    .populate({
-      path: 'mainContact.memberId',
-      select: '-__v -updatedAt -password -avatarUrl -createdAt -isAdmin -notifications'
-    })
-    .populate({
-      path: 'bulkShipping.memberId',
-      select: '-__v -updatedAt -password -avatarUrl -createdAt -isAdmin -notifications'
-    })
     .select('-updatedAt -__v');
   if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
 
@@ -99,24 +75,35 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 
 // POST /api/teams
 router.post('/', [auth, admin], async (req, res) => {
-  if (swearjar.profane(req.body.name))
+  const { error } = validateTeamName(req.body);
+  if (error) return res.status(400).send(error.details);
+
+  let { name, teamId } = req.body;
+  const { adminId } = req.body;
+
+  if (swearjar.profane(name))
     return res
       .status(400)
       .send([{ message: 'Team name must not contain profanity.', context: { key: 'name' } }]);
 
-  const { error } = validateTeamName(req.body);
-  if (error) return res.status(400).send(error.details);
+  name = name.toUpperCase();
+  if (teamId) {
+    teamId = teamId.toUpperCase();
+  }
 
-  let teamName = req.body.name;
-  teamName = teamName.toUpperCase();
-
-  let team = await Team.findOne({ name: teamName });
+  let team = await Team.findOne({ $or: [{ name }, { teamId }] });
   if (team)
-    return res
-      .status(400)
-      .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
+    if (team.name === name) {
+      return res
+        .status(400)
+        .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
+    } else if (team.teamId === teamId) {
+      return res
+        .status(400)
+        .send([{ message: 'Team ID already registered', context: { key: 'teamId' } }]);
+    }
 
-  team = new Team({ name: req.body.name, adminId: req.body.adminId });
+  team = new Team({ name, adminId, teamId });
   await team.save();
   return res.send([{ message: 'Team Added' }]);
 });
@@ -130,26 +117,10 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     logo,
     adminId,
     managerId,
-    useManagerDetails,
-    contactName,
-    contactAddress1,
-    contactAddress2,
-    contactCity,
-    contactStateProv,
-    contactCountry,
-    contactZipPostal,
-    contactPhone,
-    contactEmail,
-    bulkUseAboveDetails,
-    bulkContactName,
-    bulkContactAddress1,
-    bulkContactAddress2,
-    bulkContactCity,
-    bulkContactStateProv,
-    bulkContactCountry,
-    bulkContactZipPostal,
-    bulkContactPhone,
-    bulkContactEmail
+    mainContact,
+    bulkShipping,
+    timezone,
+    timezoneAbbrev
   } = req.body;
 
   const team = await Team.findById(req.params.id);
@@ -174,66 +145,15 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     team.logo = logo;
   }
 
-  if (useManagerDetails) {
-    team.mainContact.memberId = team.managerId;
-  } else {
-    team.mainContact.memberId = null;
-    team.mainContact.name = contactName;
-    team.mainContact.address1 = contactAddress1;
-    team.mainContact.address2 = contactAddress2;
-    team.mainContact.city = contactCity;
-    team.mainContact.stateProv = contactStateProv;
-    team.mainContact.country = contactCountry;
-    team.mainContact.zipPostal = contactZipPostal;
-    team.mainContact.phone = contactPhone;
-    team.mainContact.email = contactEmail;
-  }
+  team.mainContact = mainContact;
+  team.bulkShipping = bulkShipping;
 
-  if (bulkUseAboveDetails) {
-    if (team.mainContact.memberId) {
-      team.bulkShipping.memberId = team.mainContact.memberId;
-    } else {
-      team.bulkShipping.memberId = null;
-      team.bulkShipping.name = team.mainContact.name;
-      team.bulkShipping.address1 = team.mainContact.address1;
-      team.bulkShipping.address2 = team.mainContact.address2;
-      team.bulkShipping.city = team.mainContact.city;
-      team.bulkShipping.stateProv = team.mainContact.stateProv;
-      team.bulkShipping.country = team.mainContact.country;
-      team.bulkShipping.zipPostal = team.mainContact.zipPostal;
-      team.bulkShipping.phone = team.mainContact.phone;
-      team.bulkShipping.email = team.mainContact.email;
-    }
-  } else {
-    team.bulkShipping.memberId = null;
-    team.bulkShipping.name = bulkContactName;
-    team.bulkShipping.address1 = bulkContactAddress1;
-    team.bulkShipping.address2 = bulkContactAddress2;
-    team.bulkShipping.city = bulkContactCity;
-    team.bulkShipping.stateProv = bulkContactStateProv;
-    team.bulkShipping.country = bulkContactCountry;
-    team.bulkShipping.zipPostal = bulkContactZipPostal;
-    team.bulkShipping.phone = bulkContactPhone;
-    team.bulkShipping.email = bulkContactEmail;
-  }
+  team.timezone = timezone;
+  team.timezoneAbbrev = timezoneAbbrev;
 
-  const savedTeam = await team.save();
+  await team.save();
 
-  const populatedTeam = await Team.findById(savedTeam._id)
-    .populate({ path: 'managerId', select: 'name email' })
-    .populate({ path: 'adminId', select: 'name email' })
-    .populate({ path: 'members', select: 'name email' })
-    .populate({
-      path: 'mainContact.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
-    .populate({
-      path: 'bulkShipping.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
-    .select('-updatedAt -__v');
-
-  return res.status(200).send(populatedTeam);
+  return res.status(200).send([{ message: 'Team Updated' }]);
 });
 
 router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
@@ -261,14 +181,6 @@ router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
-    .populate({
-      path: 'mainContact.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
-    .populate({
-      path: 'bulkShipping.memberId',
-      select: 'name address1 address2 city stateProv country zipPostal email phone'
-    })
     .select('-updatedAt -__v');
 
   return res.status(200).send(populatedTeam);

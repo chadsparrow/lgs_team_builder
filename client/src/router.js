@@ -239,7 +239,7 @@ router.beforeEach((to, from, next) => {
           next();
         } else {
           Vue.toasted.error('Access Denied');
-          next({ name: 'dashboardIndex' });
+          next({ name: from.name });
         }
       } else {
         next();

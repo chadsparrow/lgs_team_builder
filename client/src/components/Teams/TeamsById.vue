@@ -65,7 +65,17 @@
       <div class="col infoSection" v-if="name">
         <form novalidate>
           <div class="row">
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-6">
+              <label for="teamId">Team ID#</label>
+              <input
+                id="teamId"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="teamId"
+                readonly
+              />
+            </div>
+            <div class="form-group col-sm-6">
               <label for="name">Team Name</label>
               <input
                 id="name"
@@ -75,7 +85,11 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6 mt-2">
+          </div>
+          <hr />
+          <h5>Contact Information</h5>
+          <div class="row">
+            <div class="form-group col-sm-6">
               <label for="contactName">Name</label>
               <input
                 id="contactName"
@@ -167,10 +181,8 @@
             </div>
           </div>
           <hr />
-          <label
-            class="mb-2"
-          >Details below are needed for team stores set to "BULK" shipping and to determine team timezone</label>
-          <div class="row mb-4">
+          <h5>Bulk Shipping Information</h5>
+          <div class="row">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
               <input
@@ -262,7 +274,11 @@
               />
             </div>
           </div>
-          <router-link :to="`/dashboard/teams/${id}/edit`" class="btn btn-block btn-info mt-2">
+          <router-link
+            :to="`/dashboard/teams/${id}/edit`"
+            class="btn btn-block btn-info mt-4"
+            v-if="member.isAdmin"
+          >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
           </router-link>
         </form>
@@ -283,6 +299,7 @@ export default {
     return {
       id: '',
       name: '',
+      teamId: '',
       logo: null,
       adminId: {},
       managerId: {},
@@ -323,6 +340,7 @@ export default {
         name,
         logo,
         adminId,
+        teamId,
         managerId,
         mainContact,
         bulkShipping,
@@ -339,6 +357,7 @@ export default {
       this.timezoneAbbrev = timezoneAbbrev;
       this.logo = logo;
       this.createdAt = createdAt;
+      this.teamId = teamId;
 
       this.members = members;
       if (adminId) {
@@ -350,11 +369,11 @@ export default {
       }
 
       if (mainContact) {
-        this.mainContact = mainContact.memberId;
+        this.mainContact = mainContact;
       }
 
       if (bulkShipping) {
-        this.bulkShipping = bulkShipping.memberId;
+        this.bulkShipping = bulkShipping;
       }
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
@@ -362,7 +381,11 @@ export default {
   },
   methods: {
     loadMember: function(id) {
-      this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
+      if (this.member._id === id) {
+        return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
+      } else {
+        return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
+      }
     }
   }
 };

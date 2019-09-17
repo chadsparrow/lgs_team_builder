@@ -3,6 +3,17 @@
     <form @submit.prevent="addTeam" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
+          <label for="teamId">Team ID (ERP Account #)</label>
+          <input
+            type="text"
+            class="form-control"
+            id="teamId"
+            ref="teamId"
+            v-model="teamId"
+            autofocus
+          />
+        </div>
+        <div class="col-sm-12 mb-2">
           <label for="name">Team Name</label>
           <input
             type="text"
@@ -11,7 +22,6 @@
             ref="name"
             v-model="name"
             placeholder="Enter a team name..."
-            autofocus
           />
           <small id="nameHelp" class="form-text text-muted ml-2">Must not contain profanity</small>
         </div>
@@ -45,6 +55,7 @@ export default {
   data() {
     return {
       name: '',
+      teamId: '',
       breadcrumbs: [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -67,7 +78,8 @@ export default {
     addTeam: async function() {
       const team = {
         name: this.name,
-        adminId: this.member._id
+        adminId: this.member._id,
+        teamId: this.teamId
       };
       try {
         const res = await this.$store.dispatch('addTeam', team);

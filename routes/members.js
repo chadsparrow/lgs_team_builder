@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 const _ = require('lodash');
 const express = require('express');
@@ -8,6 +9,7 @@ const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
+const { Team } = require('../models/Team');
 
 const {
   Member,
@@ -16,9 +18,8 @@ const {
   validateEmail,
   validatePassword
 } = require('../models/Member');
-const { Team } = require('../models/Team');
 
-// GET /api/members
+// GET /api/v1/members
 router.get('/', [auth, admin], async (req, res) => {
   const members = await Member.find({ _id: { $ne: req.member._id } })
     .select('_id name email isAdmin')
@@ -35,7 +36,7 @@ router.get('/admins', auth, async (req, res) => {
   return res.status(200).send(admins);
 });
 
-// GET /api/members/:id
+// GET /api/v1/members/:id
 router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member)
@@ -46,7 +47,7 @@ router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
   );
 });
 
-// GET /api/members/details/:id
+// GET /api/v1/members/:id/details
 router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
     '-__v -updatedAt -password -notifications'
@@ -58,6 +59,11 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   return res.send({ member, teams });
+});
+
+router.get('/:id/me', [validateObjectId, auth], async (req, res) => {
+  const me = await Member.findOne({ _id: req.params.id }).select('-__v -updatedAt');
+  return res.status(200).send(me);
 });
 
 // POST /api/members
@@ -268,6 +274,34 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   }
 
   await updateMember.save();
+
+  const updateMemberMainContact = {
+    name: updateMember.name,
+    address1: updateMember.address1,
+    address2: updateMember.address2,
+    city: updateMember.city,
+    stateProv: updateMember.stateProv,
+    country: updateMember.country,
+    zipPostal: updateMember.zipPostal,
+    phone: updateMember.phone,
+    email: updateMember.email
+  };
+
+  const teamsToUpdate = await Team.find({
+    $or: [{ 'mainContact.email': updateMember.email }, { 'bulkShipping.email': updateMember.email }]
+  });
+
+  if (teamsToUpdate && teamsToUpdate.length > 0) {
+    teamsToUpdate.forEach(async team => {
+      if (team.mainContact.email === updateMember.email) {
+        await Team.updateOne({ _id: team._id }, { $set: { mainContact: updateMemberMainContact } });
+      }
+
+      if (team.bulkShipping.email === updateMember.email) {
+        await Team.updateOne({ _id: team._id }, { $set: { bulkShipping: updateMember.shipping } });
+      }
+    });
+  }
 
   return res.status(200).send([{ message: 'Member Updated' }]);
 });

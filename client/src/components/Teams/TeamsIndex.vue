@@ -3,14 +3,15 @@
     <div v-if="member && member.isAdmin">
       <div class="table-responsive" v-if="unfinishedTeams && unfinishedTeams.length > 0">
         <h5 class="text-info">Reserved Team Names</h5>
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped mb-4">
           <tbody>
             <tr
               v-for="unfinished of unfinishedTeams"
               :key="unfinished._id"
               @click.prevent="loadTeam(unfinished._id)"
             >
-              <th>{{ unfinished.name }}</th>
+              <th scope="row">{{ unfinished.teamId }}</th>
+              <td>{{ unfinished.name }}</td>
             </tr>
           </tbody>
         </table>
@@ -33,15 +34,23 @@
       <table class="table table-hover table-striped">
         <tbody>
           <tr>
+            <th>Team ID</th>
             <th>Name</th>
             <th>Admin</th>
-            <th>Contact</th>
+            <th>Manager</th>
             <th>Members</th>
           </tr>
           <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
-            <th scope="row">{{ team.name }}</th>
+            <th scope="row">{{ team.teamId }}</th>
+            <td>{{ team.name }}</td>
             <td>{{ team.adminId.name }}</td>
-            <td>{{ team.mainContact.memberId.name }}</td>
+            <td>
+              <i
+                class="fas fa-certificate text-warning mr-1"
+                v-if="team.managerId._id === member._id"
+              ></i>
+              {{ team.managerId.name }}
+            </td>
             <td>{{ team.members.length }}</td>
           </tr>
         </tbody>

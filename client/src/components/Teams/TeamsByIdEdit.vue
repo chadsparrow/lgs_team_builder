@@ -19,7 +19,7 @@
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
               {{
-              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:ss a - z')
+              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </span>
           </div>
@@ -44,26 +44,18 @@
       <div class="col infoSection" v-if="name">
         <form novalidate>
           <div class="row">
-            <!-- TEAM NAME -->
-            <div class="input-group input-group-sm mb-3 col-sm-12">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm">Team Name</span>
-              </div>
+            <!-- ADMIN SELECTOR -->
+            <div class="form-group col-sm-4">
+              <label for="teamId">Team ID#</label>
               <input
-                id="name"
+                id="teamId"
                 type="text"
-                class="form-control"
-                aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-sm"
-                v-model="name"
-                ref="name"
+                class="form-control form-control-sm"
+                v-model="teamId"
+                ref="teamId"
                 readonly
               />
-              <div class="input-group-append">
-                <button class="btn btn-info" type="button" id="button-addon2">Change Name</button>
-              </div>
             </div>
-            <!-- ADMIN SELECTOR -->
             <div class="form-group col-sm-4" v-if="member && member.isAdmin">
               <label for="adminId">Admin</label>
               <select
@@ -304,7 +296,7 @@
                 class="form-control form-control-sm"
                 v-model="bulkShipping.name"
                 ref="shippingName"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -448,10 +440,10 @@ export default {
       logo: null,
       adminId: {},
       managerId: {},
+      teamId: '',
       managerDetails: {},
       useManagerDetails: false,
       mainContact: {
-        memberId: '',
         name: '',
         address1: '',
         address2: '',
@@ -464,7 +456,6 @@ export default {
       },
       bulkUseDetails: 'other',
       bulkShipping: {
-        memberId: '',
         name: '',
         address1: '',
         address2: '',
@@ -517,6 +508,7 @@ export default {
         logo,
         adminId,
         managerId,
+        teamId,
         mainContact,
         bulkShipping,
         members,
@@ -527,6 +519,7 @@ export default {
 
       this.id = _id;
       this.name = name;
+      this.teamId = teamId;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       this.logo = logo;
       this.timezone = timezone;
@@ -544,20 +537,48 @@ export default {
         this.getManagerDetails();
       }
 
-      if (mainContact && mainContact.memberId) {
-        this.mainContact = mainContact.memberId;
+      if (mainContact) {
+        this.mainContact = mainContact;
       }
 
-      if (bulkShipping && bulkShipping.memberId) {
-        this.bulkShipping = bulkShipping.memberId;
+      if (bulkShipping) {
+        this.bulkShipping = bulkShipping;
       }
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
   },
   methods: {
-    updateTeam: function() {
-      // Update Team
+    updateTeam: async function() {
+      const updatedTeam = {
+        logo: this.logo,
+        adminId: this.adminId._id,
+        managerId: this.managerId._id,
+        teamId: this.teamId,
+        mainContact: this.mainContact,
+        bulkShipping: this.bulkShipping,
+        timezone: this.timezone,
+        timezoneAbbrev: this.timezoneAbbrev
+      };
+
+      delete updatedTeam.mainContact.timezone;
+      delete updatedTeam.mainContact.timezoneAbbrev;
+      delete updatedTeam.mainContact.shipping;
+
+      try {
+        const res = await this.$store.dispatch('updateTeam', {
+          updatedTeam,
+          id: this.id
+        });
+        this.$toasted.success(res.data[0].message);
+        this.$router.push({ name: 'teamsById', params: { id: this.id } });
+      } catch (err) {
+        if (err.response.data[0].context) {
+          const key = err.response.data[0].context.key;
+          this.$refs[key].focus();
+        }
+        this.$toasted.error(err.response.data[0].message);
+      }
     },
     getManagerDetails: async function() {
       try {
@@ -565,7 +586,6 @@ export default {
         const manager = res.data.member;
 
         const {
-          _id,
           name,
           address1,
           address2,
@@ -581,7 +601,6 @@ export default {
         } = manager;
 
         this.managerDetails = {
-          memberId: _id,
           name,
           address1,
           address2,
@@ -629,13 +648,13 @@ export default {
         this.bulkShipping = this.mainContact;
         this.geoTimezone();
       } else {
-        this.bulkShipping = {};
-        this.timezone = '';
-        this.timezoneAbbrev = '';
+        this.bulkShipping = this.backupBulk;
+        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
+      let codeCountries;
       if (
         (target === 'shippingCountry' ||
           target === 'shippingStateProv' ||
@@ -667,9 +686,9 @@ export default {
           this.bulkShipping.zipPostal = this.mainContact.zipPostal;
         }
       }
-      const codeCountries = this.$refs.contactPhone.codesCountries;
       let valid = false;
       if (target === 'contactCountry' && this.mainContact.country) {
+        codeCountries = this.$refs.contactPhone.codesCountries;
         let countryCode = this.mainContact.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
@@ -688,6 +707,7 @@ export default {
       }
 
       if (target === 'shippingCountry' && this.bulkShipping.country) {
+        codeCountries = this.$refs.shippingPhone.codesCountries;
         let countryCode = this.bulkShipping.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
