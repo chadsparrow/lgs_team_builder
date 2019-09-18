@@ -156,34 +156,35 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.status(200).send([{ message: 'Team Updated' }]);
 });
 
-router.post('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
+router.post('/:id/addmember', [validateObjectId, auth], async (req, res) => {
+  const team = await Team.findById(req.params.id);
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
+
+  let access = false;
+
+  if (req.member._id === team.managerId) access = true;
+
+  if (req.member.isAdmin) access = true;
+
+  if (!access) return res.status(403).send([{ message: 'Access Denied' }]);
+
   const { error } = validateAddMember(req.body);
   if (error) return res.status(400).send(error.details);
 
   const { memberId } = req.body;
 
   const member = await Member.findById(memberId);
-  if (!member)
-    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
 
-  const team = await Team.findById(req.params.id);
-  if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
-
-  const alreadyRegistered = team.members.includes(req.body.memberId);
+  const alreadyRegistered = team.members.includes(memberId);
   if (alreadyRegistered)
     return res.status(400).send([{ message: 'Member already part of the team' }]);
 
   team.members.push(mongoose.Types.ObjectId(memberId));
 
-  const savedTeam = await team.save();
+  await team.save();
 
-  const populatedTeam = await Team.findById(savedTeam._id)
-    .populate({ path: 'managerId', select: 'name email' })
-    .populate({ path: 'adminId', select: 'name email' })
-    .populate({ path: 'members', select: 'name email' })
-    .select('-updatedAt -__v');
-
-  return res.status(200).send(populatedTeam);
+  return res.status(200).send([{ message: 'Member Added to Team' }]);
 });
 
 module.exports = router;

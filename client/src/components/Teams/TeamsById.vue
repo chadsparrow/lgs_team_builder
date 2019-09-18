@@ -39,23 +39,40 @@
               {{ managerId.email }}
             </span>
           </div>
-          <div class="row p-1 mt-4" v-if="members && members.length > 0">
-            <small class="col-sm-12 text-info">Member List:</small>
-            <ul class="list-group col-sm-12">
-              <li
-                class="list-group-item list-group-item-action"
-                v-for="membr of members"
-                :key="membr._id"
-                @click.prevent="loadMember(membr._id)"
-              >
-                <i class="fas fa-certificate text-warning mr-1" v-if="managerId._id === membr._id"></i>
-                {{ membr.name }}
-              </li>
-            </ul>
+          <div class="row p-1 mt-3" v-if="members && members.length > 0">
+            <div class="col-sm-12">
+              <small class="text-info">Member List:</small>
+              <br />
+              <ul class="list-group">
+                <li
+                  class="list-group-item list-group-item-action"
+                  v-for="membr of members"
+                  :key="membr._id"
+                  @click.prevent="loadMember(membr._id)"
+                >
+                  <i
+                    class="fas fa-certificate text-warning mr-1"
+                    v-if="managerId._id === membr._id"
+                  ></i>
+                  {{ membr.name }}
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="row p-1 mt-4" v-else>
-            <small class="col-sm-12 text-info">Member List:</small>
-            <span class="col-sm-12">No Members</span>
+          <div class="row p-1 mt-3" v-else>
+            <div class="col-sm-12">
+              <small class="text-info">Member List:</small>
+              <br />
+              <span>No Members</span>
+            </div>
+          </div>
+          <div class="row p-1 mt-1" v-if="access">
+            <div class="col-sm-12">
+              <router-link
+                :to="`/dashboard/teams/${id}/addmember`"
+                class="btn btn-block btn-info"
+              >Add Member</router-link>
+            </div>
           </div>
         </div>
         <div v-else>
@@ -277,7 +294,7 @@
           <router-link
             :to="`/dashboard/teams/${id}/edit`"
             class="btn btn-block btn-info mt-4"
-            v-if="member.isAdmin"
+            v-if="access"
           >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
           </router-link>
@@ -302,7 +319,7 @@ export default {
       teamId: '',
       logo: null,
       adminId: {},
-      managerId: {},
+      managerId: '',
       mainContact: {},
       bulkShipping: {},
       members: [],
@@ -310,9 +327,6 @@ export default {
       timezoneAbbrev: '',
       createdAt: ''
     };
-  },
-  components: {
-    Avatar
   },
   computed: {
     member: function() {
@@ -330,6 +344,12 @@ export default {
           link: '#'
         }
       ];
+    },
+    access: function() {
+      if (this.member && this.member.isAdmin) return true;
+      if (this.managerId.id === this.member._id) return true;
+
+      return false;
     }
   },
   created: async function() {

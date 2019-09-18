@@ -313,6 +313,19 @@ export default new Vuex.Store({
         }
       });
     },
+    addTeamMember({ commit }, { newTeamMember, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/teams/${id}/addmember`, newTeamMember);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getStores({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
