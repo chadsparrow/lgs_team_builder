@@ -79,6 +79,12 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Overpass:200,300,400,700,900&display=swap');
 
+$dark-color: #111111;
+$blue-color: #17a2b8;
+$label-color: #999999;
+$white-text: #ffffff;
+$black-text: #000000;
+
 body,
 html {
   margin: 0;
@@ -104,39 +110,43 @@ html {
   opacity: 0;
 }
 
-tr:hover {
-  cursor: pointer;
-}
-
-.table > tbody > tr > td {
-  vertical-align: middle;
-}
+.table > tbody > tr > td,
 .table > tbody > tr > th {
   vertical-align: middle;
 }
 
-.table-hover tbody tr:hover td,
-.table-hover tbody tr:hover th,
-.table-hover tbody tr:hover a {
-  background-color: #17a2b8;
-  color: white;
+.table-hover {
+  tbody {
+    tr:hover {
+      td {
+        background-color: $blue-color;
+        color: $white-text;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
-.pagination > .active > a {
-  background-color: #17a2b8 !important;
-  color: white;
-  border: 0px solid grey;
-}
-
-.pagination > .page-item > a {
-  color: black;
+.pagination {
+  .active {
+    a {
+      background-color: $blue-color !important;
+      color: $white-text;
+      border: 0px solid grey;
+    }
+  }
+  .page-item {
+    a {
+      color: $black-text;
+    }
+  }
 }
 
 label {
   font-size: 0.9rem;
   margin-bottom: 0px;
   margin-top: 4px;
-  color: #999;
+  color: $label-color;
   margin-left: 4px;
 }
 
@@ -153,7 +163,7 @@ label {
 
   .placeholderImg {
     border-radius: 1rem;
-    background-color: white;
+    background-color: $white-text;
     width: 225px;
     height: 225px;
   }
@@ -167,8 +177,8 @@ label {
       height: 35px;
       padding: 5px 15px;
       &:hover {
-        background-color: #17a2b8;
-        color: white;
+        background-color: $blue-color;
+        color: $white-text;
         cursor: pointer;
       }
     }
@@ -178,16 +188,19 @@ label {
 .infoSection {
   form {
     max-width: 800px;
-  }
-  .form-group {
-    margin-top: 1px;
-    margin-bottom: 1px;
-  }
+    .form-group {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    .section-header {
+      color: $white-text;
+      padding: 0.5rem;
+      border-radius: 4px;
 
-  .section-header {
-    color: white;
-    padding: 0.5rem;
-    border-radius: 4px;
+      label {
+        color: $white-text;
+      }
+    }
   }
 }
 

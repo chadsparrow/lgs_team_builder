@@ -10,7 +10,7 @@
       <table class="table table-hover table-striped">
         <tbody>
           <tr v-for="member of members" :key="member._id" @click.prevent="loadMember(member._id)">
-            <th scope="row">{{ member.name }}</th>
+            <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
             <td>
               <span>{{ member.isAdmin ? 'Admin' : 'Member' }}</span>

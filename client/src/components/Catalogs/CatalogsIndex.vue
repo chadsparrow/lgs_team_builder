@@ -14,7 +14,7 @@
             :key="catalog._id"
             @click.prevent="loadCatalog(catalog._id)"
           >
-            <th scope="row">{{ catalog.year }}</th>
+            <td>{{ catalog.year }}</td>
             <td>{{ catalog.season }}</td>
             <td>{{ catalog.brand }}</td>
           </tr>

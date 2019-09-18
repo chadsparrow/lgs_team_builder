@@ -183,6 +183,11 @@ const MemberSchema = new mongoose.Schema(
     isAdmin: {
       type: Boolean,
       default: false
+    },
+    invites: {
+      autoAccept: { type: Boolean, default: true },
+      disabled: { type: Boolean, default: false },
+      invitations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'teams' }]
     }
   },
   { timestamps: true }

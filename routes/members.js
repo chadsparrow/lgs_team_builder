@@ -22,7 +22,7 @@ const {
 // GET /api/v1/members
 router.get('/', [auth, admin], async (req, res) => {
   const members = await Member.find({ _id: { $ne: req.member._id } })
-    .select('_id name email isAdmin')
+    .select('_id name email isAdmin invites')
     .sort({ name: 1 });
 
   if (members && members.length === 0)
@@ -62,8 +62,27 @@ router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => 
 });
 
 router.get('/:id/me', [validateObjectId, auth], async (req, res) => {
-  const me = await Member.findOne({ _id: req.params.id }).select('-__v -updatedAt');
+  const me = await Member.findById(req.params.id).select('-__v -updatedAt');
   return res.status(200).send(me);
+});
+
+router.post('/:id/invite', [validateObjectId, auth], async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
+  const team = await Team.findById(req.body.team);
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+
+  if (!member.invites.invitations.includes(req.body.team)) {
+    member.invites.invitations.push(req.body.team);
+    member.notifications.push({
+      date: Date.now(),
+      message: `You have an inviation to join Team ${team.name}`,
+      clickTo: `/dashboard/teams/${team._id}`
+    });
+    await member.save();
+    return res.status(200).send([{ message: 'Invitation Sent' }]);
+  }
+  return res.status(400).send([{ message: 'Invitation already sent - awaiting response' }]);
 });
 
 // POST /api/members

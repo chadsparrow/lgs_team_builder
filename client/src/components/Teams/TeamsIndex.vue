@@ -31,17 +31,17 @@
       v-else-if="currentTeams && currentTeams.length === 0"
     >No Teams Found - Contact your team manager to add you</span>
     <div class="table-responsive" v-else>
-      <table class="table table-hover table-striped">
+      <table class="table table-hover table-striped" v-if="currentTeams && currentTeams.length>0">
         <tbody>
           <tr>
-            <th>Team ID</th>
-            <th>Name</th>
-            <th>Admin</th>
-            <th>Manager</th>
-            <th>Members</th>
+            <th scope="col">Team ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Admin</th>
+            <th scope="col">Manager</th>
+            <th scope="col">Members</th>
           </tr>
           <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
-            <th scope="row">{{ team.teamId }}</th>
+            <td scope="row">{{ team.teamId }}</td>
             <td>{{ team.name }}</td>
             <td>{{ team.adminId.name }}</td>
             <td>

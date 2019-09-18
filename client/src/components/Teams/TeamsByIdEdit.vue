@@ -99,26 +99,23 @@
           </div>
           <!-- MAIN CONTACT -->
           <div class="row mt-3">
-            <label class="col-sm-12 mb-2 text-center bg-secondary p-1 text-white">
-              <strong>
-                <em>Main Contact</em>
-              </strong>
-              <div class="form-check text-center">
-                <input
-                  type="checkbox"
-                  class="form-check-input mt-2"
-                  id="useManagerDetails"
-                  v-model="useManagerDetails"
-                  @change="copyManagertoMain"
-                  ref="useManagerDetails"
-                  :disabled="!managerId._id"
-                />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Contact Info</label>
+            <div class="col-sm-12">
+              <div class="section-header mb-2 bg-secondary text-center">
+                <span>Main Contact</span>
+                <div class="form-check text-center">
+                  <input
+                    type="checkbox"
+                    class="form-check-input mt-2"
+                    id="useManagerDetails"
+                    v-model="useManagerDetails"
+                    @change="copyManagertoMain"
+                    ref="useManagerDetails"
+                    :disabled="!managerId._id"
+                  />
+                  <label class="form-check-label" for="useManagerDetails">Use Manager's Contact Info</label>
+                </div>
               </div>
-            </label>
+            </div>
             <div class="form-group col-sm-6">
               <label for="contactName">Name</label>
               <input
@@ -242,52 +239,52 @@
           </div>
           <!-- BULK SHIPPING -->
           <div class="row mb-3 mt-3">
-            <label class="text-center mb-2 col-sm-12 bg-secondary p-1 text-white">
-              <strong>
-                <em>Bulk Shipping Details</em>
-              </strong>
-              <br />
-              <div class="form-check form-check-inline mr-4">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useAboveDetails"
-                  value="above"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+            <div class="col-sm-12">
+              <div class="section-header mb-2 bg-secondary text-center">
+                <span>Bulk Shipping Details</span>
+                <br />
+                <div class="form-check form-check-inline mr-4">
+                  <input
+                    class="form-check-input mt-1"
+                    type="radio"
+                    name="bulkUseDetails"
+                    id="useAboveDetails"
+                    value="above"
+                    v-model="bulkUseDetails"
+                    @change="copytoBulk"
+                  />
+                  <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+                </div>
+                <div class="form-check form-check-inline mr-4">
+                  <input
+                    class="form-check-input mt-1"
+                    type="radio"
+                    name="bulkUseDetails"
+                    id="useManagerDetails"
+                    value="manager"
+                    v-model="bulkUseDetails"
+                    :disabled="!managerId._id"
+                    @change="copytoBulk"
+                  />
+                  <label
+                    class="form-check-label text-white"
+                    for="useManagerDetails"
+                  >Use Manager's Shipping Address</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input mt-1"
+                    type="radio"
+                    name="bulkUseDetails"
+                    id="useNewDetails"
+                    value="other"
+                    v-model="bulkUseDetails"
+                    @change="copytoBulk"
+                  />
+                  <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
+                </div>
               </div>
-              <div class="form-check form-check-inline mr-4">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useManagerDetails"
-                  value="manager"
-                  v-model="bulkUseDetails"
-                  :disabled="!managerId._id"
-                  @change="copytoBulk"
-                />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Shipping Address</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useNewDetails"
-                  value="other"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
-              </div>
-            </label>
+            </div>
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
               <input

@@ -7,11 +7,17 @@
       <router-link :to="`/dashboard/teams/${id}`" class="btn btn-dark">Return to Team</router-link>
     </div>
     <form @submit.prevent="addTeamMember" novalidate v-else class="mb-4">
-      <h5>Search for an already registered member</h5>
+      <h5>Add a single registered member to your team</h5>
       <div class="row">
         <div class="form-group col-sm-12 mt-4">
           <label for="newMember">Type the email address</label>
           <vSelect id="newMember" v-model="chosenMember" label="email" :options="members"></vSelect>
+          <small id="newMemberHelp" class="form-text text-muted">
+            If the member you choose has
+            <strong>Invites</strong>
+            set to
+            <strong>"Auto Accept"</strong> , they will instantly be part of your team, otherwise they will have to accept the invite.
+          </small>
         </div>
       </div>
       <div class="row">
@@ -33,7 +39,7 @@
     </form>
     <hr />
     <form @submit.prevent="inviteTeamMember" style="margin-top: 60px;" novalidate>
-      <h5>Invite a member to register and join your team!</h5>
+      <h5>Invite a single member to register and join your team!</h5>
       <div class="row">
         <div class="form-group col-sm-12 mt-4">
           <label for="invite">Type the email address</label>
@@ -66,6 +72,9 @@
         </div>
       </div>
     </form>
+    <h5
+      style="margin-top: 60px;"
+    >Method to send batch invites to large amounts of users coming! - Excel file upload</h5>
   </div>
 </template>
 
@@ -138,19 +147,20 @@ export default {
 
       res = await this.$store.dispatch('getMembers');
       const memberList = res.data;
-
       const availMembers = [];
 
       let found;
       memberList.forEach(element => {
         found = false;
-        this.teamMembers.forEach(teamMember => {
-          if (teamMember._id === element._id) {
-            found = true;
-          }
-        });
+        if (!element.invites.disabled) {
+          this.teamMembers.forEach(teamMember => {
+            if (teamMember._id === element._id) {
+              found = true;
+            }
+          });
 
-        if (!found) availMembers.push(element);
+          if (!found) availMembers.push(element);
+        }
       });
 
       this.members = availMembers;
@@ -165,9 +175,19 @@ export default {
       };
 
       try {
-        await this.$store.dispatch('addTeamMember', { newTeamMember, id: this.id });
+        if (this.chosenMember.invites.autoAccept) {
+          await this.$store.dispatch('addTeamMember', { newTeamMember, id: this.id });
+          this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
+          this.$toasted.success('Member Added to Team');
+        }
+
+        const res = await this.$store.dispatch('sendInviteNotification', {
+          id: this.chosenMember._id,
+          teamId: this.id
+        });
+
         this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
-        this.$toasted.success('Member Added to Team');
+        this.$toasted.success(res.data[0].message);
       } catch (err) {
         this.$toasted.error(err.response.data[0].message);
       }
