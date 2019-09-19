@@ -154,8 +154,9 @@ label {
   border-radius: 1rem !important;
 }
 
-.sidebar {
-  flex: 0 0 255px;
+.sidebar-left {
+  flex: initial;
+  width: 255px;
 
   span {
     font-size: 0.8em;
@@ -185,27 +186,40 @@ label {
   }
 }
 
-.infoSection {
-  form {
-    max-width: 800px;
-    .form-group {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-    .section-header {
-      color: $white-text;
-      padding: 0.5rem;
-      border-radius: 4px;
+.middle-section {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 5px;
+  overflow: auto;
+  padding: 1rem;
+}
 
-      label {
-        color: $white-text;
-      }
-    }
+.sidebar-right {
+  flex: initial;
+  width: 300px;
+  small {
+    font-size: 0.9em;
+    color: $blue-color;
+  }
+  font-size: 0.9rem;
+  span {
+    display: block;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 3px;
+    width: 100%;
   }
 }
 
-@media (max-width: 575px) {
-  .sidebar {
+.section-header {
+  padding: 0.5rem;
+  border-radius: 5px;
+  color: $white-text;
+}
+
+@media (max-width: 800px) {
+  .sidebar-left,
+  .middle-section,
+  .sidebar-right {
     flex: none;
   }
 }

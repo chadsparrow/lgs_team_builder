@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col sidebar">
+      <div class="col sidebar-left">
         <div v-if="name">
           <avatar
             :username="name"
@@ -43,7 +43,7 @@
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col infoSection" v-if="name">
+      <div class="col middle-section" v-if="name">
         <form class="mb-4">
           <div class="section-header mb-2 bg-secondary">
             <span class="text-white">Contact Info</span>

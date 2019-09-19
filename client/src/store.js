@@ -20,7 +20,8 @@ export default new Vuex.Store({
     breadcrumbs: [],
     teams: [],
     unfinishedTeams: [],
-    currentTeam: null
+    currentTeam: null,
+    currentTeamStores: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -331,6 +332,20 @@ export default new Vuex.Store({
         }
       });
     },
+    getTeamStores({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/stores/team/${id}`);
+          commit('SET_TEAM_STORES', res.data);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     sendInviteNotification({ commit }, { id, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -401,6 +416,9 @@ export default new Vuex.Store({
     },
     SET_CURRENT_TEAM(state, payload) {
       state.currentTeam = payload;
+    },
+    SET_TEAM_STORES(state, payload) {
+      state.currentTeamStores = payload;
     }
   },
   getters: {
@@ -415,6 +433,7 @@ export default new Vuex.Store({
     unfinishedTeams: state => state.unfinishedTeams,
     emails: state => state.emails,
     notifications: state => state.notifications,
-    breadcrumbs: state => state.breadcrumbs
+    breadcrumbs: state => state.breadcrumbs,
+    teamStores: state => state.currentTeamStores
   }
 });

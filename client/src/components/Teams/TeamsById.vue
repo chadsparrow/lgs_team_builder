@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid mb-5">
     <div class="row">
-      <div class="col sidebar">
+      <div class="col sidebar-left">
         <div v-if="team && team.name">
           <avatar
             :username="team.name"
@@ -12,6 +12,14 @@
             :src="team.logo"
           ></avatar>
           <div class="row p-1 mt-4">
+            <small class="col-sm-12 text-info">Team Name:</small>
+            <span class="col-sm-12">{{ team.name }}</span>
+          </div>
+          <div class="row p-1">
+            <small class="col-sm-12 text-info">Team ID#:</small>
+            <span class="col-sm-12">{{ team.teamId }}</span>
+          </div>
+          <div class="row p-1">
             <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
             <span class="col-sm-12">{{ team.timezone }}</span>
           </div>
@@ -52,7 +60,7 @@
                 >
                   <i
                     class="fas fa-certificate text-warning mr-1"
-                    v-if="team && member && team.managerId._id === member._id"
+                    v-if="team && member && team.managerId._id === teammember._id"
                   ></i>
                   {{ teammember.name }}
                 </li>
@@ -79,216 +87,106 @@
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col infoSection" v-if="team && team.name">
-        <form novalidate>
+      <div class="col middle-section">
+        <h5 v-if="stores && stores.length >0">Show Stores</h5>
+        <h5 else>No Stores</h5>
+      </div>
+      <div class="col sidebar-right">
+        <div v-if="team && team.name">
+          <div class="section-header bg-secondary mb-2">Main Contact Information</div>
           <div class="row">
-            <div class="form-group col-sm-6">
-              <label for="teamId">Team ID#</label>
-              <input
-                id="teamId"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.teamId"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>Name</small>
+              <br />
+              <span>{{team.mainContact.name}}</span>
             </div>
-            <div class="form-group col-sm-6">
-              <label for="name">Team Name</label>
-              <input
-                id="name"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.name"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>Email</small>
+              <br />
+              <span>{{team.mainContact.email}}</span>
+            </div>
+            <div class="col-sm-12">
+              <small>Address 1</small>
+              <br />
+              <span>{{team.mainContact.address1}}</span>
+            </div>
+            <div class="col-sm-12" v-if="team.address2">
+              <small>Address 2</small>
+              <br />
+              <span>{{team.mainContact.address2}}</span>
+            </div>
+            <div class="col-sm-12">
+              <small>City</small>
+              <br />
+              <span>{{team.mainContact.city}}</span>
+            </div>
+            <div class="col-sm-6">
+              <small>State/Province</small>
+              <br />
+              <span>{{team.mainContact.stateProv}}</span>
+            </div>
+            <div class="col-sm-6">
+              <small>Country</small>
+              <br />
+              <span>{{team.mainContact.country}}</span>
+            </div>
+            <div class="col-sm-6">
+              <small>Zip/Postal Code</small>
+              <br />
+              <span>{{team.mainContact.zipPostal}}</span>
+            </div>
+            <div class="col-sm-6">
+              <small>Phone</small>
+              <br />
+              <span>{{team.mainContact.phone}}</span>
             </div>
           </div>
-          <hr />
-          <h5>Contact Information</h5>
+          <div class="section-header bg-secondary mb-2 mt-2">Bulk Shipping Information</div>
           <div class="row">
-            <div class="form-group col-sm-6">
-              <label for="contactName">Name</label>
-              <input
-                id="contactName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.name"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>Name</small>
+              <br />
+              <span>{{team.bulkShipping.name}}</span>
             </div>
-            <div class="form-group col-sm-6 mt-2">
-              <label for="contactEmail">Email</label>
-              <input
-                id="contactEmail"
-                type="email"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.email"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>Email</small>
+              <br />
+              <span>{{team.bulkShipping.email}}</span>
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress1">Address 1</label>
-              <input
-                id="contactAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.address1"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>Address 1</small>
+              <br />
+              <span>{{team.bulkShipping.address1}}</span>
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress2">Address 2</label>
-              <input
-                id="contactAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.address2"
-                readonly
-              />
+            <div class="col-sm-12" v-if="team.bulkShipping.address2">
+              <small>Address 2</small>
+              <br />
+              <span>{{team.bulkShipping.address2}}</span>
             </div>
-            <div class="form-group col-sm-4">
-              <label for="contactCity">City</label>
-              <input
-                id="contactCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.city"
-                readonly
-              />
+            <div class="col-sm-12">
+              <small>City</small>
+              <br />
+              <span>{{team.bulkShipping.city}}</span>
             </div>
-            <div class="form-group col-sm-4">
-              <label for="stateProv">State/Province</label>
-              <input
-                id="stateProv"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.stateProv"
-                readonly
-              />
+            <div class="col-sm-6">
+              <small>State/Province</small>
+              <br />
+              <span>{{team.bulkShipping.stateProv}}</span>
             </div>
-            <div class="form-group col-sm-4">
-              <label for="country">Country</label>
-              <input
-                id="country"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.country"
-                readonly
-              />
+            <div class="col-sm-6">
+              <small>Country</small>
+              <br />
+              <span>{{team.bulkShipping.country}}</span>
             </div>
-            <div class="form-group col-sm-6">
-              <label for="zipPostal">Zip/Postal Code</label>
-              <input
-                id="zipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.zipPostal"
-                readonly
-              />
+            <div class="col-sm-6">
+              <small>Zip/Postal Code</small>
+              <br />
+              <span>{{team.bulkShipping.zipPostal}}</span>
             </div>
-            <div class="form-group col-sm-6">
-              <label for="phone">Phone</label>
-              <input
-                id="phone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.phone"
-                readonly
-              />
-            </div>
-          </div>
-          <hr />
-          <h5>Bulk Shipping Information</h5>
-          <div class="row">
-            <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Name</label>
-              <input
-                id="shippingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.name"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Email</label>
-              <input
-                id="shippingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.email"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress1">Shipping Address 1</label>
-              <input
-                id="shippingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.address1"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress2">Shipping Address 2</label>
-              <input
-                id="shippingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.address2"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="shippingCity">Shipping City</label>
-              <input
-                id="shippingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.city"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="shippingStateProv">Shipping State/Province</label>
-              <input
-                id="shippingStateProv"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.stateProv"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="shippingCountry">Shipping Country</label>
-              <input
-                id="shippingCountry"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.country"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
-              <input
-                id="shippingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.zipPostal"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingPhone">Shipping Phone</label>
-              <input
-                id="shippingPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.phone"
-                readonly
-              />
+            <div class="col-sm-6">
+              <small>Phone</small>
+              <br />
+              <span>{{team.bulkShipping.phone}}</span>
             </div>
           </div>
           <router-link
@@ -298,7 +196,7 @@
           >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
           </router-link>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -324,6 +222,9 @@ export default {
     },
     team: function() {
       return this.$store.getters.currentTeam;
+    },
+    stores: function() {
+      return this.$store.getters.teamStores;
     }
   },
   created: async function() {
@@ -342,6 +243,7 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getTeamStores', this.$route.params.id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -357,62 +259,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.vue-avatar--wrapper {
-  border-radius: 1rem !important;
-}
-
-.sidebar {
-  flex: 0 0 255px;
-
-  span {
-    font-size: 0.8em;
-  }
-
-  .placeholderImg {
-    border-radius: 1rem;
-    background-color: white;
-    width: 225px;
-    height: 225px;
-  }
-
-  .list-group {
-    width: 100%;
-    overflow: auto;
-    max-height: 250px;
-
-    .list-group-item {
-      height: 35px;
-      padding: 5px 15px;
-      &:hover {
-        background-color: #17a2b8;
-        color: white;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
-.infoSection {
-  form {
-    max-width: 800px;
-  }
-  .form-group {
-    margin-bottom: 1px;
-  }
-
-  h6 {
-    max-width: 800px;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 4px;
-  }
-}
-
-@media (max-width: 575px) {
-  .sidebar {
-    flex: none;
-  }
-}
-</style>
