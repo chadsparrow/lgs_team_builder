@@ -69,7 +69,7 @@ router.get('/manager/:id', [validateObjectId, auth], async (req, res) => {
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   const stores = await Store.find({ teamId: req.params.id });
   if (stores && stores.length === 0)
-    return res.status(400).send([{ message: 'Stores with the given team ID not found.' }]);
+    return res.status(400).send([{ message: 'Team has no stores' }]);
 
   return res.send(stores);
 });
