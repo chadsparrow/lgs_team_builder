@@ -2,59 +2,59 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col sidebar">
-        <div v-if="name">
+        <div v-if="team && team.name">
           <avatar
-            :username="name"
+            :username="team.name"
             :size="225"
             background-color="#FFF"
             color="#000"
             :rounded="false"
-            :src="logo"
+            :src="team.logo"
           ></avatar>
           <div class="row p-1 mt-4">
             <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
-            <span class="col-sm-12">{{ timezone }}</span>
+            <span class="col-sm-12">{{ team.timezone }}</span>
           </div>
-          <div class="row p-1" v-if="createdAt && timezone">
+          <div class="row p-1" v-if="team.createdAt && team.timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
               {{
-              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:mm a - z')
+              team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </span>
           </div>
-          <div class="row p-1" v-if="adminId.name">
+          <div class="row p-1" v-if="team.adminId.name">
             <small class="col-sm-12 text-info">Team Admin:</small>
             <span class="col-sm-12">
-              {{ adminId.name }}
+              {{ team.adminId.name }}
               <br />
-              {{ adminId.email }}
+              {{ team.adminId.email }}
             </span>
           </div>
-          <div class="row p-1" v-if="managerId.name">
+          <div class="row p-1" v-if="team.managerId.name">
             <small class="col-sm-12 text-info">Team Manager:</small>
             <span class="col-sm-12">
-              {{ managerId.name }}
+              {{ team.managerId.name }}
               <br />
-              {{ managerId.email }}
+              {{ team.managerId.email }}
             </span>
           </div>
-          <div class="row p-1 mt-3" v-if="members && members.length > 0">
+          <div class="row p-1 mt-3" v-if="team.members && team.members.length > 0">
             <div class="col-sm-12">
               <small class="text-info">Member List:</small>
               <br />
               <ul class="list-group">
                 <li
                   class="list-group-item list-group-item-action"
-                  v-for="membr of members"
-                  :key="membr._id"
-                  @click.prevent="loadMember(membr._id)"
+                  v-for="teammember of team.members"
+                  :key="teammember._id"
+                  @click.prevent="loadMember(teammember._id)"
                 >
                   <i
                     class="fas fa-certificate text-warning mr-1"
-                    v-if="managerId._id === membr._id"
+                    v-if="team && member && team.managerId._id === member._id"
                   ></i>
-                  {{ membr.name }}
+                  {{ teammember.name }}
                 </li>
               </ul>
             </div>
@@ -66,10 +66,10 @@
               <span>No Members</span>
             </div>
           </div>
-          <div class="row p-1 mt-1" v-if="access">
+          <div class="row p-1 mt-1" v-if="access && team">
             <div class="col-sm-12">
               <router-link
-                :to="`/dashboard/teams/${id}/addmember`"
+                :to="`/dashboard/teams/${team._id}/addmember`"
                 class="btn btn-block btn-info"
               >Add Member</router-link>
             </div>
@@ -79,7 +79,7 @@
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col infoSection" v-if="name">
+      <div class="col infoSection" v-if="team && team.name">
         <form novalidate>
           <div class="row">
             <div class="form-group col-sm-6">
@@ -88,7 +88,7 @@
                 id="teamId"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="teamId"
+                v-model="team.teamId"
                 readonly
               />
             </div>
@@ -98,7 +98,7 @@
                 id="name"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="name"
+                v-model="team.name"
                 readonly
               />
             </div>
@@ -112,7 +112,7 @@
                 id="contactName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.name"
+                v-model="team.mainContact.name"
                 readonly
               />
             </div>
@@ -122,7 +122,7 @@
                 id="contactEmail"
                 type="email"
                 class="form-control form-control-sm"
-                v-model="mainContact.email"
+                v-model="team.mainContact.email"
                 readonly
               />
             </div>
@@ -132,7 +132,7 @@
                 id="contactAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.address1"
+                v-model="team.mainContact.address1"
                 readonly
               />
             </div>
@@ -142,7 +142,7 @@
                 id="contactAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.address2"
+                v-model="team.mainContact.address2"
                 readonly
               />
             </div>
@@ -152,7 +152,7 @@
                 id="contactCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.city"
+                v-model="team.mainContact.city"
                 readonly
               />
             </div>
@@ -162,7 +162,7 @@
                 id="stateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.stateProv"
+                v-model="team.mainContact.stateProv"
                 readonly
               />
             </div>
@@ -172,7 +172,7 @@
                 id="country"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.country"
+                v-model="team.mainContact.country"
                 readonly
               />
             </div>
@@ -182,7 +182,7 @@
                 id="zipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.zipPostal"
+                v-model="team.mainContact.zipPostal"
                 readonly
               />
             </div>
@@ -192,7 +192,7 @@
                 id="phone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.phone"
+                v-model="team.mainContact.phone"
                 readonly
               />
             </div>
@@ -206,7 +206,7 @@
                 id="shippingName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.name"
+                v-model="team.bulkShipping.name"
                 readonly
               />
             </div>
@@ -216,7 +216,7 @@
                 id="shippingEmail"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.email"
+                v-model="team.bulkShipping.email"
                 readonly
               />
             </div>
@@ -226,7 +226,7 @@
                 id="shippingAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.address1"
+                v-model="team.bulkShipping.address1"
                 readonly
               />
             </div>
@@ -236,7 +236,7 @@
                 id="shippingAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.address2"
+                v-model="team.bulkShipping.address2"
                 readonly
               />
             </div>
@@ -246,7 +246,7 @@
                 id="shippingCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.city"
+                v-model="team.bulkShipping.city"
                 readonly
               />
             </div>
@@ -256,7 +256,7 @@
                 id="shippingStateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.stateProv"
+                v-model="team.bulkShipping.stateProv"
                 readonly
               />
             </div>
@@ -266,7 +266,7 @@
                 id="shippingCountry"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.country"
+                v-model="team.bulkShipping.country"
                 readonly
               />
             </div>
@@ -276,7 +276,7 @@
                 id="shippingZipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.zipPostal"
+                v-model="team.bulkShipping.zipPostal"
                 readonly
               />
             </div>
@@ -286,15 +286,15 @@
                 id="shippingPhone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.phone"
+                v-model="team.bulkShipping.phone"
                 readonly
               />
             </div>
           </div>
           <router-link
-            :to="`/dashboard/teams/${id}/edit`"
+            :to="`/dashboard/teams/${team._id}/edit`"
             class="btn btn-block btn-info mt-4"
-            v-if="access"
+            v-if="access && team"
           >
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
           </router-link>
@@ -312,96 +312,43 @@ export default {
   components: {
     Avatar
   },
-  data() {
-    return {
-      id: '',
-      name: '',
-      teamId: '',
-      logo: null,
-      adminId: {},
-      managerId: '',
-      mainContact: {},
-      bulkShipping: {},
-      members: [],
-      timezone: '',
-      timezoneAbbrev: '',
-      createdAt: ''
-    };
-  },
   computed: {
     member: function() {
       return this.$store.getters.getCurrentMember;
     },
-    breadcrumbs: function() {
-      return [
+    access: function() {
+      if (this.member && this.member.isAdmin) return true;
+      if (this.member && this.team && this.team.managerId._id === this.member._id) return true;
+
+      return false;
+    },
+    team: function() {
+      return this.$store.getters.currentTeam;
+    }
+  },
+  created: async function() {
+    try {
+      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
+      const teamName = res.data.name;
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Teams',
           link: '/dashboard/teams'
         },
         {
-          text: `${this.name}`,
+          text: `${teamName}`,
           link: '#'
         }
       ];
-    },
-    access: function() {
-      if (this.member && this.member.isAdmin) return true;
-      if (this.managerId.id === this.member._id) return true;
-
-      return false;
-    }
-  },
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
-      const {
-        _id,
-        name,
-        logo,
-        adminId,
-        teamId,
-        managerId,
-        mainContact,
-        bulkShipping,
-        members,
-        timezone,
-        timezoneAbbrev,
-        createdAt
-      } = res.data;
-
-      this.id = _id;
-      this.name = name;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      this.timezone = timezone;
-      this.timezoneAbbrev = timezoneAbbrev;
-      this.logo = logo;
-      this.createdAt = createdAt;
-      this.teamId = teamId;
-
-      this.members = members;
-      if (adminId) {
-        this.adminId = adminId;
-      }
-
-      if (managerId) {
-        this.managerId = managerId;
-      }
-
-      if (mainContact) {
-        this.mainContact = mainContact;
-      }
-
-      if (bulkShipping) {
-        this.bulkShipping = bulkShipping;
-      }
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
   },
   methods: {
     loadMember: function(id) {
-      if (this.member._id === id) {
+      if (this.member && this.member._id === id) {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
       } else {
         return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});

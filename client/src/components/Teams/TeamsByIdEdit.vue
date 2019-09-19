@@ -2,33 +2,36 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col sidebar">
-        <div v-if="name">
+        <div v-if="team && team.name">
           <avatar
-            :username="name"
+            :username="team.name"
             :size="225"
             background-color="#FFF"
             color="#000"
             :rounded="false"
-            :src="logo"
+            :src="team.logo"
           ></avatar>
           <div class="row p-1 mt-4">
             <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
-            <span class="col-sm-12">{{ timezone }}</span>
+            <span class="col-sm-12">{{ team.timezone }}</span>
           </div>
-          <div class="row p-1" v-if="createdAt && timezone">
+          <div class="row p-1" v-if="team.createdAt && team.timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
               {{
-              createdAt | moment('timezone', timezone, 'MMM Do YYYY / hh:mm a - z')
+              team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </span>
           </div>
-          <div class="row p-1 mt-4" v-if="members && members.length > 0">
+          <div class="row p-1 mt-4" v-if="team.members && team.members.length > 0">
             <small class="col-sm-12 text-info">Member List:</small>
             <ul class="col-sm-12 list-group">
-              <li class="list-group-item" v-for="membr of members" :key="membr._id">
-                <i class="fas fa-certificate text-warning mr-1" v-if="managerId._id === membr._id"></i>
-                {{ membr.name }}
+              <li class="list-group-item" v-for="teammember of team.members" :key="teammember._id">
+                <i
+                  class="fas fa-certificate text-warning mr-1"
+                  v-if="team && team.managerId._id === teammember._id"
+                ></i>
+                {{ teammember.name }}
               </li>
             </ul>
           </div>
@@ -41,7 +44,7 @@
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col infoSection" v-if="name">
+      <div class="col infoSection" v-if="team && team.name">
         <form novalidate>
           <div class="row">
             <!-- ADMIN SELECTOR -->
@@ -51,7 +54,7 @@
                 id="teamId"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="teamId"
+                v-model="team.teamId"
                 ref="teamId"
                 readonly
               />
@@ -61,7 +64,7 @@
               <select
                 class="form-control form-control-sm"
                 id="adminId"
-                v-model="adminId._id"
+                v-model="team.adminId._id"
                 ref="adminId"
               >
                 <option
@@ -73,20 +76,20 @@
             </div>
             <div class="form-group col-sm-6" v-else-if="member && member._id === managerId._id">
               <label for="adminId">Admin</label>
-              <span>{{adminId.name}} - {{adminId.email}}</span>
+              <span>{{team.adminId.name}} - {{team.adminId.email}}</span>
             </div>
             <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-4" v-if="member && member.isAdmin && members">
+            <div class="form-group col-sm-4" v-if="member && member.isAdmin && team.members">
               <label for="managerId">Manager</label>
               <select
                 class="form-control form-control-sm"
                 id="managerId"
-                v-model="managerId._id"
+                v-model="team.managerId._id"
                 ref="managerId"
                 @change="getManagerDetails()"
               >
                 <option
-                  v-for="manager of members"
+                  v-for="manager of team.members"
                   :key="manager._id"
                   :value="manager._id"
                 >{{manager.name}}</option>
@@ -94,7 +97,9 @@
             </div>
             <div class="form-group col-sm-4" v-else>
               <label for="managerId">Manager</label>
-              <span v-if="managerId._id">{{managerId.name}} - {{managerId.email}}</span>
+              <span
+                v-if="team && team.managerId._id"
+              >{{team.managerId.name}} - {{team.managerId.email}}</span>
             </div>
           </div>
           <!-- MAIN CONTACT -->
@@ -110,7 +115,7 @@
                     v-model="useManagerDetails"
                     @change="copyManagertoMain"
                     ref="useManagerDetails"
-                    :disabled="!managerId._id"
+                    :disabled="!team.managerId._id"
                   />
                   <label class="form-check-label" for="useManagerDetails">Use Manager's Contact Info</label>
                 </div>
@@ -122,7 +127,7 @@
                 id="contactName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.name"
+                v-model="team.mainContact.name"
                 ref="contactName"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -134,7 +139,7 @@
                 id="contactEmail"
                 type="email"
                 class="form-control form-control-sm"
-                v-model="mainContact.email"
+                v-model="team.mainContact.email"
                 ref="contactEmail"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -146,7 +151,7 @@
                 id="contactAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.address1"
+                v-model="team.mainContact.address1"
                 ref="contactAddress1"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -158,7 +163,7 @@
                 id="contactAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.address2"
+                v-model="team.mainContact.address2"
                 ref="contactAddress2"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -170,7 +175,7 @@
                 id="contactCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.city"
+                v-model="team.mainContact.city"
                 ref="contactCity"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -182,19 +187,19 @@
                 id="contactStateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.stateProv"
+                v-model="team.mainContact.stateProv"
                 ref="contactStateProv"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
               />
             </div>
             <div class="form-group col-sm-4">
-              <label for="contactCountry">Country - 2 digit code</label>
+              <label for="contactCountry">Country</label>
               <input
                 id="contactCountry"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.country"
+                v-model="team.mainContact.country"
                 ref="contactCountry"
                 maxlength="2"
                 @change="changeDetails"
@@ -207,7 +212,7 @@
                 id="contactZipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.zipPostal"
+                v-model="team.mainContact.zipPostal"
                 ref="contactZipPostal"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
@@ -219,14 +224,14 @@
                 id="contactPhone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="mainContact.phone"
+                v-model="team.mainContact.phone"
                 :readonly="useManagerDetails"
               />
             </div>
             <div class="form-group col-sm-6" v-else>
               <label for="contactPhone">Phone</label>
               <VuePhoneNumberInput
-                v-model="mainContact.phone"
+                v-model="team.mainContact.phone"
                 id="contactPhone"
                 :dark="false"
                 :preferred-countries="['US', 'CA']"
@@ -263,7 +268,7 @@
                     id="useManagerDetails"
                     value="manager"
                     v-model="bulkUseDetails"
-                    :disabled="!managerId._id"
+                    :disabled="!team.managerId._id"
                     @change="copytoBulk"
                   />
                   <label
@@ -291,7 +296,7 @@
                 id="shippingName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.name"
+                v-model="team.bulkShipping.name"
                 ref="shippingName"
                 :readonly="bulkUseDetails !== 'other'"
               />
@@ -302,7 +307,7 @@
                 id="shippingEmail"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.email"
+                v-model="team.bulkShipping.email"
                 ref="shippingEmail"
                 :readonly="bulkUseDetails!== 'other'"
               />
@@ -313,7 +318,7 @@
                 id="shippingAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.address1"
+                v-model="team.bulkShipping.address1"
                 ref="shippingAddress1"
                 :readonly="bulkUseDetails!== 'other'"
               />
@@ -324,7 +329,7 @@
                 id="shippingAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.address2"
+                v-model="team.bulkShipping.address2"
                 ref="shippingAddress2"
                 :readonly="bulkUseDetails!== 'other'"
               />
@@ -335,7 +340,7 @@
                 id="shippingCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.city"
+                v-model="team.bulkShipping.city"
                 @change="changeDetails"
                 ref="shippingCity"
                 :readonly="bulkUseDetails!== 'other'"
@@ -347,20 +352,20 @@
                 id="shippingStateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.stateProv"
+                v-model="team.bulkShipping.stateProv"
                 ref="shippingStateProv"
                 @change="changeDetails"
                 :readonly="bulkUseDetails!== 'other'"
               />
             </div>
             <div class="form-group col-sm-4">
-              <label for="shippingCountry">Shipping Country - 2 digit code</label>
+              <label for="shippingCountry">Shipping Country</label>
               <input
                 id="shippingCountry"
                 type="text"
                 class="form-control form-control-sm"
                 maxlength="2"
-                v-model="bulkShipping.country"
+                v-model="team.bulkShipping.country"
                 ref="shippingCountry"
                 @change="changeDetails"
                 :readonly="bulkUseDetails!== 'other'"
@@ -372,7 +377,7 @@
                 id="shippingZipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.zipPostal"
+                v-model="team.bulkShipping.zipPostal"
                 ref="shippingZipPostal"
                 :readonly="bulkUseDetails!== 'other'"
               />
@@ -383,14 +388,14 @@
                 id="shippingPhone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="bulkShipping.phone"
+                v-model="team.bulkShipping.phone"
                 readonly
               />
             </div>
             <div class="form-group col-sm-6" v-else>
               <label for="contactPhone">Phone</label>
               <VuePhoneNumberInput
-                v-model="bulkShipping.phone"
+                v-model="team.bulkShipping.phone"
                 id="shippingPhone"
                 :dark="false"
                 ref="shippingPhone"
@@ -408,7 +413,7 @@
             </div>
             <div class="col-sm-6">
               <router-link
-                :to="`/dashboard/teams/${id}`"
+                :to="`/dashboard/teams/${team._id}`"
                 class="btn btn-block btn-danger mt-2"
               >Cancel</router-link>
             </div>
@@ -432,41 +437,9 @@ export default {
   },
   data() {
     return {
-      id: '',
-      name: '',
-      logo: null,
-      adminId: {},
-      managerId: {},
-      teamId: '',
       managerDetails: {},
       useManagerDetails: false,
-      mainContact: {
-        name: '',
-        address1: '',
-        address2: '',
-        city: '',
-        stateProv: '',
-        country: '',
-        zipPostal: '',
-        email: '',
-        phone: ''
-      },
       bulkUseDetails: 'other',
-      bulkShipping: {
-        name: '',
-        address1: '',
-        address2: '',
-        city: '',
-        stateProv: '',
-        country: '',
-        zipPostal: '',
-        email: '',
-        phone: ''
-      },
-      members: [],
-      timezone: '',
-      timezoneAbbrev: '',
-      createdAt: '',
       adminsList: [],
       backupContact: {},
       backupBulk: {}
@@ -476,71 +449,38 @@ export default {
     member: function() {
       return this.$store.getters.getCurrentMember;
     },
-    breadcrumbs: function() {
-      return [
-        { text: 'Dashboard', link: '/dashboard/index' },
-        {
-          text: 'Teams',
-          link: '/dashboard/teams'
-        },
-        {
-          text: `${this.name}`,
-          link: `/dashboard/teams/${this.id}`
-        },
-        {
-          text: 'Edit',
-          link: '#'
-        }
-      ];
+    team: function() {
+      return this.$store.getters.currentTeam;
     }
   },
   created: async function() {
     try {
       const admins = await this.$store.dispatch('getAdmins');
       this.adminsList = admins.data;
-      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
-      const {
-        _id,
-        name,
-        logo,
-        adminId,
-        managerId,
-        teamId,
-        mainContact,
-        bulkShipping,
-        members,
-        timezone,
-        timezoneAbbrev,
-        createdAt
-      } = res.data;
 
-      this.id = _id;
-      this.name = name;
-      this.teamId = teamId;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      this.logo = logo;
-      this.timezone = timezone;
-      this.timezoneAbbrev = timezoneAbbrev;
-      this.createdAt = createdAt;
-
-      this.members = members;
-
-      if (adminId) {
-        this.adminId = adminId;
-      }
-
-      if (managerId) {
-        this.managerId = managerId;
+      if (this.team && this.team.managerId) {
         this.getManagerDetails();
       }
 
-      if (mainContact) {
-        this.mainContact = mainContact;
-      }
-
-      if (bulkShipping) {
-        this.bulkShipping = bulkShipping;
-      }
+      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
+      const teamName = res.data.name;
+      const teamId = res.data._id;
+      const breadcrumbs = [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Teams',
+          link: '/dashboard/teams'
+        },
+        {
+          text: `${teamName}`,
+          link: `/dashboard/teams/${teamId}`
+        },
+        {
+          text: 'Edit',
+          link: '#'
+        }
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message);
     }
@@ -548,14 +488,14 @@ export default {
   methods: {
     updateTeam: async function() {
       const updatedTeam = {
-        logo: this.logo,
-        adminId: this.adminId._id,
-        managerId: this.managerId._id,
-        teamId: this.teamId,
-        mainContact: this.mainContact,
-        bulkShipping: this.bulkShipping,
-        timezone: this.timezone,
-        timezoneAbbrev: this.timezoneAbbrev
+        logo: this.team.logo,
+        adminId: this.team.adminId._id,
+        managerId: this.team.managerId._id,
+        teamId: this.team.teamId,
+        mainContact: this.team.mainContact,
+        bulkShipping: this.team.bulkShipping,
+        timezone: this.team.timezone,
+        timezoneAbbrev: this.team.timezoneAbbrev
       };
 
       delete updatedTeam.mainContact.timezone;
@@ -565,10 +505,10 @@ export default {
       try {
         const res = await this.$store.dispatch('updateTeam', {
           updatedTeam,
-          id: this.id
+          id: this.team._id
         });
         this.$toasted.success(res.data[0].message);
-        this.$router.push({ name: 'teamsById', params: { id: this.id } });
+        this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
@@ -579,7 +519,7 @@ export default {
     },
     getManagerDetails: async function() {
       try {
-        const res = await this.$store.dispatch('getMemberDetails', this.managerId._id);
+        const res = await this.$store.dispatch('getMemberDetails', this.team.managerId._id);
         const manager = res.data.member;
 
         const {
@@ -620,32 +560,32 @@ export default {
     },
     copyManagertoMain: async function() {
       if (this.useManagerDetails) {
-        this.backupContact = this.mainContact;
-        this.mainContact = this.managerDetails;
+        this.backupContact = this.team.mainContact;
+        this.team.mainContact = this.managerDetails;
         this.geoTimezone();
       } else {
-        this.mainContact = this.backupContact;
+        this.team.mainContact = this.backupContact;
         this.geoTimezone();
       }
 
       if (this.bulkUseDetails === 'above') {
-        this.backupShipping = this.bulkShipping;
-        this.bulkShipping = this.mainContact;
+        this.backupShipping = this.team.bulkShipping;
+        this.team.bulkShipping = this.team.mainContact;
         this.geoTimezone();
       }
     },
     copytoBulk: function() {
       if (this.bulkUseDetails === 'manager') {
-        this.backupBulk = this.bulkShipping;
-        this.bulkShipping = this.managerDetails.shipping;
-        this.timezone = this.managerDetails.timezone;
-        this.timezoneAbbrev = this.managerDetails.timezoneAbbrev;
+        this.backupBulk = this.team.bulkShipping;
+        this.team.bulkShipping = this.managerDetails.shipping;
+        this.team.timezone = this.managerDetails.timezone;
+        this.team.timezoneAbbrev = this.managerDetails.timezoneAbbrev;
       } else if (this.bulkUseDetails === 'above') {
-        this.backupBulk = this.bulkShipping;
-        this.bulkShipping = this.mainContact;
+        this.backupBulk = this.team.bulkShipping;
+        this.team.bulkShipping = this.team.mainContact;
         this.geoTimezone();
       } else {
-        this.bulkShipping = this.backupBulk;
+        this.team.bulkShipping = this.backupBulk;
         this.geoTimezone();
       }
     },
@@ -656,37 +596,39 @@ export default {
         (target === 'shippingCountry' ||
           target === 'shippingStateProv' ||
           target === 'shippingCity') &&
-        (this.bulkShipping.stateProv && this.bulkShipping.city && this.bulkShipping.country)
+        (this.team.bulkShipping.stateProv &&
+          this.team.bulkShipping.city &&
+          this.team.bulkShipping.country)
       ) {
         this.geoTimezone();
       }
 
       if (this.bulkUseDetails === 'above') {
         if (target === 'contactEmail') {
-          this.bulkShipping.email = this.mainContact.email;
+          this.team.bulkShipping.email = this.team.mainContact.email;
         } else if (target === 'contactName') {
-          this.bulkShipping.name = this.mainContact.name;
+          this.team.bulkShipping.name = this.team.mainContact.name;
         } else if (target === 'contactAddress1') {
-          this.bulkShipping.address1 = this.mainContact.address1;
+          this.team.bulkShipping.address1 = this.team.mainContact.address1;
         } else if (target === 'contactAddress2') {
-          this.bulkShipping.address2 = this.mainContact.address2;
+          this.team.bulkShipping.address2 = this.team.mainContact.address2;
         } else if (target === 'contactCity') {
-          this.bulkShipping.city = this.mainContact.city;
+          this.team.bulkShipping.city = this.team.mainContact.city;
           this.geoTimezone();
         } else if (target === 'contactStateProv') {
-          this.bulkShipping.stateProv = this.mainContact.stateProv;
+          this.team.bulkShipping.stateProv = this.team.mainContact.stateProv;
           this.geoTimezone();
         } else if (target === 'contactCountry') {
-          this.bulkShipping.country = this.mainContact.country;
+          this.team.bulkShipping.country = this.team.mainContact.country;
           this.geoTimezone();
         } else if (target === 'contactZipPostal') {
-          this.bulkShipping.zipPostal = this.mainContact.zipPostal;
+          this.team.bulkShipping.zipPostal = this.team.mainContact.zipPostal;
         }
       }
       let valid = false;
-      if (target === 'contactCountry' && this.mainContact.country) {
+      if (target === 'contactCountry' && this.team.mainContact.country) {
         codeCountries = this.$refs.contactPhone.codesCountries;
-        let countryCode = this.mainContact.country;
+        let countryCode = this.team.mainContact.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
           if (country.iso2 === countryCode) {
@@ -697,15 +639,15 @@ export default {
         if (valid) {
           this.$refs.contactPhone.countryCode = countryCode;
         } else {
-          this.mainContact.country = '';
+          this.team.mainContact.country = '';
           this.$refs.contactCountry.focus();
           this.$toasted.error('Main Contact Country Code Invalid');
         }
       }
 
-      if (target === 'shippingCountry' && this.bulkShipping.country) {
+      if (target === 'shippingCountry' && this.team.bulkShipping.country) {
         codeCountries = this.$refs.shippingPhone.codesCountries;
-        let countryCode = this.bulkShipping.country;
+        let countryCode = this.team.bulkShipping.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
           if (country.iso2 === countryCode) {
@@ -716,7 +658,7 @@ export default {
         if (valid) {
           this.$refs.shippingPhone.countryCode = countryCode;
         } else {
-          this.bulkShipping.country = '';
+          this.team.bulkShipping.country = '';
           this.$refs.shippingCountry.focus();
           this.$toasted.error('Shipping Country Code Invalid');
         }
@@ -724,17 +666,17 @@ export default {
     },
     copyPhone: function(event) {
       if (this.bulkUseDetails === 'above' && event.phoneNumber) {
-        this.bulkShipping.phone = event.phoneNumber;
+        this.team.bulkShipping.phone = event.phoneNumber;
       }
     },
     geoTimezone: async function() {
       if (
-        this.bulkShipping.stateProv !== '' &&
-        this.bulkShipping.city !== '' &&
-        this.bulkShipping.country !== ''
+        this.team.bulkShipping.stateProv !== '' &&
+        this.team.bulkShipping.city !== '' &&
+        this.team.bulkShipping.country !== ''
       ) {
         const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.bulkShipping.city} ${this.bulkShipping.stateProv} ${this.bulkShipping.country}"},"options":{"thumbMaps":false}}`
+          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.team.bulkShipping.city} ${this.team.bulkShipping.stateProv} ${this.team.bulkShipping.country}"},"options":{"thumbMaps":false}}`
         );
         if (location) {
           const lat = location.data.results[0].locations[0].latLng.lat;
@@ -747,13 +689,13 @@ export default {
             response.data.zoneName !== null &&
             response.data.zoneName !== ''
           ) {
-            this.timezone = response.data.zoneName;
-            this.timezoneAbbrev = response.data.abbreviation;
+            this.team.timezone = response.data.zoneName;
+            this.team.timezoneAbbrev = response.data.abbreviation;
           }
         }
       } else {
-        this.timezone = '';
-        this.timezoneAbbrev = '';
+        this.team.timezone = '';
+        this.team.timezoneAbbrev = '';
       }
     }
   }

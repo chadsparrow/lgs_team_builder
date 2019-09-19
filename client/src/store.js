@@ -17,7 +17,10 @@ export default new Vuex.Store({
     catalogItems: [],
     emails: [],
     notifications: [],
-    breadcrumbs: []
+    breadcrumbs: [],
+    teams: [],
+    unfinishedTeams: [],
+    currentTeam: null
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -266,6 +269,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/teams');
+          commit('SET_TEAMS', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -279,6 +283,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/teams/${id}`);
+          commit('SET_CURRENT_TEAM', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -389,6 +394,13 @@ export default new Vuex.Store({
     },
     SET_BREADCRUMBS(state, breadcrumbs) {
       state.breadcrumbs = breadcrumbs;
+    },
+    SET_TEAMS(state, payload) {
+      state.teams = payload.teams;
+      state.unfinishedTeams = payload.unfinishedTeams;
+    },
+    SET_CURRENT_TEAM(state, payload) {
+      state.currentTeam = payload;
     }
   },
   getters: {
@@ -398,6 +410,9 @@ export default new Vuex.Store({
     getCurrentMember: state => {
       return JSON.parse(state.member);
     },
+    teams: state => state.teams,
+    currentTeam: state => state.currentTeam,
+    unfinishedTeams: state => state.unfinishedTeams,
     emails: state => state.emails,
     notifications: state => state.notifications,
     breadcrumbs: state => state.breadcrumbs
