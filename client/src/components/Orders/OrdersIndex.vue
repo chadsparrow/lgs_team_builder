@@ -63,7 +63,7 @@ export default {
       const orders = await this.$store.dispatch('getOrders');
       this.orders = orders.data;
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {

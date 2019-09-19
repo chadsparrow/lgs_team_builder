@@ -165,7 +165,7 @@ export default {
 
       this.members = availMembers;
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -178,7 +178,7 @@ export default {
         if (this.chosenMember.invites.autoAccept) {
           await this.$store.dispatch('addTeamMember', { newTeamMember, id: this.id });
           this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
-          this.$toasted.success('Member Added to Team');
+          this.$toasted.success('Member Added to Team', { icon: 'check-circle' });
         }
 
         const res = await this.$store.dispatch('sendInviteNotification', {
@@ -187,13 +187,13 @@ export default {
         });
 
         this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
-        this.$toasted.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
         this.$toasted.error(err.response.data[0].message);
       }
     },
     inviteTeamMember: function() {
-      this.$toasted.success(`Invite sent to ${this.inviteEmail}`);
+      this.$toasted.success(`Invite sent to ${this.inviteEmail}`, { icon: 'check-circle' });
       this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
     }
   }

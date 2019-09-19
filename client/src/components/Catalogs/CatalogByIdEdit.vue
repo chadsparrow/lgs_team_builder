@@ -105,7 +105,7 @@ export default {
       this.catalog = catalog.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -119,14 +119,14 @@ export default {
             year: this.catalog.year
           }
         ]);
-        this.$toasted.success('Catalog Updated');
+        this.$toasted.success('Catalog Updated', { icon: 'check-circle' });
         this.$router.push({ name: 'catalogsById', params: this.id }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }
   }

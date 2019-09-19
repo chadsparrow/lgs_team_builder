@@ -41,9 +41,7 @@
           <button type="submit" class="btn btn-block btn-dark">Add Catalog</button>
         </div>
         <div class="col-sm-4">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs"
-            >Cancel</router-link
-          >
+          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">Cancel</router-link>
         </div>
       </div>
     </form>
@@ -57,7 +55,7 @@ export default {
     try {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   data() {
@@ -110,14 +108,14 @@ export default {
           season: this.season,
           year: this.year
         });
-        this.$toasted.success('Catalog Added');
+        this.$toasted.success('Catalog Added', { icon: 'check-circle' });
         this.$router.push({ name: 'catalogs' }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }
   }

@@ -52,13 +52,13 @@ export default {
       try {
         const res = await this.$store.dispatch('login', { email, password });
         this.$router.push({ name: 'dashboardIndex' }).catch(() => {});
-        this.$toasted.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }
   }

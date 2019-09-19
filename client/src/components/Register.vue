@@ -477,13 +477,15 @@ export default {
 
         await this.$store.dispatch('register', member);
         this.$router.push({ name: 'login' });
-        this.$toasted.success('You are now registered - go ahead and login!');
+        this.$toasted.success('You are now registered - go ahead and login!', {
+          icon: 'check-circle'
+        });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         if (err.response.data[0].message === 'This email already registered.') {
           this.email = '';
           this.$refs['email'].focus();
@@ -620,7 +622,7 @@ export default {
         } else {
           this.country = '';
           this.$refs.country.focus();
-          this.$toasted.error('Contact Country Code Invalid');
+          this.$toasted.error('Contact Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
@@ -639,7 +641,7 @@ export default {
         } else {
           this.billingCountry = '';
           this.$refs.billingCountry.focus();
-          this.$toasted.error('Billing Country Code Invalid');
+          this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
@@ -658,7 +660,7 @@ export default {
         } else {
           this.shippingCountry = '';
           this.$refs.shipingCountry.focus();
-          this.$toasted.error('Billing Country Code Invalid');
+          this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
     },

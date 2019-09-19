@@ -482,7 +482,7 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -507,14 +507,14 @@ export default {
           updatedTeam,
           id: this.team._id
         });
-        this.$toasted.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
     getManagerDetails: async function() {
@@ -555,7 +555,7 @@ export default {
         if (this.useManagerDetails) this.copyManagertoMain();
         if (this.bulkUseDetails === 'manager') this.copytoBulk();
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
     copyManagertoMain: async function() {
@@ -641,7 +641,9 @@ export default {
         } else {
           this.team.mainContact.country = '';
           this.$refs.contactCountry.focus();
-          this.$toasted.error('Main Contact Country Code Invalid');
+          this.$toasted.error('Main Contact Country Code Invalid', {
+            icon: 'exclamation-triangle'
+          });
         }
       }
 
@@ -660,7 +662,7 @@ export default {
         } else {
           this.team.bulkShipping.country = '';
           this.$refs.shippingCountry.focus();
-          this.$toasted.error('Shipping Country Code Invalid');
+          this.$toasted.error('Shipping Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
     },

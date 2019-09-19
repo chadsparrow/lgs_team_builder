@@ -7,9 +7,7 @@
       <br />
       <br />
     </div>
-    <span class="text-center" v-if="currentStores && currentStores.length === 0"
-      >No Stores Found</span
-    >
+    <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -78,7 +76,7 @@ export default {
       const stores = await this.$store.dispatch('getStores');
       this.stores = stores.data;
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {

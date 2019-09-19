@@ -109,7 +109,7 @@ export default {
       await this.$store.dispatch('getTeams');
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {

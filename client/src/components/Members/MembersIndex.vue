@@ -63,7 +63,7 @@ export default {
       this.members = members.data;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {

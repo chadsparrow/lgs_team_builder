@@ -510,7 +510,7 @@ export default {
       this.billing = billing;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -524,18 +524,18 @@ export default {
           }
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
     toggleAdmin: async function() {
       try {
         if (confirm('Are you sure?')) {
           const res = await this.$store.dispatch('toggleAdmin', this.id);
-          this.$toasted.success(res.data[0].message);
+          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
           this.isAdmin = !this.isAdmin;
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
     copyDetails: function() {
@@ -633,7 +633,7 @@ export default {
         } else {
           this.country = '';
           this.$refs.country.focus();
-          this.$toasted.error('Contact Country Code Invalid');
+          this.$toasted.error('Contact Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
@@ -653,7 +653,7 @@ export default {
         } else {
           this.billing.country = '';
           this.$refs.billingCountry.focus();
-          this.$toasted.error('Billing Country Code Invalid');
+          this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
@@ -673,7 +673,7 @@ export default {
         } else {
           this.shipping.country = '';
           this.$refs.shippingCountry.focus();
-          this.$toasted.error('Shipping Country Code Invalid');
+          this.$toasted.error('Shipping Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
     },
@@ -788,14 +788,14 @@ export default {
           updatedMember,
           id: this.id
         });
-        this.$toasted.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'membersById', params: { id: this.id } });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }
   }

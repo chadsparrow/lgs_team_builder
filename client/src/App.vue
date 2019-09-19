@@ -216,6 +216,18 @@ label {
   color: $white-text;
 }
 
+::-webkit-scrollbar {
+  width: 14px;
+  height: 18px;
+}
+::-webkit-scrollbar-thumb {
+  height: 10px;
+  border: 3px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  background-color: $blue-color;
+  border-radius: 10px;
+}
+
 @media (max-width: 800px) {
   .sidebar-left,
   .middle-section,

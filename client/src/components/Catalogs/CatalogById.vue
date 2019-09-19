@@ -56,7 +56,7 @@ export default {
       const catalogItems = await this.$store.dispatch('getCatalogItems', this.catalog._id);
       this.catalogItems = catalogItems.data;
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {}

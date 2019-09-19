@@ -7,9 +7,11 @@
           <button type="submit" class="btn btn-block btn-dark">Add Catalog Item</button>
         </div>
         <div class="col-sm-6">
-          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/catalogs/${id}`"
-            >Cancel</router-link
-          >
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            :to="`/dashboard/catalogs/${id}`"
+          >Cancel</router-link>
         </div>
       </div>
     </form>
@@ -52,7 +54,7 @@ export default {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {

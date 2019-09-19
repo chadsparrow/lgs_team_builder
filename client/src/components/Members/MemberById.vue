@@ -38,6 +38,7 @@
               >{{ team.name }}</li>
             </ul>
           </div>
+          <hr />
         </div>
         <div v-else>
           <div class="placeholderImg"></div>
@@ -330,7 +331,7 @@
               />
             </div>
           </div>
-          <router-link :to="`/dashboard/members/${id}/edit`" class="btn btn-block btn-info mt-2">
+          <router-link :to="`/dashboard/members/${id}/edit`" class="btn btn-block btn-info">
             <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member Details
           </router-link>
         </form>
@@ -428,7 +429,7 @@ export default {
       this.billing = billing;
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {

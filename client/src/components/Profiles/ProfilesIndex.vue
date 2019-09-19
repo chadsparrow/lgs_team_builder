@@ -67,7 +67,7 @@ export default {
       const me = await this.$store.dispatch('getMe', this.member._id);
       this.memberDetails = me.data;
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   }
 };

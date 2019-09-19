@@ -449,7 +449,7 @@ export default {
     try {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -491,13 +491,13 @@ export default {
       try {
         await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
-        this.$toasted.success('Member Added');
+        this.$toasted.success('Member Added', { icon: 'check-circle' });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         if (err.response.data[0].message === 'Member already registered.') {
           this.$refs['email'].value = '';
           this.$refs['email'].focus();

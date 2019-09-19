@@ -245,7 +245,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeamStores', this.$route.params.id);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message);
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
