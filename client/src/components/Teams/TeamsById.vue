@@ -49,7 +49,7 @@
           </div>
           <div class="row p-1 mt-3" v-if="team.members && team.members.length > 0">
             <div class="col-sm-12">
-              <small class="text-info">Member List:</small>
+              <small class="text-info">Member List: {{team.members.length}}</small>
               <br />
               <ul class="list-group">
                 <li
@@ -58,11 +58,13 @@
                   :key="teammember._id"
                   @click.prevent="loadMember(teammember._id)"
                 >
-                  <i
-                    class="fas fa-certificate text-warning mr-1"
-                    v-if="team && member && team.managerId._id === teammember._id"
-                  ></i>
-                  {{ teammember.name }}
+                  <div class="memberIcons">
+                    <i
+                      class="fas fa-certificate text-warning mr-2"
+                      v-if="team && member && team.managerId._id === teammember._id"
+                    ></i>
+                    <span>{{ teammember.name }}</span>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -78,8 +80,14 @@
             <div class="col-sm-12">
               <router-link
                 :to="`/dashboard/teams/${team._id}/addmember`"
-                class="btn btn-block btn-info"
-              >Add Member</router-link>
+                class="btn btn-sm btn-block btn-info"
+              >Add Members</router-link>
+            </div>
+            <div class="col-sm-12 mt-2">
+              <router-link
+                :to="`/dashboard/teams/${team._id}/removemember`"
+                class="btn btn-sm btn-block btn-danger"
+              >Remove Members</router-link>
             </div>
           </div>
         </div>
@@ -254,6 +262,14 @@ export default {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
       } else {
         return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
+      }
+    },
+    removeMember: async function(id) {
+      if (this.access) {
+        const res = await this.$store.dispatch('removeMember', {
+          teamId: this.team._id,
+          memberId: id
+        });
       }
     }
   }

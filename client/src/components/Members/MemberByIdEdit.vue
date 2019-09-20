@@ -1,21 +1,21 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col sidebar">
+      <div class="col sidebar-left" v-if="member && member.name">
         <div class="row p-1">
           <small class="col-sm-12 text-info">Member Timezone:</small>
-          <span class="col-sm-12">{{ timezone }}</span>
+          <span class="col-sm-12">{{ member.timezone }}</span>
         </div>
         <div class="row p-1">
           <small class="col-sm-12 text-info">Member Role:</small>
-          <span class="col-sm-12">{{ isAdmin ? 'Admin' : 'Member' }}</span>
+          <span class="col-sm-12">{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
         </div>
         <hr />
         <small class="text-info">Actions</small>
         <button
           class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
-          v-if="!isAdmin"
+          v-if="!member.isAdmin"
         >Give Admin Status</button>
         <button
           class="btn btn-sm btn-block btn-info mt-2"
@@ -27,19 +27,19 @@
           @click.prevent="deleteMember"
         >Delete Member</button>
       </div>
-      <div class="col infoSection" v-if="name">
+      <div class="col middle-section" v-if="member && member.name">
         <form class="mb-5">
           <div class="section-header mb-2 bg-secondary">
             <span class="text-white">Contact Information</span>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-3 px-2">
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input
                 id="name"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="name"
+                v-model="member.name"
                 @change="changeDetails"
                 ref="name"
               />
@@ -50,7 +50,7 @@
                 id="email"
                 type="email"
                 class="form-control form-control-sm"
-                v-model="email"
+                v-model="member.email"
                 ref="email"
                 readonly
               />
@@ -61,7 +61,7 @@
                 id="address1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="address1"
+                v-model="member.address1"
                 @change="changeDetails"
                 ref="address1"
               />
@@ -73,17 +73,17 @@
                 type="text"
                 class="form-control form-control-sm"
                 ref="address2"
-                v-model="address2"
+                v-model="member.address2"
                 @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="city">City</label>
               <input
                 id="city"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="city"
+                v-model="member.city"
                 @change="changeDetails"
                 ref="city"
               />
@@ -95,18 +95,18 @@
                 type="text"
                 class="form-control form-control-sm"
                 ref="stateProv"
-                v-model="stateProv"
+                v-model="member.stateProv"
                 @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="country">Country</label>
               <input
                 id="country"
                 type="text"
                 class="form-control form-control-sm"
                 ref="country"
-                v-model="country"
+                v-model="member.country"
                 @change="changeDetails"
               />
             </div>
@@ -117,17 +117,17 @@
                 type="text"
                 class="form-control form-control-sm"
                 ref="zipPostal"
-                v-model="zipPostal"
+                v-model="member.zipPostal"
                 @change="changeDetails"
               />
             </div>
             <div class="form-group col-sm-6">
               <label for="phone">Phone</label>
               <VuePhoneNumberInput
-                v-model="phone"
+                v-model="member.phone"
                 id="phone"
                 :dark="false"
-                :default-country-code="country || null"
+                :default-country-code="member.country || null"
                 :preferred-countries="['US', 'CA']"
                 ref="phone"
                 :clearable="true"
@@ -138,7 +138,7 @@
           </div>
           <div class="section-header my-2 bg-secondary">
             <span class="text-white">Billing Details</span>
-            <div class="form-check float-right">
+            <div class="form-check">
               <input
                 type="checkbox"
                 class="form-check-input mt-2"
@@ -153,14 +153,14 @@
               >Use Contact Information for Billing</label>
             </div>
           </div>
-          <div class="row mb-3">
+          <div class="row mb-3 px-2">
             <div class="form-group col-sm-6">
               <label for="billingName">Billing Name</label>
               <input
                 id="billingName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.name"
+                v-model="member.billing.name"
                 ref="billingName"
                 :readonly="billingSame"
               />
@@ -171,7 +171,7 @@
                 id="billingEmail"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.email"
+                v-model="member.billing.email"
                 ref="billingEmail"
                 readonly
               />
@@ -182,7 +182,7 @@
                 id="billingAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.address1"
+                v-model="member.billing.address1"
                 ref="billingAddress1"
                 :readonly="billingSame"
               />
@@ -193,18 +193,18 @@
                 id="billingAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.address2"
+                v-model="member.billing.address2"
                 ref="billingAddress2"
                 :readonly="billingSame"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="billingCity">Billing City</label>
               <input
                 id="billingCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.city"
+                v-model="member.billing.city"
                 ref="billingCity"
                 :readonly="billingSame"
               />
@@ -215,18 +215,18 @@
                 id="billingStateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.stateProv"
+                v-model="member.billing.stateProv"
                 ref="billingStateProv"
                 :readonly="billingSame"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="billingCountry">Billing Country</label>
               <input
                 id="billingCountry"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.country"
+                v-model="member.billing.country"
                 ref="billingCountry"
                 @change="changeDetails"
                 :readonly="billingSame"
@@ -238,7 +238,7 @@
                 id="billingZipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.zipPostal"
+                v-model="member.billing.zipPostal"
                 ref="billingZipPostal"
                 :readonly="billingSame"
               />
@@ -249,7 +249,7 @@
                 id="billingPhone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="billing.phone"
+                v-model="member.billing.phone"
                 ref="billingPhone"
                 readonly
               />
@@ -257,10 +257,10 @@
             <div class="form-group col-sm-6" v-else>
               <label for="billingPhone">Billing Phone</label>
               <VuePhoneNumberInput
-                v-model="billing.phone"
+                v-model="member.billing.phone"
                 id="billingPhone"
                 :dark="false"
-                :default-country-code="country || null"
+                :default-country-code="member.billing.country || null"
                 :preferred-countries="['US', 'CA']"
                 ref="billingPhone"
                 :clearable="true"
@@ -270,7 +270,7 @@
           </div>
           <div class="section-header my-2 bg-secondary">
             <span class="text-white">Shipping Details</span>
-            <div class="form-check float-right">
+            <div class="form-check">
               <input
                 type="checkbox"
                 class="form-check-input mt-2"
@@ -285,14 +285,14 @@
               >Use Contact Information for Shipping</label>
             </div>
           </div>
-          <div class="row mb-4">
+          <div class="row mb-4 px-2">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
               <input
                 id="shippingName"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.name"
+                v-model="member.shipping.name"
                 ref="shippingName"
                 :readonly="shippingSame"
               />
@@ -303,7 +303,7 @@
                 id="shippingEmail"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.email"
+                v-model="member.shipping.email"
                 ref="shippingEmail"
                 readonly
               />
@@ -314,7 +314,7 @@
                 id="shippingAddress1"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.address1"
+                v-model="member.shipping.address1"
                 ref="shippingAddress1"
                 :readonly="shippingSame"
               />
@@ -325,18 +325,18 @@
                 id="shippingAddress2"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.address2"
+                v-model="member.shipping.address2"
                 ref="shippingAddress2"
                 :readonly="shippingSame"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="shippingCity">Shipping City</label>
               <input
                 id="shippingCity"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.city"
+                v-model="member.shipping.city"
                 ref="shippingCity"
                 @change="changeDetails"
                 :readonly="shippingSame"
@@ -348,19 +348,19 @@
                 id="shippingStateProv"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.stateProv"
+                v-model="member.shipping.stateProv"
                 ref="shippingStateProv"
                 @change="changeDetails"
                 :readonly="shippingSame"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="shippingCountry">Shipping Country</label>
               <input
                 id="shippingCountry"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.country"
+                v-model="member.shipping.country"
                 ref="shippingCountry"
                 @change="changeDetails"
                 :readonly="shippingSame"
@@ -372,7 +372,7 @@
                 id="shippingZipPostal"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.zipPostal"
+                v-model="member.shipping.zipPostal"
                 ref="shippingZipPostal"
                 :readonly="shippingSame"
               />
@@ -383,7 +383,7 @@
                 id="shippingPhone"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="shipping.phone"
+                v-model="member.shipping.phone"
                 ref="shippingPhone"
                 :readonly="shippingSame"
               />
@@ -391,9 +391,10 @@
             <div class="form-group col-sm-6" v-else>
               <label for="shippingPhone">Shipping Phone</label>
               <VuePhoneNumberInput
-                v-model="shipping.phone"
+                v-model="member.shipping.phone"
                 id="shippingPhone"
                 :dark="false"
+                :default-country-code="member.shipping.country || null"
                 :preferred-countries="['US', 'CA']"
                 ref="shippingPhone"
                 :clearable="true"
@@ -403,11 +404,11 @@
           </div>
           <div class="row my-4">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click="updateMember">Update Member</button>
+              <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
             </div>
             <div class="col-sm-6">
               <router-link
-                :to="`/dashboard/members/${this.id}`"
+                :to="`/dashboard/members/${this.member._id}`"
                 class="btn btn-block btn-danger"
               >Cancel</router-link>
             </div>
@@ -429,22 +430,6 @@ export default {
   },
   data() {
     return {
-      id: '',
-      timezone: '',
-      timezoneAbbrev: '',
-      createdAt: '',
-      isAdmin: false,
-      name: '',
-      email: '',
-      address1: '',
-      address2: '',
-      city: '',
-      stateProv: '',
-      country: '',
-      zipPostal: '',
-      phone: '',
-      shipping: {},
-      billing: {},
       shippingSame: false,
       billingSame: false,
       backupBilling: {},
@@ -452,63 +437,36 @@ export default {
     };
   },
   computed: {
-    breadcrumbs: function() {
-      return [
+    memberDetails: function() {
+      return this.$store.getters.getMember;
+    },
+    member: function() {
+      if (this.memberDetails) return this.memberDetails.member;
+    },
+    teams: function() {
+      if (this.memberDetails) return this.memberDetails.teams;
+    }
+  },
+  created: async function() {
+    try {
+      const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Members',
           link: '/dashboard/members'
         },
         {
-          text: `${this.name}`,
-          link: `/dashboard/members/${this.id}`
+          text: `${this.member.name}`,
+          link: `/dashboard/members/${this.member._id}`
         },
         {
           text: 'Edit',
           link: '#'
         }
       ];
-    }
-  },
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
-      const {
-        _id,
-        timezone,
-        timezoneAbbrev,
-        createdAt,
-        isAdmin,
-        name,
-        email,
-        address1,
-        address2,
-        city,
-        stateProv,
-        country,
-        zipPostal,
-        phone,
-        shipping,
-        billing
-      } = res.data.member;
 
-      this.id = _id;
-      this.timezone = timezone;
-      this.timezoneAbbrev = timezoneAbbrev;
-      this.createdAt = createdAt;
-      this.isAdmin = isAdmin;
-      this.name = name;
-      this.email = email;
-      this.address1 = address1;
-      this.address2 = address2;
-      this.city = city;
-      this.stateProv = stateProv;
-      this.country = country;
-      this.zipPostal = zipPostal;
-      this.phone = phone;
-      this.shipping = shipping;
-      this.billing = billing;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
@@ -518,7 +476,7 @@ export default {
       try {
         if (confirm('Are you sure?')) {
           if (confirm('Are you absolutely sure?')) {
-            const res = await this.$store.dispatch('deleteMember', this.id);
+            const res = await this.$store.dispatch('deleteMember', this.member._id);
             this.$toasted.success(res.data[0].message);
             this.$router.push({ name: 'members' });
           }
@@ -530,9 +488,9 @@ export default {
     toggleAdmin: async function() {
       try {
         if (confirm('Are you sure?')) {
-          const res = await this.$store.dispatch('toggleAdmin', this.id);
+          const res = await this.$store.dispatch('toggleAdmin', this.member._id);
           this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-          this.isAdmin = !this.isAdmin;
+          this.member.isAdmin = !this.member.isAdmin;
         }
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -540,25 +498,25 @@ export default {
     },
     copyDetails: function() {
       if (this.shippingSame === true) {
-        this.shipping.name = this.name;
-        this.shipping.address1 = this.address1;
-        this.shipping.address2 = this.address2;
-        this.shipping.city = this.city;
-        this.shipping.stateProv = this.stateProv;
-        this.shipping.country = this.country;
-        this.shipping.zipPostal = this.zipPostal;
-        this.shipping.email = this.email;
+        this.member.shipping.name = this.member.name;
+        this.member.shipping.address1 = this.member.address1;
+        this.member.shipping.address2 = this.member.address2;
+        this.member.shipping.city = this.member.city;
+        this.member.shipping.stateProv = this.member.stateProv;
+        this.member.shipping.country = this.member.country;
+        this.member.shipping.zipPostal = this.member.zipPostal;
+        this.member.shipping.email = this.member.email;
         this.geoTimezone();
       }
       if (this.billingSame === true) {
-        this.billing.name = this.name;
-        this.billing.address1 = this.address1;
-        this.billing.address2 = this.address2;
-        this.billing.city = this.city;
-        this.billing.stateProv = this.stateProv;
-        this.billing.country = this.country;
-        this.billing.zipPostal = this.zipPostal;
-        this.billing.email = this.email;
+        this.member.billing.name = this.member.name;
+        this.member.billing.address1 = this.member.address1;
+        this.member.billing.address2 = this.member.address2;
+        this.member.billing.city = this.member.city;
+        this.member.billing.stateProv = this.member.stateProv;
+        this.member.billing.country = this.member.country;
+        this.member.billing.zipPostal = this.member.zipPostal;
+        this.member.billing.email = this.member.email;
         this.geoTimezone();
       }
     },
@@ -574,43 +532,43 @@ export default {
 
       if (this.shippingSame) {
         if (target === 'email') {
-          this.shipping.email = this.email;
+          this.member.shipping.email = this.member.email;
         } else if (target === 'name') {
-          this.shipping.name = this.name;
+          this.member.shipping.name = this.member.name;
         } else if (target === 'address1') {
-          this.shipping.address1 = this.address1;
+          this.member.shipping.address1 = this.member.address1;
         } else if (target === 'address2') {
-          this.shipping.address2 = this.address2;
+          this.member.shipping.address2 = this.member.address2;
         } else if (target === 'city') {
-          this.shipping.city = this.city;
+          this.member.shipping.city = this.member.city;
           this.geoTimezone();
         } else if (target === 'stateProv') {
-          this.shipping.stateProv = this.stateProv;
+          this.member.shipping.stateProv = this.member.stateProv;
           this.geoTimezone();
         } else if (target === 'country') {
-          this.shipping.country = this.country;
+          this.member.shipping.country = this.member.country;
           this.geoTimezone();
         } else if (target === 'zipPostal') {
-          this.shipping.zipPostal = this.zipPostal;
+          this.member.shipping.zipPostal = this.member.zipPostal;
         }
       }
       if (this.billingSame) {
         if (target === 'email') {
-          this.billing.email = this.email;
+          this.member.billing.email = this.member.email;
         } else if (target === 'name') {
-          this.billing.name = this.name;
+          this.member.billing.name = this.member.name;
         } else if (target === 'address1') {
-          this.billing.address1 = this.address1;
+          this.member.billing.address1 = this.member.address1;
         } else if (target === 'address2') {
-          this.billing.address2 = this.address2;
+          this.member.billing.address2 = this.member.address2;
         } else if (target === 'city') {
-          this.billing.city = this.city;
+          this.member.billing.city = this.member.city;
         } else if (target === 'stateProv') {
-          this.billing.stateProv = this.stateProv;
+          this.member.billing.stateProv = this.member.stateProv;
         } else if (target === 'country') {
-          this.billing.country = this.country;
+          this.member.billing.country = this.member.country;
         } else if (target === 'zipPostal') {
-          this.billing.zipPostal = this.zipPostal;
+          this.member.billing.zipPostal = this.member.zipPostal;
         }
       }
 
@@ -619,7 +577,7 @@ export default {
       let countryCode = '';
 
       if (target === 'country' && this.country) {
-        countryCode = this.country;
+        countryCode = this.member.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
           if (country.iso2 === countryCode) {
@@ -631,15 +589,15 @@ export default {
           this.$refs.phone.countryCode = countryCode;
           this.$refs.zipPostal.focus();
         } else {
-          this.country = '';
+          this.member.country = '';
           this.$refs.country.focus();
           this.$toasted.error('Contact Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
-      if (target === 'billingCountry' && this.billing.country) {
+      if (target === 'billingCountry' && this.member.billing.country) {
         valid = false;
-        countryCode = this.billing.country;
+        countryCode = this.member.billing.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
           if (country.iso2 === countryCode) {
@@ -651,15 +609,15 @@ export default {
           this.$refs.billingPhone.countryCode = countryCode;
           this.$refs.billingZipPostal.focus();
         } else {
-          this.billing.country = '';
+          this.member.billing.country = '';
           this.$refs.billingCountry.focus();
           this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
 
-      if (target === 'shippingCountry' && this.shipping.country) {
+      if (target === 'shippingCountry' && this.member.shipping.country) {
         valid = false;
-        countryCode = this.shipping.country;
+        countryCode = this.member.shipping.country;
         countryCode = countryCode.toUpperCase();
         codeCountries.forEach(country => {
           if (country.iso2 === countryCode) {
@@ -671,7 +629,7 @@ export default {
           this.$refs.shippingPhone.countryCode = countryCode;
           this.$refs.shippingZipPostal.focus();
         } else {
-          this.shipping.country = '';
+          this.member.shipping.country = '';
           this.$refs.shippingCountry.focus();
           this.$toasted.error('Shipping Country Code Invalid', { icon: 'exclamation-triangle' });
         }
@@ -679,55 +637,59 @@ export default {
     },
     copyPhone: function(event) {
       if (this.shippingSame && event.phoneNumber) {
-        this.shipping.phone = event.phoneNumber;
+        this.member.shipping.phone = event.phoneNumber;
       }
 
       if (this.billingSame && event.phoneNumber) {
-        this.billing.phone = event.phoneNumber;
+        this.member.billing.phone = event.phoneNumber;
       }
     },
     copyContacttoBilling: function() {
       if (this.billingSame) {
-        this.backupBilling = this.billing;
-        this.billing = {
-          name: this.name,
-          email: this.email,
-          address1: this.address1,
-          address2: this.address2,
-          city: this.city,
-          stateProv: this.stateProv,
-          country: this.country,
-          zipPostal: this.zipPostal,
-          phone: this.phone
+        this.backupBilling = this.member.billing;
+        this.member.billing = {
+          name: this.member.name,
+          email: this.member.email,
+          address1: this.member.address1,
+          address2: this.member.address2,
+          city: this.member.city,
+          stateProv: this.member.stateProv,
+          country: this.member.country,
+          zipPostal: this.member.zipPostal,
+          phone: this.member.phone
         };
       } else {
-        this.billing = this.backupBilling;
+        this.member.billing = this.backupBilling;
       }
     },
     copyContacttoShipping: function() {
       if (this.shippingSame) {
-        this.backupShipping = this.shipping;
-        this.shipping = {
-          name: this.name,
-          email: this.email,
-          address1: this.address1,
-          address2: this.address2,
-          city: this.city,
-          stateProv: this.stateProv,
-          country: this.country,
-          zipPostal: this.zipPostal,
-          phone: this.phone
+        this.backupShipping = this.member.shipping;
+        this.member.shipping = {
+          name: this.member.name,
+          email: this.member.email,
+          address1: this.member.address1,
+          address2: this.member.address2,
+          city: this.member.city,
+          stateProv: this.member.stateProv,
+          country: this.member.country,
+          zipPostal: this.member.zipPostal,
+          phone: this.member.phone
         };
         this.geoTimezone();
       } else {
-        this.shipping = this.backupShipping;
+        this.member.shipping = this.backupShipping;
         this.geoTimezone();
       }
     },
     geoTimezone: async function() {
-      if (this.shipping.stateProv && this.shipping.city && this.shipping.country) {
+      if (
+        this.member.shipping.stateProv &&
+        this.member.shipping.city &&
+        this.member.shipping.country
+      ) {
         const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.shipping.city} ${this.shipping.stateProv} ${this.shipping.country}"},"options":{"thumbMaps":false}}`
+          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.member.shipping.city} ${this.member.shipping.stateProv} ${this.member.shipping.country}"},"options":{"thumbMaps":false}}`
         );
         if (location) {
           const lat = location.data.results[0].locations[0].latLng.lat;
@@ -740,56 +702,56 @@ export default {
             response.data.zoneName !== null &&
             response.data.zoneName !== ''
           ) {
-            this.timezone = response.data.zoneName;
-            this.timezoneAbbrev = response.data.abbreviation;
+            this.member.timezone = response.data.zoneName;
+            this.member.timezoneAbbrev = response.data.abbreviation;
           } else {
-            this.timezone = '';
-            this.timezoneAbbrev = '';
+            this.member.timezone = '';
+            this.member.timezoneAbbrev = '';
           }
         }
       }
     },
     updateMember: async function() {
       const updatedMember = {
-        name: this.name,
-        phone: this.phone,
-        address1: this.address1,
-        address2: this.address2,
-        city: this.city,
-        stateProv: this.stateProv,
-        country: this.country,
-        zipPostal: this.zipPostal,
-        timezone: this.timezone,
-        timezoneAbbrev: this.timezoneAbbrev,
+        name: this.member.name,
+        phone: this.member.phone,
+        address1: this.member.address1,
+        address2: this.member.address2,
+        city: this.member.city,
+        stateProv: this.member.stateProv,
+        country: this.member.country,
+        zipPostal: this.member.zipPostal,
+        timezone: this.member.timezone,
+        timezoneAbbrev: this.member.timezoneAbbrev,
         shippingSame: this.shippingSame,
-        shippingName: this.shipping.name,
-        shippingAddress1: this.shipping.address1,
-        shippingAddress2: this.shipping.address2,
-        shippingCity: this.shipping.city,
-        shippingStateProv: this.shipping.stateProv,
-        shippingCountry: this.shipping.country,
-        shippingZipPostal: this.shipping.zipPostal,
-        shippingPhone: this.shipping.phone,
-        shippingEmail: this.shipping.email,
+        shippingName: this.member.shipping.name,
+        shippingAddress1: this.member.shipping.address1,
+        shippingAddress2: this.member.shipping.address2,
+        shippingCity: this.member.shipping.city,
+        shippingStateProv: this.member.shipping.stateProv,
+        shippingCountry: this.member.shipping.country,
+        shippingZipPostal: this.member.shipping.zipPostal,
+        shippingPhone: this.member.shipping.phone,
+        shippingEmail: this.member.shipping.email,
         billingSame: this.billingSame,
-        billingName: this.billing.name,
-        billingAddress1: this.billing.address1,
-        billingAddress2: this.billing.address2,
-        billingCity: this.billing.city,
-        billingStateProv: this.billing.stateProv,
-        billingCountry: this.billing.country,
-        billingZipPostal: this.billing.zipPostal,
-        billingPhone: this.billing.phone,
-        billingEmail: this.billing.email
+        billingName: this.member.billing.name,
+        billingAddress1: this.member.billing.address1,
+        billingAddress2: this.member.billing.address2,
+        billingCity: this.member.billing.city,
+        billingStateProv: this.member.billing.stateProv,
+        billingCountry: this.member.billing.country,
+        billingZipPostal: this.member.billing.zipPostal,
+        billingPhone: this.member.billing.phone,
+        billingEmail: this.member.billing.email
       };
 
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
-          id: this.id
+          id: this.member._id
         });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-        this.$router.push({ name: 'membersById', params: { id: this.id } });
+        this.$router.push({ name: 'membersById', params: { id: this.member._id } });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;

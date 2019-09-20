@@ -46,27 +46,28 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12,
-      breadcrumbs: [
+      itemsPerPage: 12
+    };
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getMembers');
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Members',
           link: '#'
         }
-      ],
-      members: []
-    };
-  },
-  created: async function() {
-    try {
-      const members = await this.$store.dispatch('getMembers');
-      this.members = members.data;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {
+    members: function() {
+      return this.$store.getters.allMembers;
+    },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
@@ -74,12 +75,14 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentCatalogs: function() {
-      return this.members.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      if (this.members) return this.members.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.members.length / this.itemsPerPage); i++) {
-        pageArray.push(i);
+      if (this.members) {
+        for (let i = 1; i <= Math.ceil(this.members.length / this.itemsPerPage); i++) {
+          pageArray.push(i);
+        }
       }
       return pageArray.length;
     }

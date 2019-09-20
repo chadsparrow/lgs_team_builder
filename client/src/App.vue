@@ -176,11 +176,19 @@ label {
 
     .list-group-item {
       height: 35px;
-      padding: 5px 15px;
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
       &:hover {
         background-color: $blue-color;
         color: $white-text;
-        cursor: pointer;
+      }
+
+      .memberIcons {
+        display: flex;
+        justify-content: flex-start;
       }
     }
   }
@@ -188,10 +196,17 @@ label {
 
 .middle-section {
   flex: 1;
-  background-color: rgba(255, 255, 255, 0.4);
-  border-radius: 5px;
   overflow: auto;
   padding: 1rem;
+
+  .form-group {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  label {
+    color: $blue-color;
+  }
 }
 
 .sidebar-right {
@@ -204,16 +219,23 @@ label {
   font-size: 0.9rem;
   span {
     display: block;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.5);
     padding: 3px;
     width: 100%;
   }
 }
 
 .section-header {
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   color: $white-text;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  label {
+    font-size: 0.85rem;
+  }
 }
 
 ::-webkit-scrollbar {

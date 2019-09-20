@@ -2,6 +2,7 @@
 node_modules
 /dist
 .env
+/public/images/avatars
 
 # local env files
 .env.local

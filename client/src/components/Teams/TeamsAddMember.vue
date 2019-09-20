@@ -122,7 +122,7 @@ export default {
     access: function() {
       if (this.member && this.member.isAdmin) return true;
 
-      if (this.managerId === this.member._id) return true;
+      if (this.managerId._id === this.member._id) return true;
 
       return false;
     },
@@ -181,18 +181,20 @@ export default {
           this.$toasted.success('Member Added to Team', { icon: 'check-circle' });
         }
 
-        const res = await this.$store.dispatch('sendInviteNotification', {
-          id: this.chosenMember._id,
-          teamId: this.id
-        });
-
-        this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        if (!this.chosenMember.invites.autoAccept) {
+          const res = await this.$store.dispatch('sendInviteNotification', {
+            id: this.chosenMember._id,
+            teamId: this.id
+          });
+          this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
+          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message);
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
     inviteTeamMember: function() {
+      //
       this.$toasted.success(`Invite sent to ${this.inviteEmail}`, { icon: 'check-circle' });
       this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
     }

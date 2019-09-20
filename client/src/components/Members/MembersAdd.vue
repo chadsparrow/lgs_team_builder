@@ -1,13 +1,13 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col sidebar">
+      <div class="col sidebar-left">
         <div class="row p-1">
           <small class="col-sm-12 text-info">Member Timezone: (uses shipping)</small>
           <span class="col-sm-12">{{ timezone }}</span>
         </div>
       </div>
-      <div class="col infoSection">
+      <div class="col middle-section">
         <form class="mb-4">
           <div class="section-header bg-secondary mb-2">Contact Information</div>
           <div class="row">
@@ -431,8 +431,12 @@ export default {
       billingCountry: '',
       billingZipPostal: '',
       billingPhone: '',
-      billingEmail: '',
-      breadcrumbs: [
+      billingEmail: ''
+    };
+  },
+  created: async function() {
+    try {
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Members',
@@ -442,11 +446,7 @@ export default {
           text: 'Add Member',
           link: '#'
         }
-      ]
-    };
-  },
-  created: async function() {
-    try {
+      ];
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });

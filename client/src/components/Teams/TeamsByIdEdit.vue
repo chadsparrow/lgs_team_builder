@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col sidebar">
+      <div class="col sidebar-left">
         <div v-if="team && team.name">
           <avatar
             :username="team.name"
@@ -23,28 +23,12 @@
               }}
             </span>
           </div>
-          <div class="row p-1 mt-4" v-if="team.members && team.members.length > 0">
-            <small class="col-sm-12 text-info">Member List:</small>
-            <ul class="col-sm-12 list-group">
-              <li class="list-group-item" v-for="teammember of team.members" :key="teammember._id">
-                <i
-                  class="fas fa-certificate text-warning mr-1"
-                  v-if="team && team.managerId._id === teammember._id"
-                ></i>
-                {{ teammember.name }}
-              </li>
-            </ul>
-          </div>
-          <div class="row p-1 mt-4" v-else>
-            <small class="col-sm-12 text-info">Member List:</small>
-            <span class="col-sm-12">No Members</span>
-          </div>
         </div>
         <div v-else>
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col infoSection" v-if="team && team.name">
+      <div class="col middle-section" v-if="team && team.name">
         <form novalidate>
           <div class="row">
             <!-- ADMIN SELECTOR -->
@@ -103,24 +87,26 @@
             </div>
           </div>
           <!-- MAIN CONTACT -->
-          <div class="row mt-3">
-            <div class="col-sm-12">
-              <div class="section-header mb-2 bg-secondary text-center">
-                <span>Main Contact</span>
-                <div class="form-check text-center">
-                  <input
-                    type="checkbox"
-                    class="form-check-input mt-2"
-                    id="useManagerDetails"
-                    v-model="useManagerDetails"
-                    @change="copyManagertoMain"
-                    ref="useManagerDetails"
-                    :disabled="!team.managerId._id"
-                  />
-                  <label class="form-check-label" for="useManagerDetails">Use Manager's Contact Info</label>
-                </div>
-              </div>
+          <div class="section-header mt-3 mb-2 bg-secondary">
+            <span>Main Contact</span>
+            <div class="form-check text-center">
+              <input
+                type="checkbox"
+                class="form-check-input mt-2"
+                id="useManagerDetails"
+                v-model="useManagerDetails"
+                @change="copyManagertoMain"
+                ref="useManagerDetails"
+                :disabled="!team.managerId._id"
+              />
+              <label
+                class="form-check-label text-white"
+                for="useManagerDetails"
+              >Use Manager's Contact Info</label>
             </div>
+          </div>
+          <div class="row px-2">
+            <div class="col-sm-12"></div>
             <div class="form-group col-sm-6">
               <label for="contactName">Name</label>
               <input
@@ -243,53 +229,52 @@
             </div>
           </div>
           <!-- BULK SHIPPING -->
-          <div class="row mb-3 mt-3">
-            <div class="col-sm-12">
-              <div class="section-header mb-2 bg-secondary text-center">
-                <span>Bulk Shipping Details</span>
-                <br />
-                <div class="form-check form-check-inline mr-4">
-                  <input
-                    class="form-check-input mt-1"
-                    type="radio"
-                    name="bulkUseDetails"
-                    id="useAboveDetails"
-                    value="above"
-                    v-model="bulkUseDetails"
-                    @change="copytoBulk"
-                  />
-                  <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
-                </div>
-                <div class="form-check form-check-inline mr-4">
-                  <input
-                    class="form-check-input mt-1"
-                    type="radio"
-                    name="bulkUseDetails"
-                    id="useManagerDetails"
-                    value="manager"
-                    v-model="bulkUseDetails"
-                    :disabled="!team.managerId._id"
-                    @change="copytoBulk"
-                  />
-                  <label
-                    class="form-check-label text-white"
-                    for="useManagerDetails"
-                  >Use Manager's Shipping Address</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input
-                    class="form-check-input mt-1"
-                    type="radio"
-                    name="bulkUseDetails"
-                    id="useNewDetails"
-                    value="other"
-                    v-model="bulkUseDetails"
-                    @change="copytoBulk"
-                  />
-                  <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
-                </div>
+          <div class="section-header mb-2 mt-3 bg-secondary">
+            <span>Bulk Shipping Details</span>
+            <div class="radios">
+              <div class="form-check form-check-inline mr-4">
+                <input
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useAboveDetails"
+                  value="above"
+                  v-model="bulkUseDetails"
+                  @change="copytoBulk"
+                />
+                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+              </div>
+              <div class="form-check form-check-inline mr-4">
+                <input
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useManagerDetails"
+                  value="manager"
+                  v-model="bulkUseDetails"
+                  :disabled="!team.managerId._id"
+                  @change="copytoBulk"
+                />
+                <label
+                  class="form-check-label text-white"
+                  for="useManagerDetails"
+                >Use Manager's Shipping Address</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input
+                  class="form-check-input mt-1"
+                  type="radio"
+                  name="bulkUseDetails"
+                  id="useNewDetails"
+                  value="other"
+                  v-model="bulkUseDetails"
+                  @change="copytoBulk"
+                />
+                <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
               </div>
             </div>
+          </div>
+          <div class="row px-2">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
               <input
@@ -404,17 +389,14 @@
               />
             </div>
           </div>
-          <div class="row">
+          <div class="row mt-4 mb-5">
             <div class="col-sm-6">
-              <button
-                class="btn btn-block btn-info mt-2"
-                @click.prevent="updateTeam"
-              >Update Team Details</button>
+              <button class="btn btn-block btn-info" @click.prevent="updateTeam">Update Team Details</button>
             </div>
             <div class="col-sm-6">
               <router-link
                 :to="`/dashboard/teams/${team._id}`"
-                class="btn btn-block btn-danger mt-2"
+                class="btn btn-block btn-danger"
               >Cancel</router-link>
             </div>
           </div>
@@ -703,57 +685,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.vue-avatar--wrapper {
-  border-radius: 1rem !important;
-}
-
-.sidebar {
-  flex: 0 0 255px;
-
-  span {
-    font-size: 0.8em;
-  }
-
-  .placeholderImg {
-    border-radius: 1rem;
-    background-color: white;
-    width: 225px;
-    height: 225px;
-  }
-
-  .list-group {
-    width: 100%;
-    overflow: auto;
-    max-height: 250px;
-
-    .list-group-item {
-      height: 35px;
-      padding: 5px 15px;
-    }
-  }
-}
-
-.infoSection {
-  form {
-    max-width: 800px;
-  }
-  .form-group {
-    margin-bottom: 1px;
-  }
-
-  h6 {
-    max-width: 800px;
-    color: white;
-    padding: 0.5rem;
-    border-radius: 4px;
-  }
-}
-
-@media (max-width: 575px) {
-  .sidebar {
-    flex: none;
-  }
-}
-</style>

@@ -18,10 +18,12 @@ export default new Vuex.Store({
     emails: [],
     notifications: [],
     breadcrumbs: [],
+    allMembers: [],
     teams: [],
     unfinishedTeams: [],
     currentTeam: null,
-    currentTeamStores: []
+    currentTeamStores: [],
+    currentMember: null
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -140,6 +142,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/members');
+          commit('SET_ALL_MEMBERS', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -166,6 +169,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}/details`);
+          commit('SET_CURRENT_MEMBER', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -332,6 +336,21 @@ export default new Vuex.Store({
         }
       });
     },
+    removeTeamMembers({ commit }, { chosenMembers, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/teams/${id}/removemembers`, {
+            members: chosenMembers
+          });
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getTeamStores({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -410,6 +429,12 @@ export default new Vuex.Store({
     SET_BREADCRUMBS(state, breadcrumbs) {
       state.breadcrumbs = breadcrumbs;
     },
+    SET_ALL_MEMBERS(state, payload) {
+      state.allMembers = payload;
+    },
+    SET_CURRENT_MEMBER(state, payload) {
+      state.currentMember = payload;
+    },
     SET_TEAMS(state, payload) {
       state.teams = payload.teams;
       state.unfinishedTeams = payload.unfinishedTeams;
@@ -428,12 +453,14 @@ export default new Vuex.Store({
     getCurrentMember: state => {
       return JSON.parse(state.member);
     },
+    allMembers: state => state.allMembers,
     teams: state => state.teams,
     currentTeam: state => state.currentTeam,
     unfinishedTeams: state => state.unfinishedTeams,
     emails: state => state.emails,
     notifications: state => state.notifications,
     breadcrumbs: state => state.breadcrumbs,
-    teamStores: state => state.currentTeamStores
+    teamStores: state => state.currentTeamStores,
+    getMember: state => state.currentMember
   }
 });
