@@ -80,7 +80,6 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/catalogs');
           commit('SET_CATALOGS', res.data);
-          commit('CLEAR_CURRENTS');
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {

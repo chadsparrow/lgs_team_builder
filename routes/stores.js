@@ -70,7 +70,6 @@ router.post('/', [auth, admin], async (req, res) => {
   const {
     teamId,
     storeName,
-    brand,
     currency,
     orderReference,
     adminId,
@@ -113,7 +112,6 @@ router.post('/', [auth, admin], async (req, res) => {
   const store = new Store({
     teamId,
     storeName,
-    brand,
     currency,
     orderReference,
     adminId,

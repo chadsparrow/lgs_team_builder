@@ -71,63 +71,14 @@ const StoreSchema = new mongoose.Schema(
     },
     storeMessage: {
       type: String,
-      trim: true
+      trim: true,
+      maxlength: 255
     },
-    shipping: {
-      shippingType: {
-        type: String,
-        required: true,
-        uppercase: true,
-        enum: ['BULK', 'DROP']
-      },
-      bulkShipContactName: {
-        type: String,
-        uppercase: true,
-        trim: true
-      },
-      bulkShipAddress1: {
-        type: String,
-        uppercase: true,
-        trim: true,
-        minlength: 10
-      },
-      bulkShipAddress2: {
-        type: String,
-        uppercase: true,
-        trim: true
-      },
-      bulkShipCity: {
-        type: String,
-        uppercase: true,
-        trim: true
-      },
-      bulkShipStateProv: {
-        type: String,
-        uppercase: true,
-        trim: true,
-        minlength: 2
-      },
-      bulkShipCountry: {
-        type: String,
-        uppercase: true,
-        trim: true,
-        minlength: 2
-      },
-      bulkShipZipPostal: {
-        type: String,
-        uppercase: true,
-        minlength: 5,
-        trim: true
-      },
-      bulkShipPhone: {
-        type: String,
-        trim: true
-      },
-      bulkShipEmail: {
-        type: String,
-        lowercase: true,
-        trim: true
-      }
+    shippingType: {
+      type: String,
+      required: true,
+      uppercase: true,
+      enum: ['BULK', 'DROP']
     }
   },
   { timestamps: true }
@@ -158,84 +109,13 @@ function validateStore(store) {
     timezone: Joi.string()
       .required()
       .trim(),
-    storeMessage: Joi.string().trim(),
-    shipping: Joi.object({
-      shippingType: Joi.string()
-        .required()
-        .trim()
-        .valid(['BULK', 'DROP']),
-      useTeamManagerDetails: Joi.boolean().required(),
-      bulkShipContactName: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string().trim(),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-      }),
-      bulkShipAddress1: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string().trim(),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-          .min(10)
-      }),
-      bulkShipAddress2: Joi.string().trim(),
-      bulkShipCity: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string().trim(),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-      }),
-      bulkShipStateProv: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string()
-          .trim()
-          .min(2),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-          .min(2)
-      }),
-      bulkShipCountry: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string()
-          .trim()
-          .min(2),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-          .min(2)
-      }),
-      bulkShipZipPostal: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string()
-          .trim()
-          .min(5),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-          .min(5)
-      }),
-      bulkShipPhone: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string().trim(),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-      }),
-      bulkShipEmail: Joi.when('useTeamManagerDetails', {
-        is: true,
-        then: Joi.string()
-          .trim()
-          .email(),
-        otherwise: Joi.string()
-          .required()
-          .trim()
-          .email()
-      })
-    })
+    storeMessage: Joi.string()
+      .trim()
+      .max(255),
+    shippingType: Joi.string()
+      .required()
+      .trim()
+      .valid(['BULK', 'DROP'])
   };
   return Joi.validate(store, schema, joiOptions);
 }

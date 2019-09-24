@@ -24,6 +24,7 @@ import TeamsAddMember from './components/Teams/TeamsAddMember.vue';
 import TeamsRemoveMember from './components/Teams/TeamsRemoveMember.vue';
 import TeamsById from './components/Teams/TeamsById.vue';
 import TeamsByIdEdit from './components/Teams/TeamsByIdEdit.vue';
+import TeamsByIdAddStore from './components/Teams/TeamsByIdAddStore.vue';
 
 Vue.use(Router);
 
@@ -194,6 +195,15 @@ let router = new Router({
           component: TeamsRemoveMember,
           meta: {
             requiresAuth: true
+          }
+        },
+        {
+          path: 'teams/:id/addstore',
+          name: 'teamsAddStore',
+          component: TeamsByIdAddStore,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
           }
         },
         {

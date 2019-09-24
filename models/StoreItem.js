@@ -19,14 +19,12 @@ const StoreItemSchema = mongoose.Schema(
       required: true,
       trim: true
     },
-    surveyLikes: {
-      type: Number,
-      default: 0
-    },
-    surveyQuantity: {
-      type: Number,
-      default: 0
-    },
+    surveyLikedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'members'
+      }
+    ],
     isActive: {
       type: Boolean,
       default: true
@@ -74,7 +72,7 @@ const StoreItemSchema = mongoose.Schema(
         }
       }
     ],
-    mandatory: {
+    mandatoryItem: {
       type: Boolean,
       default: false
     },
@@ -112,7 +110,7 @@ function validateStoreItem(item) {
         name: Joi.string().trim()
       })
     ),
-    mandatory: Joi.boolean(),
+    mandatoryItem: Joi.boolean(),
     price: Joi.number()
       .min(0)
       .required()

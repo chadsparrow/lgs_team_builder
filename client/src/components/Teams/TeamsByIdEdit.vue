@@ -106,7 +106,6 @@
             </div>
           </div>
           <div class="row px-2">
-            <div class="col-sm-12"></div>
             <div class="form-group col-sm-6">
               <label for="contactName">Name</label>
               <input
