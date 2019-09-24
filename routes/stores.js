@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 const express = require('express');
-const moment = require('moment-timezone');
 const swearjar = require('swearjar');
 const { Store, validateStore, validateStoreItem } = require('../models/Store');
 const { Team } = require('../models/Team');
@@ -64,6 +63,24 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
 });
 
 router.post('/', [auth, admin], async (req, res) => {
+  if (req.body.storeName) {
+    if (swearjar.profane(req.body.storeName))
+      return res
+        .status(400)
+        .send([
+          { message: 'Store name must not contain profanity', context: { key: 'storeName' } }
+        ]);
+  }
+
+  if (req.body.storeMessage) {
+    if (swearjar.profane(req.body.storeMessage))
+      return res
+        .status(400)
+        .send([
+          { message: 'Store message must not contain profanity', context: { key: 'storeMessage' } }
+        ]);
+  }
+
   const { error } = validateStore(req.body);
   if (error) return res.status(400).send(error.details);
 
@@ -71,6 +88,7 @@ router.post('/', [auth, admin], async (req, res) => {
     teamId,
     storeName,
     currency,
+    mode,
     orderReference,
     adminId,
     managerId,
@@ -78,38 +96,40 @@ router.post('/', [auth, admin], async (req, res) => {
     closingDate,
     timezone,
     storeMessage,
-    shipping
+    shippingType
   } = req.body;
 
-  let { mode } = req.body;
+  let store = await Store.findOne({ storeName });
+  if (store)
+    return res
+      .status(400)
+      .send([
+        { message: 'Store with that name already registered', context: { key: 'storeName' } }
+      ]);
 
-  if (swearjar.profane(storeName))
-    return res.status(400).send([{ message: 'Store name must not contain profanity.' }]);
-  if (swearjar.profane(storeMessage))
-    return res.status(400).send([{ message: 'Store message must not contain profanity.' }]);
+  if (!validateId(adminId))
+    return res.status(400).send([{ message: 'Invalid ID. (Admin)', context: { key: 'adminId' } }]);
 
-  if (!validateId(adminId)) return res.status(400).send([{ message: 'Invalid ID. (Admin)' }]);
   const storeAdmin = await Member.findById(adminId);
-  if (!storeAdmin) return res.status(400).send([{ message: 'Admin with the given ID not found.' }]);
 
-  if (!validateId(managerId)) return res.status(400).send([{ message: 'Invalid ID. (Manager)' }]);
+  if (!storeAdmin)
+    return res
+      .status(400)
+      .send([{ message: 'Admin with the given ID not found', context: { key: 'adminId' } }]);
+
+  if (!validateId(managerId))
+    return res
+      .status(400)
+      .send([{ message: 'Invalid ID. (Manager)', context: { key: 'managerId' } }]);
+
   const manager = await Member.findById(managerId);
-  if (!manager) return res.status(400).send([{ message: 'Manager with the given ID not found.' }]);
 
-  const currentDate = moment.tz(timezone);
+  if (!manager)
+    return res
+      .status(400)
+      .send([{ message: 'Manager with the given ID not found', context: { key: 'managerId' } }]);
 
-  if (
-    currentDate.isAfter(moment.tz(openingDate, timezone)) &&
-    currentDate.isBefore(moment.tz(closingDate, timezone))
-  ) {
-    mode = 'OPEN';
-  } else if (currentDate.isBefore(moment.tz(openingDate, timezone))) {
-    mode = 'SURVEY';
-  } else if (currentDate.isAfter(moment.tz(closingDate, timezone))) {
-    mode = 'CLOSED';
-  }
-
-  const store = new Store({
+  store = new Store({
     teamId,
     storeName,
     currency,
@@ -117,15 +137,15 @@ router.post('/', [auth, admin], async (req, res) => {
     adminId,
     managerId,
     mode,
-    openingDate: moment.tz(openingDate, timezone).format(),
-    closingDate: moment.tz(closingDate, timezone).format(),
+    openingDate,
+    closingDate,
     timezone,
     storeMessage,
-    shipping
+    shippingType
   });
 
   await store.save();
-  return res.send(store);
+  return res.status(201).send([{ message: 'Team Store Added' }]);
 });
 
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
@@ -135,7 +155,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const {
     teamId,
     storeName,
-    brand,
+    mode,
     currency,
     orderReference,
     adminId,
@@ -144,10 +164,8 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     closingDate,
     timezone,
     storeMessage,
-    shipping
+    shippingType
   } = req.body;
-
-  let { mode } = req.body;
 
   if (swearjar.profane(storeName))
     return res.status(400).send([{ message: 'Store name must not contain profanity.' }]);
@@ -166,32 +184,18 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const manager = await Member.findById(managerId);
   if (!manager) return res.status(400).send([{ message: 'Manager with the given ID not found.' }]);
 
-  const currentDate = moment.tz(timezone);
-
-  if (
-    currentDate.isAfter(moment.tz(openingDate, timezone)) &&
-    currentDate.isBefore(moment.tz(closingDate, timezone))
-  ) {
-    mode = 'OPEN';
-  } else if (currentDate.isBefore(moment.tz(openingDate, timezone))) {
-    mode = 'SURVEY';
-  } else if (currentDate.isAfter(moment.tz(closingDate, timezone))) {
-    mode = 'CLOSED';
-  }
-
   store.teamId = teamId;
-  store.brand = brand;
   store.storeName = storeName;
   store.currency = currency;
   store.orderReference = orderReference;
   store.adminId = adminId;
   store.managerId = managerId;
   store.mode = mode;
-  store.openingDate = moment.tz(openingDate, timezone).format();
-  store.closingDate = moment.tz(closingDate, timezone).format();
+  store.openingDate = openingDate;
+  store.closingDate = closingDate;
   store.timezone = timezone;
   store.storeMessage = storeMessage;
-  store.shipping = shipping;
+  store.shippingType = shippingType;
 
   await store.save();
   return res.send(store);

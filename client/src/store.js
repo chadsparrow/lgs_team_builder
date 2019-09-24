@@ -370,6 +370,19 @@ export default new Vuex.Store({
         }
       });
     },
+    addTeamStore({ commit }, newStore) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post('/api/v1/stores/', newStore);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     sendInviteNotification({ commit }, { id, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {

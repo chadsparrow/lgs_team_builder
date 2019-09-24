@@ -365,5 +365,17 @@ $black-text: #000000;
 
 .contact-bar {
   grid-area: right-bar;
+
+  small {
+    font-size: 0.9em;
+    color: $blue-color;
+  }
+  font-size: 0.9rem;
+  span {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 0.4rem;
+    border-radius: 5px;
+    display: block;
+  }
 }
 </style>

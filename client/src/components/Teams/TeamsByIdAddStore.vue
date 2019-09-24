@@ -20,6 +20,10 @@
             <span class="col-sm-12">{{ team.name }}</span>
           </div>
           <div class="row p-1">
+            <small class="col-sm-12 text-info">Team ID#:</small>
+            <span class="col-sm-12">{{ team.teamId }}</span>
+          </div>
+          <div class="row p-1">
             <small class="col-sm-12 text-info">Team Admin:</small>
             <span class="col-sm-12">{{ team.adminId.name }}</span>
           </div>
@@ -34,34 +38,23 @@
       </div>
       <div class="col middle-section" v-if="team && team.managerId.name">
         <form novalidate>
-          <div class="row">
-            <div class="form-group col-sm-3">
-              <label for="teamId">Team ID#</label>
-              <input
-                id="teamId"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.teamId"
-                ref="teamId"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-9">
-              <label for="storeName">Store Name</label>
-              <input
-                id="storeName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="storeName"
-                ref="storeName"
-              />
-            </div>
-          </div>
           <!-- STORE INFO-->
-          <div class="section-header mt-3 mb-2 bg-secondary">
+          <div class="section-header mb-2 bg-secondary">
             <span>Store Information</span>
           </div>
           <div class="row px-2">
+            <div class="col-sm-12 mb-4">
+              <div class="form-group">
+                <label for="storeName">Store Name</label>
+                <input
+                  id="storeName"
+                  type="text"
+                  class="form-control"
+                  v-model="storeName"
+                  ref="storeName"
+                />
+              </div>
+            </div>
             <div class="col-sm-4">
               <div class="form-group col">
                 <label for="currency">Store Currency</label>
@@ -160,10 +153,13 @@
               </div>
               <div class="row mt-2">
                 <div class="col-sm-6">
-                  <button class="btn btn-block btn-info">Add Store</button>
+                  <button class="btn btn-block btn-info" @click.prevent="addStore">Add Store</button>
                 </div>
                 <div class="col-sm-6">
-                  <button class="btn btn-block btn-danger">Cancel</button>
+                  <router-link
+                    :to="`/dashboard/teams/${team._id}`"
+                    class="btn btn-block btn-danger"
+                  >Cancel</router-link>
                 </div>
               </div>
             </div>
@@ -305,10 +301,32 @@ export default {
   },
   methods: {
     addStore: async function() {
-      // addStore logic
-    },
-    msgLength: function() {
-      console.log(this.storeMessage.length);
+      const newStore = {
+        teamId: this.team._id,
+        storeName: this.storeName,
+        currency: this.currency,
+        orderReference: this.orderReference,
+        adminId: this.team.adminId._id,
+        managerId: this.team.managerId._id,
+        mode: this.mode,
+        openingDate: this.opening,
+        closingDate: this.closing,
+        timezone: this.team.timezone,
+        storeMessage: this.storeMessage,
+        shippingType: this.shippingType
+      };
+
+      try {
+        const res = await this.$store.dispatch('addTeamStore', newStore);
+        this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
+        this.$toasted.success(res.data[0].message);
+      } catch (err) {
+        if (err.response.data[0].context) {
+          const key = err.response.data[0].context.key;
+          this.$refs[key].focus();
+        }
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
     }
   }
 };
@@ -327,5 +345,12 @@ $blue-color: #17a2b8;
 .vdatetime-time-picker__item--selected,
 .vdatetime-popup__actions__button {
   color: $blue-color !important;
+}
+
+.bulkShipping .row span {
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0.4rem;
+  border-radius: 5px;
+  display: block;
 }
 </style>

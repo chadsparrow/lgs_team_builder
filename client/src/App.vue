@@ -218,10 +218,10 @@ label {
   }
   font-size: 0.9rem;
   span {
-    display: block;
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 3px;
-    width: 100%;
+    padding: 0.4rem;
+    border-radius: 5px;
+    display: block;
   }
 }
 
