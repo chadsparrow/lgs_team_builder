@@ -194,7 +194,7 @@ export default {
       }
     },
     inviteTeamMember: function() {
-      //
+      //  ADD INVITE TO MEMBER EMAIL AND ACCEPTANCE LOGIC
       this.$toasted.success(`Invite sent to ${this.inviteEmail}`, { icon: 'check-circle' });
       this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
     }

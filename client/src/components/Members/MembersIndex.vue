@@ -59,6 +59,7 @@ export default {
           link: '#'
         }
       ];
+      await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });

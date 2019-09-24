@@ -34,7 +34,7 @@ router.get('/', auth, async (req, res) => {
 router.get('/catalog/:id', [validateObjectId, auth], async (req, res) => {
   const items = await CatalogItem.find({ catalogId: req.params.id });
   if (items && items.length === 0)
-    return res.status(400).send([{ message: 'Catalog with the given ID has no items.' }]);
+    return res.status(400).send([{ message: 'Catalog has no items.' }]);
 
   return res.send(items);
 });

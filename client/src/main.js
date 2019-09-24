@@ -11,7 +11,7 @@ import moment from 'moment-timezone';
 Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
 Vue.use(Toasted, {
-  position: 'top-center',
+  position: 'bottom-right',
   duration: 4000,
   iconPack: 'fontawesome'
 });

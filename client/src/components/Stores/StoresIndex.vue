@@ -1,12 +1,5 @@
 <template>
   <div>
-    <div v-if="member && member.isAdmin">
-      <router-link to="/dashboard/stores/add" class="btn btn-info">
-        <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Store
-      </router-link>
-      <br />
-      <br />
-    </div>
     <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -14,7 +7,6 @@
           <tr>
             <th>Team ID</th>
             <th>Store Name</th>
-            <th>Brand</th>
             <th>Admin ID</th>
             <th>Manager ID</th>
             <th>Mode</th>
@@ -23,7 +15,6 @@
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
             <th scope="row">{{ store.teamId }}</th>
             <td>{{ store.storeName }}</td>
-            <td>{{ store.brand }}</td>
             <td>{{ store.adminId }}</td>
             <td>{{ store.managerId }}</td>
             <td>{{ store.mode }}</td>
@@ -59,22 +50,21 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12,
-      breadcrumbs: [
+      itemsPerPage: 12
+    };
+  },
+  created: async function() {
+    try {
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Stores',
           link: '#'
         }
-      ],
-      stores: []
-    };
-  },
-  created: async function() {
-    try {
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      const stores = await this.$store.dispatch('getStores');
-      this.stores = stores.data;
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getStores');
+      await this.$store.commit('CLEAR_CURRENTS');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
@@ -98,6 +88,9 @@ export default {
         pageArray.push(i);
       }
       return pageArray.length;
+    },
+    stores: function() {
+      return this.$store.getters.stores;
     }
   },
   methods: {

@@ -275,3 +275,36 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.teampage {
+  display: grid;
+  grid-template-columns: 255px 1fr 300px;
+  grid-template-rows: auto 250px 100px;
+  width: 100%;
+  height: 100vh;
+  grid-template-areas:
+    'left-bar stores right-bar'
+    'members stores right-bar'
+    'buttons stores right-bar';
+}
+
+.team-info {
+  grid-area: left-bar;
+}
+
+.member-list {
+  grid-area: members;
+}
+.member-buttons {
+  grid-area: buttons;
+}
+
+.stores-section {
+  grid-area: stores;
+}
+
+.contact-bar {
+  grid-area: right-bar;
+}
+</style>

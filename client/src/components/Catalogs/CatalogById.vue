@@ -1,12 +1,12 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/add`" tag="a">
           <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
         </router-link>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-3">
         <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/edit`" tag="a">
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
         </router-link>
@@ -23,18 +23,21 @@
 <script>
 export default {
   name: 'CatalogById',
-  data() {
-    return {
-      catalog: {},
-      catalogItems: []
-    };
-  },
   computed: {
     id: function() {
       return this.catalog._id;
     },
-    breadcrumbs: function() {
-      return [
+    catalog: function() {
+      return this.$store.getters.currentCatalog;
+    },
+    catalogItems: function() {
+      return this.$store.getters.currentCatalogItems;
+    }
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalog', this.$route.params.id);
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
@@ -45,16 +48,8 @@ export default {
           link: '#'
         }
       ];
-    }
-  },
-  created: async function() {
-    try {
-      const catalog = await this.$store.dispatch('getCatalog', this.$route.params.id);
-      this.catalog = catalog.data;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-
-      const catalogItems = await this.$store.dispatch('getCatalogItems', this.catalog._id);
-      this.catalogItems = catalogItems.data;
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getCatalogItems', this.catalog._id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

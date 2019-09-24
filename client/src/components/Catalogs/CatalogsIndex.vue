@@ -45,28 +45,27 @@ export default {
   components: {
     Paginate
   },
-  created: async function() {
-    try {
-      const catalogs = await this.$store.dispatch('getCatalogs');
-      this.catalogs = catalogs.data;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-    } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-    }
-  },
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12,
-      breadcrumbs: [
+      itemsPerPage: 12
+    };
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalogs');
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
           link: '#'
         }
-      ],
-      catalogs: []
-    };
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.commit('CLEAR_CURRENTS');
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+    }
   },
   computed: {
     indexOfLastItem: function() {
@@ -84,6 +83,9 @@ export default {
         pageArray.push(i);
       }
       return pageArray.length;
+    },
+    catalogs: function() {
+      return this.$store.getters.catalogs;
     }
   },
   methods: {

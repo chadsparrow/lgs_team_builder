@@ -14,6 +14,11 @@ const StoreItemSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'catalogitems'
     },
+    brand: {
+      type: String,
+      required: true,
+      trim: true
+    },
     surveyLikes: {
       type: Number,
       default: 0

@@ -13,17 +13,19 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     member: localStorage.getItem('member') || null,
-    catalog: {},
-    catalogItems: [],
+    catalogs: [],
+    currentCatalog: {},
     emails: [],
     notifications: [],
     breadcrumbs: [],
     allMembers: [],
     teams: [],
+    stores: [],
     unfinishedTeams: [],
     currentTeam: null,
     currentTeamStores: [],
-    currentMember: null
+    currentMember: null,
+    currentCatalogItems: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -77,6 +79,8 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/catalogs');
+          commit('SET_CATALOGS', res.data);
+          commit('CLEAR_CURRENTS');
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -90,6 +94,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/catalogs/${id}`);
+          commit('SET_CURRENT_CATALOG', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -129,6 +134,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/catalogitems/catalog/${id}`);
+          commit('SET_CURRENT_CATALOG_ITEMS', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -383,6 +389,7 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get('/api/v1/stores');
+          commit('SET_STORES', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -444,6 +451,25 @@ export default new Vuex.Store({
     },
     SET_TEAM_STORES(state, payload) {
       state.currentTeamStores = payload;
+    },
+    SET_STORES(state, payload) {
+      state.stores = payload;
+    },
+    CLEAR_CURRENTS(state) {
+      state.currentMember = null;
+      state.currentTeam = null;
+      state.currentTeamStores = null;
+      state.currentCatalog = null;
+      state.currentCatalogItems = null;
+    },
+    SET_CATALOGS(state, payload) {
+      state.catalogs = payload;
+    },
+    SET_CURRENT_CATALOG(state, payload) {
+      state.currentCatalog = payload;
+    },
+    SET_CURRENT_CATALOG_ITEMS(state, payload) {
+      state.currentCatalogItems = payload;
     }
   },
   getters: {
@@ -461,6 +487,10 @@ export default new Vuex.Store({
     notifications: state => state.notifications,
     breadcrumbs: state => state.breadcrumbs,
     teamStores: state => state.currentTeamStores,
-    getMember: state => state.currentMember
+    getMember: state => state.currentMember,
+    stores: state => state.stores,
+    catalogs: state => state.catalogs,
+    currentCatalog: state => state.currentCatalog,
+    currentCatalogItems: state => state.currentCatalogItems
   }
 });

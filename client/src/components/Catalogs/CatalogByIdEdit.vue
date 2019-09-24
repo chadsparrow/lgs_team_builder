@@ -60,12 +60,10 @@
 <script>
 export default {
   name: 'CatalogByIdEdit',
-  data() {
-    return {
-      catalog: {}
-    };
-  },
   computed: {
+    catalog: function() {
+      return this.$store.getters.currentCatalog;
+    },
     daterange: function() {
       let daterangeStart = 1975;
       let daterangeEnd = 2030;
@@ -80,9 +78,12 @@ export default {
     },
     id: function() {
       return this.catalog._id;
-    },
-    breadcrumbs: function() {
-      return [
+    }
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalog', this.$route.params.id);
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
@@ -97,13 +98,7 @@ export default {
           link: '#'
         }
       ];
-    }
-  },
-  created: async function() {
-    try {
-      const catalog = await this.$store.dispatch('getCatalog', this.$route.params.id);
-      this.catalog = catalog.data;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

@@ -15,12 +15,6 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
-    brand: {
-      type: String,
-      required: true,
-      uppercase: true,
-      trim: true
-    },
     currency: {
       type: String,
       required: true,
@@ -142,9 +136,6 @@ const StoreSchema = new mongoose.Schema(
 function validateStore(store) {
   const schema = {
     teamId: Joi.objectId().required(),
-    brand: Joi.string()
-      .required()
-      .trim(),
     storeName: Joi.string().trim(),
     currency: Joi.string()
       .required()
