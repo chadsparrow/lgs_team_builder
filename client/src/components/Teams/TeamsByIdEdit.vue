@@ -31,6 +31,10 @@
       <div class="col middle-section" v-if="team && team.name">
         <form novalidate>
           <div class="row">
+            <div class="form-group col-sm-12">
+              <label for="name">Team Name</label>
+              <input id="name" type="text" class="form-control" v-model="team.name" ref="name" />
+            </div>
             <!-- ADMIN SELECTOR -->
             <div class="form-group col-sm-4">
               <label for="teamId">Team ID#</label>
@@ -40,7 +44,6 @@
                 class="form-control form-control-sm"
                 v-model="team.teamId"
                 ref="teamId"
-                readonly
               />
             </div>
             <div class="form-group col-sm-4" v-if="team.adminId">
@@ -144,7 +147,7 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="contactCity">City</label>
               <input
                 id="contactCity"
@@ -156,29 +159,28 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-3">
               <label for="contactStateProv">State/Province</label>
-              <input
+              <region-select
                 id="contactStateProv"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="team.mainContact.stateProv"
-                ref="contactStateProv"
-                @change="changeDetails"
+                :country="team.mainContact.country"
+                :region="team.mainContact.stateProv"
+                class="form-control form-control-sm"
                 :readonly="useManagerDetails"
+                regionName="true"
+                @input="checkRegion"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-3">
               <label for="contactCountry">Country</label>
-              <input
+              <country-select
                 id="contactCountry"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="team.mainContact.country"
-                ref="contactCountry"
-                maxlength="2"
-                @change="changeDetails"
+                :country="team.mainContact.country"
+                class="form-control form-control-sm"
                 :readonly="useManagerDetails"
+                @input="checkCountry"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -308,7 +310,7 @@
                 :readonly="bulkUseDetails!== 'other'"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="shippingCity">Shipping City</label>
               <input
                 id="shippingCity"
@@ -320,29 +322,28 @@
                 :readonly="bulkUseDetails!== 'other'"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-3">
               <label for="shippingStateProv">Shipping State/Province</label>
-              <input
+              <region-select
                 id="shippingStateProv"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="team.bulkShipping.stateProv"
-                ref="shippingStateProv"
-                @change="changeDetails"
-                :readonly="bulkUseDetails!== 'other'"
+                :country="team.bulkShipping.country"
+                :region="team.bulkShipping.stateProv"
+                class="form-control form-control-sm"
+                :readonly="bulkUseDetails !== 'other'"
+                regionName="true"
+                @input="geoTimezone"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-3">
               <label for="shippingCountry">Shipping Country</label>
-              <input
+              <country-select
                 id="shippingCountry"
-                type="text"
-                class="form-control form-control-sm"
-                maxlength="2"
                 v-model="team.bulkShipping.country"
-                ref="shippingCountry"
-                @change="changeDetails"
-                :readonly="bulkUseDetails!== 'other'"
+                :country="team.bulkShipping.country"
+                class="form-control form-control-sm"
+                :readonly="bulkUseDetails !== 'other'"
+                @input="checkShippingCountry"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -367,7 +368,7 @@
               />
             </div>
             <div class="form-group col-sm-6" v-else>
-              <label for="contactPhone">Phone</label>
+              <label for="shippingPhone">Phone</label>
               <VuePhoneNumberInput
                 v-model="team.bulkShipping.phone"
                 id="shippingPhone"
@@ -459,19 +460,32 @@ export default {
   methods: {
     updateTeam: async function() {
       const updatedTeam = {
+        name: this.team.name,
         logo: this.team.logo,
         adminId: this.team.adminId._id,
         managerId: this.team.managerId._id,
         teamId: this.team.teamId,
-        mainContact: this.team.mainContact,
-        bulkShipping: this.team.bulkShipping,
+        contactName: this.team.mainContact.name,
+        contactAddress1: this.team.mainContact.address1,
+        contactAddress2: this.team.mainContact.address2,
+        contactCity: this.team.mainContact.city,
+        contactStateProv: this.team.mainContact.stateProv,
+        contactCountry: this.team.mainContact.country,
+        contactZipPostal: this.team.mainContact.zipPostal,
+        contactPhone: this.team.mainContact.phone,
+        contactEmail: this.team.mainContact.email,
+        shippingName: this.team.bulkShipping.name,
+        shippingAddress1: this.team.bulkShipping.address1,
+        shippingAddress2: this.team.bulkShipping.address2,
+        shippingCity: this.team.bulkShipping.city,
+        shippingStateProv: this.team.bulkShipping.stateProv,
+        shippingCountry: this.team.bulkShipping.country,
+        shippingZipPostal: this.team.bulkShipping.zipPostal,
+        shippingPhone: this.team.bulkShipping.phone,
+        shippingEmail: this.team.bulkShipping.email,
         timezone: this.team.timezone,
         timezoneAbbrev: this.team.timezoneAbbrev
       };
-
-      delete updatedTeam.mainContact.timezone;
-      delete updatedTeam.mainContact.timezoneAbbrev;
-      delete updatedTeam.mainContact.shipping;
 
       try {
         const res = await this.$store.dispatch('updateTeam', {
@@ -564,9 +578,7 @@ export default {
       const target = event.target.id;
       let codeCountries;
       if (
-        (target === 'shippingCountry' ||
-          target === 'shippingStateProv' ||
-          target === 'shippingCity') &&
+        target === 'shippingCity' &&
         (this.team.bulkShipping.stateProv &&
           this.team.bulkShipping.city &&
           this.team.bulkShipping.country)
@@ -586,54 +598,8 @@ export default {
         } else if (target === 'contactCity') {
           this.team.bulkShipping.city = this.team.mainContact.city;
           this.geoTimezone();
-        } else if (target === 'contactStateProv') {
-          this.team.bulkShipping.stateProv = this.team.mainContact.stateProv;
-          this.geoTimezone();
-        } else if (target === 'contactCountry') {
-          this.team.bulkShipping.country = this.team.mainContact.country;
-          this.geoTimezone();
         } else if (target === 'contactZipPostal') {
           this.team.bulkShipping.zipPostal = this.team.mainContact.zipPostal;
-        }
-      }
-      let valid = false;
-      if (target === 'contactCountry' && this.team.mainContact.country) {
-        codeCountries = this.$refs.contactPhone.codesCountries;
-        let countryCode = this.team.mainContact.country;
-        countryCode = countryCode.toUpperCase();
-        codeCountries.forEach(country => {
-          if (country.iso2 === countryCode) {
-            valid = true;
-          }
-        });
-
-        if (valid) {
-          this.$refs.contactPhone.countryCode = countryCode;
-        } else {
-          this.team.mainContact.country = '';
-          this.$refs.contactCountry.focus();
-          this.$toasted.error('Main Contact Country Code Invalid', {
-            icon: 'exclamation-triangle'
-          });
-        }
-      }
-
-      if (target === 'shippingCountry' && this.team.bulkShipping.country) {
-        codeCountries = this.$refs.shippingPhone.codesCountries;
-        let countryCode = this.team.bulkShipping.country;
-        countryCode = countryCode.toUpperCase();
-        codeCountries.forEach(country => {
-          if (country.iso2 === countryCode) {
-            valid = true;
-          }
-        });
-
-        if (valid) {
-          this.$refs.shippingPhone.countryCode = countryCode;
-        } else {
-          this.team.bulkShipping.country = '';
-          this.$refs.shippingCountry.focus();
-          this.$toasted.error('Shipping Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
     },
@@ -641,6 +607,26 @@ export default {
       if (this.bulkUseDetails === 'above' && event.phoneNumber) {
         this.team.bulkShipping.phone = event.phoneNumber;
       }
+    },
+    checkRegion: function() {
+      if (this.bulkUseDetails === 'above') {
+        this.team.bulkShipping.stateProv = this.team.mainContact.stateProv;
+        this.geoTimezone();
+      }
+    },
+    checkCountry: function() {
+      this.$refs.contactPhone.countryCode = this.team.mainContact.country;
+      this.team.mainContact.stateProv = '';
+
+      if (this.bulkUseDetails === 'above') {
+        this.team.bulkShipping.country = this.team.mainContact.country;
+        this.team.bulkShipping.stateProv = '';
+        this.geoTimezone();
+      }
+    },
+    checkShippingCountry: function() {
+      this.$refs.shippingPhone.countryCode = this.team.bulkShipping.country;
+      this.geoTimezone();
     },
     geoTimezone: async function() {
       if (

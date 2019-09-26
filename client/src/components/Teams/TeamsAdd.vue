@@ -145,6 +145,7 @@
                 class="form-control form-control-sm"
                 @input="checkRegion"
                 :readonly="useManagerDetails"
+                regionName="true"
                 ref="contactStateProv"
               />
             </div>
@@ -307,6 +308,7 @@
                 :country="shippingCountry"
                 :region="shippingStateProv"
                 class="form-control form-control-sm"
+                regionName="true"
                 @input="geoTimezone"
                 :readonly="bulkUseDetails!== 'other'"
               />

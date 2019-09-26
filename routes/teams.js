@@ -205,17 +205,22 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     teamId = teamId.toUpperCase();
   }
 
-  team = await Team.findOne({ $or: [{ name }, { teamId }] });
-  if (team)
-    if (team.name === name) {
-      return res
-        .status(400)
-        .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
-    } else if (team.teamId === teamId) {
-      return res
-        .status(400)
-        .send([{ message: 'Team ID already registered', context: { key: 'teamId' } }]);
+  if (team.name !== name && team.teamId !== teamId) {
+    team = await Team.findOne({ $or: [{ name }, { teamId }] });
+    if (team) {
+      if (team.name === name) {
+        return res
+          .status(400)
+          .send([{ message: 'Team name already registered', context: { key: 'name' } }]);
+      }
+
+      if (team.teamId === teamId) {
+        return res
+          .status(400)
+          .send([{ message: 'Team ID already registered', context: { key: 'teamId' } }]);
+      }
     }
+  }
 
   const teamAdmin = await Member.findById(adminId);
   if (!teamAdmin)
