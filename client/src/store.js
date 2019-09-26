@@ -21,10 +21,9 @@ export default new Vuex.Store({
     allMembers: [],
     teams: [],
     stores: [],
-    unfinishedTeams: [],
-    currentTeam: null,
+    currentTeam: {},
     currentTeamStores: [],
-    currentMember: null,
+    currentMember: {},
     currentCatalogItems: []
   },
   actions: {
@@ -302,11 +301,11 @@ export default new Vuex.Store({
         }
       });
     },
-    addTeam({ commit }, team) {
+    addTeam({ commit }, newTeam) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
-          const res = await axios.post('/api/v1/teams', team);
+          const res = await axios.post('/api/v1/teams', newTeam);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -455,8 +454,7 @@ export default new Vuex.Store({
       state.currentMember = payload;
     },
     SET_TEAMS(state, payload) {
-      state.teams = payload.teams;
-      state.unfinishedTeams = payload.unfinishedTeams;
+      state.teams = payload;
     },
     SET_CURRENT_TEAM(state, payload) {
       state.currentTeam = payload;
@@ -494,7 +492,6 @@ export default new Vuex.Store({
     allMembers: state => state.allMembers,
     teams: state => state.teams,
     currentTeam: state => state.currentTeam,
-    unfinishedTeams: state => state.unfinishedTeams,
     emails: state => state.emails,
     notifications: state => state.notifications,
     breadcrumbs: state => state.breadcrumbs,

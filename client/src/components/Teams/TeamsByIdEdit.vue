@@ -43,7 +43,7 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-4" v-if="member && member.isAdmin">
+            <div class="form-group col-sm-4" v-if="team.adminId">
               <label for="adminId">Admin</label>
               <select
                 class="form-control form-control-sm"
@@ -58,12 +58,8 @@
                 >{{admin.name}}</option>
               </select>
             </div>
-            <div class="form-group col-sm-6" v-else-if="member && member._id === managerId._id">
-              <label for="adminId">Admin</label>
-              <span>{{team.adminId.name}} - {{team.adminId.email}}</span>
-            </div>
             <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-4" v-if="member && member.isAdmin && team.members">
+            <div class="form-group col-sm-4" v-if="team.members && team.members.length > 0">
               <label for="managerId">Manager</label>
               <select
                 class="form-control form-control-sm"
@@ -79,15 +75,9 @@
                 >{{manager.name}}</option>
               </select>
             </div>
-            <div class="form-group col-sm-4" v-else>
-              <label for="managerId">Manager</label>
-              <span
-                v-if="team && team.managerId._id"
-              >{{team.managerId.name}} - {{team.managerId.email}}</span>
-            </div>
           </div>
           <!-- MAIN CONTACT -->
-          <div class="section-header mt-3 mb-2 bg-secondary">
+          <div class="section-header mt-3 mb-2 bg-secondary" v-if="team.managerId">
             <span>Main Contact</span>
             <div class="form-check text-center">
               <input
@@ -105,7 +95,7 @@
               >Use Manager's Contact Info</label>
             </div>
           </div>
-          <div class="row px-2">
+          <div class="row px-2" v-if="team.mainContact">
             <div class="form-group col-sm-6">
               <label for="contactName">Name</label>
               <input

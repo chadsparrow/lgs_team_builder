@@ -278,7 +278,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     updateMember.billing.stateProv = updateMember.stateProv;
     updateMember.billing.country = updateMember.country;
     updateMember.billing.zipPostal = updateMember.zipPostal;
-    updateMember.billing.phone = updateMember.phone; // DOUBLE CHECK THIS WORKS
+    updateMember.billing.phone = updateMember.phone;
     updateMember.billing.email = updateMember.email;
   } else {
     updateMember.billing.name = billingName;
@@ -317,7 +317,16 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
       }
 
       if (team.bulkShipping.email === updateMember.email) {
-        await Team.updateOne({ _id: team._id }, { $set: { bulkShipping: updateMember.shipping } });
+        await Team.updateOne(
+          { _id: team._id },
+          {
+            $set: {
+              bulkShipping: updateMember.shipping,
+              timezone: updateMember.timezone,
+              timezoneAbbrev: updateMember.timezoneAbbrev
+            }
+          }
+        );
       }
     });
   }

@@ -135,6 +135,12 @@ const TeamSchema = new mongoose.Schema(
         ref: 'members'
       }
     ],
+    stores: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'teams'
+      }
+    ],
     timezone: {
       type: String
     },
@@ -145,21 +151,9 @@ const TeamSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-function validateTeamName(team) {
-  const schema = {
-    name: Joi.string()
-      .required()
-      .trim(),
-    adminId: Joi.objectId(),
-    teamId: Joi.string()
-      .allow('', null)
-      .trim()
-  };
-  return Joi.validate(team, schema, joiOptions);
-}
-
 function validateTeam(team) {
   const schema = {
+    name: Joi.string().required(),
     logo: Joi.string()
       .uri()
       .allow('', null),
@@ -168,62 +162,58 @@ function validateTeam(team) {
     teamId: Joi.string()
       .allow('', null)
       .trim(),
-    mainContact: Joi.object({
-      name: Joi.string()
-        .required()
-        .trim(),
-      address1: Joi.string()
-        .required()
-        .trim(),
-      address2: Joi.string().allow('', null),
-      city: Joi.string().required(),
-      stateProv: Joi.string()
-        .min(2)
-        .required()
-        .trim(),
-      country: Joi.string()
-        .min(2)
-        .max(2)
-        .required(),
-      zipPostal: Joi.string()
-        .required()
-        .trim(),
-      phone: Joi.string()
-        .required()
-        .trim(),
-      email: Joi.string()
-        .email()
-        .required()
-        .trim()
-    }).required(),
-    bulkShipping: Joi.object({
-      name: Joi.string()
-        .required()
-        .trim(),
-      address1: Joi.string()
-        .required()
-        .trim(),
-      address2: Joi.string().allow('', null),
-      city: Joi.string().required(),
-      stateProv: Joi.string()
-        .min(2)
-        .required()
-        .trim(),
-      country: Joi.string()
-        .min(2)
-        .max(2)
-        .required(),
-      zipPostal: Joi.string()
-        .required()
-        .trim(),
-      phone: Joi.string()
-        .required()
-        .trim(),
-      email: Joi.string()
-        .email()
-        .required()
-        .trim()
-    }).required(),
+    contactName: Joi.string()
+      .required()
+      .trim(),
+    contactAddress1: Joi.string()
+      .required()
+      .trim(),
+    contactAddress2: Joi.string().allow('', null),
+    contactCity: Joi.string().required(),
+    contactStateProv: Joi.string()
+      .min(2)
+      .required()
+      .trim(),
+    contactCountry: Joi.string()
+      .min(2)
+      .max(2)
+      .required(),
+    contactZipPostal: Joi.string()
+      .required()
+      .trim(),
+    contactPhone: Joi.string()
+      .required()
+      .trim(),
+    contactEmail: Joi.string()
+      .email()
+      .required()
+      .trim(),
+    shippingName: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress1: Joi.string()
+      .required()
+      .trim(),
+    shippingAddress2: Joi.string().allow('', null),
+    shippingCity: Joi.string().required(),
+    shippingStateProv: Joi.string()
+      .min(2)
+      .required()
+      .trim(),
+    shippingCountry: Joi.string()
+      .min(2)
+      .max(2)
+      .required(),
+    shippingZipPostal: Joi.string()
+      .required()
+      .trim(),
+    shippingPhone: Joi.string()
+      .required()
+      .trim(),
+    shippingEmail: Joi.string()
+      .email()
+      .required()
+      .trim(),
     timezone: Joi.string().required(),
     timezoneAbbrev: Joi.string().required()
   };
@@ -239,5 +229,4 @@ function validateAddMember(member) {
 
 exports.Team = mongoose.model('teams', TeamSchema);
 exports.validateTeam = validateTeam;
-exports.validateTeamName = validateTeamName;
 exports.validateAddMember = validateAddMember;

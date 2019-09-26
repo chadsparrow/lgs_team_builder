@@ -38,7 +38,6 @@
               >{{ team.name }}</li>
             </ul>
           </div>
-          <hr />
         </div>
         <div v-else>
           <div class="placeholderImg"></div>

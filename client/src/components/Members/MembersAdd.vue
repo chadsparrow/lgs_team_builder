@@ -447,7 +447,7 @@ export default {
           link: '#'
         }
       ];
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

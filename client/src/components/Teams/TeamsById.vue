@@ -62,9 +62,11 @@
     <!-- MEMBER LIST SECTION -->
     <div class="member-list">
       <div class="row p-1" v-if="team && team.members && team.members.length > 0">
-        <div class="col-sm-12">
-          <small class="text-info">Member List: {{team.members.length}}</small>
-          <br />
+        <small class="text-info col-sm-12 mb-1">
+          Member List:
+          <span class="ml-3">{{team.members.length}}</span>
+        </small>
+        <div class="memberlist col-sm-12">
           <ul class="list-group">
             <li
               class="list-group-item list-group-item-action"
@@ -221,7 +223,7 @@
         <router-link
           :to="`/dashboard/teams/${team._id}/edit`"
           class="btn btn-block btn-info mt-4"
-          v-if="access && team"
+          v-if="member && member.isAdmin"
         >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
         </router-link>
@@ -330,27 +332,29 @@ $black-text: #000000;
 
 .member-list {
   grid-area: members;
-  overflow-y: auto;
-  overflow-x: hidden;
+  .memberlist {
+    overflow-y: auto;
 
-  .list-group {
-    width: 100%;
+    .list-group {
+      width: 100%;
 
-    .list-group-item {
-      height: 35px;
-      padding: 5px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      &:hover {
-        background-color: $blue-color;
-        color: $white-text;
-      }
-
-      .memberIcons {
+      .list-group-item {
+        height: 35px;
+        padding: 5px 10px;
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+          background-color: $blue-color;
+          color: $white-text;
+        }
+
+        .memberIcons {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+        }
       }
     }
   }

@@ -9,15 +9,17 @@ import VueMoment from 'vue-moment';
 import moment from 'moment-timezone';
 import Datetime from 'vue-datetime';
 import 'vue-datetime/dist/vue-datetime.css';
+import vueCountryRegionSelect from 'vue-country-region-select';
 
 Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
 Vue.use(Toasted, {
-  position: 'bottom-right',
+  position: 'bottom-center',
   duration: 4000,
   iconPack: 'fontawesome'
 });
 Vue.use(Datetime);
+Vue.use(vueCountryRegionSelect);
 
 Vue.config.productionTip = false;
 
