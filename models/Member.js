@@ -42,7 +42,6 @@ const MemberSchema = new mongoose.Schema(
     stateProv: {
       type: String,
       required: true,
-      uppercase: true,
       minlength: 2,
       trim: true
     },
@@ -93,7 +92,6 @@ const MemberSchema = new mongoose.Schema(
       },
       stateProv: {
         type: String,
-        uppercase: true,
         minlength: 2,
         trim: true
       },
@@ -137,7 +135,6 @@ const MemberSchema = new mongoose.Schema(
       },
       stateProv: {
         type: String,
-        uppercase: true,
         minlength: 2,
         trim: true
       },

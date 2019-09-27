@@ -42,7 +42,6 @@ const OrderSchema = mongoose.Schema(
       stateProv: {
         type: String,
         trim: true,
-        uppercase: true,
         minlength: 2
       },
       country: {

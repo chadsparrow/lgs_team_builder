@@ -168,7 +168,7 @@
                 :region="team.mainContact.stateProv"
                 class="form-control form-control-sm"
                 :readonly="useManagerDetails"
-                regionName="true"
+                :regionName="true"
                 @input="checkRegion"
               />
             </div>
@@ -331,7 +331,7 @@
                 :region="team.bulkShipping.stateProv"
                 class="form-control form-control-sm"
                 :readonly="bulkUseDetails !== 'other'"
-                regionName="true"
+                :regionName="true"
                 @input="geoTimezone"
               />
             </div>
@@ -576,7 +576,6 @@ export default {
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      let codeCountries;
       if (
         target === 'shippingCity' &&
         (this.team.bulkShipping.stateProv &&
@@ -621,12 +620,11 @@ export default {
       if (this.bulkUseDetails === 'above') {
         this.team.bulkShipping.country = this.team.mainContact.country;
         this.team.bulkShipping.stateProv = '';
-        this.geoTimezone();
       }
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.team.bulkShipping.country;
-      this.geoTimezone();
+      this.team.bulkShipping.stateProv = '';
     },
     geoTimezone: async function() {
       if (

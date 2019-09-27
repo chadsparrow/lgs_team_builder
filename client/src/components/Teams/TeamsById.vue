@@ -23,7 +23,7 @@
         </div>
 
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
+          <small class="col-sm-12 text-info">Team Timezone:</small>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
 
@@ -36,7 +36,7 @@
           </span>
         </div>
 
-        <div class="row p-1" v-if="team.adminId.name">
+        <div class="row p-1" v-if="team.admin && team.adminId.name">
           <small class="col-sm-12 text-info">Team Admin:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}
@@ -45,7 +45,7 @@
           </span>
         </div>
 
-        <div class="row p-1" v-if="team.managerId.name">
+        <div class="row p-1" v-if="team.managerId && team.managerId.name">
           <small class="col-sm-12 text-info">Team Manager:</small>
           <span class="col-sm-12">
             {{ team.managerId.name }}
@@ -77,7 +77,7 @@
               <div class="memberIcons">
                 <i
                   class="fas fa-certificate text-warning mr-2"
-                  v-if="team && member && team.managerId._id === teammember._id"
+                  v-if="team && member && team.managerId &&team.managerId._id === teammember._id"
                 ></i>
                 <span>{{ teammember.name }}</span>
               </div>
@@ -95,7 +95,7 @@
     </div>
 
     <!-- MEMBER BUTTONS SECTION -->
-    <div class="member-buttons" v-if="team && team.managerId.name">
+    <div class="member-buttons" v-if="team && team.managerId && team.managerId.name">
       <div class="row p-1" v-if="access">
         <div class="col-sm-12">
           <router-link
@@ -113,18 +113,64 @@
     </div>
 
     <!-- STORES SECTION -->
-    <div class="stores-section px-3" v-if="team && team.managerId.name">
+    <div class="stores-section pr-4" v-if="team && team.managerId && team.managerId.name">
       <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-info mb-2">
         <i class="fas fa-plus mr-2"></i>Add Team Store
       </router-link>
-      <h5 v-if="stores && stores.length >0">Show Stores</h5>
-      <h5 else>No Stores</h5>
+      <div class="table-responsive" v-if="stores && stores.length >0">
+        <table class="table table-hover table-striped">
+          <tbody>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Opening Date</th>
+              <th scope="col">Closing Date</th>
+              <th scope="col">Mode</th>
+            </tr>
+            <tr
+              v-for="store of currentStores"
+              :key="store._id"
+              @click.prevent="loadStore(store._id)"
+            >
+              <td>{{ store.storeName }}</td>
+              <td
+                v-if="store.openingDate"
+              >{{ store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z') }}</td>
+              <td v-else>No Opening Date</td>
+              <td
+                v-if="store.closingDate"
+              >{{ store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')}}</td>
+              <td v-else>No Closing Date</td>
+              <td
+                :class="store.mode === 'OPEN' ? 'bg-success text-white' 
+                : store.mode === 'CLOSED' ? 'bg-danger text-white' 
+                : store.mode=== 'HOLD' ? 'bg-warning text-white' 
+                : null"
+              >{{ store.mode }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <paginate
+          v-model="currentPage"
+          :page-count="pageNumbers"
+          :container-class="'pagination pagination-sm'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'"
+          :hide-prev-next="true"
+          v-if="pageNumbers > 1"
+        ></paginate>
+      </div>
+
+      <h6 v-else>No Stores</h6>
     </div>
 
     <!-- CONTACT BAR SECTION -->
     <div class="contact-bar">
-      <div v-if="team && team.managerId.name">
-        <div class="section-header bg-secondary mb-2">Main Contact Information</div>
+      <div v-if="team && team.managerId && team.managerId.name">
+        <div class="section-header bg-secondary mb-2">Contact</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
@@ -151,7 +197,7 @@
             <br />
             <span>{{team.mainContact.city}}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-12">
             <small>State/Province</small>
             <br />
             <span>{{team.mainContact.stateProv}}</span>
@@ -162,17 +208,17 @@
             <span>{{team.mainContact.country}}</span>
           </div>
           <div class="col-sm-6">
-            <small>Zip/Postal Code</small>
+            <small>Zip/Postal</small>
             <br />
             <span>{{team.mainContact.zipPostal}}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-12">
             <small>Phone</small>
             <br />
             <span>{{team.mainContact.phone}}</span>
           </div>
         </div>
-        <div class="section-header bg-secondary mb-2 mt-2">Bulk Shipping Information</div>
+        <div class="section-header bg-secondary mb-1 mt-2">Bulk Shipping</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
@@ -199,7 +245,7 @@
             <br />
             <span>{{team.bulkShipping.city}}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-12">
             <small>State/Province</small>
             <br />
             <span>{{team.bulkShipping.stateProv}}</span>
@@ -210,11 +256,11 @@
             <span>{{team.bulkShipping.country}}</span>
           </div>
           <div class="col-sm-6">
-            <small>Zip/Postal Code</small>
+            <small>Zip/Postal</small>
             <br />
             <span>{{team.bulkShipping.zipPostal}}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-12">
             <small>Phone</small>
             <br />
             <span>{{team.bulkShipping.phone}}</span>
@@ -234,11 +280,18 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import moment from 'moment-timezone';
 
 export default {
   name: 'TeamById',
   components: {
     Avatar
+  },
+  data() {
+    return {
+      currentPage: 1,
+      itemsPerPage: 10
+    };
   },
   computed: {
     member: function() {
@@ -255,6 +308,22 @@ export default {
     },
     stores: function() {
       return this.$store.getters.teamStores;
+    },
+    indexOfLastItem: function() {
+      return this.currentPage * this.itemsPerPage;
+    },
+    indexOfFirstItem: function() {
+      return this.indexOfLastItem - this.itemsPerPage;
+    },
+    currentStores: function() {
+      return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
+    },
+    pageNumbers: function() {
+      const pageArray = [];
+      for (let i = 1; i <= Math.ceil(this.stores.length / this.itemsPerPage); i++) {
+        pageArray.push(i);
+      }
+      return pageArray.length;
     }
   },
   created: async function() {
@@ -293,6 +362,9 @@ export default {
           memberId: id
         });
       }
+    },
+    loadStore: function(id) {
+      // load store logic
     }
   }
 };
@@ -307,7 +379,7 @@ $black-text: #000000;
 
 .teampage {
   display: grid;
-  grid-template-columns: 255px 1fr 300px;
+  grid-template-columns: 255px 1fr 200px;
   grid-template-rows: 560px 1fr 76px;
   width: 100%;
   height: 100%;
@@ -365,10 +437,13 @@ $black-text: #000000;
 
 .stores-section {
   grid-area: stores;
+  font-size: 0.85rem;
 }
 
 .contact-bar {
   grid-area: right-bar;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   small {
     font-size: 0.9em;
@@ -377,7 +452,7 @@ $black-text: #000000;
   font-size: 0.9rem;
   span {
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.4rem;
+    padding: 0.3rem;
     border-radius: 5px;
     display: block;
   }

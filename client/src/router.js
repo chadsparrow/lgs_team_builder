@@ -18,6 +18,7 @@ import MembersAdd from './components/Members/MembersAdd.vue';
 import MemberById from './components/Members/MemberById.vue';
 import MemberByIdEdit from './components/Members/MemberByIdEdit.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
+import StoresById from './components/Stores/StoresById.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
 import TeamsAdd from './components/Teams/TeamsAdd.vue';
 import TeamsAddMember from './components/Teams/TeamsAddMember.vue';
@@ -67,7 +68,7 @@ let router = new Router({
         {
           path: 'index',
           name: 'dashboardIndex',
-          component: DashboardIndex,
+          component: ProfilesIndex,
           meta: { requiresAuth: true }
         },
         {
@@ -143,6 +144,14 @@ let router = new Router({
           path: 'stores',
           name: 'stores',
           component: StoresIndex,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'stores/:id',
+          name: 'storesById',
+          component: StoresById,
           meta: {
             requiresAuth: true
           }

@@ -15,6 +15,11 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
+    storeCountry: {
+      type: String,
+      uppercase: true,
+      trim: true
+    },
     currency: {
       type: String,
       required: true,
@@ -41,12 +46,10 @@ const StoreSchema = new mongoose.Schema(
       enum: ['SURVEY', 'OPEN', 'CLOSED', 'HOLD']
     },
     openingDate: {
-      type: Date,
-      required: true
+      type: Date
     },
     closingDate: {
-      type: Date,
-      required: true
+      type: Date
     },
     timezone: {
       type: String,
@@ -79,7 +82,30 @@ const StoreSchema = new mongoose.Schema(
       required: true,
       uppercase: true,
       enum: ['BULK', 'DROP']
-    }
+    },
+    extraCharges: [
+      {
+        name: {
+          type: String
+        },
+        amount: {
+          type: Float,
+          default: 0.0
+        }
+      }
+    ],
+    collectedShippingCharges: [
+      {
+        memberId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'members'
+        },
+        amount: {
+          type: Float,
+          default: 0.0
+        }
+      }
+    ]
   },
   { timestamps: true }
 );
@@ -88,6 +114,9 @@ function validateStore(store) {
   const schema = {
     teamId: Joi.objectId().required(),
     storeName: Joi.string().trim(),
+    storeCountry: Joi.string()
+      .required()
+      .trim(),
     currency: Joi.string()
       .required()
       .trim(),
@@ -100,12 +129,8 @@ function validateStore(store) {
       .valid(['SURVEY', 'OPEN', 'CLOSED', 'HOLD'])
       .required()
       .trim(),
-    openingDate: Joi.date()
-      .required()
-      .min('now'),
-    closingDate: Joi.date()
-      .required()
-      .greater(Joi.ref('openingDate')),
+    openingDate: Joi.date().allow('', null),
+    closingDate: Joi.date().allow('', null),
     timezone: Joi.string()
       .required()
       .trim(),

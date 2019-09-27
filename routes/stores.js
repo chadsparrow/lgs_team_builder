@@ -44,7 +44,11 @@ router.get('/', auth, async (req, res) => {
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  const store = await Store.findById(req.params.id);
+  const store = await Store.findById(req.params.id)
+    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'adminId', select: 'name email' })
+    .populate({ path: 'teamId', select: 'name' })
+    .select('-updatedAt -__v ');
   if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
 
   return res.send(store);
@@ -87,6 +91,7 @@ router.post('/', [auth, admin], async (req, res) => {
   const {
     teamId,
     storeName,
+    storeCountry,
     currency,
     mode,
     orderReference,
@@ -132,6 +137,7 @@ router.post('/', [auth, admin], async (req, res) => {
   store = new Store({
     teamId,
     storeName,
+    storeCountry,
     currency,
     orderReference,
     adminId,
@@ -145,6 +151,8 @@ router.post('/', [auth, admin], async (req, res) => {
   });
 
   await store.save();
+
+  await Team.updateOne({ _id: teamId }, { $push: { stores: store._id } });
   return res.status(201).send([{ message: 'Team Store Added' }]);
 });
 
@@ -155,6 +163,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const {
     teamId,
     storeName,
+    storeCountry,
     mode,
     currency,
     orderReference,
@@ -186,6 +195,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   store.teamId = teamId;
   store.storeName = storeName;
+  store.storeCountry = storeCountry;
   store.currency = currency;
   store.orderReference = orderReference;
   store.adminId = adminId;

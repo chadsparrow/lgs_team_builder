@@ -5,19 +5,21 @@
       <table class="table table-hover table-striped">
         <tbody>
           <tr>
-            <th>Team ID</th>
-            <th>Store Name</th>
-            <th>Admin ID</th>
-            <th>Manager ID</th>
-            <th>Mode</th>
-            <th>Total Orders</th>
+            <th scope="col">Team Name</th>
+            <th scope="col">Store Name</th>
+            <th scope="col">Admin</th>
+            <th scope="col">Manager</th>
+            <th scope="col">Mode</th>
+            <th scope="col">Total Orders</th>
           </tr>
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
-            <th scope="row">{{ store.teamId }}</th>
+            <td scope="row">{{ store.teamId.name }}</td>
             <td>{{ store.storeName }}</td>
-            <td>{{ store.adminId }}</td>
-            <td>{{ store.managerId }}</td>
-            <td>{{ store.mode }}</td>
+            <td>{{ store.adminId.name }}</td>
+            <td>{{ store.managerId.name }}</td>
+            <td
+              class="[store.mode === 'OPEN' ? 'bg-success' : store.mode === 'CLOSED' ? 'bg-danger' : '']"
+            >{{ store.mode }}</td>
             <td>{{ store.totalOrders }}</td>
           </tr>
         </tbody>
@@ -91,11 +93,26 @@ export default {
     },
     stores: function() {
       return this.$store.getters.stores;
+    },
+    modeColor: function(store) {
+      let bgColor = '';
+      switch (store.mode) {
+        case 'HOLD':
+          bgColor = '#FF8C00';
+          break;
+        case 'OPEN':
+          bgColor = '#9ACD32';
+          break;
+        case 'CLOSED':
+          bgColor = '#B22222';
+      }
+
+      return bgColor;
     }
   },
   methods: {
     loadStore: function(id) {
-      this.$router.push({ name: 'storeById', params: { id } }).catch(() => {});
+      this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});
     }
   }
 };

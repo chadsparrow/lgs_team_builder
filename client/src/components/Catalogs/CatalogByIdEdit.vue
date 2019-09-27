@@ -36,9 +36,13 @@
         </div>
         <div class="col-sm-12">
           <label for="year">Year</label>
-          <select class="form-control form-control-sm" id="year" v-model="catalog.year" ref="year">
-            <option v-for="date of daterange" :key="date" :value="date">{{ date }}</option>
-          </select>
+          <input
+            type="text"
+            id="year"
+            class="form-control form-control-sm"
+            ref="year"
+            v-model="catalog.year"
+          />
         </div>
       </div>
       <div class="row mt-4">
@@ -49,7 +53,7 @@
           <router-link
             tag="a"
             class="btn btn-block btn-danger"
-            :to="`/dashboard/catalogs/${id}`"
+            :to="`/dashboard/catalogs/${catalog._id}`"
           >Cancel</router-link>
         </div>
       </div>
@@ -63,21 +67,6 @@ export default {
   computed: {
     catalog: function() {
       return this.$store.getters.currentCatalog;
-    },
-    daterange: function() {
-      let daterangeStart = 1975;
-      let daterangeEnd = 2030;
-
-      let dateArray = [];
-
-      for (let i = daterangeStart; i <= daterangeEnd; i++) {
-        dateArray.push(i.toString());
-      }
-
-      return dateArray.reverse();
-    },
-    id: function() {
-      return this.catalog._id;
     }
   },
   created: async function() {
@@ -115,7 +104,7 @@ export default {
           }
         ]);
         this.$toasted.success('Catalog Updated', { icon: 'check-circle' });
-        this.$router.push({ name: 'catalogsById', params: this.id }).catch(() => {});
+        this.$router.push({ name: 'catalogsById', params: this.catalog._id }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;

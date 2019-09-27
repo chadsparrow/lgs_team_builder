@@ -73,12 +73,12 @@
             <br />
             <span>{{member.city}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
             <span>{{member.stateProv}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
             <span>{{member.country}}</span>
@@ -123,12 +123,12 @@
             <br />
             <span>{{member.billing.city}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
             <span>{{member.billing.stateProv}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
             <span>{{member.billing.country}}</span>
@@ -173,12 +173,12 @@
             <br />
             <span>{{member.shipping.city}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
             <span>{{member.shipping.stateProv}}</span>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
             <span>{{member.shipping.country}}</span>

@@ -1,38 +1,37 @@
 <template>
   <div class="mt-2">
-    <form @submit.prevent="addCatalogItem" novalidate class="container">
-      <div class="form-group row"></div>
-      <div class="row">
-        <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-dark">Add Catalog Item</button>
+    <div class="container" v-if="catalog && catalog._id">
+      <form @submit.prevent="addCatalogItem" novalidate>
+        <div class="form-group row"></div>
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="submit" class="btn btn-block btn-info">Add Catalog Item</button>
+          </div>
+          <div class="col-sm-6">
+            <router-link
+              tag="a"
+              class="btn btn-danger btn-block"
+              :to="`/dashboard/catalogs/${catalog._id}`"
+            >Cancel</router-link>
+          </div>
         </div>
-        <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/catalogs/${id}`"
-          >Cancel</router-link>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'CatalogItemsAdd',
-  data() {
-    return {};
-  },
   computed: {
     catalog: function() {
-      return this.$store.getters.catalog;
-    },
-    id: function() {
-      return this.catalog._id;
-    },
-    breadcrumbs: function() {
-      return [
+      return this.$store.getters.currentCatalog;
+    }
+  },
+  created: async function() {
+    try {
+      await this.$store.dispatch('getCatalog', this.$route.params.id);
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
@@ -40,19 +39,14 @@ export default {
         },
         {
           text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
-          link: `/dashboard/catalogs/${this.id}`
+          link: `/dashboard/catalogs/${this.catalog._id}`
         },
         {
           text: 'Add Item',
           link: '#'
         }
       ];
-    }
-  },
-  created: async function() {
-    try {
-      await this.$store.dispatch('getCatalog', this.$route.params.id);
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

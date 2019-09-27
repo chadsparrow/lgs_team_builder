@@ -1,21 +1,26 @@
 <template>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row" v-if="catalog && catalog._id">
       <div class="col-sm-3">
-        <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/add`" tag="a">
+        <router-link
+          class="btn btn-block btn-info"
+          :to="`/dashboard/catalogs/${catalog._id}/add`"
+          tag="a"
+        >
           <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
         </router-link>
       </div>
       <div class="col-sm-3">
-        <router-link class="btn btn-block btn-info" :to="`/dashboard/catalogs/${id}/edit`" tag="a">
+        <router-link
+          class="btn btn-block btn-info"
+          :to="`/dashboard/catalogs/${catalog._id}/edit`"
+          tag="a"
+        >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
         </router-link>
       </div>
-      <div
-        class="col-sm-12 mt-4"
-        v-if="catalogItems && catalogItems.length === 0"
-      >No items found for this catalog</div>
-      <div class="col-sm-12 mt-4" v-else>Catalog Items</div>
+      <div class="col-sm-12 mt-4" v-if="catalogItems && catalogItems.length > 0">Catalog Items</div>
+      <div class="col-sm-12 mt-4" v-else>No items found for this catalog</div>
     </div>
   </div>
 </template>
@@ -24,9 +29,6 @@
 export default {
   name: 'CatalogById',
   computed: {
-    id: function() {
-      return this.catalog._id;
-    },
     catalog: function() {
       return this.$store.getters.currentCatalog;
     },

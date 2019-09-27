@@ -145,7 +145,7 @@
                 class="form-control form-control-sm"
                 @input="checkRegion"
                 :readonly="useManagerDetails"
-                regionName="true"
+                :regionName="true"
                 ref="contactStateProv"
               />
             </div>
@@ -308,7 +308,7 @@
                 :country="shippingCountry"
                 :region="shippingStateProv"
                 class="form-control form-control-sm"
-                regionName="true"
+                :regionName="true"
                 @input="geoTimezone"
                 :readonly="bulkUseDetails!== 'other'"
               />
@@ -748,7 +748,6 @@ export default {
       if (this.bulkUseDetails === 'above') {
         this.shippingCountry = this.contactCountry;
         this.shippingStateProv = '';
-        this.geoTimezone();
       }
     },
     checkShippingCountry: function() {

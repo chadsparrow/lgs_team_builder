@@ -16,7 +16,9 @@ Vue.use(VuejsDialog);
 Vue.use(Toasted, {
   position: 'bottom-center',
   duration: 4000,
-  iconPack: 'fontawesome'
+  iconPack: 'fontawesome',
+  fullWidth: true,
+  fitToScreen: true
 });
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);

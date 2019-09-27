@@ -59,7 +59,7 @@
             @change="changeDetails"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-6">
           <label for="city">City</label>
           <input
             id="city"
@@ -72,25 +72,26 @@
         </div>
         <div class="form-group col-sm-4">
           <label for="stateProv">State/Province</label>
-          <input
+          <region-select
             id="stateProv"
-            type="text"
-            class="form-control form-control-sm"
             v-model="stateProv"
+            :country="country"
+            :region="stateProv"
+            class="form-control form-control-sm"
+            @input="checkRegion"
+            :regionName="true"
             ref="stateProv"
-            @change="changeDetails"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-2">
           <label for="country">Country</label>
-          <input
+          <country-select
             id="country"
-            type="text"
-            class="form-control form-control-sm"
             v-model="country"
-            maxlength="2"
+            :country="country"
+            class="form-control form-control-sm"
+            @input="checkCountry"
             ref="country"
-            @change="changeDetails"
           />
         </div>
         <div class="form-group col-sm-6">
@@ -180,7 +181,7 @@
             ref="billingAddress2"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-6">
           <label for="billingCity">Billing City</label>
           <input
             id="billingCity"
@@ -193,24 +194,26 @@
         </div>
         <div class="form-group col-sm-4">
           <label for="billingStateProv">Billing State/Province</label>
-          <input
+          <region-select
             id="billingStateProv"
-            type="text"
-            class="form-control form-control-sm"
             v-model="billingStateProv"
+            :country="billingCountry"
+            :region="billingStateProv"
+            class="form-control form-control-sm"
             :readonly="billingSame"
+            :regionName="true"
             ref="billingStateProv"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-2">
           <label for="billingCountry">Billing Country</label>
-          <input
+          <country-select
             id="billingCountry"
-            type="text"
-            maxlength="2"
-            class="form-control form-control-sm"
             v-model="billingCountry"
+            :country="billingCountry"
+            class="form-control form-control-sm"
             :readonly="billingSame"
+            @input="checkBillingCountry"
             ref="billingCountry"
           />
         </div>
@@ -310,7 +313,7 @@
             ref="shippingAddress2"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-6">
           <label for="shippingCity">Shipping City</label>
           <input
             id="shippingCity"
@@ -323,23 +326,26 @@
         </div>
         <div class="form-group col-sm-4">
           <label for="shippingStateProv">Shipping State/Province</label>
-          <input
+          <region-select
             id="shippingStateProv"
-            type="text"
-            class="form-control form-control-sm"
             v-model="shippingStateProv"
+            :country="shippingCountry"
+            :region="shippingStateProv"
+            class="form-control form-control-sm"
+            @input="geoTimezone"
             :readonly="shippingSame"
+            :regionName="true"
             ref="shippingStateProv"
           />
         </div>
-        <div class="form-group col-sm-4">
+        <div class="form-group col-sm-2">
           <label for="shippingCountry">Shipping Country</label>
-          <input
+          <country-select
             id="shippingCountry"
-            type="text"
-            class="form-control form-control-sm"
-            maxlength="2"
             v-model="shippingCountry"
+            :country="shippingCountry"
+            class="form-control form-control-sm"
+            @input="checkShippingCountry"
             :readonly="shippingSame"
             ref="shippingCountry"
           />
@@ -414,16 +420,6 @@ export default {
       phone: '',
       timezone: '',
       timezoneAbbrev: '',
-      shippingSame: true,
-      shippingName: '',
-      shippingAddress1: '',
-      shippingAddress2: '',
-      shippingCity: '',
-      shippingStateProv: '',
-      shippingCountry: '',
-      shippingZipPostal: '',
-      shippingPhone: '',
-      shippingEmail: '',
       billingSame: true,
       billingName: '',
       billingAddress1: '',
@@ -433,7 +429,17 @@ export default {
       billingCountry: '',
       billingZipPostal: '',
       billingPhone: '',
-      billingEmail: ''
+      billingEmail: '',
+      shippingSame: true,
+      shippingName: '',
+      shippingAddress1: '',
+      shippingAddress2: '',
+      shippingCity: '',
+      shippingStateProv: '',
+      shippingCountry: '',
+      shippingZipPostal: '',
+      shippingPhone: '',
+      shippingEmail: ''
     };
   },
   methods: {
@@ -540,11 +546,7 @@ export default {
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (
-        target === 'shippingCity' ||
-        target === 'shippingStateProv' ||
-        target === 'shippingCountry'
-      ) {
+      if (target === 'shippingCity') {
         this.geoTimezone();
       }
 
@@ -564,12 +566,6 @@ export default {
             break;
           case 'city':
             this.shippingCity = this.city;
-            break;
-          case 'stateProv':
-            this.shippingStateProv = this.stateProv;
-            break;
-          case 'country':
-            this.shippingCountry = this.country;
             break;
           case 'zipPostal':
             this.shippingZipPostal = this.zipPostal;
@@ -593,74 +589,9 @@ export default {
           case 'city':
             this.billingCity = this.city;
             break;
-          case 'stateProv':
-            this.billingStateProv = this.stateProv;
-            break;
-          case 'country':
-            this.billingCountry = this.country;
-            break;
           case 'zipPostal':
             this.billingZipPostal = this.zipPostal;
             break;
-        }
-      }
-
-      const codeCountries = this.$refs.phone.codesCountries;
-      let valid = false;
-      if (target === 'country' && this.country) {
-        let countryCode = this.country;
-        countryCode = countryCode.toUpperCase();
-        codeCountries.forEach(country => {
-          if (country.iso2 === countryCode) {
-            valid = true;
-          }
-        });
-
-        if (valid) {
-          this.$refs.phone.countryCode = countryCode;
-          this.$refs.zipPostal.focus();
-        } else {
-          this.country = '';
-          this.$refs.country.focus();
-          this.$toasted.error('Contact Country Code Invalid', { icon: 'exclamation-triangle' });
-        }
-      }
-
-      if (target === 'billingCountry' && this.billingCountry) {
-        let countryCode = this.billingCountry;
-        countryCode = countryCode.toUpperCase();
-        codeCountries.forEach(country => {
-          if (country.iso2 === countryCode) {
-            valid = true;
-          }
-        });
-
-        if (valid) {
-          this.$refs.billingPhone.countryCode = countryCode;
-          this.$refs.billingZipPostal.focus();
-        } else {
-          this.billingCountry = '';
-          this.$refs.billingCountry.focus();
-          this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
-        }
-      }
-
-      if (target === 'shippingCountry' && this.shippingCountry) {
-        let countryCode = this.shippingCountry;
-        countryCode = countryCode.toUpperCase();
-        codeCountries.forEach(country => {
-          if (country.iso2 === countryCode) {
-            valid = true;
-          }
-        });
-
-        if (valid) {
-          this.$refs.shippingPhone.countryCode = countryCode;
-          this.$refs.shippingZipPostal.focus();
-        } else {
-          this.shippingCountry = '';
-          this.$refs.shipingCountry.focus();
-          this.$toasted.error('Billing Country Code Invalid', { icon: 'exclamation-triangle' });
         }
       }
     },
@@ -672,6 +603,37 @@ export default {
       if (event.phoneNumber && this.billingSame) {
         this.billingPhone = event.phoneNumber;
       }
+    },
+    checkRegion: function() {
+      if (this.billingSame) {
+        this.billingStateProv = this.stateProv;
+      }
+
+      if (this.shippingSame) {
+        this.shippingStateProv = this.stateProv;
+        this.geoTimezone();
+      }
+    },
+    checkCountry: function() {
+      this.$refs.phone.countryCode = this.country;
+      this.stateProv = '';
+      if (this.billingSame) {
+        this.billingCountry = this.country;
+        this.billingStateProv = '';
+      }
+
+      if (this.shippingSame) {
+        this.shippingCountry = this.country;
+        this.shippingStateProv = '';
+      }
+    },
+    checkBillingCountry: function() {
+      this.$refs.billingPhone.countryCode = this.billingCountry;
+      this.billingStateProv = '';
+    },
+    checkShippingCountry: function() {
+      this.$refs.shippingPhone.countryCode = this.shippingCountry;
+      this.shippingStateProv = '';
     },
     geoTimezone: async function() {
       if (
@@ -711,7 +673,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .form-group {

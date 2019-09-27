@@ -31,14 +31,18 @@
         </div>
         <div class="col-sm-12">
           <label for="year">Year</label>
-          <select class="form-control form-control-sm" id="year" v-model="year" ref="year">
-            <option v-for="y in years" :key="y">{{ y }}</option>
-          </select>
+          <input
+            type="text"
+            id="year"
+            class="form-control form-control-sm"
+            ref="year"
+            v-model="year"
+          />
         </div>
       </div>
       <div class="row mt-4">
         <div class="col-sm-8">
-          <button type="submit" class="btn btn-block btn-dark">Add Catalog</button>
+          <button type="submit" class="btn btn-block btn-info">Add Catalog</button>
         </div>
         <div class="col-sm-4">
           <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">Cancel</router-link>
@@ -51,43 +55,17 @@
 <script>
 export default {
   name: 'CatalogsAdd',
-  created: async function() {
-    try {
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-    } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-    }
-  },
   data() {
     return {
       brand: '',
       season: '',
       year: '2020',
-      coverImg: '',
-      years: [
-        '2010',
-        '2011',
-        '2012',
-        '2013',
-        '2014',
-        '2015',
-        '2016',
-        '2017',
-        '2018',
-        '2019',
-        '2020',
-        '2021',
-        '2022',
-        '2023',
-        '2024',
-        '2025',
-        '2026',
-        '2027',
-        '2028',
-        '2029',
-        '2030'
-      ],
-      breadcrumbs: [
+      coverImg: ''
+    };
+  },
+  created: async function() {
+    try {
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
@@ -97,8 +75,11 @@ export default {
           text: 'Add Catalog',
           link: '#'
         }
-      ]
-    };
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+    }
   },
   methods: {
     addCatalog: async function() {

@@ -36,14 +36,14 @@
           <div class="placeholderImg"></div>
         </div>
       </div>
-      <div class="col middle-section" v-if="team && team.managerId.name">
+      <div class="col middle-section" v-if="team && team.managerId && team.managerId.name">
         <form novalidate>
           <!-- STORE INFO-->
           <div class="section-header mb-2 bg-secondary">
             <span>Store Information</span>
           </div>
           <div class="row px-2">
-            <div class="col-sm-12 mb-4">
+            <div class="col-sm-8">
               <div class="form-group">
                 <label for="storeName">Store Name</label>
                 <input
@@ -52,6 +52,18 @@
                   class="form-control"
                   v-model="storeName"
                   ref="storeName"
+                />
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="storeCountry">Store Country</label>
+                <country-select
+                  id="storeCountry"
+                  v-model="storeCountry"
+                  :country="storeCountry"
+                  class="form-control"
+                  ref="storeCountry"
                 />
               </div>
             </div>
@@ -97,9 +109,9 @@
                   :value-zone="team.timezone"
                   :zone="team.timezone"
                   use12-hour
-                  auto
                   :phrases="{ok: 'Continue', cancel: 'Exit'}"
                   :week-start="7"
+                  title="When do you want the store to open?"
                 ></datetime>
               </div>
               <div class="form-group col">
@@ -112,10 +124,10 @@
                   :value-zone="team.timezone"
                   :zone="team.timezone"
                   use12-hour
-                  auto
                   :phrases="{ok: 'Continue', cancel: 'Exit'}"
                   :week-start="7"
                   :min-datetime="opening"
+                  title="When do you want the store to close?"
                 ></datetime>
               </div>
               <div class="form-group col">
@@ -147,6 +159,7 @@
                     id="storeMessage"
                     v-model="storeMessage"
                     rows="12"
+                    ref="storeMessage"
                   ></textarea>
                   <small id="storeMessageInfo" class="text-muted">{{storeMessage.length}}/255</small>
                 </div>
@@ -201,12 +214,12 @@
               <br />
               <span>{{team.bulkShipping.city}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <label>State/Province</label>
               <br />
               <span>{{team.bulkShipping.stateProv}}</span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
               <label>Country</label>
               <br />
               <span>{{team.bulkShipping.country}}</span>
@@ -242,6 +255,7 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import moment from 'moment-timezone';
 
 export default {
   name: 'TeamsAddStore',
@@ -251,6 +265,7 @@ export default {
   data() {
     return {
       storeName: '',
+      storeCountry: '',
       currency: '',
       orderReference: '',
       mode: 'HOLD',
@@ -295,6 +310,7 @@ export default {
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.storeCountry = this.team.bulkShipping.country;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
@@ -304,6 +320,7 @@ export default {
       const newStore = {
         teamId: this.team._id,
         storeName: this.storeName,
+        storeCountry: this.storeCountry,
         currency: this.currency,
         orderReference: this.orderReference,
         adminId: this.team.adminId._id,

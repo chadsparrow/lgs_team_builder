@@ -55,7 +55,6 @@ const TeamSchema = new mongoose.Schema(
       },
       stateProv: {
         type: String,
-        uppercase: true,
         minlength: 2,
         trim: true
       },
@@ -105,7 +104,6 @@ const TeamSchema = new mongoose.Schema(
       },
       stateProv: {
         type: String,
-        uppercase: true,
         minlength: 2,
         trim: true
       },

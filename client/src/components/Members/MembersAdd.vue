@@ -1,26 +1,27 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col sidebar-left">
-        <div class="row p-1">
-          <small class="col-sm-12 text-info">Member Timezone: (uses shipping)</small>
-          <span class="col-sm-12">{{ timezone }}</span>
-        </div>
-      </div>
       <div class="col middle-section">
         <form class="mb-4">
           <div class="section-header bg-secondary mb-2">Contact Information</div>
           <div class="row">
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-8">
               <label for="email">Email/Username</label>
               <input
                 id="email"
                 type="text"
-                class="form-control form-control-sm"
+                class="form-control"
                 v-model="email"
                 ref="email"
                 @change="changeDetails"
               />
+            </div>
+            <div class="col-sm-4">
+              <label>Member Timezone:</label>
+              <br />
+              <small class="timezoneBox">
+                <strong class="text-info">{{ timezone || 'Waiting for Shipping Details'}}</strong>
+              </small>
             </div>
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
@@ -33,19 +34,7 @@
                 @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="phone">Phone</label>
-              <VuePhoneNumberInput
-                v-model="phone"
-                id="phone"
-                :dark="false"
-                :preferred-countries="['US', 'CA']"
-                ref="phone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-                @update="copyPhone"
-              />
-            </div>
+            <div class="col sm-6"></div>
             <div class="form-group col-sm-6">
               <label for="address1">Address 1</label>
               <input
@@ -68,7 +57,7 @@
                 @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="city">City</label>
               <input
                 id="city"
@@ -81,25 +70,26 @@
             </div>
             <div class="form-group col-sm-4">
               <label for="stateProv">State/Province</label>
-              <input
+              <region-select
                 id="stateProv"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="stateProv"
+                :country="country"
+                :region="stateProv"
+                class="form-control form-control-sm"
+                @input="checkRegion"
+                :regionName="true"
                 ref="stateProv"
-                @change="changeDetails"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="country">Country</label>
-              <input
+              <country-select
                 id="country"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="country"
-                maxlength="2"
+                :country="country"
+                class="form-control form-control-sm"
+                @input="checkCountry"
                 ref="country"
-                @change="changeDetails"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -111,6 +101,19 @@
                 v-model="zipPostal"
                 ref="zipPostal"
                 @change="changeDetails"
+              />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="phone">Phone</label>
+              <VuePhoneNumberInput
+                v-model="phone"
+                id="phone"
+                :dark="false"
+                :preferred-countries="['US', 'CA']"
+                ref="phone"
+                :clearable="true"
+                :no-use-browser-locale="false"
+                @update="copyPhone"
               />
             </div>
           </div>
@@ -176,7 +179,7 @@
                 ref="billingAddress2"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="billingCity">Billing City</label>
               <input
                 id="billingCity"
@@ -189,28 +192,30 @@
             </div>
             <div class="form-group col-sm-4">
               <label for="billingStateProv">Billing State/Province</label>
-              <input
+              <region-select
                 id="billingStateProv"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="billingStateProv"
+                :country="billingCountry"
+                :region="billingStateProv"
+                class="form-control form-control-sm"
                 :readonly="billingSame"
+                :regionName="true"
                 ref="billingStateProv"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="billingCountry">Billing Country</label>
-              <input
+              <country-select
                 id="billingCountry"
-                type="text"
-                class="form-control form-control-sm"
-                maxlength="2"
                 v-model="billingCountry"
+                :country="billingCountry"
+                class="form-control form-control-sm"
                 :readonly="billingSame"
+                @input="checkBillingCountry"
                 ref="billingCountry"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="billingZipPostal">Billing Zip/Postal Code</label>
               <input
                 id="billingZipPostal"
@@ -306,7 +311,7 @@
                 ref="shippingAddress2"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="shippingCity">Shipping City</label>
               <input
                 id="shippingCity"
@@ -319,28 +324,31 @@
             </div>
             <div class="form-group col-sm-4">
               <label for="shippingStateProv">Shipping State/Province</label>
-              <input
+              <region-select
                 id="shippingStateProv"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="shippingStateProv"
+                :country="shippingCountry"
+                :region="shippingStateProv"
+                class="form-control form-control-sm"
+                @input="geoTimezone"
                 :readonly="shippingSame"
+                :regionName="true"
                 ref="shippingStateProv"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-2">
               <label for="shippingCountry">Shipping Country</label>
-              <input
+              <country-select
                 id="shippingCountry"
-                type="text"
-                class="form-control form-control-sm"
                 v-model="shippingCountry"
-                maxlength="2"
+                :country="shippingCountry"
+                class="form-control form-control-sm"
+                @input="checkShippingCountry"
                 :readonly="shippingSame"
                 ref="shippingCountry"
               />
             </div>
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
               <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
               <input
                 id="shippingZipPostal"
@@ -556,11 +564,7 @@ export default {
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (
-        target === 'shippingCountry' ||
-        target === 'shippingCity' ||
-        target === 'shippingStateProv'
-      ) {
+      if (target === 'shippingCity') {
         this.geoTimezone();
       }
 
@@ -580,14 +584,6 @@ export default {
             break;
           case 'city':
             this.shippingCity = this.city;
-            this.geoTimezone();
-            break;
-          case 'stateProv':
-            this.shippingStateProv = this.stateProv;
-            this.geoTimezone();
-            break;
-          case 'country':
-            this.shippingCountry = this.country;
             this.geoTimezone();
             break;
           case 'zipPostal':
@@ -612,12 +608,6 @@ export default {
           case 'city':
             this.billingCity = this.city;
             break;
-          case 'stateProv':
-            this.billingStateProv = this.stateProv;
-            break;
-          case 'country':
-            this.billingCountry = this.country;
-            break;
           case 'zipPostal':
             this.billingZipPostal = this.zipPostal;
             break;
@@ -632,6 +622,37 @@ export default {
       if (event.phoneNumber && this.billingSame) {
         this.billingPhone = event.phoneNumber;
       }
+    },
+    checkRegion: function() {
+      if (this.billingSame) {
+        this.billingStateProv = this.stateProv;
+      }
+
+      if (this.shippingSame) {
+        this.shippingStateProv = this.stateProv;
+        this.geoTimezone();
+      }
+    },
+    checkCountry: function() {
+      this.$refs.phone.countryCode = this.country;
+      this.stateProv = '';
+      if (this.billingSame) {
+        this.billingCountry = this.country;
+        this.billingStateProv = '';
+      }
+
+      if (this.shippingSame) {
+        this.shippingCountry = this.country;
+        this.shippingStateProv = '';
+      }
+    },
+    checkBillingCountry: function() {
+      this.$refs.billingPhone.countryCode = this.billingCountry;
+      this.billingStateProv = '';
+    },
+    checkShippingCountry: function() {
+      this.$refs.shippingPhone.countryCode = this.shippingCountry;
+      this.shippingStateProv = '';
     },
     geoTimezone: async function() {
       if (this.shippingStateProv && this.shippingCity && this.shippingCountry) {
@@ -661,3 +682,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+form {
+  width: 900px;
+  margin: 0 auto;
+  .timezoneBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem;
+  }
+}
+</style>
