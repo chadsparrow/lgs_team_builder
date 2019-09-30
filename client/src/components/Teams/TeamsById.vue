@@ -432,6 +432,11 @@ $black-text: #000000;
         align-items: center;
         cursor: pointer;
 
+        &:hover {
+          background-color: $blue-color;
+          color: $white-text;
+        }
+
         .memberIcons {
           display: flex;
           justify-content: flex-start;
