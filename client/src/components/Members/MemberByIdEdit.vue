@@ -16,22 +16,23 @@
           class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
           v-if="!member.isAdmin"
-        >
-          Give Admin Status
-        </button>
-        <button class="btn btn-sm btn-block btn-info mt-2" @click.prevent="toggleAdmin" v-else>
-          Revoke Admin Status
-        </button>
-        <button class="btn btn-sm btn-block btn-danger mt-2 mb-4" @click.prevent="deleteMember">
-          Delete Member
-        </button>
+        >Give Admin Status</button>
+        <button
+          class="btn btn-sm btn-block btn-info mt-2"
+          @click.prevent="toggleAdmin"
+          v-else
+        >Revoke Admin Status</button>
+        <button
+          class="btn btn-sm btn-block btn-danger mt-2 mb-4"
+          @click.prevent="deleteMember"
+        >Delete Member</button>
       </div>
       <div class="col middle-section" v-if="member && member.name">
         <form class="mb-5">
-          <div class="section-header mb-2 bg-secondary">
+          <div class="section-header mb-1 bg-secondary">
             <span class="text-white">Contact Information</span>
           </div>
-          <div class="row mb-3 px-2">
+          <div class="row mb-2 px-2">
             <div class="form-group col-sm-6">
               <label for="name">Name</label>
               <input
@@ -137,7 +138,7 @@
               />
             </div>
           </div>
-          <div class="section-header my-2 bg-secondary">
+          <div class="section-header my-1 bg-secondary">
             <span class="text-white">Billing Details</span>
             <div class="form-check">
               <input
@@ -148,12 +149,13 @@
                 ref="billingSame"
                 @change="copyContacttoBilling"
               />
-              <label class="form-check-label text-white" for="billingSame"
-                >Use Contact Information for Billing</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="billingSame"
+              >Use Contact Information for Billing</label>
             </div>
           </div>
-          <div class="row mb-3 px-2">
+          <div class="row mb-2 px-2">
             <div class="form-group col-sm-6">
               <label for="billingName">Billing Name</label>
               <input
@@ -281,12 +283,13 @@
                 ref="shippingSame"
                 @change="copyContacttoShipping"
               />
-              <label class="form-check-label text-white" for="shippingSame"
-                >Use Contact Information for Shipping</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="shippingSame"
+              >Use Contact Information for Shipping</label>
             </div>
           </div>
-          <div class="row mb-4 px-2">
+          <div class="row mb-2 px-2">
             <div class="form-group col-sm-6">
               <label for="shippingName">Shipping Name</label>
               <input
@@ -405,18 +408,15 @@
               />
             </div>
           </div>
-          <div class="row my-4">
+          <div class="row my-3">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateMember">
-                Update Member
-              </button>
+              <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
             </div>
             <div class="col-sm-6">
               <router-link
                 :to="`/dashboard/members/${this.member._id}`"
                 class="btn btn-block btn-danger"
-                >Cancel</router-link
-              >
+              >Cancel</router-link>
             </div>
           </div>
         </form>

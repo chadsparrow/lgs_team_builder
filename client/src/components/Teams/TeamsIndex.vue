@@ -3,10 +3,22 @@
     <div class="row mb-3" v-if="isAdmin">
       <div class="col-sm-12">
         <router-link to="/dashboard/teams/add" class="btn btn-info">
-          <i class="fas fa-plus"></i> Add Team
+          <i class="fas fa-plus mr-2"></i> Add Team
         </router-link>
       </div>
+      <div class="col-sm-4 mt-3">
+        <input
+          type="text"
+          id="teamSearchText"
+          v-if="teams && teams.length > 0"
+          class="form-control form-control-sm"
+          v-model="teamSearchText"
+          placeholder="Enter any text to filter the team list..."
+          autofocus
+        />
+      </div>
     </div>
+
     <div class="row">
       <div class="col-sm-12">
         <span v-if="currentTeams && currentTeams.length === 0 && isAdmin">No Teams Found</span>
@@ -78,7 +90,8 @@ export default {
           text: 'Teams',
           link: '#'
         }
-      ]
+      ],
+      teamSearchText: ''
     };
   },
   created: async function() {
@@ -102,6 +115,18 @@ export default {
     teams: function() {
       return this.$store.getters.teams;
     },
+    filteredTeams: function() {
+      return this.teams.filter(team => {
+        if (
+          team.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.teamId.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.adminId.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.managerId.name.toLowerCase().includes(this.teamSearchText.toLowerCase())
+        ) {
+          return team;
+        }
+      });
+    },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
@@ -109,11 +134,11 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentTeams: function() {
-      return this.teams.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      return this.filteredTeams.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.teams.length / this.itemsPerPage); i++) {
+      for (let i = 1; i <= Math.ceil(this.filteredTeams.length / this.itemsPerPage); i++) {
         pageArray.push(i);
       }
       return pageArray.length;

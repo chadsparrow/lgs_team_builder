@@ -143,7 +143,7 @@ html {
 }
 
 label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   margin-bottom: 0px;
   margin-top: 4px;
   color: $label-color;
@@ -159,7 +159,7 @@ label {
   width: 255px;
 
   span {
-    font-size: 0.8em;
+    font-size: 0.85em;
   }
 
   .placeholderImg {
@@ -171,16 +171,17 @@ label {
 
   .list-group {
     width: 100%;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     max-height: 250px;
 
     .list-group-item {
-      height: 35px;
-      padding: 5px 10px;
+      font-size: 0.9rem;
+      padding: 0.3rem 0.7rem;
       display: flex;
-      justify-content: left;
       align-items: center;
       cursor: pointer;
+
       &:hover {
         background-color: $blue-color;
         color: $white-text;
@@ -199,6 +200,10 @@ label {
   overflow: auto;
   padding: 0 1rem;
 
+  .form-group {
+    margin: 0;
+  }
+
   label {
     color: $blue-color;
   }
@@ -208,10 +213,10 @@ label {
   flex: initial;
   width: 300px;
   small {
-    font-size: 0.9em;
+    font-size: 0.8rem;
     color: $blue-color;
   }
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   span {
     background-color: rgba(255, 255, 255, 0.5);
     padding: 0.1rem 0.2rem;
@@ -221,16 +226,12 @@ label {
 }
 
 .section-header {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   border-radius: 5px;
   color: $white-text;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  label {
-    font-size: 0.85rem;
-  }
 }
 
 ::-webkit-scrollbar {

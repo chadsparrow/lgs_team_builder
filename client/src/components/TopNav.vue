@@ -58,7 +58,7 @@ export default {
       await this.$store.dispatch('logout');
       this.$router.push({ name: 'login' });
       this.$toasted.clear();
-      this.$toasted.success('Logged Out', { icon: 'sign-out-alt' });
+      this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
     }
   }
 };

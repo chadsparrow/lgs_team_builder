@@ -199,7 +199,7 @@
           class="btn btn-block btn-info"
           v-if="isAdmin"
         >
-          <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member Details
+          <i class="fas fa-cog mr-3"></i>Edit Member Details
         </router-link>
       </div>
     </div>

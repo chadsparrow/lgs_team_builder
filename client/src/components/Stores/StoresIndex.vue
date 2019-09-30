@@ -1,29 +1,43 @@
 <template>
-  <div>
-    <span class="text-center" v-if="currentStores && currentStores.length === 0"
-      >No Stores Found</span
-    >
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-4">
+        <input
+          type="text"
+          id="storesSearchText"
+          v-if="stores && stores.length > 0"
+          class="form-control form-control-sm mb-3"
+          v-model="storesSearchText"
+          placeholder="Enter any text to filter the stores list..."
+          autofocus
+        />
+      </div>
+    </div>
+
+    <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
           <tr>
-            <th scope="col">Team Name</th>
             <th scope="col">Store Name</th>
+            <th scope="col">Team Name</th>
             <th scope="col">Admin</th>
             <th scope="col">Manager</th>
+            <th scope="col">Opening Date</th>
+            <th scope="col">Closing Date</th>
             <th scope="col">Mode</th>
             <th scope="col">Total Orders</th>
           </tr>
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
-            <td scope="row">{{ store.teamId.name }}</td>
-            <td>{{ store.storeName }}</td>
+            <td scope="row">{{ store.storeName }}</td>
+            <td>{{ store.teamId.name }}</td>
             <td>{{ store.adminId.name }}</td>
             <td>{{ store.managerId.name }}</td>
+            <td>{{ store.openingDate || 'No Opening Date' }}</td>
+            <td>{{ store.closingDate || 'No Closing Date' }}</td>
             <td
               class="[store.mode === 'OPEN' ? 'bg-success' : store.mode === 'CLOSED' ? 'bg-danger' : '']"
-            >
-              {{ store.mode }}
-            </td>
+            >{{ store.mode }}</td>
             <td>{{ store.totalOrders }}</td>
           </tr>
         </tbody>
@@ -56,7 +70,8 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12
+      itemsPerPage: 12,
+      storesSearchText: ''
     };
   },
   created: async function() {
@@ -86,14 +101,27 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentStores: function() {
-      return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      return this.filteredStores.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.stores.length / this.itemsPerPage); i++) {
+      for (let i = 1; i <= Math.ceil(this.filteredStores.length / this.itemsPerPage); i++) {
         pageArray.push(i);
       }
       return pageArray.length;
+    },
+    filteredStores: function() {
+      return this.stores.filter(store => {
+        if (
+          store.storeName.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.teamId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.adminId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.managerId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.mode.toLowerCase().includes(this.storesSearchText.toLowerCase())
+        ) {
+          return store;
+        }
+      });
     },
     stores: function() {
       return this.$store.getters.stores;
@@ -121,3 +149,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+table {
+  font-size: 0.8rem;
+}
+</style>
+

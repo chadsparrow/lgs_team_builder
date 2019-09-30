@@ -117,7 +117,7 @@
               />
             </div>
           </div>
-          <div class="section-header my-3 bg-secondary">
+          <div class="section-header my-2 bg-secondary">
             <span class="text-white">Billing Details</span>
             <div class="form-check float-right">
               <input
@@ -128,12 +128,13 @@
                 @change="copyMembertoBilling"
                 ref="billingSame"
               />
-              <label class="form-check-label text-white" for="billingSame"
-                >Use Contact Information for Billing</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="billingSame"
+              >Use Contact Information for Billing</label>
             </div>
           </div>
-          <div class="row mb-4">
+          <div class="row mb-3">
             <div class="form-group col-sm-6">
               <label for="billingName">Billing Name</label>
               <input
@@ -248,7 +249,7 @@
               />
             </div>
           </div>
-          <div class="section-header my-3 bg-secondary">
+          <div class="section-header my-2 bg-secondary">
             <span class="text-white">Shipping Details</span>
             <div class="form-check float-right">
               <input
@@ -259,9 +260,10 @@
                 @change="copyMemberToShipping"
                 ref="shippingSame"
               />
-              <label class="form-check-label text-white" for="shippingSame"
-                >Use Contact Information for Shipping</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="shippingSame"
+              >Use Contact Information for Shipping</label>
             </div>
           </div>
           <div class="row mb-4">
@@ -387,9 +389,7 @@
               </button>
             </div>
             <div class="col-sm-4">
-              <router-link to="/dashboard/members/" class="btn btn-block btn-danger"
-                >Cancel</router-link
-              >
+              <router-link to="/dashboard/members/" class="btn btn-block btn-danger">Cancel</router-link>
             </div>
           </div>
         </form>
@@ -692,6 +692,10 @@ form {
     justify-content: center;
     align-items: center;
     padding: 0.75rem;
+  }
+
+  .form-group {
+    margin: 0;
   }
 }
 </style>

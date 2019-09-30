@@ -1,15 +1,32 @@
 <template>
   <div>
-    <router-link to="/dashboard/members/add" class="btn btn-info">
-      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Member
-    </router-link>
-    <br />
-    <br />
+    <div class="row mb-3">
+      <div class="col-sm-12">
+        <router-link to="/dashboard/members/add" class="btn btn-info">
+          <i class="fas fa-plus mr-2"></i> Add Member
+        </router-link>
+      </div>
+      <div class="col-sm-4 mt-3">
+        <input
+          type="text"
+          id="memberSearch"
+          v-if="members && members.length > 0"
+          class="form-control form-control-sm"
+          v-model="memberSearchText"
+          placeholder="Enter name or email to find a member..."
+          autofocus
+        />
+      </div>
+    </div>
     <span v-if="members && members.length === 0">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
-          <tr v-for="member of members" :key="member._id" @click.prevent="loadMember(member._id)">
+          <tr
+            v-for="member of currentMembers"
+            :key="member._id"
+            @click.prevent="loadMember(member._id)"
+          >
             <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
             <td>
@@ -46,7 +63,8 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12
+      itemsPerPage: 12,
+      memberSearchText: ''
     };
   },
   created: async function() {
@@ -66,6 +84,16 @@ export default {
     }
   },
   computed: {
+    filteredMembers: function() {
+      return this.members.filter(member => {
+        if (
+          member.name.toLowerCase().includes(this.memberSearchText.toLowerCase()) ||
+          member.email.toLowerCase().includes(this.memberSearchText.toLowerCase())
+        ) {
+          return member;
+        }
+      });
+    },
     members: function() {
       return this.$store.getters.allMembers;
     },
@@ -75,13 +103,14 @@ export default {
     indexOfFirstItem: function() {
       return this.indexOfLastItem - this.itemsPerPage;
     },
-    currentCatalogs: function() {
-      if (this.members) return this.members.slice(this.indexOfFirstItem, this.indexOfLastItem);
+    currentMembers: function() {
+      if (this.filteredMembers)
+        return this.filteredMembers.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];
       if (this.members) {
-        for (let i = 1; i <= Math.ceil(this.members.length / this.itemsPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(this.filteredMembers.length / this.itemsPerPage); i++) {
           pageArray.push(i);
         }
       }

@@ -35,9 +35,11 @@
                 v-model="adminId"
                 ref="adminId"
               >
-                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
+                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
+                  {{
                   admin.name
-                }}</option>
+                  }}
+                </option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -54,7 +56,7 @@
             </div>
           </div>
           <!-- MAIN CONTACT -->
-          <div class="section-header mt-3 mb-2 bg-secondary">
+          <div class="section-header my-2 bg-secondary">
             <span>Main Contact</span>
             <div class="form-check text-center">
               <input
@@ -66,9 +68,10 @@
                 ref="useManagerDetails"
                 :disabled="!managerId || chosenMember === null"
               />
-              <label class="form-check-label text-white" for="useManagerDetails"
-                >Use Manager's Contact Info</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="useManagerDetails"
+              >Use Manager's Contact Info</label>
             </div>
           </div>
           <div class="row px-2">
@@ -195,7 +198,7 @@
             </div>
           </div>
           <!-- BULK SHIPPING -->
-          <div class="section-header mb-2 mt-3 bg-secondary">
+          <div class="section-header my-2 bg-secondary">
             <span>Bulk Shipping Details</span>
             <div class="radios">
               <div class="form-check form-check-inline mr-4">
@@ -208,9 +211,7 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails"
-                  >Use Above Details</label
-                >
+                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
@@ -223,9 +224,10 @@
                   :disabled="!managerId || chosenMember === null"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useManagerDetails"
-                  >Use Manager's Shipping Address</label
-                >
+                <label
+                  class="form-check-label text-white"
+                  for="useManagerDetails"
+                >Use Manager's Shipping Address</label>
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -360,9 +362,7 @@
               <button class="btn btn-block btn-info" @click.prevent="addTeam">Add Team</button>
             </div>
             <div class="col-sm-6">
-              <router-link to="/dashboard/teams" class="btn btn-block btn-danger"
-                >Cancel</router-link
-              >
+              <router-link to="/dashboard/teams" class="btn btn-block btn-danger">Cancel</router-link>
             </div>
           </div>
         </form>

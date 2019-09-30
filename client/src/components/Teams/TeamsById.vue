@@ -282,7 +282,7 @@
           class="btn btn-block btn-info mt-4"
           v-if="isAdmin"
         >
-          <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
+          <i class="fas fa-cog mr-3"></i>Edit Team Details
         </router-link>
       </div>
     </div>
@@ -420,21 +420,17 @@ $black-text: #000000;
   grid-area: members;
   .memberlist {
     overflow-y: auto;
+    overflow-x: hidden;
 
     .list-group {
       width: 100%;
 
       .list-group-item {
-        height: 35px;
-        padding: 5px 10px;
+        font-size: 0.9rem;
+        padding: 0.3rem 0.7rem;
         display: flex;
-        justify-content: space-between;
         align-items: center;
         cursor: pointer;
-        &:hover {
-          background-color: $blue-color;
-          color: $white-text;
-        }
 
         .memberIcons {
           display: flex;
@@ -445,6 +441,7 @@ $black-text: #000000;
     }
   }
 }
+
 .member-buttons {
   grid-area: buttons;
 }

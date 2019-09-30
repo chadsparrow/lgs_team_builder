@@ -3,7 +3,9 @@
     <div class="logo m-auto">
       <img src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
     </div>
-    <hr />
+    <div class="copyright text-center mb-4">
+      <small>&copy; 2019 Garneau.com</small>
+    </div>
     <router-link
       class="btn btn-block btn-dark"
       to="/dashboard/members"
@@ -61,10 +63,6 @@
       <i class="fas fa-book"></i>
       <span>Catalogs</span>
     </router-link>
-
-    <div class="copyright text-center">
-      <small>&copy; 2019 Garneau.com</small>
-    </div>
   </div>
 </template>
 
@@ -103,9 +101,6 @@ export default {
     color: black;
   }
   .copyright {
-    position: absolute;
-    bottom: 1em;
-    left: 40px;
     color: #999;
   }
 }
