@@ -591,15 +591,15 @@ function validateEmail(member) {
 
 function validatePassword(member) {
   const schema = {
-    oldpassword: Joi.string()
+    oldPassword: Joi.string()
       .min(8)
       .required(),
     newPassword: Joi.string()
-      .disallow(Joi.ref('oldpassword'))
       .min(8)
       .required(),
     confirmPassword: Joi.string()
-      .valid(Joi.ref('newpassword'))
+      .valid(Joi.ref('newPassword'))
+      .min(8)
       .required()
       .options({ language: { any: { allowOnly: 'and newpassword fields must match.' } } })
   };

@@ -135,6 +135,7 @@ function validateStore(store) {
       .required()
       .trim(),
     storeMessage: Joi.string()
+      .allow('', null)
       .trim()
       .max(255),
     shippingType: Joi.string()

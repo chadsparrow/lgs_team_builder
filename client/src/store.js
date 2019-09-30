@@ -65,6 +65,9 @@ export default new Vuex.Store({
         commit('LOGOUT');
         localStorage.removeItem('token');
         localStorage.removeItem('member');
+        commit('CLEAR_CURRENTS');
+        commit('CLEAR_TEAMS');
+        commit('CLEAR_STORES');
         resolve();
       });
     },
@@ -72,6 +75,19 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('SET_BREADCRUMBS', breadcrumbs);
         resolve();
+      });
+    },
+    changePassword({ commit }, { updatedPassword, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.patch(`/api/v1/members/password/${id}`, updatedPassword);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
       });
     },
     getCatalogs({ commit }) {
@@ -278,6 +294,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_TEAMS');
           const res = await axios.get('/api/v1/teams');
           commit('SET_TEAMS', res.data);
           commit('TOGGLE_LOADING');
@@ -360,6 +377,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_TEAM_STORES');
           const res = await axios.get(`/api/v1/stores/team/${id}`);
           commit('SET_TEAM_STORES', res.data);
           commit('TOGGLE_LOADING');
@@ -479,14 +497,23 @@ export default new Vuex.Store({
     SET_TEAMS(state, payload) {
       state.teams = payload;
     },
+    CLEAR_TEAMS(state) {
+      state.teams = [];
+    },
     SET_CURRENT_TEAM(state, payload) {
       state.currentTeam = payload;
     },
     SET_TEAM_STORES(state, payload) {
       state.currentTeamStores = payload;
     },
+    CLEAR_TEAM_STORES(state) {
+      state.currentTeamStores = [];
+    },
     SET_STORES(state, payload) {
       state.stores = payload;
+    },
+    CLEAR_STORES(state) {
+      state.stores = [];
     },
     SET_CURRENT_STORE(state, payload) {
       state.currentStore = payload;

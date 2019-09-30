@@ -197,7 +197,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 });
 
 // PUT /api/members/:id
-router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
+router.put('/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).send(error.details);
   const {
@@ -388,26 +388,26 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send(error.details);
 
-  const { oldpassword, newpassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
 
   const member = await Member.findById(req.params.id);
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  const result = await bcrypt.compare(oldpassword, member.password);
-  if (!result) return res.status(400).send([{ message: 'Password incorrect.' }]);
+  const result = await bcrypt.compare(oldPassword, member.password);
+  if (!result) return res.status(400).send([{ message: 'Old Password incorrect.' }]);
 
   const userEmail = member.email.split('@')[0];
 
-  if (newpassword.includes('password'))
-    return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
-  if (newpassword.includes(userEmail))
+  if (newPassword.includes('password'))
+    return res.status(400).send([{ message: "Please do not use 'password' in your NEW password" }]);
+  if (newPassword.includes(userEmail))
     return res
       .status(400)
-      .send([{ message: 'Please do not use your email username in your password' }]);
+      .send([{ message: 'Please do not use your email username in your NEW password' }]);
 
   const salt = await bcrypt.genSalt(10);
-  const hash = await bcrypt.hash(newpassword, salt);
+  const hash = await bcrypt.hash(newPassword, salt);
 
   member.password = hash;
   await member.save();

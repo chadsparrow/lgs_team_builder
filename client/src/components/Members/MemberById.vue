@@ -266,7 +266,7 @@ label {
 .middle-section .row span {
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 0px 3px;
+  padding: 0.1rem 0.2rem;
   width: 100%;
 }
 </style>

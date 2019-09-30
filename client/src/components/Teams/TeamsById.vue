@@ -181,7 +181,7 @@
     <!-- CONTACT BAR SECTION -->
     <div class="contact-bar">
       <div v-if="team && team.managerId && team.managerId.name">
-        <div class="section-header bg-secondary mb-2">Contact</div>
+        <div class="section-header bg-secondary mb-2">Main Contact</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
@@ -198,10 +198,10 @@
             <br />
             <span>{{ team.mainContact.address1 }}</span>
           </div>
-          <div class="col-sm-12" v-if="isAdmin">
+          <div class="col-sm-12" v-if="isAdmin && team.mainContact.address2">
             <small>Address 2</small>
             <br />
-            <span>{{ team.mainContact.address2 }}</span>
+            <span>{{ team.mainContact.address2}}</span>
           </div>
           <div class="col-sm-12" v-if="isAdmin">
             <small>City</small>
@@ -249,7 +249,7 @@
           <div class="col-sm-12" v-if="team.bulkShipping.address2">
             <small>Address 2</small>
             <br />
-            <span>{{ team.bulkShipping.address2 }}</span>
+            <span>{{ team.bulkShipping.address2}}</span>
           </div>
           <div class="col-sm-12">
             <small>City</small>
@@ -305,7 +305,7 @@ export default {
   },
   computed: {
     isAdmin: function() {
-      if (this.member) return this.member.isAdmin;
+      return this.member.isAdmin;
     },
     member: function() {
       return this.$store.getters.getCurrentMember;
@@ -359,7 +359,8 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeamStores', this.$route.params.id);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      if (err.response.data[0].message !== 'Team has no stores.')
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
@@ -465,7 +466,7 @@ $black-text: #000000;
   font-size: 0.9rem;
   span {
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.2rem;
+    padding: 0.1rem 0.2rem;
     border-radius: 5px;
     display: block;
   }

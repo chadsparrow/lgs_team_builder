@@ -199,11 +199,6 @@ label {
   overflow: auto;
   padding: 0 1rem;
 
-  .form-group {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
   label {
     color: $blue-color;
   }
@@ -219,7 +214,7 @@ label {
   font-size: 0.9rem;
   span {
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.4rem;
+    padding: 0.1rem 0.2rem;
     border-radius: 5px;
     display: block;
   }

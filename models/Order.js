@@ -103,6 +103,10 @@ const OrderSchema = mongoose.Schema(
       type: String,
       trim: true
     },
+    cancelled: {
+      type: Boolean,
+      default: false
+    },
     items: [
       {
         itemId: {
@@ -171,6 +175,7 @@ function validateOrder(order) {
       .min(0)
       .trim(),
     orderDate: Joi.date(),
+    cancelled: Joi.boolean().required(),
     items: Joi.array()
       .required()
       .min(1)

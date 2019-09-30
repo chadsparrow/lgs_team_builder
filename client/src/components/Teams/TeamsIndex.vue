@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mb-3" v-if="member && member.isAdmin">
+    <div class="row mb-3" v-if="isAdmin">
       <div class="col-sm-12">
         <router-link to="/dashboard/teams/add" class="btn btn-info">
           <i class="fas fa-plus"></i> Add Team
@@ -9,9 +9,7 @@
     </div>
     <div class="row">
       <div class="col-sm-12">
-        <span
-          v-if="currentTeams && currentTeams.length === 0 && member && member.isAdmin"
-        >No Teams Found</span>
+        <span v-if="currentTeams && currentTeams.length === 0 && isAdmin">No Teams Found</span>
         <span
           v-else-if="currentTeams && currentTeams.length === 0"
         >No Teams Found - Contact your team manager to add you</span>
@@ -93,6 +91,11 @@ export default {
     }
   },
   computed: {
+    isAdmin: function() {
+      if (this.member) {
+        return this.member.isAdmin;
+      }
+    },
     member: function() {
       return this.$store.getters.getCurrentMember;
     },
