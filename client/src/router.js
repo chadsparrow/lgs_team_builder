@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Dashboard from './views/Dashboard.vue';
-import DashboardIndex from './components/Dashboard/DashboardIndex.vue';
+// import DashboardIndex from './components/Dashboard/DashboardIndex.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ProfilesIndex from './components/Profiles/ProfilesIndex.vue';
 import ProfilesEdit from './components/Profiles/ProfilesEdit.vue';
@@ -195,7 +195,8 @@ let router = new Router({
           name: 'teamsAddMember',
           component: TeamsAddMember,
           meta: {
-            requiresAuth: true
+            requiresAuth: true,
+            isAdmin: true
           }
         },
         {
@@ -203,7 +204,8 @@ let router = new Router({
           name: 'teamsRemoveMember',
           component: TeamsRemoveMember,
           meta: {
-            requiresAuth: true
+            requiresAuth: true,
+            isAdmin: true
           }
         },
         {
@@ -238,8 +240,7 @@ let router = new Router({
           name: 'membersById',
           component: MemberById,
           meta: {
-            requiresAuth: true,
-            isAdmin: true
+            requiresAuth: true
           }
         },
         {

@@ -16,24 +16,21 @@
             If the member you choose has
             <strong>Invites</strong>
             set to
-            <strong>"Auto Accept"</strong> , they will instantly be part of your team, otherwise they will have to accept the invite.
+            <strong>"Auto Accept"</strong> , they will instantly be part of your team, otherwise
+            they will have to accept the invite.
           </small>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-6">
-          <button
-            type="submit"
-            class="btn btn-block btn-info"
-            :disabled="!access || !chosenMember"
-          >Add Member</button>
+          <button type="submit" class="btn btn-block btn-info" :disabled="!access || !chosenMember">
+            Add Member
+          </button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/teams/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>
@@ -51,30 +48,26 @@
             :disabled="inviteDisabled"
             ref="invite"
           />
-          <small
-            id="inviteHelp"
-            class="form-text text-muted"
-          >An email invitation will be sent and once registered, they will be added to the team.</small>
+          <small id="inviteHelp" class="form-text text-muted"
+            >An email invitation will be sent and once registered, they will be added to the
+            team.</small
+          >
         </div>
         <div class="col-sm-6">
-          <button
-            type="submit"
-            class="btn btn-block btn-info"
-            :disabled="!access || !inviteEmail"
-          >Send Invite</button>
+          <button type="submit" class="btn btn-block btn-info" :disabled="!access || !inviteEmail">
+            Send Invite
+          </button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/teams/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>
-    <h5
-      style="margin-top: 60px;"
-    >Method to send batch invites to large amounts of users coming! - Excel file upload</h5>
+    <h5 style="margin-top: 60px;">
+      Method to send batch invites to large amounts of users coming! - Excel file upload
+    </h5>
   </div>
 </template>
 

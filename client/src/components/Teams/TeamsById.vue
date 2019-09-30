@@ -29,11 +29,9 @@
 
         <div class="row p-1" v-if="team.createdAt && team.timezone">
           <small class="col-sm-12 text-info">Team Since:</small>
-          <span class="col-sm-12">
-            {{
-            team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
-            }}
-          </span>
+          <span
+            class="col-sm-12"
+          >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
         </div>
 
         <div class="row p-1" v-if="team.admin && team.adminId.name">
@@ -64,7 +62,7 @@
       <div class="row p-1" v-if="team && team.members && team.members.length > 0">
         <small class="text-info col-sm-12 mb-1">
           Member List:
-          <span class="ml-3">{{team.members.length}}</span>
+          <span class="ml-3">{{ team.members.length }}</span>
         </small>
         <div class="memberlist col-sm-12">
           <ul class="list-group">
@@ -77,7 +75,7 @@
               <div class="memberIcons">
                 <i
                   class="fas fa-certificate text-warning mr-2"
-                  v-if="team && member && team.managerId &&team.managerId._id === teammember._id"
+                  v-if="team.managerId && team.managerId._id === teammember._id"
                 ></i>
                 <span>{{ teammember.name }}</span>
               </div>
@@ -95,8 +93,8 @@
     </div>
 
     <!-- MEMBER BUTTONS SECTION -->
-    <div class="member-buttons" v-if="team && team.managerId && team.managerId.name">
-      <div class="row p-1" v-if="access">
+    <div class="member-buttons" v-if="team && isAdmin">
+      <div class="row p-1">
         <div class="col-sm-12">
           <router-link
             :to="`/dashboard/teams/${team._id}/addmember`"
@@ -114,10 +112,14 @@
 
     <!-- STORES SECTION -->
     <div class="stores-section pr-4" v-if="team && team.managerId && team.managerId.name">
-      <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-info mb-2">
+      <router-link
+        :to="`/dashboard/teams/${team._id}/addstore`"
+        class="btn btn-info mb-2"
+        v-if="isAdmin"
+      >
         <i class="fas fa-plus mr-2"></i>Add Team Store
       </router-link>
-      <div class="table-responsive" v-if="stores && stores.length >0">
+      <div class="table-responsive" v-if="stores && stores.length > 0">
         <table class="table table-hover table-striped">
           <tbody>
             <tr>
@@ -132,19 +134,28 @@
               @click.prevent="loadStore(store._id)"
             >
               <td>{{ store.storeName }}</td>
-              <td
-                v-if="store.openingDate"
-              >{{ store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z') }}</td>
+              <td v-if="store.openingDate">
+                {{
+                store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                }}
+              </td>
               <td v-else>No Opening Date</td>
-              <td
-                v-if="store.closingDate"
-              >{{ store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')}}</td>
+              <td v-if="store.closingDate">
+                {{
+                store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                }}
+              </td>
               <td v-else>No Closing Date</td>
               <td
-                :class="store.mode === 'OPEN' ? 'bg-success text-white' 
-                : store.mode === 'CLOSED' ? 'bg-danger text-white' 
-                : store.mode=== 'HOLD' ? 'bg-warning text-white' 
-                : null"
+                :class="
+                  store.mode === 'OPEN'
+                    ? 'bg-success text-white'
+                    : store.mode === 'CLOSED'
+                    ? 'bg-danger text-white'
+                    : store.mode === 'HOLD'
+                    ? 'bg-warning text-white'
+                    : null
+                "
               >{{ store.mode }}</td>
             </tr>
           </tbody>
@@ -175,101 +186,101 @@
           <div class="col-sm-12">
             <small>Name</small>
             <br />
-            <span>{{team.mainContact.name}}</span>
+            <span>{{ team.mainContact.name }}</span>
           </div>
           <div class="col-sm-12">
             <small>Email</small>
             <br />
-            <span>{{team.mainContact.email}}</span>
+            <span>{{ team.mainContact.email }}</span>
           </div>
-          <div class="col-sm-12">
+          <div class="col-sm-12" v-if="isAdmin">
             <small>Address 1</small>
             <br />
-            <span>{{team.mainContact.address1}}</span>
+            <span>{{ team.mainContact.address1 }}</span>
           </div>
-          <div class="col-sm-12" v-if="team.address2">
+          <div class="col-sm-12" v-if="isAdmin">
             <small>Address 2</small>
             <br />
-            <span>{{team.mainContact.address2}}</span>
+            <span>{{ team.mainContact.address2 }}</span>
           </div>
-          <div class="col-sm-12">
+          <div class="col-sm-12" v-if="isAdmin">
             <small>City</small>
             <br />
-            <span>{{team.mainContact.city}}</span>
+            <span>{{ team.mainContact.city }}</span>
           </div>
-          <div class="col-sm-12">
+          <div class="col-sm-12" v-if="isAdmin">
             <small>State/Province</small>
             <br />
-            <span>{{team.mainContact.stateProv}}</span>
+            <span>{{ team.mainContact.stateProv }}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" v-if="isAdmin">
             <small>Country</small>
             <br />
-            <span>{{team.mainContact.country}}</span>
+            <span>{{ team.mainContact.country }}</span>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-6" v-if="isAdmin">
             <small>Zip/Postal</small>
             <br />
-            <span>{{team.mainContact.zipPostal}}</span>
+            <span>{{ team.mainContact.zipPostal }}</span>
           </div>
           <div class="col-sm-12">
             <small>Phone</small>
             <br />
-            <span>{{team.mainContact.phone}}</span>
+            <span>{{ team.mainContact.phone }}</span>
           </div>
         </div>
-        <div class="section-header bg-secondary mb-1 mt-2">Bulk Shipping</div>
+        <div class="section-header bg-secondary mb-1 mt-3">Bulk Shipping</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
             <br />
-            <span>{{team.bulkShipping.name}}</span>
+            <span>{{ team.bulkShipping.name }}</span>
           </div>
           <div class="col-sm-12">
             <small>Email</small>
             <br />
-            <span>{{team.bulkShipping.email}}</span>
+            <span>{{ team.bulkShipping.email }}</span>
           </div>
           <div class="col-sm-12">
             <small>Address 1</small>
             <br />
-            <span>{{team.bulkShipping.address1}}</span>
+            <span>{{ team.bulkShipping.address1 }}</span>
           </div>
           <div class="col-sm-12" v-if="team.bulkShipping.address2">
             <small>Address 2</small>
             <br />
-            <span>{{team.bulkShipping.address2}}</span>
+            <span>{{ team.bulkShipping.address2 }}</span>
           </div>
           <div class="col-sm-12">
             <small>City</small>
             <br />
-            <span>{{team.bulkShipping.city}}</span>
+            <span>{{ team.bulkShipping.city }}</span>
           </div>
           <div class="col-sm-12">
             <small>State/Province</small>
             <br />
-            <span>{{team.bulkShipping.stateProv}}</span>
+            <span>{{ team.bulkShipping.stateProv }}</span>
           </div>
           <div class="col-sm-6">
             <small>Country</small>
             <br />
-            <span>{{team.bulkShipping.country}}</span>
+            <span>{{ team.bulkShipping.country }}</span>
           </div>
           <div class="col-sm-6">
             <small>Zip/Postal</small>
             <br />
-            <span>{{team.bulkShipping.zipPostal}}</span>
+            <span>{{ team.bulkShipping.zipPostal }}</span>
           </div>
           <div class="col-sm-12">
             <small>Phone</small>
             <br />
-            <span>{{team.bulkShipping.phone}}</span>
+            <span>{{ team.bulkShipping.phone }}</span>
           </div>
         </div>
         <router-link
           :to="`/dashboard/teams/${team._id}/edit`"
           class="btn btn-block btn-info mt-4"
-          v-if="member && member.isAdmin"
+          v-if="isAdmin"
         >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Team Details
         </router-link>
@@ -280,7 +291,6 @@
 
 <script>
 import Avatar from 'vue-avatar';
-import moment from 'moment-timezone';
 
 export default {
   name: 'TeamById',
@@ -294,14 +304,11 @@ export default {
     };
   },
   computed: {
+    isAdmin: function() {
+      if (this.member) return this.member.isAdmin;
+    },
     member: function() {
       return this.$store.getters.getCurrentMember;
-    },
-    access: function() {
-      if (this.member && this.member.isAdmin) return true;
-      if (this.member && this.team && this.team.managerId._id === this.member._id) return true;
-
-      return false;
     },
     team: function() {
       return this.$store.getters.currentTeam;
@@ -317,6 +324,14 @@ export default {
     },
     currentStores: function() {
       return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
+    },
+    access: function() {
+      if (this.member && this.member.isAdmin) return true;
+
+      if (this.member && this.team.managerId && this.member._id === this.team.managerId._id)
+        return true;
+
+      return false;
     },
     pageNumbers: function() {
       const pageArray = [];
@@ -351,20 +366,18 @@ export default {
     loadMember: function(id) {
       if (this.member && this.member._id === id) {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
-      } else {
+      } else if (this.access) {
         return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
       }
     },
     removeMember: async function(id) {
-      if (this.access) {
-        const res = await this.$store.dispatch('removeMember', {
-          teamId: this.team._id,
-          memberId: id
-        });
-      }
+      await this.$store.dispatch('removeMember', {
+        teamId: this.team._id,
+        memberId: id
+      });
     },
     loadStore: function(id) {
-      // load store logic
+      this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});
     }
   }
 };
@@ -452,7 +465,7 @@ $black-text: #000000;
   font-size: 0.9rem;
   span {
     background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.3rem;
+    padding: 0.2rem;
     border-radius: 5px;
     display: block;
   }

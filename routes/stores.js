@@ -17,30 +17,38 @@ function validateId(id) {
 }
 
 router.get('/', auth, async (req, res) => {
-  const stores = await Store.find()
+  let stores = [];
+  if (req.member.isAdmin) {
+    stores = await Store.find()
+      .populate({ path: 'managerId', select: 'name email' })
+      .populate({ path: 'adminId', select: 'name email' })
+      .populate({ path: 'teamId', select: 'name' })
+      .select('-updatedAt -__v ');
+
+    if (stores && stores.length === 0)
+      return res.status(404).send([{ message: 'There are no stores.' }]);
+
+    return res.send(stores);
+  }
+
+  const teams = await Team.find({ members: req.member._id });
+  if (teams && teams.length === 0)
+    return res.status(400).send([{ message: 'You are currently not a member of any team' }]);
+
+  teams.forEach(team => {
+    stores = [...stores, ...team.stores];
+  });
+
+  stores = await Store.find({ _id: { $in: stores } })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name' })
     .select('-updatedAt -__v ');
-  if (req.member.isAdmin && stores && stores.length === 0)
-    return res.status(404).send([{ message: 'No Stores found.' }]);
 
-  if (req.member.isAdmin) return res.send(stores);
+  if (stores && stores.length === 0)
+    return res.status(404).send([{ message: 'You have no stores' }]);
 
-  const memberStores = [];
-  const teams = await Team.find({ members: req.member._id });
-  if (teams && teams.length > 0) {
-    teams.forEach(team => {
-      stores.forEach(store => {
-        if (store.teamId._id === team._id) {
-          memberStores.push(store);
-        }
-      });
-    });
-  }
-  if (memberStores.length === 0) return res.status(404).send([{ message: 'You have no stores' }]);
-
-  return res.send(memberStores);
+  return res.send(stores);
 });
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {

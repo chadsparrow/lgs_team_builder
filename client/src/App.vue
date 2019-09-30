@@ -178,7 +178,7 @@ label {
       height: 35px;
       padding: 5px 10px;
       display: flex;
-      justify-content: space-between;
+      justify-content: left;
       align-items: center;
       cursor: pointer;
       &:hover {
@@ -197,7 +197,7 @@ label {
 .middle-section {
   flex: 1;
   overflow: auto;
-  padding: 1rem;
+  padding: 0 1rem;
 
   .form-group {
     margin-top: 0px;

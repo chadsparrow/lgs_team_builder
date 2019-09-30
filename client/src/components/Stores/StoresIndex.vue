@@ -1,6 +1,8 @@
 <template>
   <div>
-    <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
+    <span class="text-center" v-if="currentStores && currentStores.length === 0"
+      >No Stores Found</span
+    >
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -19,7 +21,9 @@
             <td>{{ store.managerId.name }}</td>
             <td
               class="[store.mode === 'OPEN' ? 'bg-success' : store.mode === 'CLOSED' ? 'bg-danger' : '']"
-            >{{ store.mode }}</td>
+            >
+              {{ store.mode }}
+            </td>
             <td>{{ store.totalOrders }}</td>
           </tr>
         </tbody>

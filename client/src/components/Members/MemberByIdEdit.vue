@@ -16,16 +16,15 @@
           class="btn btn-sm btn-block btn-info mt-2"
           @click.prevent="toggleAdmin"
           v-if="!member.isAdmin"
-        >Give Admin Status</button>
-        <button
-          class="btn btn-sm btn-block btn-info mt-2"
-          @click.prevent="toggleAdmin"
-          v-else
-        >Revoke Admin Status</button>
-        <button
-          class="btn btn-sm btn-block btn-danger mt-2 mb-4"
-          @click.prevent="deleteMember"
-        >Delete Member</button>
+        >
+          Give Admin Status
+        </button>
+        <button class="btn btn-sm btn-block btn-info mt-2" @click.prevent="toggleAdmin" v-else>
+          Revoke Admin Status
+        </button>
+        <button class="btn btn-sm btn-block btn-danger mt-2 mb-4" @click.prevent="deleteMember">
+          Delete Member
+        </button>
       </div>
       <div class="col middle-section" v-if="member && member.name">
         <form class="mb-5">
@@ -149,10 +148,9 @@
                 ref="billingSame"
                 @change="copyContacttoBilling"
               />
-              <label
-                class="form-check-label text-white"
-                for="billingSame"
-              >Use Contact Information for Billing</label>
+              <label class="form-check-label text-white" for="billingSame"
+                >Use Contact Information for Billing</label
+              >
             </div>
           </div>
           <div class="row mb-3 px-2">
@@ -283,10 +281,9 @@
                 ref="shippingSame"
                 @change="copyContacttoShipping"
               />
-              <label
-                class="form-check-label text-white"
-                for="shippingSame"
-              >Use Contact Information for Shipping</label>
+              <label class="form-check-label text-white" for="shippingSame"
+                >Use Contact Information for Shipping</label
+              >
             </div>
           </div>
           <div class="row mb-4 px-2">
@@ -410,13 +407,16 @@
           </div>
           <div class="row my-4">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
+              <button class="btn btn-block btn-info" @click.prevent="updateMember">
+                Update Member
+              </button>
             </div>
             <div class="col-sm-6">
               <router-link
                 :to="`/dashboard/members/${this.member._id}`"
                 class="btn btn-block btn-danger"
-              >Cancel</router-link>
+                >Cancel</router-link
+              >
             </div>
           </div>
         </form>
@@ -455,7 +455,7 @@ export default {
   },
   created: async function() {
     try {
-      const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      await this.$store.dispatch('getMemberDetails', this.$route.params.id);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

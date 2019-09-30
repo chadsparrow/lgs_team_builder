@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mb-3">
+    <div class="row mb-3" v-if="member && member.isAdmin">
       <div class="col-sm-12">
         <router-link to="/dashboard/teams/add" class="btn btn-info">
           <i class="fas fa-plus"></i> Add Team
@@ -18,7 +18,7 @@
         <div class="table-responsive" v-else>
           <table
             class="table table-hover table-striped"
-            v-if="currentTeams && currentTeams.length>0"
+            v-if="currentTeams && currentTeams.length > 0"
           >
             <tbody>
               <tr>
@@ -35,7 +35,7 @@
                 <td>
                   <i
                     class="fas fa-certificate text-warning mr-1"
-                    v-if="member && team.managerId._id === member._id"
+                    v-if="member && team.managerId && team.managerId._id === member._id"
                   ></i>
                   {{ team.managerId.name }}
                 </td>
@@ -114,9 +114,6 @@ export default {
         pageArray.push(i);
       }
       return pageArray.length;
-    },
-    memberisAdmin: function() {
-      if (this.member) return this.member.isAdmin ? true : false;
     }
   },
   methods: {

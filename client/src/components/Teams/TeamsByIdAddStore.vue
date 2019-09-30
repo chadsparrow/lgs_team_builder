@@ -109,7 +109,7 @@
                   :value-zone="team.timezone"
                   :zone="team.timezone"
                   use12-hour
-                  :phrases="{ok: 'Continue', cancel: 'Exit'}"
+                  :phrases="{ ok: 'Continue', cancel: 'Exit' }"
                   :week-start="7"
                   title="When do you want the store to open?"
                 ></datetime>
@@ -124,7 +124,7 @@
                   :value-zone="team.timezone"
                   :zone="team.timezone"
                   use12-hour
-                  :phrases="{ok: 'Continue', cancel: 'Exit'}"
+                  :phrases="{ ok: 'Continue', cancel: 'Exit' }"
                   :week-start="7"
                   :min-datetime="opening"
                   title="When do you want the store to close?"
@@ -161,18 +161,21 @@
                     rows="12"
                     ref="storeMessage"
                   ></textarea>
-                  <small id="storeMessageInfo" class="text-muted">{{storeMessage.length}}/255</small>
+                  <small id="storeMessageInfo" class="text-muted"
+                    >{{ storeMessage.length }}/255</small
+                  >
                 </div>
               </div>
               <div class="row mt-2">
                 <div class="col-sm-6">
-                  <button class="btn btn-block btn-info" @click.prevent="addStore">Add Store</button>
+                  <button class="btn btn-block btn-info" @click.prevent="addStore">
+                    Add Store
+                  </button>
                 </div>
                 <div class="col-sm-6">
-                  <router-link
-                    :to="`/dashboard/teams/${team._id}`"
-                    class="btn btn-block btn-danger"
-                  >Cancel</router-link>
+                  <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
+                    >Cancel</router-link
+                  >
                 </div>
               </div>
             </div>
@@ -183,56 +186,54 @@
           <div class="section-header mt-4 mb-2 bg-secondary">
             <span>
               Bulk Shipping Details
-              <small
-                class="ml-2"
-              >(uses Team Bulk Shipping Details from Previous Page)</small>
+              <small class="ml-2">(uses Team Bulk Shipping Details from Previous Page)</small>
             </span>
           </div>
           <div class="row px-2">
             <div class="col-sm-6">
               <label>Name</label>
               <br />
-              <span>{{team.bulkShipping.name}}</span>
+              <span>{{ team.bulkShipping.name }}</span>
             </div>
             <div class="col-sm-6">
               <label>Email</label>
               <br />
-              <span>{{team.bulkShipping.email}}</span>
+              <span>{{ team.bulkShipping.email }}</span>
             </div>
             <div class="col-sm-6">
               <label>Address1</label>
               <br />
-              <span>{{team.bulkShipping.address1}}</span>
+              <span>{{ team.bulkShipping.address1 }}</span>
             </div>
             <div class="col-sm-6">
               <label>Address2</label>
               <br />
-              <span>{{team.bulkShipping.address2 || '--'}}</span>
+              <span>{{ team.bulkShipping.address2 || '--' }}</span>
             </div>
             <div class="col-sm-6">
               <label>City</label>
               <br />
-              <span>{{team.bulkShipping.city}}</span>
+              <span>{{ team.bulkShipping.city }}</span>
             </div>
             <div class="col-sm-4">
               <label>State/Province</label>
               <br />
-              <span>{{team.bulkShipping.stateProv}}</span>
+              <span>{{ team.bulkShipping.stateProv }}</span>
             </div>
             <div class="col-sm-2">
               <label>Country</label>
               <br />
-              <span>{{team.bulkShipping.country}}</span>
+              <span>{{ team.bulkShipping.country }}</span>
             </div>
             <div class="col-sm-6">
               <label>Zip/Postal Code</label>
               <br />
-              <span>{{team.bulkShipping.zipPostal}}</span>
+              <span>{{ team.bulkShipping.zipPostal }}</span>
             </div>
             <div class="col-sm-6">
               <label>Phone</label>
               <br />
-              <span>{{team.bulkShipping.phone}}</span>
+              <span>{{ team.bulkShipping.phone }}</span>
             </div>
           </div>
         </div>
@@ -255,7 +256,6 @@
 
 <script>
 import Avatar from 'vue-avatar';
-import moment from 'moment-timezone';
 
 export default {
   name: 'TeamsAddStore',

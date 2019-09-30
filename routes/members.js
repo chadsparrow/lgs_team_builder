@@ -37,7 +37,7 @@ router.get('/admins', auth, async (req, res) => {
 });
 
 // GET /api/v1/members/:id
-router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
+router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
@@ -48,7 +48,7 @@ router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
 });
 
 // GET /api/v1/members/:id/details
-router.get('/:id/details', [validateObjectId, auth, admin], async (req, res) => {
+router.get('/:id/details', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
     '-__v -updatedAt -password -notifications'
   );

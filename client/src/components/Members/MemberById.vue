@@ -44,54 +44,54 @@
         </div>
       </div>
       <div class="col middle-section" v-if="member && member.name">
-        <div class="section-header mt-0 bg-secondary">
+        <div class="section-header bg-secondary">
           <span class="text-white">Contact Information</span>
         </div>
         <div class="row mb-3 px-2">
           <div class="col-sm-6">
             <label class="text-info">Name</label>
             <br />
-            <span>{{member.name}}</span>
+            <span>{{ member.name }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>
             <br />
-            <span>{{member.email}}</span>
+            <span>{{ member.email }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address1</label>
             <br />
-            <span>{{member.address1}}</span>
+            <span>{{ member.address1 }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address 2</label>
             <br />
-            <span>{{member.address2 || "--"}}</span>
+            <span>{{ member.address2 || '--' }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">City</label>
             <br />
-            <span>{{member.city}}</span>
+            <span>{{ member.city }}</span>
           </div>
           <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
-            <span>{{member.stateProv}}</span>
+            <span>{{ member.stateProv }}</span>
           </div>
           <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
-            <span>{{member.country}}</span>
+            <span>{{ member.country }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Zip/Postal Code</label>
             <br />
-            <span>{{member.zipPostal}}</span>
+            <span>{{ member.zipPostal }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Phone</label>
             <br />
-            <span>{{member.phone}}</span>
+            <span>{{ member.phone }}</span>
           </div>
         </div>
         <div class="section-header my-2 bg-secondary">
@@ -101,47 +101,47 @@
           <div class="col-sm-6">
             <label class="text-info">Name</label>
             <br />
-            <span>{{member.billing.name}}</span>
+            <span>{{ member.billing.name }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>
             <br />
-            <span>{{member.billing.email}}</span>
+            <span>{{ member.billing.email }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address1</label>
             <br />
-            <span>{{member.billing.address1}}</span>
+            <span>{{ member.billing.address1 }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address 2</label>
             <br />
-            <span>{{member.billing.address2 || "--"}}</span>
+            <span>{{ member.billing.address2 || '--' }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">City</label>
             <br />
-            <span>{{member.billing.city}}</span>
+            <span>{{ member.billing.city }}</span>
           </div>
           <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
-            <span>{{member.billing.stateProv}}</span>
+            <span>{{ member.billing.stateProv }}</span>
           </div>
           <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
-            <span>{{member.billing.country}}</span>
+            <span>{{ member.billing.country }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Zip/Postal Code</label>
             <br />
-            <span>{{member.billing.zipPostal}}</span>
+            <span>{{ member.billing.zipPostal }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Phone</label>
             <br />
-            <span>{{member.billing.phone}}</span>
+            <span>{{ member.billing.phone }}</span>
           </div>
         </div>
         <div class="section-header my-2 bg-secondary">
@@ -151,50 +151,54 @@
           <div class="col-sm-6">
             <label class="text-info">Name</label>
             <br />
-            <span>{{member.shipping.name}}</span>
+            <span>{{ member.shipping.name }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>
             <br />
-            <span>{{member.shipping.email}}</span>
+            <span>{{ member.shipping.email }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address1</label>
             <br />
-            <span>{{member.shipping.address1}}</span>
+            <span>{{ member.shipping.address1 }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Address 2</label>
             <br />
-            <span>{{member.shipping.address2 || "--"}}</span>
+            <span>{{ member.shipping.address2 || '--' }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">City</label>
             <br />
-            <span>{{member.shipping.city}}</span>
+            <span>{{ member.shipping.city }}</span>
           </div>
           <div class="col-sm-4">
             <label class="text-info">State/Province</label>
             <br />
-            <span>{{member.shipping.stateProv}}</span>
+            <span>{{ member.shipping.stateProv }}</span>
           </div>
           <div class="col-sm-2">
             <label class="text-info">Country</label>
             <br />
-            <span>{{member.shipping.country}}</span>
+            <span>{{ member.shipping.country }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Zip/Postal Code</label>
             <br />
-            <span>{{member.shipping.zipPostal}}</span>
+            <span>{{ member.shipping.zipPostal }}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Phone</label>
             <br />
-            <span>{{member.shipping.phone}}</span>
+            <span>{{ member.shipping.phone }}</span>
           </div>
         </div>
-        <router-link :to="`/dashboard/members/${member._id}/edit`" class="btn btn-block btn-info">
+        <router-link
+          :to="`/dashboard/members/${member._id}/edit`"
+          class="btn btn-block btn-info"
+          v-if="isAdmin"
+        >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Member Details
         </router-link>
       </div>
@@ -211,6 +215,12 @@ export default {
     Avatar
   },
   computed: {
+    currentMember: function() {
+      return this.$store.getters.getCurrentMember;
+    },
+    isAdmin: function() {
+      if (this.currentMember) return this.currentMember.isAdmin;
+    },
     memberDetails: function() {
       return this.$store.getters.getMember;
     },
@@ -223,7 +233,7 @@ export default {
   },
   created: async function() {
     try {
-      const res = await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      await this.$store.dispatch('getMemberDetails', this.$route.params.id);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -256,7 +266,7 @@ label {
 .middle-section .row span {
   display: block;
   background-color: rgba(255, 255, 255, 0.5);
-  padding: 3px;
+  padding: 0px 3px;
   width: 100%;
 }
 </style>

@@ -12,7 +12,7 @@
               <label>Team Timezone:</label>
               <br />
               <small class="timezoneBox">
-                <strong class="text-info">{{ timezone || 'Waiting for Shipping Details'}}</strong>
+                <strong class="text-info">{{ timezone || 'Waiting for Shipping Details' }}</strong>
               </small>
             </div>
 
@@ -35,11 +35,9 @@
                 v-model="adminId"
                 ref="adminId"
               >
-                <option
-                  v-for="admin of adminsList"
-                  :key="admin._id"
-                  :value="admin._id"
-                >{{admin.name}}</option>
+                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
+                  admin.name
+                }}</option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -66,12 +64,11 @@
                 v-model="useManagerDetails"
                 @change="copyManagertoMain"
                 ref="useManagerDetails"
-                :disabled="!managerId || chosenMember===null"
+                :disabled="!managerId || chosenMember === null"
               />
-              <label
-                class="form-check-label text-white"
-                for="useManagerDetails"
-              >Use Manager's Contact Info</label>
+              <label class="form-check-label text-white" for="useManagerDetails"
+                >Use Manager's Contact Info</label
+              >
             </div>
           </div>
           <div class="row px-2">
@@ -211,7 +208,9 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+                <label class="form-check-label text-white" for="useAboveDetails"
+                  >Use Above Details</label
+                >
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
@@ -224,10 +223,9 @@
                   :disabled="!managerId || chosenMember === null"
                   @change="copytoBulk"
                 />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Shipping Address</label>
+                <label class="form-check-label text-white" for="useManagerDetails"
+                  >Use Manager's Shipping Address</label
+                >
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -263,7 +261,7 @@
                 class="form-control form-control-sm"
                 v-model="shippingEmail"
                 ref="shippingEmail"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -274,7 +272,7 @@
                 class="form-control form-control-sm"
                 v-model="shippingAddress1"
                 ref="shippingAddress1"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -285,7 +283,7 @@
                 class="form-control form-control-sm"
                 v-model="shippingAddress2"
                 ref="shippingAddress2"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -297,7 +295,7 @@
                 v-model="shippingCity"
                 @change="changeDetails"
                 ref="shippingCity"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-3">
@@ -310,7 +308,7 @@
                 class="form-control form-control-sm"
                 :regionName="true"
                 @input="geoTimezone"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-3">
@@ -321,7 +319,7 @@
                 :country="shippingCountry"
                 class="form-control form-control-sm"
                 @input="checkShippingCountry"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -332,7 +330,7 @@
                 class="form-control form-control-sm"
                 v-model="shippingZipPostal"
                 ref="shippingZipPostal"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
@@ -362,7 +360,9 @@
               <button class="btn btn-block btn-info" @click.prevent="addTeam">Add Team</button>
             </div>
             <div class="col-sm-6">
-              <router-link to="/dashboard/teams" class="btn btn-block btn-danger">Cancel</router-link>
+              <router-link to="/dashboard/teams" class="btn btn-block btn-danger"
+                >Cancel</router-link
+              >
             </div>
           </div>
         </form>
@@ -494,7 +494,7 @@ export default {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
-    getManagerDetails: async function(event) {
+    getManagerDetails: async function() {
       try {
         if (this.chosenMember !== null) {
           const res = await this.$store.dispatch('getMemberDetails', this.chosenMember._id);
@@ -796,4 +796,3 @@ form {
   }
 }
 </style>
-

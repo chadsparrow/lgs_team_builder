@@ -18,9 +18,7 @@
           <div class="row p-1" v-if="team.createdAt && team.timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
             <span class="col-sm-12">
-              {{
-              team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
-              }}
+              {{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}
             </span>
           </div>
         </div>
@@ -54,11 +52,9 @@
                 v-model="team.adminId._id"
                 ref="adminId"
               >
-                <option
-                  v-for="admin of adminsList"
-                  :key="admin._id"
-                  :value="admin._id"
-                >{{admin.name}}</option>
+                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
+                  admin.name
+                }}</option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -71,11 +67,9 @@
                 ref="managerId"
                 @change="getManagerDetails()"
               >
-                <option
-                  v-for="manager of team.members"
-                  :key="manager._id"
-                  :value="manager._id"
-                >{{manager.name}}</option>
+                <option v-for="manager of team.members" :key="manager._id" :value="manager._id">{{
+                  manager.name
+                }}</option>
               </select>
             </div>
           </div>
@@ -92,10 +86,9 @@
                 ref="useManagerDetails"
                 :disabled="!team.managerId._id"
               />
-              <label
-                class="form-check-label text-white"
-                for="useManagerDetails"
-              >Use Manager's Contact Info</label>
+              <label class="form-check-label text-white" for="useManagerDetails"
+                >Use Manager's Contact Info</label
+              >
             </div>
           </div>
           <div class="row px-2" v-if="team.mainContact">
@@ -233,7 +226,9 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+                <label class="form-check-label text-white" for="useAboveDetails"
+                  >Use Above Details</label
+                >
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
@@ -246,10 +241,9 @@
                   :disabled="!team.managerId._id"
                   @change="copytoBulk"
                 />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Shipping Address</label>
+                <label class="form-check-label text-white" for="useManagerDetails"
+                  >Use Manager's Shipping Address</label
+                >
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -285,7 +279,7 @@
                 class="form-control form-control-sm"
                 v-model="team.bulkShipping.email"
                 ref="shippingEmail"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -296,7 +290,7 @@
                 class="form-control form-control-sm"
                 v-model="team.bulkShipping.address1"
                 ref="shippingAddress1"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -307,7 +301,7 @@
                 class="form-control form-control-sm"
                 v-model="team.bulkShipping.address2"
                 ref="shippingAddress2"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -319,7 +313,7 @@
                 v-model="team.bulkShipping.city"
                 @change="changeDetails"
                 ref="shippingCity"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-3">
@@ -354,7 +348,7 @@
                 class="form-control form-control-sm"
                 v-model="team.bulkShipping.zipPostal"
                 ref="shippingZipPostal"
-                :readonly="bulkUseDetails!== 'other'"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
@@ -381,13 +375,14 @@
           </div>
           <div class="row mt-4 mb-5">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateTeam">Update Team Details</button>
+              <button class="btn btn-block btn-info" @click.prevent="updateTeam">
+                Update Team Details
+              </button>
             </div>
             <div class="col-sm-6">
-              <router-link
-                :to="`/dashboard/teams/${team._id}`"
-                class="btn btn-block btn-danger"
-              >Cancel</router-link>
+              <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
+                >Cancel</router-link
+              >
             </div>
           </div>
         </form>

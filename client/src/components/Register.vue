@@ -130,10 +130,9 @@
             @change="copyMembertoBilling"
             ref="billingSame"
           />
-          <label
-            class="form-check-label text-white"
-            for="billingSame"
-          >Use Contact Information for Billing</label>
+          <label class="form-check-label text-white" for="billingSame"
+            >Use Contact Information for Billing</label
+          >
         </div>
       </div>
       <div class="row mb-4">
@@ -262,10 +261,9 @@
             @change="copyMemberToShipping"
             ref="shippingSame"
           />
-          <label
-            class="form-check-label text-white"
-            for="shippingSame"
-          >Use Contact Information for Shipping</label>
+          <label class="form-check-label text-white" for="shippingSame"
+            >Use Contact Information for Shipping</label
+          >
         </div>
       </div>
       <div class="row mb-4">

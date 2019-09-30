@@ -45,7 +45,9 @@
           <button type="submit" class="btn btn-block btn-info">Add Catalog</button>
         </div>
         <div class="col-sm-4">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>

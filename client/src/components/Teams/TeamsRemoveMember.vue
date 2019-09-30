@@ -15,14 +15,13 @@
             multiple
             id="newMember"
             v-model="chosenMembers"
-            :reduce="member=> member._id"
+            :reduce="member => member._id"
             label="email"
             :options="members"
           ></vSelect>
-          <small
-            id="newMemberHelp"
-            class="form-text text-muted"
-          >In order to remove a team manager, you must select a new manager first.</small>
+          <small id="newMemberHelp" class="form-text text-muted"
+            >In order to remove a team manager, you must select a new manager first.</small
+          >
         </div>
       </div>
       <div class="row">
@@ -30,15 +29,15 @@
           <button
             type="submit"
             class="btn btn-block btn-info"
-            :disabled="!access || chosenMembers.length===0"
-          >Remove Members</button>
+            :disabled="!access || chosenMembers.length === 0"
+          >
+            Remove Members
+          </button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/teams/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>
