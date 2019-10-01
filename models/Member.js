@@ -185,6 +185,10 @@ const MemberSchema = new mongoose.Schema(
       autoAccept: { type: Boolean, default: true },
       disabled: { type: Boolean, default: false },
       invitations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'teams' }]
+    },
+    closedAccount: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

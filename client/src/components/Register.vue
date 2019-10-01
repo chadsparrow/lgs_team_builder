@@ -130,9 +130,10 @@
             @change="copyMembertoBilling"
             ref="billingSame"
           />
-          <label class="form-check-label text-white" for="billingSame"
-            >Use Contact Information for Billing</label
-          >
+          <label
+            class="form-check-label text-white"
+            for="billingSame"
+          >Use Contact Information for Billing</label>
         </div>
       </div>
       <div class="row mb-4">
@@ -261,9 +262,10 @@
             @change="copyMemberToShipping"
             ref="shippingSame"
           />
-          <label class="form-check-label text-white" for="shippingSame"
-            >Use Contact Information for Shipping</label
-          >
+          <label
+            class="form-check-label text-white"
+            for="shippingSame"
+          >Use Contact Information for Shipping</label>
         </div>
       </div>
       <div class="row mb-4">
@@ -490,7 +492,7 @@ export default {
           this.$refs[key].focus();
         }
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-        if (err.response.data[0].message === 'This email already registered.') {
+        if (err.response.data[0].message === 'Member already registered.') {
           this.email = '';
           this.$refs['email'].focus();
         }

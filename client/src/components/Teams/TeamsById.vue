@@ -34,7 +34,7 @@
           >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
         </div>
 
-        <div class="row p-1" v-if="team.admin && team.adminId.name">
+        <div class="row p-1" v-if="team.adminId && team.adminId.name">
           <small class="col-sm-12 text-info">Team Admin:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}

@@ -21,7 +21,7 @@ const {
 
 // GET /api/v1/members
 router.get('/', [auth, admin], async (req, res) => {
-  const members = await Member.find({ _id: { $ne: req.member._id } })
+  const members = await Member.find({ _id: { $ne: req.member._id }, closedAccount: false })
     .select('_id name email isAdmin invites')
     .sort({ name: 1 });
 
@@ -32,7 +32,9 @@ router.get('/', [auth, admin], async (req, res) => {
 });
 
 router.get('/admins', auth, async (req, res) => {
-  const admins = await Member.find({ isAdmin: true }).select('_id name email');
+  const admins = await Member.find({ isAdmin: true, closedAccount: false }).select(
+    '_id name email'
+  );
   return res.status(200).send(admins);
 });
 
@@ -417,10 +419,19 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
 
 // DELETE /api/members/:id
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const member = await Member.findByIdAndRemove(req.params.id);
+  const member = await Member.updateOne({ _id: req.params.id }, { closedAccount: true });
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
-  return res.status(200).send([{ message: 'Member deleted' }]);
+
+  const teams = await Team.find({ 'managerId._id': req.params.id });
+  if (teams && teams.length > 0)
+    return res
+      .status(400)
+      .send([{ message: 'Contact your Team Admin to select a new Team Manager first' }]);
+
+  await Team.updateMany({ members: req.params.id }, { $pull: { members: req.params.id } });
+
+  return res.status(200).send([{ message: 'Member Account Cancelled' }]);
 });
 
 module.exports = router;

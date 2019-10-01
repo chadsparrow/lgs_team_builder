@@ -18,7 +18,8 @@ Vue.use(Toasted, {
   duration: 4000,
   iconPack: 'fontawesome',
   fullWidth: true,
-  fitToScreen: true
+  fitToScreen: true,
+  singleton: true
 });
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);

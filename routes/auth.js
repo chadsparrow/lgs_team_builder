@@ -35,6 +35,13 @@ router.post('/login', async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, member.password);
   if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
+  if (member.closedAccount)
+    return res.status(401).send([
+      {
+        message: 'Your account is currently deactivated, contact your Admin/Manager to reactivate'
+      }
+    ]);
+
   const token = member.generateAuthToken();
 
   const emails = await Email.find({

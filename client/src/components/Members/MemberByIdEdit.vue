@@ -25,7 +25,8 @@
         <button
           class="btn btn-sm btn-block btn-danger mt-2 mb-4"
           @click.prevent="deleteMember"
-        >Delete Member</button>
+          v-if="!member.isAdmin"
+        >Deactivate Member</button>
       </div>
       <div class="col middle-section" v-if="member && member.name">
         <form class="mb-5">
