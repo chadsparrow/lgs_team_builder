@@ -246,14 +246,11 @@ export default new Vuex.Store({
     getMe({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}/me`);
           const payload = res.data.notifications;
           commit('SET_NOTIFICATIONS', payload);
-          commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
-          commit('TOGGLE_LOADING');
           reject(err);
         }
       });

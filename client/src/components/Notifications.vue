@@ -71,7 +71,7 @@ export default {
         } catch (err) {
           this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         }
-      }, 60000);
+      }, 60000 * 10);
     },
     deleteNotification: async function(nId) {
       try {

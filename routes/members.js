@@ -64,7 +64,7 @@ router.get('/:id/details', [validateObjectId, auth], async (req, res) => {
 });
 
 router.get('/:id/me', [validateObjectId, auth], async (req, res) => {
-  const me = await Member.findById(req.params.id).select('-__v -updatedAt');
+  const me = await Member.findById(req.params.id).select('-__v -updatedAt -password');
   return res.status(200).send(me);
 });
 
