@@ -585,9 +585,17 @@ function validateUpdateMember(member) {
 
 function validateEmail(member) {
   const schema = {
-    email: Joi.string()
+    currentEmail: Joi.string()
+      .email()
+      .required(),
+    newEmail: Joi.string()
+      .email()
+      .required(),
+    confirmEmail: Joi.string()
+      .valid(Joi.ref('newEmail'))
       .email()
       .required()
+      .options({ language: { any: { allowOnly: 'and newEmail fields must match.' } } })
   };
 
   return Joi.validate(member, schema, joiOptions);

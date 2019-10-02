@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-link to="/dashboard/catalogs/add" class="btn btn-info">
-      <i class="fas fa-plus" style="vertical-align: middle;"></i> Add Catalog
+      <i class="fas fa-plus mr-2"></i> Add Catalog
     </router-link>
     <br />
     <br />

@@ -8,6 +8,7 @@ import PageNotFound from './views/PageNotFound.vue';
 import ProfilesIndex from './components/Profiles/ProfilesIndex.vue';
 import ProfilesEdit from './components/Profiles/ProfilesEdit.vue';
 import ProfilesPassword from './components/Profiles/ProfilesPassword.vue';
+import ProfilesEmail from './components/Profiles/ProfilesEmail.vue';
 import CatalogsIndex from './components/Catalogs/CatalogsIndex.vue';
 import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
@@ -92,6 +93,14 @@ let router = new Router({
           path: 'profile/password',
           name: 'profilepassword',
           component: ProfilesPassword,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'profile/email',
+          name: 'profileemail',
+          component: ProfilesEmail,
           meta: {
             requiresAuth: true
           }

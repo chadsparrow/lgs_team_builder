@@ -336,35 +336,54 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member Updated' }]);
 });
 
-// PATCH /api/members/email/:id
+// PATCH /api/members/:id/email
 router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send(error.details);
 
-  const { email } = req.body;
+  const { currentEmail, newEmail } = req.body;
 
-  let member = await Member.findById(req.params.id);
+  const member = await Member.findById(req.params.id);
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  if (member.email === email) {
-    return res.status(400).send([{ message: 'Email is identical to what is already set.' }]);
+  if (member.email === newEmail) {
+    return res
+      .status(400)
+      .send([
+        { message: 'Email is identical to what is already set.', context: { key: 'newEmail' } }
+      ]);
   }
 
   const emailCheck = await Member.findOne({
     _id: { $ne: req.params.id },
-    email
+    email: newEmail
   });
 
   if (emailCheck) {
     return res
       .status(400)
-      .send([{ message: 'Member with the given email address already registered' }]);
+      .send([{ message: 'New email address already taken', context: { key: 'newEmail' } }]);
   }
 
-  member = await Member.findByIdAndUpdate({ _id: req.params.id }, { email }, { new: true });
+  member.email = newEmail;
 
-  return res.status(200).send([{ message: 'Member email updated' }]);
+  if (member.billing.email === currentEmail) {
+    member.billing.email = newEmail;
+  }
+
+  if (member.shipping.email === currentEmail) {
+    member.shipping.email = newEmail;
+  }
+
+  await member.save();
+
+  await Team.updateMany({ 'mainContact.email': currentEmail }, { 'mainContact.email': newEmail });
+  await Team.updateMany({ 'bulkShipping.email': currentEmail }, { 'bulkShipping.email': newEmail });
+
+  return res
+    .status(200)
+    .send([{ message: 'Email address updated - this will be your new login.' }]);
 });
 
 // PATCH /api/v1/members/avatar/:id
@@ -417,6 +436,29 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member password updated' }]);
 });
 
+router.patch('/:id/disableinvites', [validateObjectId, auth], async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found' }]);
+
+  member.invites.disabled = !member.invites.disabled;
+  await member.save();
+  if (member.invites.disabled) return res.status(200).send([{ message: 'Invites Disabled' }]);
+
+  return res.status(200).send([{ message: 'Invites Enabled' }]);
+});
+
+router.patch('/:id/disableautoaccepts', [validateObjectId, auth], async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found' }]);
+
+  member.invites.autoAccept = !member.invites.autoAccept;
+  await member.save();
+  if (member.invites.autoAccept)
+    return res.status(200).send([{ message: 'Auto Accept all team invites' }]);
+
+  return res.status(200).send([{ message: 'Manually accept all team invites' }]);
+});
+
 // DELETE /api/members/:id
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.updateOne({ _id: req.params.id }, { closedAccount: true });
@@ -432,6 +474,18 @@ router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   await Team.updateMany({ members: req.params.id }, { $pull: { members: req.params.id } });
 
   return res.status(200).send([{ message: 'Member Account Cancelled' }]);
+});
+
+router.delete('/:id/notification/:nId', auth, async (req, res) => {
+  const member = await Member.findById(req.params.id);
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+
+  // eslint-disable-next-line eqeqeq
+  const filteredNotifications = member.notifications.filter(notify => notify._id != req.params.nId);
+  member.notifications = filteredNotifications;
+  await member.save();
+  return res.status(200).send([{ message: 'Notification removed.' }]);
 });
 
 module.exports = router;

@@ -33,10 +33,27 @@
         </router-link>
         <router-link
           :to="`/dashboard/profile/password`"
-          class="btn btn-sm btn-block btn-danger mb-4"
+          class="btn btn-sm btn-block btn-danger mb-2"
         >
           <i class="fas fa-lock mr-2" style="vertical-align: middle;"></i>Change Password
         </router-link>
+        <router-link :to="`/dashboard/profile/email`" class="btn btn-sm btn-block btn-danger mb-4">
+          <i class="fas fa-envelope mr-2" style="vertical-align: middle;"></i>Update Email Address
+        </router-link>
+        <hr />
+        <span>Invitation Settings:</span>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Invitations:</small>
+          <span
+            class="col-sm-12"
+          >{{ memberDetails.invites.disabled ? 'Not accepting invites': 'Accepting Invites'}}</span>
+        </div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Auto-Accept:</small>
+          <span
+            class="col-sm-12"
+          >{{ memberDetails.invites.autoAccept ? 'Auto Accepting invites': 'Manual Accepting'}}</span>
+        </div>
       </div>
       <div class="col middle-section" v-if="memberDetails && memberDetails._id">
         <div class="section-header bg-secondary">

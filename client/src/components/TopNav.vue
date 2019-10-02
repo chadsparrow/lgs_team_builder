@@ -1,52 +1,41 @@
 <template>
-  <nav class="navbar navbar-expand navbar-dark p-4">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#topNav"
-      aria-controls="topNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="topNav">
-      <Breadcrumbs />
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <router-link to="/dashboard/profile" tag="a" v-if="member">
-            <avatar
-              :username="member.name"
-              :size="42"
-              background-color="#FFF"
-              color="#000"
-              :rounded="false"
-              :src="member.avatarUrl"
-            ></avatar>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-danger" @click="logout">
-            <span>Logout</span>
-            <i class="fas fa-sign-out-alt"></i>
-          </a>
-        </li>
-      </ul>
+  <div id="topNav">
+    <Breadcrumbs />
+    <div class="navBar">
+      <Notifications />
+      <div class="navItem ml-2">
+        <router-link to="/dashboard/profile" tag="a" v-if="member">
+          <avatar
+            :username="member.name"
+            :size="40"
+            background-color="#FFF"
+            color="#000"
+            :rounded="false"
+            :src="member.avatarUrl"
+          ></avatar>
+        </router-link>
+      </div>
+      <div class="navItem ml-2">
+        <button class="btn btn-danger" @click="logout">
+          Logout
+          <i class="fas fa-sign-out-alt ml-2"></i>
+        </button>
+      </div>
     </div>
-  </nav>
+  </div>
 </template>
 
 <script>
 import Avatar from 'vue-avatar';
 import Breadcrumbs from '../components/Breadcrumbs.vue';
+import Notifications from '../components/Notifications';
 
 export default {
   name: 'TopNav',
   components: {
     Avatar,
-    Breadcrumbs
+    Breadcrumbs,
+    Notifications
   },
   computed: {
     member: function() {
@@ -65,20 +54,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.navbar {
+$dark-color: #111111;
+$blue-color: #17a2b8;
+$label-color: #999999;
+$white-text: #ffffff;
+$black-text: #000000;
+
+#topNav {
   grid-area: topnav;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 25px;
 
-  .nav-item {
-    margin-left: 0.9rem;
-  }
+  .navBar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
 
-  .nav-link {
-    color: white !important;
-  }
+    .navItem {
+      display: flex;
+      align-items: center;
 
-  a {
-    i {
-      margin-left: 0.5rem;
+      button {
+        display: flex;
+        align-items: center;
+        flex-wrap: no-wrap;
+      }
     }
   }
 }

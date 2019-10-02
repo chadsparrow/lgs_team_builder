@@ -7,6 +7,28 @@
           <span class="col-sm-12">{{ memberDetails.timezone }}</span>
           <span class="col-sm-12 text-muted timezoneHelp">Calculated using Shipping Details</span>
         </div>
+        <hr />
+        <h5>Invitations</h5>
+        <div class="form-group form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="acceptInvites"
+            v-model="memberDetails.invites.disabled"
+            @change="toggleDisableInvites(memberDetails._id)"
+          />
+          <label class="form-check-label" for="acceptInvites">Disable Invites</label>
+        </div>
+        <div class="form-group form-check mt-0">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="autoAcceptInvites"
+            v-model="memberDetails.invites.autoAccept"
+            @change="toggleAutoAccept(memberDetails._id)"
+          />
+          <label class="form-check-label" for="autoAcceptInvites">Auto Accept</label>
+        </div>
       </div>
       <div class="col middle-section" v-if="memberDetails && memberDetails.name">
         <form class="mb-5">
@@ -25,6 +47,7 @@
                 ref="name"
               />
             </div>
+
             <div class="form-group col-sm-6">
               <label for="email">Email</label>
               <input
@@ -664,6 +687,22 @@ export default {
         }
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
+    },
+    toggleDisableInvites: async function(id) {
+      try {
+        const res = await this.$store.dispatch('toggleDisableInvites', id);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
+    },
+    toggleAutoAccept: async function(id) {
+      try {
+        const res = await this.$store.dispatch('toggleAutoAccepts', id);
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
     }
   }
 };
@@ -672,5 +711,9 @@ export default {
 <style lang="scss" scoped>
 .timezoneHelp {
   font-size: 0.7rem;
+}
+
+.form-check {
+  margin: 0;
 }
 </style>

@@ -10,11 +10,15 @@
             <th>Total Amount</th>
             <th>Order Date</th>
           </tr>
-          <tr v-for="order of currentOrders" :key="order._id" @click.prevent="loadOrder(order._id)">
-            <th scope="row">{{ order.teamId }}</th>
-            <td>{{ order.storeId }}</td>
-            <td>{{ order.totalAmount }}</td>
-            <td>{{ order.orderDate }}</td>
+          <tr
+            v-for="currentOrder of currentOrders"
+            :key="currentOrder._id"
+            @click.prevent="loadOrder(currentOrder._id)"
+          >
+            <th scope="row">{{ currentOrder.teamId }}</th>
+            <td>{{ currentOrder.storeId }}</td>
+            <td>{{ currentOrder.totalAmount }}</td>
+            <td>{{ currentOrder.orderDate }}</td>
           </tr>
         </tbody>
       </table>
@@ -46,27 +50,13 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12,
-      breadcrumbs: [
-        { text: 'Dashboard', link: '/dashboard/index' },
-        {
-          text: 'Orders',
-          link: '#'
-        }
-      ],
-      orders: []
+      itemsPerPage: 12
     };
   },
-  created: async function() {
-    try {
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
-      const orders = await this.$store.dispatch('getOrders');
-      this.orders = orders.data;
-    } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-    }
-  },
   computed: {
+    orders: function() {
+      return this.$store.getters.orders;
+    },
     member: function() {
       return this.$store.getters.getCurrentMember;
     },
@@ -87,6 +77,22 @@ export default {
       return pageArray.length;
     }
   },
+  created: async function() {
+    try {
+      const breadcrumbs = [
+        { text: 'Dashboard', link: '/dashboard/index' },
+        {
+          text: 'Orders',
+          link: '#'
+        }
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getOrders');
+    } catch (err) {
+      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+    }
+  },
+
   methods: {
     loadOrder: function(id) {
       this.$router.push({ name: 'orderById', params: { id } }).catch(() => {});

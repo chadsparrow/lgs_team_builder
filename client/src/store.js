@@ -21,11 +21,13 @@ export default new Vuex.Store({
     allMembers: [],
     teams: [],
     stores: [],
+    orders: [],
     currentTeam: {},
     currentTeamStores: [],
     currentMember: {},
     currentCatalogItems: [],
-    currentStore: {}
+    currentStore: {},
+    currentOrder: {}
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -68,6 +70,8 @@ export default new Vuex.Store({
         commit('CLEAR_CURRENTS');
         commit('CLEAR_TEAMS');
         commit('CLEAR_STORES');
+        commit('CLEAR_ORDERS');
+        commit('CLEAR_ALL_NOTIFICATIONS');
         resolve();
       });
     },
@@ -82,6 +86,45 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.patch(`/api/v1/members/password/${id}`, updatedPassword);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    updateEmail({ commit }, { updatedEmail, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.patch(`/api/v1/members/email/${id}`, updatedEmail);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    toggleDisableInvites({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.patch(`/api/v1/members/${id}/disableinvites`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    toggleAutoAccepts({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.patch(`/api/v1/members/${id}/disableautoaccepts`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -162,6 +205,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_MEMBERS');
           const res = await axios.get('/api/v1/members');
           commit('SET_ALL_MEMBERS', res.data);
           commit('TOGGLE_LOADING');
@@ -204,6 +248,21 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/members/${id}/me`);
+          const payload = res.data.notifications;
+          commit('SET_NOTIFICATIONS', payload);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    removeNotification({ commit, dispatch }, { nId, id }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.delete(`/api/v1/members/${id}/notification/${nId}`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -446,7 +505,9 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_ORDERS');
           const res = await axios.get('/api/v1/orders');
+          commit('SET_ORDERS');
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -487,9 +548,13 @@ export default new Vuex.Store({
       state.currentCatalog = null;
       state.currentCatalogItems = null;
       state.currentStore = null;
+      state.currentOrder = null;
     },
     SET_ALL_MEMBERS(state, payload) {
       state.allMembers = payload;
+    },
+    CLEAR_MEMBERS(state) {
+      state.allMembers = [];
     },
     SET_CURRENT_MEMBER(state, payload) {
       state.currentMember = payload;
@@ -526,6 +591,18 @@ export default new Vuex.Store({
     },
     SET_CURRENT_CATALOG_ITEMS(state, payload) {
       state.currentCatalogItems = payload;
+    },
+    SET_NOTIFICATIONS(state, payload) {
+      state.notifications = payload;
+    },
+    CLEAR_ALL_NOTIFICATIONS(state) {
+      state.notifications = [];
+    },
+    SET_ORDERS(state, payload) {
+      state.orders = payload;
+    },
+    CLEAR_ORDERS(state) {
+      state.orders = [];
     }
   },
   getters: {
@@ -544,6 +621,7 @@ export default new Vuex.Store({
     teamStores: state => state.currentTeamStores,
     getMember: state => state.currentMember,
     stores: state => state.stores,
+    orders: state => state.orders,
     catalogs: state => state.catalogs,
     currentCatalog: state => state.currentCatalog,
     currentCatalogItems: state => state.currentCatalogItems,
