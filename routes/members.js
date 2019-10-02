@@ -232,7 +232,9 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     billingCountry,
     billingZipPostal,
     billingPhone,
-    billingEmail
+    billingEmail,
+    disabled,
+    autoAccept
   } = req.body;
 
   const updateMember = await Member.findById(req.params.id);
@@ -249,6 +251,8 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   updateMember.phone = phone;
   updateMember.timezone = timezone;
   updateMember.timezoneAbbrev = timezoneAbbrev;
+  updateMember.invites.disabled = disabled;
+  updateMember.invites.autoAccept = autoAccept;
 
   if (shippingSame) {
     updateMember.shipping.name = updateMember.name;
@@ -434,29 +438,6 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   await member.save();
 
   return res.status(200).send([{ message: 'Member password updated' }]);
-});
-
-router.patch('/:id/disableinvites', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found' }]);
-
-  member.invites.disabled = !member.invites.disabled;
-  await member.save();
-  if (member.invites.disabled) return res.status(200).send([{ message: 'Invites Disabled' }]);
-
-  return res.status(200).send([{ message: 'Invites Enabled' }]);
-});
-
-router.patch('/:id/disableautoaccepts', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send([{ message: 'Member with the given ID was not found' }]);
-
-  member.invites.autoAccept = !member.invites.autoAccept;
-  await member.save();
-  if (member.invites.autoAccept)
-    return res.status(200).send([{ message: 'Auto Accept all team invites' }]);
-
-  return res.status(200).send([{ message: 'Manually accept all team invites' }]);
 });
 
 // DELETE /api/members/:id

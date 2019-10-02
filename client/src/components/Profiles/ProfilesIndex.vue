@@ -44,15 +44,11 @@
         <span>Invitation Settings:</span>
         <div class="row p-1">
           <small class="col-sm-12 text-info">Invitations:</small>
-          <span
-            class="col-sm-12"
-          >{{ memberDetails.invites.disabled ? 'Not accepting invites': 'Accepting Invites'}}</span>
+          <span class="col-sm-12">{{ memberDetails.invites.disabled ? 'Disabled': 'Enabled'}}</span>
         </div>
         <div class="row p-1">
           <small class="col-sm-12 text-info">Auto-Accept:</small>
-          <span
-            class="col-sm-12"
-          >{{ memberDetails.invites.autoAccept ? 'Auto Accepting invites': 'Manual Accepting'}}</span>
+          <span class="col-sm-12">{{ memberDetails.invites.autoAccept ? 'Auto': 'Manual'}}</span>
         </div>
       </div>
       <div class="col middle-section" v-if="memberDetails && memberDetails._id">

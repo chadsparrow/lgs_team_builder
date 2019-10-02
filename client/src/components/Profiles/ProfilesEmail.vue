@@ -1,5 +1,6 @@
 <template>
   <form>
+    <p>Your new email address will become your username when logging in.</p>
     <div class="row">
       <div class="form-group col-sm-12">
         <label for="currentEmail">Current Email</label>

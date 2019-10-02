@@ -23,6 +23,7 @@
     "vue-phone-number-input": "^0.2.0",
     "vue-router": "^3.0.3",
     "vue-select": "^3.2.0",
+    "vue-switches": "^2.0.1",
     "vue-toasted": "^1.1.27",
     "vuejs-dialog": "^1.4.1",
     "vuejs-paginate": "^2.1.0",

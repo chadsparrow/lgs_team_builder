@@ -9,25 +9,42 @@
         </div>
         <hr />
         <h5>Invitations</h5>
-        <div class="form-group form-check">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            id="acceptInvites"
-            v-model="memberDetails.invites.disabled"
-            @change="toggleDisableInvites(memberDetails._id)"
-          />
-          <label class="form-check-label" for="acceptInvites">Disable Invites</label>
-        </div>
-        <div class="form-group form-check mt-0">
-          <input
-            type="checkbox"
-            class="form-check-input"
-            id="autoAcceptInvites"
-            v-model="memberDetails.invites.autoAccept"
-            @change="toggleAutoAccept(memberDetails._id)"
-          />
-          <label class="form-check-label" for="autoAcceptInvites">Auto Accept</label>
+        <div class="invitationGroup" v-if="member && member._id">
+          <span class="text-info">Allow Invites</span>
+          <div class="switchGroup">
+            <small>On</small>
+            <switches
+              v-model="memberDetails.invites.disabled"
+              id="acceptInvites"
+              theme="bootstrap"
+              color="info"
+              class="mx-2"
+            ></switches>
+            <small>Off</small>
+          </div>
+          <span class="text-info mt-2">Auto accept</span>
+          <div class="switchGroup">
+            <small>Manual</small>
+            <switches
+              v-model="memberDetails.invites.autoAccept"
+              id="autoAcceptInvites"
+              theme="bootstrap"
+              color="info"
+              class="mx-2"
+            ></switches>
+            <small>Auto</small>
+          </div>
+          <span class="text-danger mt-4">
+            <strong>
+              <em>** Important Notice **</em>
+            </strong>
+          </span>
+          <small
+            class="mt-1 text-muted"
+          >Changes to your profile will only update shipping details for orders that have not been processed, or for stores that are currently open.</small>
+          <small
+            class="mt-2 text-muted"
+          >Your shipping information will stay the same for already processed orders or stores that are closed as they were recorded at that time.</small>
         </div>
       </div>
       <div class="col middle-section" v-if="memberDetails && memberDetails.name">
@@ -429,11 +446,13 @@
 <script>
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+import Switches from 'vue-switches';
 
 export default {
   name: 'ProfilesEdit',
   components: {
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
+    Switches
   },
   data() {
     return {
@@ -447,7 +466,8 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.getCurrentMember;
-    }
+    },
+    invitesDisabled: function() {}
   },
   created: async function() {
     try {
@@ -670,7 +690,9 @@ export default {
         billingCountry: this.memberDetails.billing.country,
         billingZipPostal: this.memberDetails.billing.zipPostal,
         billingPhone: this.memberDetails.billing.phone,
-        billingEmail: this.memberDetails.billing.email
+        billingEmail: this.memberDetails.billing.email,
+        disabled: this.memberDetails.invites.disabled,
+        autoAccept: this.memberDetails.invites.autoAccept
       };
 
       try {
@@ -687,22 +709,6 @@ export default {
         }
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
-    },
-    toggleDisableInvites: async function(id) {
-      try {
-        const res = await this.$store.dispatch('toggleDisableInvites', id);
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-      } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      }
-    },
-    toggleAutoAccept: async function(id) {
-      try {
-        const res = await this.$store.dispatch('toggleAutoAccepts', id);
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-      } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      }
     }
   }
 };
@@ -713,7 +719,8 @@ export default {
   font-size: 0.7rem;
 }
 
-.form-check {
-  margin: 0;
+.invitationGroup {
+  display: flex;
+  flex-direction: column;
 }
 </style>

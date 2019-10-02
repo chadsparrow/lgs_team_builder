@@ -40,7 +40,8 @@ export default {
   name: 'Notifications',
   data() {
     return {
-      showNotifications: false
+      showNotifications: false,
+      polling: null
     };
   },
   computed: {
@@ -54,11 +55,24 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getMe', this.member._id);
+      this.getNotifications();
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
+  beforeDestroy: function() {
+    clearInterval(this.polling);
+  },
   methods: {
+    getNotifications: function() {
+      this.polling = setInterval(async () => {
+        try {
+          await this.$store.dispatch('getMe', this.member._id);
+        } catch (err) {
+          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        }
+      }, 60000);
+    },
     deleteNotification: async function(nId) {
       try {
         const res = await this.$store.dispatch('removeNotification', { nId, id: this.member._id });

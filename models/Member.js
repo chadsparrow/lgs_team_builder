@@ -578,7 +578,9 @@ function validateUpdateMember(member) {
         .email()
         .required()
     }),
-    isAdmin: Joi.boolean()
+    isAdmin: Joi.boolean(),
+    disabled: Joi.boolean(),
+    autoAccept: Joi.boolean()
   };
   return Joi.validate(member, schema, joiOptions);
 }
