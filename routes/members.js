@@ -40,7 +40,7 @@ router.get('/admins', auth, async (req, res) => {
 // GET /api/v1/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
-    '_id name email createdAt avatarUrl timezone isAdmin'
+    '_id name email createdAt timezone isAdmin'
   );
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
@@ -404,12 +404,6 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   return res
     .status(200)
     .send([{ message: 'Email address updated - this will be your new login.' }]);
-});
-
-// PATCH /api/v1/members/avatar/:id
-router.patch('/avatar/:id', [validateObjectId, auth], async (req, res) => {
-  // allow upload of file and reset avatarUrl to relative URL
-  res.end();
 });
 
 // PATCH /api/v1/members/admin/:id

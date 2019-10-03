@@ -2,15 +2,13 @@
   <div>
     <div class="row" v-if="memberDetails && memberDetails._id">
       <div class="col sidebar-left">
-        <div class="avatarWrapper">
-          <avatar
-            :username="memberDetails.name"
-            :size="225"
-            background-color="#E1E1E1"
-            color="#000"
-            :rounded="false"
-            :src="memberDetails.avatarUrl"
-          ></avatar>
+        <div class="avatarWrapper text-center">
+          <Gravatar :email="memberDetails.email" default-img="mp" :size="225" />
+          <a
+            href="https://gravatar.com"
+            target="_blank"
+            class="btn btn-sm btn-block btn-info mt-1"
+          >Update your Gravatar</a>
         </div>
         <div class="row p-1 mt-4">
           <small class="col-sm-12 text-info">My Timezone:</small>
@@ -208,12 +206,12 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar';
+import Gravatar from 'vue-gravatar';
 
 export default {
   name: 'ProfilesIndex',
   components: {
-    Avatar
+    Gravatar
   },
   computed: {
     member: function() {
@@ -247,6 +245,12 @@ export default {
 <style lang="scss" scoped>
 label {
   margin-left: 0px;
+}
+
+.avatarWrapper {
+  img {
+    border-radius: 1rem 1rem 0 0;
+  }
 }
 
 .middle-section .row span {

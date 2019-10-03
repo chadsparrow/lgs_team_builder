@@ -5,8 +5,9 @@
         <div
           :class="currentStore.mode === 'OPEN' ? 'row p-2 modeBox text-center bg-success text-white' : currentStore.mode === 'CLOSED' ? 'row p-2 modeBox text-center bg-danger text-white' : currentStore.mode === 'HOLD' ? 'row p-2 modeBox text-center bg-warning text-white' : null"
         >
-          <small class="col-sm-12 text-white">Store Mode</small>
-          <span class="col-sm-12 text-white">{{ currentStore.mode }}</span>
+          <small class="col-sm-12 text-white">
+            <span>{{ currentStore.mode }}</span>
+          </small>
         </div>
         <div class="row p-1 mt-2">
           <small class="col-sm-12 text-info">Store Created:</small>

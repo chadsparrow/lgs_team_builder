@@ -5,14 +5,7 @@
       <Notifications />
       <div class="navItem ml-2">
         <router-link to="/dashboard/profile" tag="a" v-if="member">
-          <avatar
-            :username="member.name"
-            :size="40"
-            background-color="#FFF"
-            color="#000"
-            :rounded="false"
-            :src="member.avatarUrl"
-          ></avatar>
+          <Gravatar :email="member.email" default-img="mp" :size="37.29" />
         </router-link>
       </div>
       <div class="navItem ml-2">
@@ -26,14 +19,14 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar';
 import Breadcrumbs from '../components/Breadcrumbs.vue';
 import Notifications from '../components/Notifications';
+import Gravatar from 'vue-gravatar';
 
 export default {
   name: 'TopNav',
   components: {
-    Avatar,
+    Gravatar,
     Breadcrumbs,
     Notifications
   },
@@ -77,6 +70,10 @@ $black-text: #000000;
       display: flex;
       align-items: center;
 
+      img {
+        border-radius: 0.25rem;
+      }
+
       button {
         display: flex;
         align-items: center;
@@ -84,9 +81,5 @@ $black-text: #000000;
       }
     }
   }
-}
-
-.vue-avatar--wrapper {
-  border-radius: 0.25rem !important;
 }
 </style>

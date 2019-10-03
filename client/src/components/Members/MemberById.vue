@@ -3,15 +3,10 @@
     <div class="row">
       <div class="col sidebar-left">
         <div v-if="member && member.name">
-          <avatar
-            :username="member.name"
-            :size="225"
-            background-color="#FFF"
-            color="#000"
-            :rounded="false"
-            :src="member.avatarUrl"
-          ></avatar>
-          <div class="row p-1 mt-4">
+          <div class="avatarWrapper">
+            <Gravatar :email="member.email" default-img="mp" :size="225" />
+          </div>
+          <div class="row p-1 mt-2">
             <small class="col-sm-12 text-info">Member Since:</small>
             <span class="col-sm-12">
               {{
@@ -222,12 +217,12 @@
 </template>
 
 <script>
-import Avatar from 'vue-avatar';
+import Gravatar from 'vue-gravatar';
 
 export default {
   name: 'MemberById',
   components: {
-    Avatar
+    Gravatar
   },
   computed: {
     currentMember: function() {
@@ -276,6 +271,12 @@ export default {
 <style lang="scss" scoped>
 label {
   margin-left: 0px;
+}
+
+.avatarWrapper {
+  img {
+    border-radius: 1rem;
+  }
 }
 
 .middle-section .row span {

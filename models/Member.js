@@ -171,11 +171,6 @@ const MemberSchema = new mongoose.Schema(
         type: String
       }
     },
-    avatarUrl: {
-      type: String,
-      default: null,
-      trim: true
-    },
     notifications: [
       {
         date: {

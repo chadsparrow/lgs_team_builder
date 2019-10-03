@@ -27,6 +27,9 @@
             :key="member._id"
             @click.prevent="loadMember(member._id)"
           >
+            <td>
+              <Gravatar :email="member.email" default-img="mp" :size="24" />
+            </td>
             <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
             <td>
@@ -54,11 +57,13 @@
 
 <script>
 import Paginate from 'vuejs-paginate';
+import Gravatar from 'vue-gravatar';
 
 export default {
   name: 'MembersIndex',
   components: {
-    Paginate
+    Paginate,
+    Gravatar
   },
   data() {
     return {
@@ -124,3 +129,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+table {
+  td {
+    img {
+      border-radius: 0.25rem;
+    }
+  }
+}
+</style>
