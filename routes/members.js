@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
-const _ = require('lodash');
 const express = require('express');
 const generator = require('generate-password');
 
@@ -40,13 +39,13 @@ router.get('/admins', auth, async (req, res) => {
 
 // GET /api/v1/members/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id);
+  const member = await Member.findById(req.params.id).select(
+    '_id name email createdAt avatarUrl timezone isAdmin'
+  );
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  return res.send(
-    _.pick(member, ['_id', 'name', 'email', 'createdAt', 'avatarUrl', 'timezone', 'isAdmin'])
-  );
+  return res.send(member);
 });
 
 // GET /api/v1/members/:id/details
@@ -94,6 +93,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   const {
     name,
+    company,
     address1,
     address2,
     city,
@@ -106,6 +106,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     timezoneAbbrev,
     shippingSame,
     shippingName,
+    shippingCompany,
     shippingAddress1,
     shippingAddress2,
     shippingCity,
@@ -116,6 +117,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     shippingEmail,
     billingSame,
     billingName,
+    billingCompany,
     billingAddress1,
     billingAddress2,
     billingCity,
@@ -131,6 +133,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   const newMember = new Member({
     name,
+    company,
     address1,
     address2,
     city,
@@ -151,6 +154,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   if (shippingSame) {
     newMember.shipping.name = newMember.name;
+    newMember.shipping.company = newMember.company;
     newMember.shipping.address1 = newMember.address1;
     newMember.shipping.address2 = newMember.address2;
     newMember.shipping.city = newMember.city;
@@ -161,6 +165,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.shipping.email = newMember.email;
   } else {
     newMember.shipping.name = shippingName;
+    newMember.shipping.company = shippingCompany;
     newMember.shipping.address1 = shippingAddress1;
     newMember.shipping.address2 = shippingAddress2;
     newMember.shipping.city = shippingCity;
@@ -173,6 +178,7 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   if (billingSame) {
     newMember.billing.name = newMember.name;
+    newMember.billing.company = newMember.company;
     newMember.billing.address1 = newMember.address1;
     newMember.billing.address2 = newMember.address2;
     newMember.billing.city = newMember.city;
@@ -183,6 +189,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.billing.email = newMember.email;
   } else {
     newMember.billing.name = billingName;
+    newMember.billing.company = billingCompany;
     newMember.billing.address1 = billingAddress1;
     newMember.billing.address2 = billingAddress2;
     newMember.billing.city = billingCity;
@@ -204,6 +211,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   if (error) return res.status(400).send(error.details);
   const {
     name,
+    company,
     phone,
     address1,
     address2,
@@ -215,6 +223,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     timezoneAbbrev,
     shippingSame,
     shippingName,
+    shippingCompany,
     shippingAddress1,
     shippingAddress2,
     shippingCity,
@@ -225,6 +234,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     shippingEmail,
     billingSame,
     billingName,
+    billingCompany,
     billingAddress1,
     billingAddress2,
     billingCity,
@@ -242,6 +252,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
   updateMember.name = name;
+  updateMember.company = company;
   updateMember.address1 = address1;
   updateMember.address2 = address2;
   updateMember.city = city;
@@ -256,8 +267,9 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   if (shippingSame) {
     updateMember.shipping.name = updateMember.name;
-    updateMember.shipping.address1 = address1;
-    updateMember.shipping.address2 = address2;
+    updateMember.shipping.company = updateMember.company;
+    updateMember.shipping.address1 = updateMember.address1;
+    updateMember.shipping.address2 = updateMember.address2;
     updateMember.shipping.city = updateMember.city;
     updateMember.shipping.stateProv = updateMember.stateProv;
     updateMember.shipping.country = updateMember.country;
@@ -266,6 +278,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     updateMember.shipping.email = updateMember.email;
   } else {
     updateMember.shipping.name = shippingName;
+    updateMember.shipping.company = shippingCompany;
     updateMember.shipping.address1 = shippingAddress1;
     updateMember.shipping.address2 = shippingAddress2;
     updateMember.shipping.city = shippingCity;
@@ -278,8 +291,9 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   if (billingSame) {
     updateMember.billing.name = updateMember.name;
-    updateMember.billing.address1 = address1;
-    updateMember.billing.address2 = address2;
+    updateMember.billing.company = updateMember.company;
+    updateMember.billing.address1 = updateMember.address1;
+    updateMember.billing.address2 = updateMember.address2;
     updateMember.billing.city = updateMember.city;
     updateMember.billing.stateProv = updateMember.stateProv;
     updateMember.billing.country = updateMember.country;
@@ -288,6 +302,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     updateMember.billing.email = updateMember.email;
   } else {
     updateMember.billing.name = billingName;
+    updateMember.billing.company = billingCompany;
     updateMember.billing.address1 = billingAddress1;
     updateMember.billing.address2 = billingAddress2;
     updateMember.billing.city = billingCity;
@@ -302,6 +317,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
 
   const updateMemberMainContact = {
     name: updateMember.name,
+    company: updateMember.company,
     address1: updateMember.address1,
     address2: updateMember.address2,
     city: updateMember.city,

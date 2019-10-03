@@ -18,7 +18,7 @@
         </div>
 
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team ID#:</small>
+          <small class="col-sm-12 text-info">Account #:</small>
           <span class="col-sm-12">{{ team.teamId }}</span>
         </div>
 
@@ -188,6 +188,11 @@
             <br />
             <span>{{ team.mainContact.name }}</span>
           </div>
+          <div class="col-sm-12" v-if="team.mainContact.company">
+            <small>Company</small>
+            <br />
+            <span>{{ team.mainContact.company }}</span>
+          </div>
           <div class="col-sm-12">
             <small>Email</small>
             <br />
@@ -235,6 +240,11 @@
             <small>Name</small>
             <br />
             <span>{{ team.bulkShipping.name }}</span>
+          </div>
+          <div class="col-sm-12" v-if="team.bulkShipping.company">
+            <small>Company</small>
+            <br />
+            <span>{{ team.bulkShipping.company }}</span>
           </div>
           <div class="col-sm-12">
             <small>Email</small>

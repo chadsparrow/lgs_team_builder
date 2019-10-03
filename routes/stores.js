@@ -22,7 +22,7 @@ router.get('/', auth, async (req, res) => {
     stores = await Store.find()
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
-      .populate({ path: 'teamId', select: 'name' })
+      .populate({ path: 'teamId', select: 'name teamId' })
       .select('-updatedAt -__v ');
 
     if (stores && stores.length === 0)
@@ -39,14 +39,14 @@ router.get('/', auth, async (req, res) => {
     stores = [...stores, ...team.stores];
   });
 
-  stores = await Store.find({ _id: { $in: stores } })
+  stores = await Store.find({ _id: { $in: stores }, mode: { $nin: ['HOLD'] } })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
-    .populate({ path: 'teamId', select: 'name' })
+    .populate({ path: 'teamId', select: 'name teamId' })
     .select('-updatedAt -__v ');
 
   if (stores && stores.length === 0)
-    return res.status(404).send([{ message: 'You have no stores' }]);
+    return res.status(404).send([{ message: 'You have no open stores.' }]);
 
   return res.send(stores);
 });
@@ -55,7 +55,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id)
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
-    .populate({ path: 'teamId', select: 'name' })
+    .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
     .select('-updatedAt -__v ');
   if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
 
@@ -63,13 +63,22 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 });
 
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
-  const stores = await Store.find({ teamId: req.params.id })
-    .populate({ path: 'managerId', select: 'name email' })
-    .populate({ path: 'adminId', select: 'name email' })
-    .populate({ path: 'teamId', select: 'name' })
-    .select('-updatedAt -__v ');
+  let stores = [];
+  if (req.member.isAdmin) {
+    stores = await Store.find({ teamId: req.params.id })
+      .populate({ path: 'managerId', select: 'name email' })
+      .populate({ path: 'adminId', select: 'name email' })
+      .populate({ path: 'teamId', select: 'name teamId' })
+      .select('-updatedAt -__v ');
+    if (stores && stores.length === 0)
+      return res.status(404).send([{ message: 'Team has no stores.' }]);
+
+    return res.send(stores);
+  }
+
+  stores = await Store.find({ teamId: req.params.id, mode: { $nin: ['HOLD'] } });
   if (stores && stores.length === 0)
-    return res.status(404).send([{ message: 'Team has no stores.' }]);
+    return res.status(404).send([{ message: 'Team has no open stores.' }]);
 
   return res.send(stores);
 });

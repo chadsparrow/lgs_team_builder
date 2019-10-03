@@ -17,9 +17,9 @@
           </div>
           <div class="row p-1" v-if="team.createdAt && team.timezone">
             <small class="col-sm-12 text-info">Team Since:</small>
-            <span class="col-sm-12">
-              {{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}
-            </span>
+            <span
+              class="col-sm-12"
+            >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
           </div>
         </div>
         <div v-else>
@@ -52,9 +52,11 @@
                 v-model="team.adminId._id"
                 ref="adminId"
               >
-                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
+                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
+                  {{
                   admin.name
-                }}</option>
+                  }}
+                </option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -67,9 +69,11 @@
                 ref="managerId"
                 @change="getManagerDetails()"
               >
-                <option v-for="manager of team.members" :key="manager._id" :value="manager._id">{{
+                <option v-for="manager of team.members" :key="manager._id" :value="manager._id">
+                  {{
                   manager.name
-                }}</option>
+                  }}
+                </option>
               </select>
             </div>
           </div>
@@ -86,13 +90,14 @@
                 ref="useManagerDetails"
                 :disabled="!team.managerId._id"
               />
-              <label class="form-check-label text-white" for="useManagerDetails"
-                >Use Manager's Contact Info</label
-              >
+              <label
+                class="form-check-label text-white"
+                for="useManagerDetails"
+              >Use Manager's Contact Info</label>
             </div>
           </div>
           <div class="row px-2" v-if="team.mainContact">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="contactName">Name</label>
               <input
                 id="contactName"
@@ -100,6 +105,18 @@
                 class="form-control form-control-sm"
                 v-model="team.mainContact.name"
                 ref="contactName"
+                @change="changeDetails"
+                :readonly="useManagerDetails"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="contactCompany">Company</label>
+              <input
+                id="contactCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="team.mainContact.company"
+                ref="contactCompany"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
               />
@@ -226,9 +243,7 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails"
-                  >Use Above Details</label
-                >
+                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
@@ -241,9 +256,10 @@
                   :disabled="!team.managerId._id"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useManagerDetails"
-                  >Use Manager's Shipping Address</label
-                >
+                <label
+                  class="form-check-label text-white"
+                  for="useManagerDetails"
+                >Use Manager's Shipping Address</label>
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -260,7 +276,7 @@
             </div>
           </div>
           <div class="row px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="shippingName">Shipping Name</label>
               <input
                 id="shippingName"
@@ -268,6 +284,17 @@
                 class="form-control form-control-sm"
                 v-model="team.bulkShipping.name"
                 ref="shippingName"
+                :readonly="bulkUseDetails !== 'other'"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="shippingCompany">Shipping Company</label>
+              <input
+                id="shippingCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="team.bulkShipping.company"
+                ref="shippingCompany"
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
@@ -375,14 +402,13 @@
           </div>
           <div class="row mt-4 mb-5">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateTeam">
-                Update Team Details
-              </button>
+              <button class="btn btn-block btn-info" @click.prevent="updateTeam">Update Team Details</button>
             </div>
             <div class="col-sm-6">
-              <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
-                >Cancel</router-link
-              >
+              <router-link
+                :to="`/dashboard/teams/${team._id}`"
+                class="btn btn-block btn-danger"
+              >Cancel</router-link>
             </div>
           </div>
         </form>
@@ -425,13 +451,14 @@ export default {
       const admins = await this.$store.dispatch('getAdmins');
       this.adminsList = admins.data;
 
+      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
+      const teamName = res.data.name;
+      const teamId = res.data._id;
+
       if (this.team && this.team.managerId) {
         this.getManagerDetails();
       }
 
-      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
-      const teamName = res.data.name;
-      const teamId = res.data._id;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -461,6 +488,7 @@ export default {
         managerId: this.team.managerId._id,
         teamId: this.team.teamId,
         contactName: this.team.mainContact.name,
+        contactCompany: this.team.mainContact.company,
         contactAddress1: this.team.mainContact.address1,
         contactAddress2: this.team.mainContact.address2,
         contactCity: this.team.mainContact.city,
@@ -470,6 +498,7 @@ export default {
         contactPhone: this.team.mainContact.phone,
         contactEmail: this.team.mainContact.email,
         shippingName: this.team.bulkShipping.name,
+        shippingCompany: this.team.bulkShipping.company,
         shippingAddress1: this.team.bulkShipping.address1,
         shippingAddress2: this.team.bulkShipping.address2,
         shippingCity: this.team.bulkShipping.city,
@@ -504,6 +533,7 @@ export default {
 
         const {
           name,
+          company,
           address1,
           address2,
           city,
@@ -519,6 +549,7 @@ export default {
 
         this.managerDetails = {
           name,
+          company,
           address1,
           address2,
           city,
@@ -563,6 +594,7 @@ export default {
       } else if (this.bulkUseDetails === 'above') {
         this.backupBulk = this.team.bulkShipping;
         this.team.bulkShipping = this.team.mainContact;
+        this.team.bulkShipping.company = this.backupBulk.company;
         this.geoTimezone();
       } else {
         this.team.bulkShipping = this.backupBulk;
@@ -585,6 +617,8 @@ export default {
           this.team.bulkShipping.email = this.team.mainContact.email;
         } else if (target === 'contactName') {
           this.team.bulkShipping.name = this.team.mainContact.name;
+        } else if (target === 'contactCompany') {
+          this.team.bulkShipping.company = this.team.mainContact.company;
         } else if (target === 'contactAddress1') {
           this.team.bulkShipping.address1 = this.team.mainContact.address1;
         } else if (target === 'contactAddress2') {

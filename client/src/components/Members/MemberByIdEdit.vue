@@ -34,7 +34,7 @@
             <span class="text-white">Contact Information</span>
           </div>
           <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="name">Name</label>
               <input
                 id="name"
@@ -43,6 +43,17 @@
                 v-model="member.name"
                 @change="changeDetails"
                 ref="name"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="company">Company</label>
+              <input
+                id="company"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="member.company"
+                @change="changeDetails"
+                ref="company"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -157,7 +168,7 @@
             </div>
           </div>
           <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="billingName">Billing Name</label>
               <input
                 id="billingName"
@@ -165,6 +176,17 @@
                 class="form-control form-control-sm"
                 v-model="member.billing.name"
                 ref="billingName"
+                :readonly="billingSame"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="billingCompany">Billing Company</label>
+              <input
+                id="billingCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="member.billing.company"
+                ref="billingCompany"
                 :readonly="billingSame"
               />
             </div>
@@ -291,7 +313,7 @@
             </div>
           </div>
           <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="shippingName">Shipping Name</label>
               <input
                 id="shippingName"
@@ -302,8 +324,19 @@
                 :readonly="shippingSame"
               />
             </div>
+            <div class="form-group col-sm-3">
+              <label for="shippingCompany">Shipping Company</label>
+              <input
+                id="shippingCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="member.shipping.company"
+                ref="shippingCompany"
+                :readonly="shippingSame"
+              />
+            </div>
             <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Email</label>
+              <label for="shippingEmail">Shipping Email</label>
               <input
                 id="shippingEmail"
                 type="text"
@@ -506,6 +539,7 @@ export default {
     copyDetails: function() {
       if (this.shippingSame === true) {
         this.member.shipping.name = this.member.name;
+        this.mmeber.shipping.company = this.member.company;
         this.member.shipping.address1 = this.member.address1;
         this.member.shipping.address2 = this.member.address2;
         this.member.shipping.city = this.member.city;
@@ -517,6 +551,7 @@ export default {
       }
       if (this.billingSame === true) {
         this.member.billing.name = this.member.name;
+        this.member.billing.company = this.member.company;
         this.member.billing.address1 = this.member.address1;
         this.member.billing.address2 = this.member.address2;
         this.member.billing.city = this.member.city;
@@ -538,6 +573,8 @@ export default {
           this.member.shipping.email = this.member.email;
         } else if (target === 'name') {
           this.member.shipping.name = this.member.name;
+        } else if (target === 'company') {
+          this.member.shipping.company = this.member.company;
         } else if (target === 'address1') {
           this.member.shipping.address1 = this.member.address1;
         } else if (target === 'address2') {
@@ -554,6 +591,8 @@ export default {
           this.member.billing.email = this.member.email;
         } else if (target === 'name') {
           this.member.billing.name = this.member.name;
+        } else if (target === 'company') {
+          this.member.billing.company = this.member.company;
         } else if (target === 'address1') {
           this.member.billing.address1 = this.member.address1;
         } else if (target === 'address2') {
@@ -579,6 +618,7 @@ export default {
         this.backupBilling = this.member.billing;
         this.member.billing = {
           name: this.member.name,
+          company: this.member.company,
           email: this.member.email,
           address1: this.member.address1,
           address2: this.member.address2,
@@ -597,6 +637,7 @@ export default {
         this.backupShipping = this.member.shipping;
         this.member.shipping = {
           name: this.member.name,
+          company: this.member.company,
           email: this.member.email,
           address1: this.member.address1,
           address2: this.member.address2,
@@ -675,6 +716,7 @@ export default {
     updateMember: async function() {
       const updatedMember = {
         name: this.member.name,
+        company: this.member.company,
         phone: this.member.phone,
         address1: this.member.address1,
         address2: this.member.address2,
@@ -686,6 +728,7 @@ export default {
         timezoneAbbrev: this.member.timezoneAbbrev,
         shippingSame: this.shippingSame,
         shippingName: this.member.shipping.name,
+        shippingCompany: this.member.shipping.company,
         shippingAddress1: this.member.shipping.address1,
         shippingAddress2: this.member.shipping.address2,
         shippingCity: this.member.shipping.city,
@@ -696,6 +739,7 @@ export default {
         shippingEmail: this.member.shipping.email,
         billingSame: this.billingSame,
         billingName: this.member.billing.name,
+        billingCompany: this.member.billing.company,
         billingAddress1: this.member.billing.address1,
         billingAddress2: this.member.billing.address2,
         billingCity: this.member.billing.city,

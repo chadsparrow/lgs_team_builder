@@ -48,10 +48,15 @@
           <span class="text-white">Contact Information</span>
         </div>
         <div class="row mb-3 px-2">
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <label class="text-info">Name</label>
             <br />
             <span>{{ member.name }}</span>
+          </div>
+          <div class="col-sm-3">
+            <label class="text-info">Company</label>
+            <br />
+            <span>{{ member.company || '--'}}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>
@@ -98,10 +103,15 @@
           <span class="text-white">Billing Details</span>
         </div>
         <div class="row mb-3 px-2">
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <label class="text-info">Name</label>
             <br />
             <span>{{ member.billing.name }}</span>
+          </div>
+          <div class="col-sm-3">
+            <label class="text-info">Company</label>
+            <br />
+            <span>{{ member.billing.company || '--'}}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>
@@ -148,10 +158,15 @@
           <span class="text-white">Shipping Details</span>
         </div>
         <div class="row mb-4 px-3">
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <label class="text-info">Name</label>
             <br />
             <span>{{ member.shipping.name }}</span>
+          </div>
+          <div class="col-sm-3">
+            <label class="text-info">Company</label>
+            <br />
+            <span>{{ member.shipping.company || '--'}}</span>
           </div>
           <div class="col-sm-6">
             <label class="text-info">Email</label>

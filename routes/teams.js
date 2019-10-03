@@ -60,6 +60,7 @@ router.post('/', [auth, admin], async (req, res) => {
     adminId,
     managerId,
     contactName,
+    contactCompany,
     contactAddress1,
     contactAddress2,
     contactCity,
@@ -69,6 +70,7 @@ router.post('/', [auth, admin], async (req, res) => {
     contactPhone,
     contactEmail,
     shippingName,
+    shippingCompany,
     shippingAddress1,
     shippingAddress2,
     shippingCity,
@@ -140,6 +142,7 @@ router.post('/', [auth, admin], async (req, res) => {
     email: contactEmail
   };
   if (contactAddress2) team.mainContact.address2 = contactAddress2;
+  if (contactCompany) team.mainContact.company = contactCompany;
 
   team.bulkShipping = {
     name: shippingName,
@@ -152,6 +155,7 @@ router.post('/', [auth, admin], async (req, res) => {
     email: shippingEmail
   };
   if (shippingAddress2) team.bulkshipping.address2 = shippingAddress2;
+  if (shippingCompany) team.bulkshipping.company = shippingCompany;
 
   team.timezone = timezone;
   team.timezoneAbbrev = timezoneAbbrev;
@@ -171,6 +175,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     adminId,
     managerId,
     contactName,
+    contactCompany,
     contactAddress1,
     contactAddress2,
     contactCity,
@@ -180,6 +185,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     contactPhone,
     contactEmail,
     shippingName,
+    shippingCompany,
     shippingAddress1,
     shippingAddress2,
     shippingCity,
@@ -252,6 +258,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     email: contactEmail
   };
   if (contactAddress2) team.mainContact.address2 = contactAddress2;
+  if (contactCompany) team.mainContact.company = contactCompany;
 
   team.bulkShipping = {
     name: shippingName,
@@ -264,6 +271,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     email: shippingEmail
   };
   if (shippingAddress2) team.bulkshipping.address2 = shippingAddress2;
+  if (shippingCompany) team.bulkShipping.company = shippingCompany;
 
   team.timezone = timezone;
   team.timezoneAbbrev = timezoneAbbrev;

@@ -244,7 +244,7 @@
             </div>
           </div>
           <div class="row px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="shippingName">Shipping Name</label>
               <input
                 id="shippingName"
@@ -253,6 +253,16 @@
                 v-model="shippingName"
                 ref="shippingName"
                 :readonly="bulkUseDetails !== 'other'"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="shippingName">Shipping Company</label>
+              <input
+                id="shippingCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="shippingCompany"
+                ref="shippingCompany"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -400,6 +410,7 @@ export default {
       contactPhone: '',
       contactEmail: '',
       shippingName: '',
+      shippingCompany: '',
       shippingAddress1: '',
       shippingAddress2: '',
       shippingCity: '',
@@ -470,6 +481,7 @@ export default {
         contactPhone: this.contactPhone,
         contactEmail: this.contactEmail,
         shippingName: this.shippingName,
+        shippingCompany: this.shippingCompany,
         shippingAddress1: this.shippingAddress1,
         shippingAddress2: this.shippingAddress2,
         shippingCity: this.shippingCity,
@@ -607,6 +619,7 @@ export default {
       if (this.bulkUseDetails === 'above') {
         this.backupShipping = {
           name: this.shippingName,
+          company: this.shippingCompany,
           address1: this.shippingAddress1,
           address2: this.shippingAddress2,
           city: this.shippingCity,
@@ -635,6 +648,7 @@ export default {
         const { shipping, timezone, timezoneAbbrev } = this.managerDetails;
         this.backupShipping = {
           name: this.shippingName,
+          company: this.shippingCompany,
           address1: this.shippingAddress1,
           address2: this.shippingAddress2,
           city: this.shippingCity,
@@ -658,6 +672,7 @@ export default {
       } else if (this.bulkUseDetails === 'above') {
         this.backupShipping = {
           name: this.shippingName,
+          company: this.shippingCompany,
           address1: this.shippingAddress1,
           address2: this.shippingAddress2,
           city: this.shippingCity,
@@ -680,6 +695,7 @@ export default {
       } else {
         const {
           name,
+          company,
           address1,
           address2,
           city,
@@ -690,6 +706,7 @@ export default {
           email
         } = this.backupShipping;
         this.shippingName = name;
+        this.shippingCompany = company;
         this.shippingAddress1 = address1;
         this.shippingAddress2 = address2;
         this.shippingCity = city;
@@ -785,7 +802,7 @@ export default {
 
 <style lang="scss" scoped>
 form {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 
   .timezoneBox {

@@ -24,6 +24,11 @@ const MemberSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
+    company: {
+      type: String,
+      uppercase: true,
+      trim: true
+    },
     address1: {
       type: String,
       required: true,
@@ -77,6 +82,11 @@ const MemberSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
+      company: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
       address1: {
         type: String,
         uppercase: true
@@ -117,6 +127,11 @@ const MemberSchema = new mongoose.Schema(
       name: {
         type: String,
         minlength: 5,
+        uppercase: true,
+        trim: true
+      },
+      company: {
+        type: String,
         uppercase: true,
         trim: true
       },
@@ -208,6 +223,7 @@ function validateNewRegister(member) {
       .max(50)
       .required()
       .trim(),
+    company: Joi.string().allow('', null),
     address1: Joi.string()
       .min(10)
       .required()
@@ -238,6 +254,7 @@ function validateNewRegister(member) {
     shippingName: Joi.string()
       .required()
       .trim(),
+    shippingCompany: Joi.string().allow('', null),
     shippingAddress1: Joi.string()
       .required()
       .trim(),
@@ -266,6 +283,7 @@ function validateNewRegister(member) {
     billingName: Joi.string()
       .required()
       .trim(),
+    billingCompany: Joi.string().allow('', null),
     billingAddress1: Joi.string()
       .required()
       .trim(),
@@ -304,6 +322,7 @@ function validateNewMember(member) {
       .max(50)
       .required()
       .trim(),
+    company: Joi.string().allow('', null),
     address1: Joi.string()
       .min(10)
       .required()
@@ -338,6 +357,7 @@ function validateNewMember(member) {
     shippingName: Joi.string()
       .required()
       .trim(),
+    shippingCompany: Joi.string().allow('', null),
     shippingAddress1: Joi.string()
       .required()
       .trim(),
@@ -366,6 +386,7 @@ function validateNewMember(member) {
     billingName: Joi.string()
       .required()
       .trim(),
+    billingCompany: Joi.string().allow('', null),
     billingAddress1: Joi.string()
       .required()
       .trim(),
@@ -402,6 +423,7 @@ function validateUpdateMember(member) {
       .max(50)
       .required()
       .trim(),
+    company: Joi.string().allow('', null),
     address1: Joi.string()
       .min(10)
       .required()
@@ -441,6 +463,11 @@ function validateUpdateMember(member) {
         .max(50)
         .required()
         .trim()
+    }),
+    shippingCompany: Joi.when('shippingSame', {
+      is: true,
+      then: Joi.ref('company'),
+      otherwise: Joi.string().allow('', null)
     }),
     shippingAddress1: Joi.when('shippingSame', {
       is: true,
@@ -514,6 +541,11 @@ function validateUpdateMember(member) {
         .max(50)
         .required()
         .trim()
+    }),
+    billingCompany: Joi.when('billingSame', {
+      is: true,
+      then: Joi.ref('company'),
+      otherwise: Joi.string().allow('', null)
     }),
     billingAddress1: Joi.when('billingSame', {
       is: true,

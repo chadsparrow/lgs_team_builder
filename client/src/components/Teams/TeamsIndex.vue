@@ -32,7 +32,7 @@
           >
             <tbody>
               <tr>
-                <th scope="col">Team ID</th>
+                <th scope="col">Account #</th>
                 <th scope="col">Name</th>
                 <th scope="col">Admin</th>
                 <th scope="col">Manager</th>

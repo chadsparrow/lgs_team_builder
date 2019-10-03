@@ -2,7 +2,13 @@
   <div class="storepage">
     <div class="store-info sidebar-left">
       <div v-if="currentStore && currentStore.storeName">
-        <div class="row p-1">
+        <div
+          :class="currentStore.mode === 'OPEN' ? 'row p-2 modeBox text-center bg-success text-white' : currentStore.mode === 'CLOSED' ? 'row p-2 modeBox text-center bg-danger text-white' : currentStore.mode === 'HOLD' ? 'row p-2 modeBox text-center bg-warning text-white' : null"
+        >
+          <small class="col-sm-12 text-white">Store Mode</small>
+          <span class="col-sm-12 text-white">{{ currentStore.mode }}</span>
+        </div>
+        <div class="row p-1 mt-2">
           <small class="col-sm-12 text-info">Store Created:</small>
           <span class="col-sm-12">
             {{
@@ -19,6 +25,10 @@
           <span class="col-sm-12">{{ currentStore.storeCountry }}</span>
         </div>
         <div class="row p-1">
+          <small class="col-sm-12 text-info">Account #:</small>
+          <span class="col-sm-12">{{ currentStore.teamId.teamId }}</span>
+        </div>
+        <div class="row p-1">
           <small class="col-sm-12 text-info">Store Admin:</small>
           <span class="col-sm-12">{{ currentStore.adminId.name }}</span>
           <span class="col-sm-12 text-muted">{{ currentStore.adminId.email }}</span>
@@ -28,7 +38,7 @@
           <span class="col-sm-12">{{ currentStore.managerId.name }}</span>
           <span class="col-sm-12 text-muted">{{ currentStore.managerId.email }}</span>
         </div>
-        <div class="row p-1 mt-3">
+        <div class="row p-1">
           <small class="col-sm-12 text-info">Opening Date:</small>
           <span class="col-sm-12" v-if="currentStore.openingDate">
             {{
@@ -46,8 +56,49 @@
           </span>
           <span class="col-sm-12" v-else>No Closing Date</span>
         </div>
-        <div class="row p-2 modeBox mt-3 text-center" :style="`background-color: ${modeColor}`">
-          <span class="col-sm-12 text-white">{{ currentStore.mode }}</span>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Main Contact:</small>
+          <span class="col-sm-12">{{ currentStore.teamId.mainContact.name }}</span>
+          <span
+            class="col-sm-12"
+            v-if="currentStore.teamId.mainContact.company"
+          >{{ currentStore.teamId.mainContact.company }}</span>
+          <span class="col-sm-12">{{ currentStore.teamId.mainContact.address1 }}</span>
+          <span
+            class="col-sm-12"
+            v-if="currentStore.teamId.mainContact.address2"
+          >{{ currentStore.teamId.mainContact.address2 }}</span>
+          <span
+            class="col-sm-12"
+          >{{ currentStore.teamId.mainContact.city }}, {{currentStore.teamId.mainContact.stateProv}}, {{currentStore.teamId.mainContact.country}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.mainContact.zipPostal}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.mainContact.phone}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.mainContact.email}}</span>
+        </div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Shipping Type:</small>
+          <span
+            class="col-sm-12"
+          >{{ currentStore.shippingType == "BULK" ? "BULK SHIP" : "DROP SHIP" }}</span>
+        </div>
+        <div class="row p-1" v-if="currentStore.shippingType = 'BULK'">
+          <small class="col-sm-12 text-info">Bulk Shipping Information:</small>
+          <span class="col-sm-12">{{ currentStore.teamId.bulkShipping.name }}</span>
+          <span
+            class="col-sm-12"
+            v-if="currentStore.teamId.bulkShipping.company"
+          >{{ currentStore.teamId.bulkShipping.company }}</span>
+          <span class="col-sm-12">{{ currentStore.teamId.bulkShipping.address1 }}</span>
+          <span
+            class="col-sm-12"
+            v-if="currentStore.teamId.bulkShipping.address2"
+          >{{ currentStore.teamId.bulkShipping.address2 }}</span>
+          <span
+            class="col-sm-12"
+          >{{ currentStore.teamId.bulkShipping.city }}, {{currentStore.teamId.bulkShipping.stateProv}}, {{currentStore.teamId.bulkShipping.country}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.bulkShipping.zipPostal}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.bulkShipping.phone}}</span>
+          <span class="col-sm-12">{{currentStore.teamId.bulkShipping.email}}</span>
         </div>
       </div>
     </div>
@@ -78,6 +129,12 @@ export default {
     }
   },
   computed: {
+    access: function() {
+      if (member && member.isAdmin) return true;
+      if (member && currentStore.managerId._id === member._id) return true;
+
+      return false;
+    },
     currentStore: function() {
       return this.$store.getters.currentStore;
     },
@@ -86,25 +143,6 @@ export default {
     },
     orders: function() {
       return this.$store.getters.orders;
-    },
-    modeColor: function() {
-      let bgColor = '';
-      switch (this.currentStore.mode) {
-        case 'HOLD':
-          bgColor = '#FF8C00';
-          break;
-        case 'OPEN':
-          bgColor = '#9ACD32';
-          break;
-        case 'CLOSED':
-          bgColor = '#B22222';
-          break;
-        case 'SURVEY':
-          bgColor = '#B22222';
-          break;
-      }
-
-      return bgColor;
     }
   },
   methods: {}
@@ -124,6 +162,8 @@ export default {
 
 .store-info {
   grid-area: left-bar;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .store-items {
@@ -135,9 +175,11 @@ export default {
 }
 
 .modeBox {
-  border-radius: 8px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  border-radius: 6px;
+  span {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
   margin: 0px 4px;
 }
 </style>

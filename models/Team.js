@@ -37,6 +37,11 @@ const TeamSchema = new mongoose.Schema(
         uppercase: true,
         trim: true
       },
+      company: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
       address1: {
         type: String,
         minlength: 10,
@@ -83,6 +88,11 @@ const TeamSchema = new mongoose.Schema(
         type: String,
         minlength: 5,
         maxlength: 50,
+        uppercase: true,
+        trim: true
+      },
+      company: {
+        type: String,
         uppercase: true,
         trim: true
       },
@@ -163,6 +173,7 @@ function validateTeam(team) {
     contactName: Joi.string()
       .required()
       .trim(),
+    contactCompany: Joi.string().allow('', null),
     contactAddress1: Joi.string()
       .required()
       .trim(),
@@ -189,6 +200,7 @@ function validateTeam(team) {
     shippingName: Joi.string()
       .required()
       .trim(),
+    shippingCompany: Joi.string().allow('', null),
     shippingAddress1: Joi.string()
       .required()
       .trim(),
