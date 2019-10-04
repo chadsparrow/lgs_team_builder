@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
+const { Team } = require('../models/Team');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
@@ -75,13 +76,14 @@ router.post('/login', async (req, res) => {
 
 // POST /api/members
 router.post('/register', async (req, res) => {
-  const { error } = validateNewRegister(req.body);
+  const { error } = validateNewRegister(req.body.member);
   if (error) return res.status(400).send(error.details);
 
   const {
     email,
     password,
     name,
+    company,
     address1,
     address2,
     city,
@@ -93,6 +95,7 @@ router.post('/register', async (req, res) => {
     timezoneAbbrev,
     shippingSame,
     shippingName,
+    shippingCompany,
     shippingAddress1,
     shippingAddress2,
     shippingCity,
@@ -103,6 +106,7 @@ router.post('/register', async (req, res) => {
     shippingEmail,
     billingSame,
     billingName,
+    billingCompany,
     billingAddress1,
     billingAddress2,
     billingCity,
@@ -111,7 +115,7 @@ router.post('/register', async (req, res) => {
     billingZipPostal,
     billingPhone,
     billingEmail
-  } = req.body;
+  } = req.body.member;
 
   const userEmail = email.split('@')[0];
   if (password.includes('password'))
@@ -126,6 +130,7 @@ router.post('/register', async (req, res) => {
 
   const newMember = new Member({
     name,
+    company,
     address1,
     address2,
     city,
@@ -141,6 +146,7 @@ router.post('/register', async (req, res) => {
 
   if (shippingSame) {
     newMember.shipping.name = name;
+    newMember.shipping.company = company;
     newMember.shipping.address1 = address1;
     newMember.shipping.address2 = address2;
     newMember.shipping.city = city;
@@ -151,6 +157,7 @@ router.post('/register', async (req, res) => {
     newMember.shipping.email = email;
   } else {
     newMember.shipping.name = shippingName;
+    newMember.shipping.company = shippingCompany;
     newMember.shipping.address1 = shippingAddress1;
     newMember.shipping.address2 = shippingAddress2;
     newMember.shipping.city = shippingCity;
@@ -163,6 +170,7 @@ router.post('/register', async (req, res) => {
 
   if (billingSame) {
     newMember.billing.name = name;
+    newMember.billing.company = company;
     newMember.billing.address1 = address1;
     newMember.billing.address2 = address2;
     newMember.billing.city = city;
@@ -173,6 +181,7 @@ router.post('/register', async (req, res) => {
     newMember.billing.email = email;
   } else {
     newMember.billing.name = billingName;
+    newMember.billing.company = billingCompany;
     newMember.billing.address1 = billingAddress1;
     newMember.billing.address2 = billingAddress2;
     newMember.billing.city = billingCity;
@@ -183,6 +192,14 @@ router.post('/register', async (req, res) => {
     newMember.billing.email = billingEmail;
   }
 
+  const team = await Team.findById(req.body.teamId);
+  team.members.push(newMember._id);
+  await team.save();
+
+  newMember.notifications.push({
+    date: new Date(),
+    message: `You are now part of team ${team.name}`
+  });
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);

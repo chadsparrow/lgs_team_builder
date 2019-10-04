@@ -1,444 +1,417 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col sidebar-left" v-if="memberDetails && memberDetails.name">
-        <div class="row p-1">
-          <small class="col-sm-12 text-info">Your Timezone:</small>
-          <span class="col-sm-12">{{ memberDetails.timezone }}</span>
-          <span class="col-sm-12 text-muted timezoneHelp">Calculated using Shipping Details</span>
-        </div>
-        <hr />
-        <h5>Invitations</h5>
-        <div class="invitationGroup" v-if="member && member._id">
-          <span class="text-info">Allow Invites</span>
-          <div class="switchGroup">
-            <small>On</small>
-            <switches
-              v-model="memberDetails.invites.disabled"
-              id="acceptInvites"
-              theme="bootstrap"
-              color="info"
-              class="mx-2"
-            ></switches>
-            <small>Off</small>
-          </div>
-          <span class="text-info mt-2">Auto accept</span>
-          <div class="switchGroup">
-            <small>Manual</small>
-            <switches
-              v-model="memberDetails.invites.autoAccept"
-              id="autoAcceptInvites"
-              theme="bootstrap"
-              color="info"
-              class="mx-2"
-            ></switches>
-            <small>Auto</small>
-          </div>
-          <span class="text-danger mt-4">
-            <strong>
-              <em>** Important Notice **</em>
-            </strong>
-          </span>
-          <small
-            class="mt-1 text-muted"
-          >Changes to your profile will only update shipping details for orders that have not been processed, or for stores that are currently open.</small>
-          <small
-            class="mt-2 text-muted"
-          >Your shipping information will stay the same for already processed orders or stores that are closed as they were recorded at that time.</small>
-        </div>
+  <div class="page">
+    <div class="sidebar-left" v-if="memberDetails && memberDetails.name">
+      <div class="row p-1">
+        <small class="col-sm-12 text-info">Your Timezone:</small>
+        <span class="col-sm-12">{{ memberDetails.timezone }}</span>
+        <span class="col-sm-12 text-muted timezoneHelp">Calculated using Shipping Details</span>
       </div>
-      <div class="col middle-section" v-if="memberDetails && memberDetails.name">
-        <form class="mb-5">
-          <div class="section-header mb-1 bg-secondary">
-            <span class="text-white">Contact Information</span>
+      <hr />
+      <div class="row">
+        <span class="col-sm-12 text-danger">
+          <strong>
+            <em>** Important Notice **</em>
+          </strong>
+        </span>
+        <small
+          class="col-sm-12 mt-2 text-muted"
+        >Changes to your profile will only update shipping details for orders that have not been processed, or for stores that are currently open.</small>
+        <small
+          class="col-sm-12 mt-2 text-muted"
+        >Your shipping information will stay the same for already processed orders or stores that are closed as they were recorded at that time.</small>
+      </div>
+    </div>
+    <div class="middle-section" v-if="memberDetails && memberDetails.name">
+      <form>
+        <div class="section-header mb-1 bg-secondary">
+          <span class="text-white">Contact Information</span>
+        </div>
+        <div class="row mb-2 px-2">
+          <div class="form-group col-sm-6">
+            <label for="name">Name</label>
+            <input
+              id="name"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.name"
+              @change="changeDetails"
+              ref="name"
+            />
           </div>
-          <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
-              <label for="name">Name</label>
-              <input
-                id="name"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.name"
-                @change="changeDetails"
-                ref="name"
-              />
-            </div>
 
-            <div class="form-group col-sm-6">
-              <label for="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                class="form-control form-control-sm"
-                v-model="memberDetails.email"
-                ref="email"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="address1">Address 1</label>
-              <input
-                id="address1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.address1"
-                @change="changeDetails"
-                ref="address1"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="address2">Address 2</label>
-              <input
-                id="address2"
-                type="text"
-                class="form-control form-control-sm"
-                ref="address2"
-                v-model="memberDetails.address2"
-                @change="changeDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="city">City</label>
-              <input
-                id="city"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.city"
-                @change="changeDetails"
-                ref="city"
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="stateProv">State/Province</label>
-              <region-select
-                id="stateProv"
-                v-model="memberDetails.stateProv"
-                :country="memberDetails.country"
-                :region="memberDetails.stateProv"
-                class="form-control form-control-sm"
-                @input="checkRegion"
-                :regionName="true"
-                ref="stateProv"
-              />
-            </div>
-            <div class="form-group col-sm-2">
-              <label for="country">Country</label>
-              <country-select
-                id="country"
-                v-model="memberDetails.country"
-                :country="memberDetails.country"
-                class="form-control form-control-sm"
-                @input="checkCountry"
-                ref="country"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="zipPostal">Zip/Postal Code</label>
-              <input
-                id="zipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                ref="zipPostal"
-                v-model="memberDetails.zipPostal"
-                @change="changeDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="phone">Phone</label>
-              <VuePhoneNumberInput
-                v-model="memberDetails.phone"
-                id="phone"
-                :dark="false"
-                :default-country-code="memberDetails.country || null"
-                :preferred-countries="['US', 'CA']"
-                ref="phone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-                @update="copyPhone"
-              />
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control form-control-sm"
+              v-model="memberDetails.email"
+              ref="email"
+              readonly
+            />
           </div>
-          <div class="section-header my-1 bg-secondary">
-            <span class="text-white">Billing Details</span>
-            <div class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input mt-2"
-                id="billingSame"
-                v-model="billingSame"
-                ref="billingSame"
-                @change="copyContacttoBilling"
-              />
-              <label
-                class="form-check-label text-white"
-                for="billingSame"
-              >Use Contact Information for Billing</label>
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="address1">Address 1</label>
+            <input
+              id="address1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.address1"
+              @change="changeDetails"
+              ref="address1"
+            />
           </div>
-          <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
-              <label for="billingName">Billing Name</label>
-              <input
-                id="billingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.name"
-                ref="billingName"
-                :readonly="billingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="billingName">Billing Email</label>
-              <input
-                id="billingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.email"
-                ref="billingEmail"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="billingAddress1">Billing Address 1</label>
-              <input
-                id="billingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.address1"
-                ref="billingAddress1"
-                :readonly="billingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="billingAddress2">Billing Address 2</label>
-              <input
-                id="billingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.address2"
-                ref="billingAddress2"
-                :readonly="billingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="billingCity">Billing City</label>
-              <input
-                id="billingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.city"
-                ref="billingCity"
-                :readonly="billingSame"
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="billingStateProv">Billing State/Province</label>
-              <region-select
-                id="billingStateProv"
-                v-model="memberDetails.billing.stateProv"
-                :country="memberDetails.billing.country"
-                :region="memberDetails.billing.stateProv"
-                class="form-control form-control-sm"
-                :readonly="billingSame"
-                :regionName="true"
-                ref="billingStateProv"
-              />
-            </div>
-            <div class="form-group col-sm-2">
-              <label for="billingCountry">Billing Country</label>
-              <country-select
-                id="billingCountry"
-                v-model="memberDetails.billing.country"
-                :country="memberDetails.billing.country"
-                class="form-control form-control-sm"
-                :readonly="billingSame"
-                @input="checkBillingCountry"
-                ref="billingCountry"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="billingZipPostal">Billing Zip/Postal Code</label>
-              <input
-                id="billingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.zipPostal"
-                ref="billingZipPostal"
-                :readonly="billingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-if="billingSame">
-              <label for="billingPhone">Billing Phone</label>
-              <input
-                id="billingPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.billing.phone"
-                ref="billingPhone"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="billingPhone">Billing Phone</label>
-              <VuePhoneNumberInput
-                v-model="memberDetails.billing.phone"
-                id="billingPhone"
-                :dark="false"
-                :default-country-code="memberDetails.billing.country || null"
-                :preferred-countries="['US', 'CA']"
-                ref="billingPhone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-              />
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="address2">Address 2</label>
+            <input
+              id="address2"
+              type="text"
+              class="form-control form-control-sm"
+              ref="address2"
+              v-model="memberDetails.address2"
+              @change="changeDetails"
+            />
           </div>
-          <div class="section-header my-2 bg-secondary">
-            <span class="text-white">Shipping Details</span>
-            <div class="form-check">
-              <input
-                type="checkbox"
-                class="form-check-input mt-2"
-                id="shippingSame"
-                v-model="shippingSame"
-                ref="shippingSame"
-                @change="copyContacttoShipping"
-              />
-              <label
-                class="form-check-label text-white"
-                for="shippingSame"
-              >Use Contact Information for Shipping</label>
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="city">City</label>
+            <input
+              id="city"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.city"
+              @change="changeDetails"
+              ref="city"
+            />
           </div>
-          <div class="row mb-2 px-2">
-            <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Name</label>
-              <input
-                id="shippingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.name"
-                ref="shippingName"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingName">Shipping Email</label>
-              <input
-                id="shippingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.email"
-                ref="shippingEmail"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress1">Shipping Address 1</label>
-              <input
-                id="shippingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.address1"
-                ref="shippingAddress1"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress2">Shipping Address 2</label>
-              <input
-                id="shippingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.address2"
-                ref="shippingAddress2"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingCity">Shipping City</label>
-              <input
-                id="shippingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.city"
-                ref="shippingCity"
-                @change="changeDetails"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="shippingStateProv">Shipping State/Province</label>
-              <region-select
-                id="shippingStateProv"
-                v-model="memberDetails.shipping.stateProv"
-                :country="memberDetails.shipping.country"
-                :region="memberDetails.shipping.stateProv"
-                class="form-control form-control-sm"
-                @input="geoTimezone"
-                :readonly="shippingSame"
-                :regionName="true"
-                ref="shippingStateProv"
-              />
-            </div>
-            <div class="form-group col-sm-2">
-              <label for="shippingCountry">Shipping Country</label>
-              <country-select
-                id="shippingCountry"
-                v-model="memberDetails.shipping.country"
-                :country="memberDetails.shipping.country"
-                class="form-control form-control-sm"
-                @input="checkShippingCountry"
-                :readonly="shippingSame"
-                ref="shippingCountry"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
-              <input
-                id="shippingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.zipPostal"
-                ref="shippingZipPostal"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-if="shippingSame">
-              <label for="shippingPhone">Shipping Phone</label>
-              <input
-                id="shippingPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="memberDetails.shipping.phone"
-                ref="shippingPhone"
-                :readonly="shippingSame"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="shippingPhone">Shipping Phone</label>
-              <VuePhoneNumberInput
-                v-model="memberDetails.shipping.phone"
-                id="shippingPhone"
-                :dark="false"
-                :default-country-code="memberDetails.shipping.country || null"
-                :preferred-countries="['US', 'CA']"
-                ref="shippingPhone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-              />
-            </div>
+          <div class="form-group col-sm-4">
+            <label for="stateProv">State/Province</label>
+            <region-select
+              id="stateProv"
+              v-model="memberDetails.stateProv"
+              :country="memberDetails.country"
+              :region="memberDetails.stateProv"
+              class="form-control form-control-sm"
+              @input="checkRegion"
+              :regionName="true"
+              ref="stateProv"
+            />
           </div>
-          <div class="row my-3">
-            <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateProfile">Update Profile</button>
-            </div>
-            <div class="col-sm-6">
-              <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
-            </div>
+          <div class="form-group col-sm-2">
+            <label for="country">Country</label>
+            <country-select
+              id="country"
+              v-model="memberDetails.country"
+              :country="memberDetails.country"
+              class="form-control form-control-sm"
+              @input="checkCountry"
+              ref="country"
+            />
           </div>
-        </form>
-      </div>
+          <div class="form-group col-sm-6">
+            <label for="zipPostal">Zip/Postal Code</label>
+            <input
+              id="zipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              ref="zipPostal"
+              v-model="memberDetails.zipPostal"
+              @change="changeDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="phone">Phone</label>
+            <VuePhoneNumberInput
+              v-model="memberDetails.phone"
+              id="phone"
+              :dark="false"
+              :default-country-code="memberDetails.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="phone"
+              :clearable="true"
+              :no-use-browser-locale="false"
+              @update="copyPhone"
+            />
+          </div>
+        </div>
+        <div class="section-header my-1 bg-secondary">
+          <span class="text-white">Billing Details</span>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input mt-2"
+              id="billingSame"
+              v-model="billingSame"
+              ref="billingSame"
+              @change="copyContacttoBilling"
+            />
+            <label
+              class="form-check-label text-white"
+              for="billingSame"
+            >Use Contact Information for Billing</label>
+          </div>
+        </div>
+        <div class="row mb-2 px-2">
+          <div class="form-group col-sm-6">
+            <label for="billingName">Billing Name</label>
+            <input
+              id="billingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.name"
+              ref="billingName"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="billingName">Billing Email</label>
+            <input
+              id="billingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.email"
+              ref="billingEmail"
+              readonly
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="billingAddress1">Billing Address 1</label>
+            <input
+              id="billingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.address1"
+              ref="billingAddress1"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="billingAddress2">Billing Address 2</label>
+            <input
+              id="billingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.address2"
+              ref="billingAddress2"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="billingCity">Billing City</label>
+            <input
+              id="billingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.city"
+              ref="billingCity"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="billingStateProv">Billing State/Province</label>
+            <region-select
+              id="billingStateProv"
+              v-model="memberDetails.billing.stateProv"
+              :country="memberDetails.billing.country"
+              :region="memberDetails.billing.stateProv"
+              class="form-control form-control-sm"
+              :readonly="billingSame"
+              :regionName="true"
+              ref="billingStateProv"
+            />
+          </div>
+          <div class="form-group col-sm-2">
+            <label for="billingCountry">Billing Country</label>
+            <country-select
+              id="billingCountry"
+              v-model="memberDetails.billing.country"
+              :country="memberDetails.billing.country"
+              class="form-control form-control-sm"
+              :readonly="billingSame"
+              @input="checkBillingCountry"
+              ref="billingCountry"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="billingZipPostal">Billing Zip/Postal Code</label>
+            <input
+              id="billingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.zipPostal"
+              ref="billingZipPostal"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6" v-if="billingSame">
+            <label for="billingPhone">Billing Phone</label>
+            <input
+              id="billingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.billing.phone"
+              ref="billingPhone"
+              readonly
+            />
+          </div>
+          <div class="form-group col-sm-6" v-else>
+            <label for="billingPhone">Billing Phone</label>
+            <VuePhoneNumberInput
+              v-model="memberDetails.billing.phone"
+              id="billingPhone"
+              :dark="false"
+              :default-country-code="memberDetails.billing.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="billingPhone"
+              :clearable="true"
+              :no-use-browser-locale="false"
+            />
+          </div>
+        </div>
+        <div class="section-header my-2 bg-secondary">
+          <span class="text-white">Shipping Details</span>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input mt-2"
+              id="shippingSame"
+              v-model="shippingSame"
+              ref="shippingSame"
+              @change="copyContacttoShipping"
+            />
+            <label
+              class="form-check-label text-white"
+              for="shippingSame"
+            >Use Contact Information for Shipping</label>
+          </div>
+        </div>
+        <div class="row mb-2 px-2">
+          <div class="form-group col-sm-6">
+            <label for="shippingName">Shipping Name</label>
+            <input
+              id="shippingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.name"
+              ref="shippingName"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingName">Shipping Email</label>
+            <input
+              id="shippingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.email"
+              ref="shippingEmail"
+              readonly
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingAddress1">Shipping Address 1</label>
+            <input
+              id="shippingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.address1"
+              ref="shippingAddress1"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingAddress2">Shipping Address 2</label>
+            <input
+              id="shippingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.address2"
+              ref="shippingAddress2"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingCity">Shipping City</label>
+            <input
+              id="shippingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.city"
+              ref="shippingCity"
+              @change="changeDetails"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-4">
+            <label for="shippingStateProv">Shipping State/Province</label>
+            <region-select
+              id="shippingStateProv"
+              v-model="memberDetails.shipping.stateProv"
+              :country="memberDetails.shipping.country"
+              :region="memberDetails.shipping.stateProv"
+              class="form-control form-control-sm"
+              @input="geoTimezone"
+              :readonly="shippingSame"
+              :regionName="true"
+              ref="shippingStateProv"
+            />
+          </div>
+          <div class="form-group col-sm-2">
+            <label for="shippingCountry">Shipping Country</label>
+            <country-select
+              id="shippingCountry"
+              v-model="memberDetails.shipping.country"
+              :country="memberDetails.shipping.country"
+              class="form-control form-control-sm"
+              @input="checkShippingCountry"
+              :readonly="shippingSame"
+              ref="shippingCountry"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
+            <input
+              id="shippingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.zipPostal"
+              ref="shippingZipPostal"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6" v-if="shippingSame">
+            <label for="shippingPhone">Shipping Phone</label>
+            <input
+              id="shippingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="memberDetails.shipping.phone"
+              ref="shippingPhone"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6" v-else>
+            <label for="shippingPhone">Shipping Phone</label>
+            <VuePhoneNumberInput
+              v-model="memberDetails.shipping.phone"
+              id="shippingPhone"
+              :dark="false"
+              :default-country-code="memberDetails.shipping.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="shippingPhone"
+              :clearable="true"
+              :no-use-browser-locale="false"
+            />
+          </div>
+        </div>
+        <div class="row my-3">
+          <div class="col-sm-6">
+            <button class="btn btn-block btn-info" @click.prevent="updateProfile">Update Profile</button>
+          </div>
+          <div class="col-sm-6">
+            <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -715,12 +688,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.timezoneHelp {
-  font-size: 0.7rem;
-}
-
-.invitationGroup {
-  display: flex;
-  flex-direction: column;
+.page {
+  display: grid;
+  grid-template-columns: 255px 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
+  width: 100%;
+  height: 100%;
+  grid-template-areas: 'sidebar-left middle-section';
 }
 </style>

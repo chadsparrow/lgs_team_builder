@@ -53,11 +53,19 @@ export default new Vuex.Store({
     register({ commit }, member) {
       return new Promise(async (resolve, reject) => {
         try {
-          commit('AUTH_REQUEST');
           const res = await axios.post('/api/v1/auth/register', member);
           resolve(res);
         } catch (err) {
-          commit('AUTH_ERROR');
+          reject(err);
+        }
+      });
+    },
+    joinTeam({ commit }, { member, teamId }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.post('/api/v1/auth/register', { member, teamId });
+          resolve(res);
+        } catch (err) {
           reject(err);
         }
       });
@@ -366,6 +374,20 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/teams/${id}`);
+          commit('SET_CURRENT_TEAM', res.data);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getTeamForRegister({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/teams/${id}/register`);
           commit('SET_CURRENT_TEAM', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);

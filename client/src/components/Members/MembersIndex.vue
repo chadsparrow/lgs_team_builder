@@ -129,13 +129,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-table {
-  td {
-    img {
-      border-radius: 0.25rem;
-    }
-  }
-}
-</style>

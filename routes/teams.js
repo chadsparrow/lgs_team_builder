@@ -49,6 +49,14 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(team);
 });
 
+// GET /api/teams/:id/register
+router.get('/:id/register', validateObjectId, async (req, res) => {
+  const team = await Team.findById(req.params.id).select('_id name');
+  if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
+
+  return res.send(team);
+});
+
 // POST /api/teams
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);

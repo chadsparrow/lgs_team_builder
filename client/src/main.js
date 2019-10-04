@@ -10,6 +10,7 @@ import moment from 'moment-timezone';
 import Datetime from 'vue-datetime';
 import 'vue-datetime/dist/vue-datetime.css';
 import vueCountryRegionSelect from 'vue-country-region-select';
+import VueClipboard from 'vue-clipboard2';
 
 Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
@@ -23,6 +24,7 @@ Vue.use(Toasted, {
 });
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
+Vue.use(VueClipboard);
 
 Vue.config.productionTip = false;
 

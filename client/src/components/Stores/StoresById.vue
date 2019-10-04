@@ -1,6 +1,6 @@
 <template>
-  <div class="storepage">
-    <div class="store-info sidebar-left">
+  <div class="page">
+    <div class="sidebar-left">
       <div v-if="currentStore && currentStore.storeName">
         <div
           :class="currentStore.mode === 'OPEN' ? 'row p-2 modeBox text-center bg-success text-white' : currentStore.mode === 'CLOSED' ? 'row p-2 modeBox text-center bg-danger text-white' : currentStore.mode === 'HOLD' ? 'row p-2 modeBox text-center bg-warning text-white' : null"
@@ -103,7 +103,7 @@
         </div>
       </div>
     </div>
-    <div class="store-items middle-section">Store Items</div>
+    <div class="middle-section">Store Items</div>
   </div>
 </template>
 
@@ -151,28 +151,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.storepage {
+.page {
   display: grid;
   grid-template-columns: 255px 1fr;
   grid-template-rows: 1fr;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
-  grid-template-areas: 'left-bar store-items';
+  grid-template-areas: 'sidebar-left middle-section';
 }
 
-.store-info {
-  grid-area: left-bar;
+.sidebar-left {
+  grid-area: sidebar-left;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.store-items {
-  grid-area: store-items;
+.middle-section {
+  grid-area: middle-section;
   overflow-x: hidden;
   overflow-y: auto;
   display: grid;
-  flex-wrap: wrap;
 }
 
 .modeBox {

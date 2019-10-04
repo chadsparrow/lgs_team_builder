@@ -199,6 +199,10 @@ const MemberSchema = new mongoose.Schema(
     closedAccount: {
       type: Boolean,
       default: false
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

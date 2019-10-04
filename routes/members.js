@@ -77,7 +77,7 @@ router.post('/:id/invite', [validateObjectId, auth], async (req, res) => {
     member.invites.invitations.push(req.body.team);
     member.notifications.push({
       date: Date.now(),
-      message: `You have an inviation to join Team ${team.name}`,
+      message: `You have an invitation to join Team ${team.name}`,
       clickTo: `/dashboard/teams/${team._id}`
     });
     await member.save();
@@ -129,7 +129,7 @@ router.post('/register', [auth, admin], async (req, res) => {
   } = req.body;
 
   const member = await Member.findOne({ email });
-  if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
+  if (member) return res.status(400).send([{ message: 'Email already registered.' }]);
 
   const newMember = new Member({
     name,

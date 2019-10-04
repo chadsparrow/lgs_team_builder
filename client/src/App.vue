@@ -98,6 +98,10 @@ html {
   }
 }
 
+label {
+  color: $blue-color;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.1s;
@@ -142,22 +146,20 @@ html {
   }
 }
 
-label {
-  font-size: 0.85rem;
-  margin-bottom: 0px;
-  margin-top: 4px;
-  color: $label-color;
-  margin-left: 4px;
-}
-
 .vue-avatar--wrapper {
   border-radius: 1rem !important;
 }
 
-.sidebar-left {
-  flex: initial;
-  width: 255px;
+.avatarWrapper {
+  img {
+    border-radius: 0.8rem;
+  }
+}
 
+.sidebar-left {
+  grid-area: sidebar-left;
+  overflow-x: hidden;
+  overflow-y: auto;
   span {
     font-size: 0.85em;
   }
@@ -196,22 +198,23 @@ label {
 }
 
 .middle-section {
-  flex: 1;
-  overflow: auto;
-  padding: 0 1rem;
+  grid-area: middle-section;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-size: 0.9rem;
 
-  .form-group {
-    margin: 0;
-  }
-
-  label {
-    color: $blue-color;
+  .timezoneBox {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.75rem;
   }
 }
 
 .sidebar-right {
-  flex: initial;
-  width: 300px;
+  grid-area: right-section;
+  overflow-x: hidden;
+  overflow-y: auto;
   small {
     font-size: 0.8rem;
     color: $blue-color;
@@ -226,7 +229,6 @@ label {
 }
 
 .section-header {
-  padding: 0.3rem 1rem;
   border-radius: 5px;
   color: $white-text;
   display: flex;

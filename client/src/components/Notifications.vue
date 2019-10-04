@@ -10,12 +10,10 @@
         class="list-group-item list-group-item-action list-group-item-empty"
         v-if="notifications.length ===0"
       >You have no notifications</li>
-      <button
-        type="button"
+      <li
         class="list-group-item list-group-item-action"
         v-for="notification of notifications"
         :key="notification._id"
-        @click="clickTo(notification.clickTo)"
       >
         <div class="notification">
           <div>
@@ -30,7 +28,7 @@
         <button class="btn btn-danger btn-sm" @click="deleteNotification(notification._id)">
           <i class="fas fa-times"></i>
         </button>
-      </button>
+      </li>
     </ul>
   </div>
 </template>

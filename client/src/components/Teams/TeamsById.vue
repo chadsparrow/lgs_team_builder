@@ -5,7 +5,7 @@
       <div v-if="team && team.name">
         <avatar
           :username="team.name"
-          :size="225"
+          :size="150"
           background-color="#FFF"
           color="#000"
           :rounded="false"
@@ -51,6 +51,14 @@
             {{ team.managerId.email }}
           </span>
         </div>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-block btn-info mt-2"
+          v-clipboard:copy="joinLink"
+          v-clipboard:success="onCopy"
+          v-clipboard:error="onError"
+        >Copy Join Link</button>
       </div>
       <div v-else>
         <div class="placeholderImg"></div>
@@ -111,7 +119,7 @@
     </div>
 
     <!-- STORES SECTION -->
-    <div class="stores-section pr-4" v-if="team && team.managerId && team.managerId.name">
+    <div class="stores-section" v-if="team && team.managerId && team.managerId.name">
       <router-link
         :to="`/dashboard/teams/${team._id}/addstore`"
         class="btn btn-info mb-2"
@@ -181,7 +189,7 @@
     <!-- CONTACT BAR SECTION -->
     <div class="contact-bar">
       <div v-if="team && team.managerId && team.managerId.name">
-        <div class="section-header bg-secondary mb-2">Main Contact</div>
+        <div class="section-header bg-secondary">Main Contact</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
@@ -234,7 +242,7 @@
             <span>{{ team.mainContact.phone }}</span>
           </div>
         </div>
-        <div class="section-header bg-secondary mb-1 mt-3">Bulk Shipping</div>
+        <div class="section-header bg-secondary mt-2">Bulk Shipping</div>
         <div class="row">
           <div class="col-sm-12">
             <small>Name</small>
@@ -314,6 +322,9 @@ export default {
     };
   },
   computed: {
+    joinLink: function() {
+      return `${window.location.origin}/join/${this.team._id}`;
+    },
     isAdmin: function() {
       return this.member.isAdmin;
     },
@@ -374,6 +385,14 @@ export default {
     }
   },
   methods: {
+    onCopy: function() {
+      this.$toasted.success(`Join link copied to clipboard`, {
+        icon: 'clipboard'
+      });
+    },
+    onError: function() {
+      this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
+    },
     loadMember: function(id) {
       if (this.member && this.member._id === id) {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
@@ -404,9 +423,10 @@ $black-text: #000000;
 .teampage {
   display: grid;
   grid-template-columns: 255px 1fr 200px;
-  grid-template-rows: 560px 1fr 76px;
+  grid-template-rows: 1fr 1fr 76px;
   width: 100%;
   height: 100%;
+  grid-gap: 0.6rem;
   grid-template-areas:
     'left-bar stores right-bar'
     'members stores right-bar'

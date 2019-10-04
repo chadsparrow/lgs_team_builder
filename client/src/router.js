@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Login from './components/Login.vue';
-import Register from './components/Register.vue';
+import JoinTeam from './components/JoinTeam.vue';
 import Dashboard from './views/Dashboard.vue';
 // import DashboardIndex from './components/Dashboard/DashboardIndex.vue';
 import PageNotFound from './views/PageNotFound.vue';
@@ -52,9 +52,9 @@ let router = new Router({
       }
     },
     {
-      path: '/register',
-      name: 'register',
-      component: Register,
+      path: '/join/:id',
+      name: 'jointeam',
+      component: JoinTeam,
       meta: {
         guest: true
       }

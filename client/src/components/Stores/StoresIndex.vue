@@ -42,11 +42,11 @@
             <td
               :class="
                   store.mode === 'OPEN'
-                    ? 'bg-success text-white'
+                    ? 'bg-success text-white text-center'
                     : store.mode === 'CLOSED'
-                    ? 'bg-danger text-white'
+                    ? 'bg-danger text-white text-center'
                     : store.mode === 'HOLD'
-                    ? 'bg-warning text-white'
+                    ? 'bg-warning text-white text-center'
                     : null
                 "
             >{{ store.mode }}</td>

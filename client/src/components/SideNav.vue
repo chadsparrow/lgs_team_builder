@@ -81,10 +81,7 @@ export default {
 .sidenav {
   background-color: #111;
   color: white;
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 2em;
-  padding-bottom: 2em;
+  padding: 1rem;
   grid-area: nav;
 
   a {
@@ -107,8 +104,7 @@ export default {
 
 @media (max-width: 575px) {
   .sidenav {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    padding: 0.5rem;
     .logo {
       display: none;
     }

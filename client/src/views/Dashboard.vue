@@ -43,8 +43,9 @@ export default {
 
 .mainContent {
   grid-area: content;
-  padding: 1rem 1.5rem;
-  overflow: auto;
+  padding: 1rem 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @media (max-width: 575px) {

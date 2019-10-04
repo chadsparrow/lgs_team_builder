@@ -7,14 +7,7 @@
         </div>
         <div class="form-group">
           <label for="email">Email address</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            ref="email"
-            v-model="email"
-            autofocus
-          />
+          <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
         </div>
         <div class="form-group mb-4">
           <label for="password">Password</label>
@@ -26,15 +19,14 @@
             v-model="password"
           />
         </div>
-        <button type="submit" class="btn btn-dark btn-block mt-2">Log In</button>
-        <div class="text-center mt-4 mb-0">
+        <button type="submit" class="btn btn-lg btn-dark btn-block">Log In</button>
+        <div class="text-center mt-5 mb-0">
           <small>Need to register or forgot your password?</small>
         </div>
         <div class="underForm text-center">
-          <router-link tag="a" class="mr-4 text-info" to="/register">Register</router-link>
           <router-link tag="a" class="text-info" to="#">Reset Password</router-link>
         </div>
-        <div class="col-sm-12 mt-4 text-center">
+        <div class="col-sm-12 mt-5 text-center">
           <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
         </div>
       </form>
