@@ -62,16 +62,16 @@ router.post('/', [auth, admin], async (req, res) => {
     price,
     gender,
     description,
-    category,
-    images,
-    isActive
+    category
   } = req.body;
 
   let item = await CatalogItem.findOne({
-    catalogId,
-    productCode: productCode.toUpperCase(),
-    styleCode: styleCode.toUpperCase()
+    $and: [
+      { catalogId },
+      { $or: [{ productCode: productCode.toUpperCase() }, { styleCode: styleCode.toUpperCase() }] }
+    ]
   });
+
   if (item) return res.status(400).send([{ message: 'Product already exists.' }]);
 
   item = new CatalogItem({
@@ -83,14 +83,12 @@ router.post('/', [auth, admin], async (req, res) => {
     price,
     gender,
     description,
-    category,
-    images,
-    isActive
+    category
   });
 
   await item.save();
   // eslint-disable-next-line no-underscore-dangle
-  return res.send(await populateCatalogItem(item._id));
+  return res.status(200).send([{ message: 'Item added to Catalog' }]);
 });
 
 // Edits a certain item in a catalog, doesnt allow duplicates

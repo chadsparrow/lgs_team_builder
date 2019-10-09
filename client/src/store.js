@@ -209,6 +209,19 @@ export default new Vuex.Store({
         }
       });
     },
+    addCatalogItem({ commit }, catalogItem) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/catalogitems/`, catalogItem);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getMembers({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {

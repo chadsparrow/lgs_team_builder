@@ -132,6 +132,10 @@ label {
   }
 }
 
+textarea {
+  white-space: pre-wrap;
+}
+
 .pagination {
   .active {
     a {
@@ -244,6 +248,15 @@ label {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.sizesBox {
+  background-color: $blue-color;
+  border-radius: 1rem;
+  padding: 1rem;
+  label {
+    color: white;
+  }
 }
 
 ::-webkit-scrollbar {

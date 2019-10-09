@@ -34,8 +34,7 @@ const CatalogItemSchema = new mongoose.Schema(
         trim: true,
         required: true,
         minlength: 1,
-        uppercase: true,
-        unique: true
+        uppercase: true
       }
     ],
     price: {
@@ -51,7 +50,8 @@ const CatalogItemSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      trim: true
+      trim: true,
+      required: true
     },
     category: {
       type: String,
@@ -89,18 +89,23 @@ function validateCatalogItem(catalogItem) {
           .min(1)
           .trim()
       ),
-    price: Joi.number()
-      .required()
-      .min(0),
     gender: Joi.string()
       .required()
       .trim(),
-    description: Joi.string().trim(),
     category: Joi.string()
       .required()
       .trim(),
-    images: Joi.array().items(Joi.string().uri()),
-    isActive: Joi.boolean()
+    price: Joi.number()
+      .required()
+      .min(0),
+    description: Joi.string()
+      .required()
+      .trim(),
+    images: Joi.array().items(
+      Joi.string()
+        .uri()
+        .allow(null)
+    )
   };
   return Joi.validate(catalogItem, schema, joiOptions);
 }

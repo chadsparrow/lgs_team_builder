@@ -59,7 +59,6 @@ export default {
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getCatalogs');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -68,6 +67,7 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getCatalogs');
       await this.$store.commit('CLEAR_CURRENTS');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
