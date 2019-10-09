@@ -190,7 +190,7 @@
     <div class="contact-bar">
       <div v-if="team && team.managerId && team.managerId.name">
         <div class="section-header bg-secondary">Main Contact</div>
-        <div class="row">
+        <div class="row info-spans">
           <div class="col-sm-12">
             <small>Name</small>
             <br />
@@ -243,7 +243,7 @@
           </div>
         </div>
         <div class="section-header bg-secondary mt-2">Bulk Shipping</div>
-        <div class="row">
+        <div class="row info-spans">
           <div class="col-sm-12">
             <small>Name</small>
             <br />
@@ -297,7 +297,7 @@
         </div>
         <router-link
           :to="`/dashboard/teams/${team._id}/edit`"
-          class="btn btn-block btn-info mt-4"
+          class="btn btn-block btn-info mt-3"
           v-if="isAdmin"
         >
           <i class="fas fa-cog mr-3"></i>Edit Team Details
@@ -311,105 +311,105 @@
 import Avatar from 'vue-avatar';
 
 export default {
-  name: 'TeamById',
-  components: {
-    Avatar
-  },
-  data() {
-    return {
-      currentPage: 1,
-      itemsPerPage: 10
-    };
-  },
-  computed: {
-    joinLink: function() {
-      return `${window.location.origin}/join/${this.team._id}`;
-    },
-    isAdmin: function() {
-      return this.member.isAdmin;
-    },
-    member: function() {
-      return this.$store.getters.getCurrentMember;
-    },
-    team: function() {
-      return this.$store.getters.currentTeam;
-    },
-    stores: function() {
-      return this.$store.getters.teamStores;
-    },
-    indexOfLastItem: function() {
-      return this.currentPage * this.itemsPerPage;
-    },
-    indexOfFirstItem: function() {
-      return this.indexOfLastItem - this.itemsPerPage;
-    },
-    currentStores: function() {
-      return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
-    },
-    access: function() {
-      if (this.member && this.member.isAdmin) return true;
+	name: 'TeamById',
+	components: {
+		Avatar
+	},
+	data() {
+		return {
+			currentPage: 1,
+			itemsPerPage: 10
+		};
+	},
+	computed: {
+		joinLink: function() {
+			return `${window.location.origin}/join/${this.team._id}`;
+		},
+		isAdmin: function() {
+			return this.member.isAdmin;
+		},
+		member: function() {
+			return this.$store.getters.getCurrentMember;
+		},
+		team: function() {
+			return this.$store.getters.currentTeam;
+		},
+		stores: function() {
+			return this.$store.getters.teamStores;
+		},
+		indexOfLastItem: function() {
+			return this.currentPage * this.itemsPerPage;
+		},
+		indexOfFirstItem: function() {
+			return this.indexOfLastItem - this.itemsPerPage;
+		},
+		currentStores: function() {
+			return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
+		},
+		access: function() {
+			if (this.member && this.member.isAdmin) return true;
 
-      if (this.member && this.team.managerId && this.member._id === this.team.managerId._id)
-        return true;
+			if (this.member && this.team.managerId && this.member._id === this.team.managerId._id)
+				return true;
 
-      return false;
-    },
-    pageNumbers: function() {
-      const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.stores.length / this.itemsPerPage); i++) {
-        pageArray.push(i);
-      }
-      return pageArray.length;
-    }
-  },
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch('getTeam', this.$route.params.id);
-      const teamName = res.data.name;
-      const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
-        {
-          text: 'Teams',
-          link: '/dashboard/teams'
-        },
-        {
-          text: `${teamName}`,
-          link: '#'
-        }
-      ];
-      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      await this.$store.dispatch('getTeamStores', this.$route.params.id);
-    } catch (err) {
-      if (err.response.data[0].message !== 'Team has no stores.')
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-    }
-  },
-  methods: {
-    onCopy: function() {
-      this.$toasted.success(`Join link copied to clipboard`, {
-        icon: 'clipboard'
-      });
-    },
-    onError: function() {
-      this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
-    },
-    loadMember: function(id) {
-      if (this.member && this.member._id === id) {
-        return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
-      } else if (this.access) {
-        return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
-      }
-    },
-    removeMember: async function(id) {
-      await this.$store.dispatch('removeMember', {
-        teamId: this.team._id,
-        memberId: id
-      });
-    },
-    loadStore: function(id) {
-      this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});
-    }
-  }
+			return false;
+		},
+		pageNumbers: function() {
+			const pageArray = [];
+			for (let i = 1; i <= Math.ceil(this.stores.length / this.itemsPerPage); i++) {
+				pageArray.push(i);
+			}
+			return pageArray.length;
+		}
+	},
+	created: async function() {
+		try {
+			const res = await this.$store.dispatch('getTeam', this.$route.params.id);
+			const teamName = res.data.name;
+			const breadcrumbs = [
+				{ text: 'Dashboard', link: '/dashboard/index' },
+				{
+					text: 'Teams',
+					link: '/dashboard/teams'
+				},
+				{
+					text: `${teamName}`,
+					link: '#'
+				}
+			];
+			await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+			await this.$store.dispatch('getTeamStores', this.$route.params.id);
+		} catch (err) {
+			if (err.response.data[0].message !== 'Team has no stores.')
+				this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+		}
+	},
+	methods: {
+		onCopy: function() {
+			this.$toasted.success(`Join link copied to clipboard`, {
+				icon: 'clipboard'
+			});
+		},
+		onError: function() {
+			this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
+		},
+		loadMember: function(id) {
+			if (this.member && this.member._id === id) {
+				return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
+			} else if (this.access) {
+				return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
+			}
+		},
+		removeMember: async function(id) {
+			await this.$store.dispatch('removeMember', {
+				teamId: this.team._id,
+				memberId: id
+			});
+		},
+		loadStore: function(id) {
+			this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});
+		}
+	}
 };
 </script>
 
@@ -421,86 +421,80 @@ $white-text: #ffffff;
 $black-text: #000000;
 
 .teampage {
-  display: grid;
-  grid-template-columns: 255px 1fr 200px;
-  grid-template-rows: 1fr 1fr 76px;
-  width: 100%;
-  height: 100%;
-  grid-gap: 0.6rem;
-  grid-template-areas:
-    'left-bar stores right-bar'
-    'members stores right-bar'
-    'buttons stores right-bar';
+	display: grid;
+	grid-template-columns: 255px 1fr 200px;
+	grid-template-rows: 1fr 1fr 76px;
+	width: 100%;
+	height: 100%;
+	grid-gap: 0.6rem;
+	grid-template-areas:
+		'left-bar stores right-bar'
+		'members stores right-bar'
+		'buttons stores right-bar';
 }
 
 .team-info {
-  grid-area: left-bar;
-  span {
-    font-size: 0.8em;
-  }
-  .placeholderImg {
-    border-radius: 1rem;
-    background-color: white;
-    width: 225px;
-    height: 225px;
-  }
+	grid-area: left-bar;
+	span {
+		font-size: 0.8em;
+	}
+	.placeholderImg {
+		border-radius: 1rem;
+		background-color: white;
+		width: 225px;
+		height: 225px;
+	}
 }
 
 .member-list {
-  grid-area: members;
-  .memberlist {
-    overflow-y: auto;
-    overflow-x: hidden;
+	grid-area: members;
+	.memberlist {
+		overflow-y: auto;
+		overflow-x: hidden;
 
-    .list-group {
-      width: 100%;
+		.list-group {
+			width: 100%;
 
-      .list-group-item {
-        font-size: 0.9rem;
-        padding: 0.3rem 0.7rem;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
+			.list-group-item {
+				font-size: 0.9rem;
+				padding: 0.3rem 0.7rem;
+				display: flex;
+				align-items: center;
+				cursor: pointer;
 
-        &:hover {
-          background-color: $blue-color;
-          color: $white-text;
-        }
+				&:hover {
+					background-color: $blue-color;
+					color: $white-text;
+				}
 
-        .memberIcons {
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-        }
-      }
-    }
-  }
+				.memberIcons {
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+				}
+			}
+		}
+	}
 }
 
 .member-buttons {
-  grid-area: buttons;
+	grid-area: buttons;
 }
 
 .stores-section {
-  grid-area: stores;
-  font-size: 0.85rem;
+	grid-area: stores;
+	font-size: 0.85rem;
 }
 
 .contact-bar {
-  grid-area: right-bar;
-  overflow-y: auto;
-  overflow-x: hidden;
+	grid-area: right-bar;
+	overflow-y: auto;
+	overflow-x: hidden;
 
-  small {
-    font-size: 0.9em;
-    color: $blue-color;
-  }
-  font-size: 0.9rem;
-  span {
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.1rem 0.2rem;
-    border-radius: 5px;
-    display: block;
-  }
+	small {
+		font-size: 0.9em;
+		color: $blue-color;
+	}
+	font-size: 0.9rem;
 }
 </style>

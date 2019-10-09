@@ -1,418 +1,417 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col sidebar-left">
-        <div v-if="team && team.name">
-          <avatar
-            :username="team.name"
-            :size="225"
-            background-color="#FFF"
-            color="#000"
-            :rounded="false"
-            :src="team.logo"
-          ></avatar>
-          <div class="row p-1 mt-4">
-            <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
-            <span class="col-sm-12">{{ team.timezone }}</span>
-          </div>
-          <div class="row p-1" v-if="team.createdAt && team.timezone">
-            <small class="col-sm-12 text-info">Team Since:</small>
-            <span
-              class="col-sm-12"
-            >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
-          </div>
+  <div class="page">
+    <div class="sidebar-left">
+      <div v-if="team && team.name">
+        <avatar
+          :username="team.name"
+          :size="225"
+          background-color="#FFF"
+          color="#000"
+          :rounded="false"
+          :src="team.logo"
+        ></avatar>
+        <div class="row p-1 mt-4">
+          <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
+          <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
-        <div v-else>
-          <div class="placeholderImg"></div>
+        <div class="row p-1" v-if="team.createdAt && team.timezone">
+          <small class="col-sm-12 text-info">Team Since:</small>
+          <span
+            class="col-sm-12"
+          >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
         </div>
       </div>
-      <div class="col middle-section" v-if="team && team.name">
-        <form novalidate>
-          <div class="row">
-            <div class="form-group col-sm-12">
-              <label for="name">Team Name</label>
-              <input id="name" type="text" class="form-control" v-model="team.name" ref="name" />
-            </div>
-            <!-- ADMIN SELECTOR -->
-            <div class="form-group col-sm-4">
-              <label for="teamId">Team ID#</label>
-              <input
-                id="teamId"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.teamId"
-                ref="teamId"
-              />
-            </div>
-            <div class="form-group col-sm-4" v-if="team.adminId">
-              <label for="adminId">Admin</label>
-              <select
-                class="form-control form-control-sm"
-                id="adminId"
-                v-model="team.adminId._id"
-                ref="adminId"
-              >
-                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
-                  {{
-                  admin.name
-                  }}
-                </option>
-              </select>
-            </div>
-            <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-4" v-if="team.members && team.members.length > 0">
-              <label for="managerId">Manager</label>
-              <select
-                class="form-control form-control-sm"
-                id="managerId"
-                v-model="team.managerId._id"
-                ref="managerId"
-                @change="getManagerDetails()"
-              >
-                <option v-for="manager of team.members" :key="manager._id" :value="manager._id">
-                  {{
-                  manager.name
-                  }}
-                </option>
-              </select>
-            </div>
+      <div v-else>
+        <div class="placeholderImg"></div>
+      </div>
+    </div>
+    <div class="middle-section" v-if="team && team.name">
+      <form novalidate>
+        <div class="row">
+          <div class="form-group col-sm-12">
+            <label for="name">Team Name</label>
+            <input id="name" type="text" class="form-control" v-model="team.name" ref="name" />
           </div>
-          <!-- MAIN CONTACT -->
-          <div class="section-header mt-3 mb-2 bg-secondary" v-if="team.managerId">
-            <span>Main Contact</span>
-            <div class="form-check text-center">
+          <!-- ADMIN SELECTOR -->
+          <div class="form-group col-sm-4">
+            <label for="teamId">Team ID#</label>
+            <input
+              id="teamId"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.teamId"
+              ref="teamId"
+            />
+          </div>
+          <div class="form-group col-sm-4" v-if="team.adminId">
+            <label for="adminId">Admin</label>
+            <select
+              class="form-control form-control-sm"
+              id="adminId"
+              v-model="team.adminId._id"
+              ref="adminId"
+            >
+              <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
+                {{
+                admin.name
+                }}
+              </option>
+            </select>
+          </div>
+          <!-- MANAGER SELECTOR -->
+          <div class="form-group col-sm-4" v-if="team.members && team.members.length > 0">
+            <label for="managerId">Manager</label>
+            <select
+              class="form-control form-control-sm"
+              id="managerId"
+              v-model="team.managerId._id"
+              ref="managerId"
+              @change="getManagerDetails()"
+            >
+              <option v-for="manager of team.members" :key="manager._id" :value="manager._id">
+                {{
+                manager.name
+                }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- MAIN CONTACT -->
+        <div class="section-header bg-secondary" v-if="team.managerId">
+          <span>Main Contact</span>
+          <div class="form-check text-center">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="useManagerDetails"
+              v-model="useManagerDetails"
+              @change="copyManagertoMain"
+              ref="useManagerDetails"
+              :disabled="!team.managerId._id"
+            />
+            <small
+              class="form-check-label text-white"
+              for="useManagerDetails"
+            >Use Manager's Contact Info</small>
+          </div>
+        </div>
+        <div class="row px-2" v-if="team.mainContact">
+          <div class="form-group col-sm-3">
+            <label for="contactName">Name</label>
+            <input
+              id="contactName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.name"
+              ref="contactName"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="contactCompany">Company</label>
+            <input
+              id="contactCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.company"
+              ref="contactCompany"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contactEmail">Email</label>
+            <input
+              id="contactEmail"
+              type="email"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.email"
+              ref="contactEmail"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contactAddress1">Address 1</label>
+            <input
+              id="contactAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.address1"
+              ref="contactAddress1"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contactAddress2">Address 2</label>
+            <input
+              id="contactAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.address2"
+              ref="contactAddress2"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contactCity">City</label>
+            <input
+              id="contactCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.city"
+              ref="contactCity"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="contactCountry">Country</label>
+            <country-select
+              id="contactCountry"
+              v-model="team.mainContact.country"
+              :country="team.mainContact.country"
+              class="form-control form-control-sm"
+              :readonly="useManagerDetails"
+              @input="checkCountry"
+            />
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="contactStateProv">State/Province</label>
+            <region-select
+              id="contactStateProv"
+              v-model="team.mainContact.stateProv"
+              :country="team.mainContact.country"
+              :region="team.mainContact.stateProv"
+              class="form-control form-control-sm"
+              :readonly="useManagerDetails"
+              :regionName="true"
+              @input="checkRegion"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="contactZipPostal">Zip/Postal Code</label>
+            <input
+              id="contactZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.zipPostal"
+              ref="contactZipPostal"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6" v-if="useManagerDetails">
+            <label for="contactPhone">Phone</label>
+            <input
+              id="contactPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.mainContact.phone"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6" v-else>
+            <label for="contactPhone">Phone</label>
+            <VuePhoneNumberInput
+              v-model="team.mainContact.phone"
+              id="contactPhone"
+              :dark="false"
+              :preferred-countries="['US', 'CA']"
+              ref="contactPhone"
+              :clearable="true"
+              :no-use-browser-locale="false"
+              @update="copyPhone"
+            />
+          </div>
+        </div>
+        <!-- BULK SHIPPING -->
+        <div class="section-header bg-secondary">
+          <span>Bulk Shipping Details</span>
+          <div class="radios">
+            <div class="form-check form-check-inline mr-4">
               <input
-                type="checkbox"
-                class="form-check-input mt-2"
-                id="useManagerDetails"
-                v-model="useManagerDetails"
-                @change="copyManagertoMain"
-                ref="useManagerDetails"
-                :disabled="!team.managerId._id"
+                class="form-check-input"
+                type="radio"
+                name="bulkUseDetails"
+                id="useAboveDetails"
+                value="above"
+                v-model="bulkUseDetails"
+                @change="copytoBulk"
               />
-              <label
+              <small class="form-check-label text-white" for="useAboveDetails">Use Above Details</small>
+            </div>
+            <div class="form-check form-check-inline mr-4">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="bulkUseDetails"
+                id="useManagerDetails"
+                value="manager"
+                v-model="bulkUseDetails"
+                :disabled="!team.managerId._id"
+                @change="copytoBulk"
+              />
+              <small
                 class="form-check-label text-white"
                 for="useManagerDetails"
-              >Use Manager's Contact Info</label>
+              >Use Manager's Shipping Address</small>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="bulkUseDetails"
+                id="useNewDetails"
+                value="other"
+                v-model="bulkUseDetails"
+                @change="copytoBulk"
+              />
+              <small class="form-check-label text-white" for="useNewDetails">Use Other</small>
             </div>
           </div>
-          <div class="row px-2" v-if="team.mainContact">
-            <div class="form-group col-sm-3">
-              <label for="contactName">Name</label>
-              <input
-                id="contactName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.name"
-                ref="contactName"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="contactCompany">Company</label>
-              <input
-                id="contactCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.company"
-                ref="contactCompany"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="contactEmail">Email</label>
-              <input
-                id="contactEmail"
-                type="email"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.email"
-                ref="contactEmail"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress1">Address 1</label>
-              <input
-                id="contactAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.address1"
-                ref="contactAddress1"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress2">Address 2</label>
-              <input
-                id="contactAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.address2"
-                ref="contactAddress2"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="contactCity">City</label>
-              <input
-                id="contactCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.city"
-                ref="contactCity"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="contactStateProv">State/Province</label>
-              <region-select
-                id="contactStateProv"
-                v-model="team.mainContact.stateProv"
-                :country="team.mainContact.country"
-                :region="team.mainContact.stateProv"
-                class="form-control form-control-sm"
-                :readonly="useManagerDetails"
-                :regionName="true"
-                @input="checkRegion"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="contactCountry">Country</label>
-              <country-select
-                id="contactCountry"
-                v-model="team.mainContact.country"
-                :country="team.mainContact.country"
-                class="form-control form-control-sm"
-                :readonly="useManagerDetails"
-                @input="checkCountry"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="contactZipPostal">Zip/Postal Code</label>
-              <input
-                id="contactZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.zipPostal"
-                ref="contactZipPostal"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-if="useManagerDetails">
-              <label for="contactPhone">Phone</label>
-              <input
-                id="contactPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.mainContact.phone"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="contactPhone">Phone</label>
-              <VuePhoneNumberInput
-                v-model="team.mainContact.phone"
-                id="contactPhone"
-                :dark="false"
-                :preferred-countries="['US', 'CA']"
-                ref="contactPhone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-                @update="copyPhone"
-              />
-            </div>
+        </div>
+        <div class="row px-2">
+          <div class="form-group col-sm-3">
+            <label for="shippingName">Shipping Name</label>
+            <input
+              id="shippingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.name"
+              ref="shippingName"
+              :readonly="bulkUseDetails !== 'other'"
+            />
           </div>
-          <!-- BULK SHIPPING -->
-          <div class="section-header mb-2 mt-3 bg-secondary">
-            <span>Bulk Shipping Details</span>
-            <div class="radios">
-              <div class="form-check form-check-inline mr-4">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useAboveDetails"
-                  value="above"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
-              </div>
-              <div class="form-check form-check-inline mr-4">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useManagerDetails"
-                  value="manager"
-                  v-model="bulkUseDetails"
-                  :disabled="!team.managerId._id"
-                  @change="copytoBulk"
-                />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Shipping Address</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  class="form-check-input mt-1"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useNewDetails"
-                  value="other"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
-              </div>
-            </div>
+          <div class="form-group col-sm-3">
+            <label for="shippingCompany">Shipping Company</label>
+            <input
+              id="shippingCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.company"
+              ref="shippingCompany"
+              :readonly="bulkUseDetails !== 'other'"
+            />
           </div>
-          <div class="row px-2">
-            <div class="form-group col-sm-3">
-              <label for="shippingName">Shipping Name</label>
-              <input
-                id="shippingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.name"
-                ref="shippingName"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingCompany">Shipping Company</label>
-              <input
-                id="shippingCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.company"
-                ref="shippingCompany"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingEmail">Shipping Email</label>
-              <input
-                id="shippingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.email"
-                ref="shippingEmail"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress1">Shipping Address 1</label>
-              <input
-                id="shippingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.address1"
-                ref="shippingAddress1"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress2">Shipping Address 2</label>
-              <input
-                id="shippingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.address2"
-                ref="shippingAddress2"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingCity">Shipping City</label>
-              <input
-                id="shippingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.city"
-                @change="changeDetails"
-                ref="shippingCity"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingStateProv">Shipping State/Province</label>
-              <region-select
-                id="shippingStateProv"
-                v-model="team.bulkShipping.stateProv"
-                :country="team.bulkShipping.country"
-                :region="team.bulkShipping.stateProv"
-                class="form-control form-control-sm"
-                :readonly="bulkUseDetails !== 'other'"
-                :regionName="true"
-                @input="geoTimezone"
-              />
-            </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingCountry">Shipping Country</label>
-              <country-select
-                id="shippingCountry"
-                v-model="team.bulkShipping.country"
-                :country="team.bulkShipping.country"
-                class="form-control form-control-sm"
-                :readonly="bulkUseDetails !== 'other'"
-                @input="checkShippingCountry"
-              />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
-              <input
-                id="shippingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.zipPostal"
-                ref="shippingZipPostal"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
-              <label for="shippingPhone">Shipping Phone</label>
-              <input
-                id="shippingPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="team.bulkShipping.phone"
-                readonly
-              />
-            </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="shippingPhone">Phone</label>
-              <VuePhoneNumberInput
-                v-model="team.bulkShipping.phone"
-                id="shippingPhone"
-                :dark="false"
-                ref="shippingPhone"
-                :clearable="true"
-                :no-use-browser-locale="false"
-              />
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingEmail">Shipping Email</label>
+            <input
+              id="shippingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.email"
+              ref="shippingEmail"
+              :readonly="bulkUseDetails !== 'other'"
+            />
           </div>
-          <div class="row mt-4 mb-5">
-            <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="updateTeam">Update Team Details</button>
-            </div>
-            <div class="col-sm-6">
-              <router-link
-                :to="`/dashboard/teams/${team._id}`"
-                class="btn btn-block btn-danger"
-              >Cancel</router-link>
-            </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingAddress1">Shipping Address 1</label>
+            <input
+              id="shippingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.address1"
+              ref="shippingAddress1"
+              :readonly="bulkUseDetails !== 'other'"
+            />
           </div>
-        </form>
-      </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingAddress2">Shipping Address 2</label>
+            <input
+              id="shippingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.address2"
+              ref="shippingAddress2"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingCity">Shipping City</label>
+            <input
+              id="shippingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.city"
+              @change="changeDetails"
+              ref="shippingCity"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="shippingCountry">Shipping Country</label>
+            <country-select
+              id="shippingCountry"
+              v-model="team.bulkShipping.country"
+              :country="team.bulkShipping.country"
+              class="form-control form-control-sm"
+              :readonly="bulkUseDetails !== 'other'"
+              @input="checkShippingCountry"
+            />
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="shippingStateProv">Shipping State/Province</label>
+            <region-select
+              id="shippingStateProv"
+              v-model="team.bulkShipping.stateProv"
+              :country="team.bulkShipping.country"
+              :region="team.bulkShipping.stateProv"
+              class="form-control form-control-sm"
+              :readonly="bulkUseDetails !== 'other'"
+              :regionName="true"
+              @input="geoTimezone"
+            />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
+            <input
+              id="shippingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.zipPostal"
+              ref="shippingZipPostal"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+
+          <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
+            <label for="shippingPhone">Shipping Phone</label>
+            <input
+              id="shippingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="team.bulkShipping.phone"
+              readonly
+            />
+          </div>
+          <div class="form-group col-sm-6" v-else>
+            <label for="shippingPhone">Phone</label>
+            <VuePhoneNumberInput
+              v-model="team.bulkShipping.phone"
+              id="shippingPhone"
+              :dark="false"
+              ref="shippingPhone"
+              :clearable="true"
+              :no-use-browser-locale="false"
+            />
+          </div>
+        </div>
+        <div class="row my-4">
+          <div class="col-sm-6">
+            <button class="btn btn-block btn-info" @click.prevent="updateTeam">Update Team Details</button>
+          </div>
+          <div class="col-sm-6">
+            <router-link
+              :to="`/dashboard/teams/${team._id}`"
+              class="btn btn-block btn-danger"
+            >Cancel</router-link>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -687,3 +686,15 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.page {
+  display: grid;
+  grid-template-columns: 255px 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
+  width: 100%;
+  height: 100%;
+  grid-template-areas: 'sidebar-left middle-section';
+}
+</style>

@@ -136,6 +136,18 @@
               />
             </div>
             <div class="form-group col-sm-3">
+              <label for="contactCountry">Country</label>
+              <country-select
+                id="contactCountry"
+                v-model="contactCountry"
+                :country="contactCountry"
+                class="form-control form-control-sm"
+                @input="checkCountry"
+                :readonly="useManagerDetails"
+                ref="contactCountry"
+              />
+            </div>
+            <div class="form-group col-sm-3">
               <label for="contactStateProv">State/Province</label>
               <region-select
                 id="contactStateProv"
@@ -149,18 +161,7 @@
                 ref="contactStateProv"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="contactCountry">Country</label>
-              <country-select
-                id="contactCountry"
-                v-model="contactCountry"
-                :country="contactCountry"
-                class="form-control form-control-sm"
-                @input="checkCountry"
-                :readonly="useManagerDetails"
-                ref="contactCountry"
-              />
-            </div>
+
             <div class="form-group col-sm-6">
               <label for="contactZipPostal">Zip/Postal Code</label>
               <input
@@ -311,6 +312,17 @@
               />
             </div>
             <div class="form-group col-sm-3">
+              <label for="shippingCountry">Shipping Country</label>
+              <country-select
+                id="shippingCountry"
+                v-model="shippingCountry"
+                :country="shippingCountry"
+                class="form-control form-control-sm"
+                @input="checkShippingCountry"
+                :readonly="bulkUseDetails !== 'other'"
+              />
+            </div>
+            <div class="form-group col-sm-3">
               <label for="shippingStateProv">Shipping State/Province</label>
               <region-select
                 id="shippingStateProv"
@@ -323,17 +335,7 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingCountry">Shipping Country</label>
-              <country-select
-                id="shippingCountry"
-                v-model="shippingCountry"
-                :country="shippingCountry"
-                class="form-control form-control-sm"
-                @input="checkShippingCountry"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
+
             <div class="form-group col-sm-6">
               <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
               <input

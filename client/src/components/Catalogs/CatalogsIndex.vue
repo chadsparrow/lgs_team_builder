@@ -1,39 +1,45 @@
 <template>
-  <div>
-    <router-link to="/dashboard/catalogs/add" class="btn btn-info">
-      <i class="fas fa-plus mr-2"></i> Add Catalog
-    </router-link>
-    <br />
-    <br />
-    <span v-if="currentCatalogs && currentCatalogs.length === 0">No Catalogs Found</span>
-    <div class="table-responsive" v-else>
-      <table class="table table-hover table-striped">
-        <tbody>
-          <tr
-            v-for="catalog of currentCatalogs"
-            :key="catalog._id"
-            @click.prevent="loadCatalog(catalog._id)"
-          >
-            <td>{{ catalog.year }}</td>
-            <td>{{ catalog.season }}</td>
-            <td>{{ catalog.brand }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12 mb-2">
+        <router-link to="/dashboard/catalogs/add" class="btn btn-info">
+          <i class="fas fa-plus mr-2"></i> Add Catalog
+        </router-link>
+      </div>
+      <div class="col-sm-12 mb-2" v-if="currentCatalogs && currentCatalogs.length === 0">
+        <span>No Catalogs Found</span>
+      </div>
+      <div class="col-sm-12" v-else>
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <tbody>
+              <tr
+                v-for="catalog of currentCatalogs"
+                :key="catalog._id"
+                @click.prevent="loadCatalog(catalog._id)"
+              >
+                <td>{{ catalog.year }}</td>
+                <td>{{ catalog.season }}</td>
+                <td>{{ catalog.brand }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <paginate
+          v-model="currentPage"
+          :page-count="pageNumbers"
+          :container-class="'pagination pagination-sm'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-class="'page-item'"
+          :next-link-class="'page-link'"
+          :hide-prev-next="true"
+          v-if="pageNumbers > 1"
+        ></paginate>
+      </div>
     </div>
-    <paginate
-      v-model="currentPage"
-      :page-count="pageNumbers"
-      :container-class="'pagination pagination-sm'"
-      :page-class="'page-item'"
-      :page-link-class="'page-link'"
-      :prev-class="'page-item'"
-      :prev-link-class="'page-link'"
-      :next-class="'page-item'"
-      :next-link-class="'page-link'"
-      :hide-prev-next="true"
-      v-if="pageNumbers > 1"
-    ></paginate>
   </div>
 </template>
 
@@ -48,7 +54,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12
+      itemsPerPage: 15
     };
   },
   created: async function() {

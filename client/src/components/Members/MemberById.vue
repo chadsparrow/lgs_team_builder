@@ -1,8 +1,8 @@
 <template>
   <div class="page">
-    <div class="sidebar-left">
+    <div class="sidebar-left" v-if="member && member.name">
       <div class="avatarWrapper">
-        <Gravatar :email="member.email" default-img="mp" :size="225" />
+        <Gravatar :email="member.email" default-img="mp" :size="255" />
       </div>
       <div class="row p-1 mt-2">
         <small class="col-sm-12 text-info">Member Since:</small>
@@ -36,7 +36,7 @@
       <div class="section-header bg-secondary">
         <span class="text-white">Contact</span>
       </div>
-      <div class="row px-1">
+      <div class="row px-1 info-spans">
         <div class="col-sm-3">
           <label class="text-info">Name</label>
           <br />
@@ -91,7 +91,7 @@
       <div class="section-header bg-secondary">
         <span class="text-white">Billing</span>
       </div>
-      <div class="row px-1">
+      <div class="row px-1 info-spans">
         <div class="col-sm-3">
           <label class="text-info">Name</label>
           <br />
@@ -146,7 +146,7 @@
       <div class="section-header bg-secondary">
         <span class="text-white">Shipping Details</span>
       </div>
-      <div class="row mb-4 px-1">
+      <div class="row mb-4 px-1 info-spans">
         <div class="col-sm-3">
           <label class="text-info">Name</label>
           <br />

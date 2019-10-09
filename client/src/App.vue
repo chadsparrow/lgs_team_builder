@@ -100,6 +100,7 @@ html {
 
 label {
   color: $blue-color;
+  margin: 0 0;
 }
 
 .fade-enter-active,
@@ -197,6 +198,10 @@ label {
   }
 }
 
+.form-group {
+  margin: 0 0 6px 0;
+}
+
 .middle-section {
   grid-area: middle-section;
   overflow-x: hidden;
@@ -211,6 +216,15 @@ label {
   }
 }
 
+.info-spans {
+  span {
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 0.1rem 0.2rem;
+    border-radius: 5px;
+    display: block;
+  }
+}
+
 .sidebar-right {
   grid-area: right-section;
   overflow-x: hidden;
@@ -220,15 +234,11 @@ label {
     color: $blue-color;
   }
   font-size: 0.85rem;
-  span {
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 0.1rem 0.2rem;
-    border-radius: 5px;
-    display: block;
-  }
 }
 
 .section-header {
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 6px;
   border-radius: 5px;
   color: $white-text;
   display: flex;

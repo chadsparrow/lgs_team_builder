@@ -1,253 +1,250 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col sidebar-left">
-        <div v-if="team && team.name">
-          <avatar
-            :username="team.name"
-            :size="225"
-            background-color="#FFF"
-            color="#000"
-            :rounded="false"
-            :src="team.logo"
-          ></avatar>
-          <div class="row p-1 mt-4">
-            <small class="col-sm-12 text-info">Store Timezone:</small>
-            <span class="col-sm-12">{{ team.timezone }}</span>
-          </div>
-          <div class="row p-1">
-            <small class="col-sm-12 text-info">Team Name:</small>
-            <span class="col-sm-12">{{ team.name }}</span>
-          </div>
-          <div class="row p-1">
-            <small class="col-sm-12 text-info">Team ID#:</small>
-            <span class="col-sm-12">{{ team.teamId }}</span>
-          </div>
-          <div class="row p-1">
-            <small class="col-sm-12 text-info">Team Admin:</small>
-            <span class="col-sm-12">{{ team.adminId.name }}</span>
-          </div>
-          <div class="row p-1">
-            <small class="col-sm-12 text-info">Team Manager:</small>
-            <span class="col-sm-12">{{ team.managerId.name }}</span>
-          </div>
+  <div class="page">
+    <div class="sidebar-left">
+      <div v-if="team && team.name">
+        <avatar
+          :username="team.name"
+          :size="225"
+          background-color="#FFF"
+          color="#000"
+          :rounded="false"
+          :src="team.logo"
+        ></avatar>
+        <div class="row p-1 mt-4">
+          <small class="col-sm-12 text-info">Store Timezone:</small>
+          <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
-        <div v-else>
-          <div class="placeholderImg"></div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Team Name:</small>
+          <span class="col-sm-12">{{ team.name }}</span>
+        </div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Team ID#:</small>
+          <span class="col-sm-12">{{ team.teamId }}</span>
+        </div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Team Admin:</small>
+          <span class="col-sm-12">{{ team.adminId.name }}</span>
+        </div>
+        <div class="row p-1">
+          <small class="col-sm-12 text-info">Team Manager:</small>
+          <span class="col-sm-12">{{ team.managerId.name }}</span>
         </div>
       </div>
-      <div class="col middle-section" v-if="team && team.managerId && team.managerId.name">
-        <form novalidate>
-          <!-- STORE INFO-->
-          <div class="section-header mb-2 bg-secondary">
-            <span>Store Information</span>
-          </div>
-          <div class="row px-2">
-            <div class="col-sm-8">
-              <div class="form-group">
-                <label for="storeName">Store Name</label>
-                <input
-                  id="storeName"
-                  type="text"
-                  class="form-control"
-                  v-model="storeName"
-                  ref="storeName"
-                />
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group">
-                <label for="storeCountry">Store Country</label>
-                <country-select
-                  id="storeCountry"
-                  v-model="storeCountry"
-                  :country="storeCountry"
-                  class="form-control"
-                  ref="storeCountry"
-                />
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="form-group col">
-                <label for="currency">Store Currency</label>
-                <select
-                  class="form-control form-control-sm"
-                  id="currency"
-                  v-model="currency"
-                  ref="currency"
-                >
-                  <option value="USD">USD</option>
-                  <option value="CAD">CAD</option>
-                </select>
-              </div>
-              <div class="form-group col">
-                <label for="orderReference">ERP Order Reference #</label>
-                <input
-                  id="orderReference"
-                  type="text"
-                  class="form-control form-control-sm"
-                  v-model="orderReference"
-                  ref="orderReference"
-                />
-              </div>
-              <div class="form-group col">
-                <label for="currency">Store Mode:</label>
-                <select class="form-control form-control-sm" id="mode" v-model="mode" ref="mode">
-                  <option value="SURVEY">SURVEY</option>
-                  <option value="OPEN">OPEN</option>
-                  <option value="CLOSED">CLOSED</option>
-                  <option value="HOLD">HOLD</option>
-                </select>
-              </div>
-              <div class="form-group col">
-                <label for="openingDate">Opening Date/Time</label>
-                <datetime
-                  type="datetime"
-                  input-id="openingDate"
-                  input-class="form-control form-control-sm"
-                  v-model="opening"
-                  :value-zone="team.timezone"
-                  :zone="team.timezone"
-                  use12-hour
-                  :phrases="{ ok: 'Continue', cancel: 'Exit' }"
-                  :week-start="7"
-                  title="When do you want the store to open?"
-                ></datetime>
-              </div>
-              <div class="form-group col">
-                <label for="closingDate">Closing Date/Time</label>
-                <datetime
-                  type="datetime"
-                  input-id="closingDate"
-                  input-class="form-control form-control-sm"
-                  v-model="closing"
-                  :value-zone="team.timezone"
-                  :zone="team.timezone"
-                  use12-hour
-                  :phrases="{ ok: 'Continue', cancel: 'Exit' }"
-                  :week-start="7"
-                  :min-datetime="opening"
-                  title="When do you want the store to close?"
-                ></datetime>
-              </div>
-              <div class="form-group col">
-                <label for="shippingType">Shipping Type</label>
-                <select
-                  class="form-control form-control-sm"
-                  id="shippingType"
-                  v-model="shippingType"
-                  ref="shippingType"
-                >
-                  <option value="BULK">
-                    BULK
-                    <small>(default)</small>
-                  </option>
-                  <option value="DROP">
-                    DROP SHIP
-                    <small>(member's shipping)</small>
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-8">
-              <div class="row">
-                <div class="form-group col">
-                  <label for="storeMessage">Initial Store Message:</label>
-                  <textarea
-                    class="form-control form-control-sm"
-                    maxlength="255"
-                    id="storeMessage"
-                    v-model="storeMessage"
-                    rows="12"
-                    ref="storeMessage"
-                  ></textarea>
-                  <small id="storeMessageInfo" class="text-muted"
-                    >{{ storeMessage.length }}/255</small
-                  >
-                </div>
-              </div>
-              <div class="row mt-2">
-                <div class="col-sm-6">
-                  <button class="btn btn-block btn-info" @click.prevent="addStore">
-                    Add Store
-                  </button>
-                </div>
-                <div class="col-sm-6">
-                  <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
-                    >Cancel</router-link
-                  >
-                </div>
-              </div>
+      <div v-else>
+        <div class="placeholderImg"></div>
+      </div>
+    </div>
+    <div class="middle-section" v-if="team && team.managerId && team.managerId.name">
+      <form novalidate>
+        <!-- STORE INFO-->
+        <div class="section-header mb-2 bg-secondary">
+          <span>Store Information</span>
+        </div>
+        <div class="row px-2">
+          <div class="col-sm-8">
+            <div class="form-group">
+              <label for="storeName">Store Name</label>
+              <input
+                id="storeName"
+                type="text"
+                class="form-control"
+                v-model="storeName"
+                ref="storeName"
+              />
             </div>
           </div>
-        </form>
-        <!-- BULK SHIPPING -->
-        <div class="bulkShipping" v-if="shippingType === 'BULK'">
-          <div class="section-header mt-4 mb-2 bg-secondary">
-            <span>
-              Bulk Shipping Details
-              <small class="ml-2">(uses Team Bulk Shipping Details from Previous Page)</small>
-            </span>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="storeCountry">Store Country</label>
+              <country-select
+                id="storeCountry"
+                v-model="storeCountry"
+                :country="storeCountry"
+                class="form-control"
+                ref="storeCountry"
+              />
+            </div>
           </div>
-          <div class="row px-2">
-            <div class="col-sm-6">
-              <label>Name</label>
-              <br />
-              <span>{{ team.bulkShipping.name }}</span>
+          <div class="col-sm-4">
+            <div class="form-group col">
+              <label for="currency">Store Currency</label>
+              <select
+                class="form-control form-control-sm"
+                id="currency"
+                v-model="currency"
+                ref="currency"
+              >
+                <option value="USD">USD</option>
+                <option value="CAD">CAD</option>
+              </select>
             </div>
-            <div class="col-sm-6">
-              <label>Email</label>
-              <br />
-              <span>{{ team.bulkShipping.email }}</span>
+            <div class="form-group col">
+              <label for="orderReference">ERP Order Reference #</label>
+              <input
+                id="orderReference"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="orderReference"
+                ref="orderReference"
+              />
             </div>
-            <div class="col-sm-6">
-              <label>Address1</label>
-              <br />
-              <span>{{ team.bulkShipping.address1 }}</span>
+            <div class="form-group col">
+              <label for="currency">Store Mode:</label>
+              <select class="form-control form-control-sm" id="mode" v-model="mode" ref="mode">
+                <option value="SURVEY">SURVEY</option>
+                <option value="OPEN">OPEN</option>
+                <option value="CLOSED">CLOSED</option>
+                <option value="HOLD">HOLD</option>
+              </select>
             </div>
-            <div class="col-sm-6">
-              <label>Address2</label>
-              <br />
-              <span>{{ team.bulkShipping.address2 || '--' }}</span>
+            <div class="form-group col">
+              <label for="openingDate">Opening Date/Time</label>
+              <datetime
+                type="datetime"
+                input-id="openingDate"
+                input-class="form-control form-control-sm"
+                v-model="opening"
+                :value-zone="team.timezone"
+                :zone="team.timezone"
+                use12-hour
+                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
+                :week-start="7"
+                title="When do you want the store to open?"
+              ></datetime>
             </div>
-            <div class="col-sm-6">
-              <label>City</label>
-              <br />
-              <span>{{ team.bulkShipping.city }}</span>
+            <div class="form-group col">
+              <label for="closingDate">Closing Date/Time</label>
+              <datetime
+                type="datetime"
+                input-id="closingDate"
+                input-class="form-control form-control-sm"
+                v-model="closing"
+                :value-zone="team.timezone"
+                :zone="team.timezone"
+                use12-hour
+                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
+                :week-start="7"
+                :min-datetime="opening"
+                title="When do you want the store to close?"
+              ></datetime>
             </div>
-            <div class="col-sm-4">
-              <label>State/Province</label>
-              <br />
-              <span>{{ team.bulkShipping.stateProv }}</span>
+            <div class="form-group col">
+              <label for="shippingType">Shipping Type</label>
+              <select
+                class="form-control form-control-sm"
+                id="shippingType"
+                v-model="shippingType"
+                ref="shippingType"
+              >
+                <option value="BULK">
+                  BULK
+                  <small>(default)</small>
+                </option>
+                <option value="DROP">
+                  DROP SHIP
+                  <small>(member's shipping)</small>
+                </option>
+              </select>
             </div>
-            <div class="col-sm-2">
-              <label>Country</label>
-              <br />
-              <span>{{ team.bulkShipping.country }}</span>
+          </div>
+          <div class="col-sm-8">
+            <div class="row">
+              <div class="form-group col">
+                <label for="storeMessage">Initial Store Message:</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  maxlength="255"
+                  id="storeMessage"
+                  v-model="storeMessage"
+                  rows="12"
+                  ref="storeMessage"
+                ></textarea>
+                <small id="storeMessageInfo" class="text-muted">{{ storeMessage.length }}/255</small>
+              </div>
             </div>
-            <div class="col-sm-6">
-              <label>Zip/Postal Code</label>
-              <br />
-              <span>{{ team.bulkShipping.zipPostal }}</span>
-            </div>
-            <div class="col-sm-6">
-              <label>Phone</label>
-              <br />
-              <span>{{ team.bulkShipping.phone }}</span>
+            <div class="row mt-2">
+              <div class="col-sm-6">
+                <button class="btn btn-block btn-info" @click.prevent="addStore">Add Store</button>
+              </div>
+              <div class="col-sm-6">
+                <router-link
+                  :to="`/dashboard/teams/${team._id}`"
+                  class="btn btn-block btn-danger"
+                >Cancel</router-link>
+              </div>
             </div>
           </div>
         </div>
-        <!-- DROP SHIPPING -->
-        <div class="dropShipping" v-else>
-          <div class="section-header mt-4 mb-2 bg-secondary">
-            <span>Drop Shipping Details</span>
+      </form>
+      <!-- BULK SHIPPING -->
+      <div class="bulkShipping" v-if="shippingType === 'BULK'">
+        <div class="section-header mt-4 mb-2 bg-secondary">
+          <span>
+            Bulk Shipping Details
+            <small
+              class="ml-2"
+            >(uses Team Bulk Shipping Details from Previous Page)</small>
+          </span>
+        </div>
+        <div class="row px-2">
+          <div class="col-sm-6">
+            <label>Name</label>
+            <br />
+            <span>{{ team.bulkShipping.name }}</span>
           </div>
-          <div class="row px-2">
-            <span class="col">
-              All orders from this store will ship to the
-              <strong>Team Member's</strong> address specified in their own profile.
-            </span>
+          <div class="col-sm-6">
+            <label>Email</label>
+            <br />
+            <span>{{ team.bulkShipping.email }}</span>
           </div>
+          <div class="col-sm-6">
+            <label>Address1</label>
+            <br />
+            <span>{{ team.bulkShipping.address1 }}</span>
+          </div>
+          <div class="col-sm-6">
+            <label>Address2</label>
+            <br />
+            <span>{{ team.bulkShipping.address2 || '--' }}</span>
+          </div>
+          <div class="col-sm-6">
+            <label>City</label>
+            <br />
+            <span>{{ team.bulkShipping.city }}</span>
+          </div>
+          <div class="col-sm-4">
+            <label>State/Province</label>
+            <br />
+            <span>{{ team.bulkShipping.stateProv }}</span>
+          </div>
+          <div class="col-sm-2">
+            <label>Country</label>
+            <br />
+            <span>{{ team.bulkShipping.country }}</span>
+          </div>
+          <div class="col-sm-6">
+            <label>Zip/Postal Code</label>
+            <br />
+            <span>{{ team.bulkShipping.zipPostal }}</span>
+          </div>
+          <div class="col-sm-6">
+            <label>Phone</label>
+            <br />
+            <span>{{ team.bulkShipping.phone }}</span>
+          </div>
+        </div>
+      </div>
+      <!-- DROP SHIPPING -->
+      <div class="dropShipping" v-else>
+        <div class="section-header mt-4 mb-2 bg-secondary">
+          <span>Drop Shipping Details</span>
+        </div>
+        <div class="row px-2">
+          <span class="col">
+            All orders from this store will ship to the
+            <strong>Team Member's</strong> address specified in their own profile.
+          </span>
         </div>
       </div>
     </div>
@@ -362,6 +359,16 @@ $blue-color: #17a2b8;
 .vdatetime-time-picker__item--selected,
 .vdatetime-popup__actions__button {
   color: $blue-color !important;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: 255px 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 1rem;
+  width: 100%;
+  height: 100%;
+  grid-template-areas: 'sidebar-left middle-section';
 }
 
 .bulkShipping .row span {
