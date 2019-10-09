@@ -191,11 +191,6 @@ const MemberSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    invites: {
-      autoAccept: { type: Boolean, default: true },
-      disabled: { type: Boolean, default: false },
-      invitations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'teams' }]
-    },
     closedAccount: {
       type: Boolean,
       default: false
@@ -609,9 +604,7 @@ function validateUpdateMember(member) {
         .email()
         .required()
     }),
-    isAdmin: Joi.boolean(),
-    disabled: Joi.boolean(),
-    autoAccept: Joi.boolean()
+    isAdmin: Joi.boolean()
   };
   return Joi.validate(member, schema, joiOptions);
 }

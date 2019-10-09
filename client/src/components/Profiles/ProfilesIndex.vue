@@ -31,166 +31,164 @@
       <router-link :to="`/dashboard/profile/email`" class="btn btn-sm btn-block btn-danger">
         <i class="fas fa-envelope mr-2" style="vertical-align: middle;"></i>Update Email Address
       </router-link>
-      <hr />
-      <span>Invitation Settings:</span>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Invitations:</small>
-        <span class="col-sm-12">{{ memberDetails.invites.disabled ? 'Disabled': 'Enabled'}}</span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Auto-Accept:</small>
-        <span class="col-sm-12">{{ memberDetails.invites.autoAccept ? 'Auto': 'Manual'}}</span>
-      </div>
     </div>
     <div class="middle-section" v-if="memberDetails && memberDetails._id">
-      <div class="section-header bg-secondary">
-        <span class="text-white">Contact</span>
-      </div>
-      <div class="row px-1">
-        <div class="col-sm-6">
-          <label class="text-info">Name</label>
-          <br />
-          <span>{{ memberDetails.name }}</span>
+      <div class="row">
+        <div class="contactSection col-sm-4">
+          <div class="section-header bg-secondary">
+            <span class="text-white">Contact</span>
+          </div>
+          <div class="row info-spans">
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Name</label>
+              <br />
+              <span>{{ memberDetails.name }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Email</label>
+              <br />
+              <span>{{ memberDetails.email }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address1</label>
+              <br />
+              <span>{{ memberDetails.address1 }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address 2</label>
+              <br />
+              <span>{{ memberDetails.address2 || '--' }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">City</label>
+              <br />
+              <span>{{ memberDetails.city }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">State/Province</label>
+              <br />
+              <span>{{ memberDetails.stateProv }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">Country</label>
+              <br />
+              <span>{{ memberDetails.country }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Zip/Postal Code</label>
+              <br />
+              <span>{{ memberDetails.zipPostal }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Phone</label>
+              <br />
+              <span>{{ memberDetails.phone }}</span>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-6">
-          <label class="text-info">Email</label>
-          <br />
-          <span>{{ memberDetails.email }}</span>
+        <div class="billingSection col-sm-4">
+          <div class="section-header bg-secondary">
+            <span class="text-white">Billing</span>
+          </div>
+          <div class="row info-spans">
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Name</label>
+              <br />
+              <span>{{ memberDetails.billing.name }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Email</label>
+              <br />
+              <span>{{ memberDetails.billing.email }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address1</label>
+              <br />
+              <span>{{ memberDetails.billing.address1 }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address 2</label>
+              <br />
+              <span>{{ memberDetails.billing.address2 || '--' }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">City</label>
+              <br />
+              <span>{{ memberDetails.billing.city }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">State/Province</label>
+              <br />
+              <span>{{ memberDetails.billing.stateProv }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">Country</label>
+              <br />
+              <span>{{ memberDetails.billing.country }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Zip/Postal Code</label>
+              <br />
+              <span>{{ memberDetails.billing.zipPostal }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Phone</label>
+              <br />
+              <span>{{ memberDetails.billing.phone }}</span>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address1</label>
-          <br />
-          <span>{{ memberDetails.address1 }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address 2</label>
-          <br />
-          <span>{{ memberDetails.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">City</label>
-          <br />
-          <span>{{ memberDetails.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label class="text-info">State/Province</label>
-          <br />
-          <span>{{ memberDetails.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label class="text-info">Country</label>
-          <br />
-          <span>{{ memberDetails.country }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Zip/Postal Code</label>
-          <br />
-          <span>{{ memberDetails.zipPostal }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Phone</label>
-          <br />
-          <span>{{ memberDetails.phone }}</span>
-        </div>
-      </div>
-      <div class="section-header bg-secondary">
-        <span class="text-white">Billing Details</span>
-      </div>
-      <div class="row px-1">
-        <div class="col-sm-6">
-          <label class="text-info">Name</label>
-          <br />
-          <span>{{ memberDetails.billing.name }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Email</label>
-          <br />
-          <span>{{ memberDetails.billing.email }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address1</label>
-          <br />
-          <span>{{ memberDetails.billing.address1 }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address 2</label>
-          <br />
-          <span>{{ memberDetails.billing.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">City</label>
-          <br />
-          <span>{{ memberDetails.billing.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label class="text-info">State/Province</label>
-          <br />
-          <span>{{ memberDetails.billing.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label class="text-info">Country</label>
-          <br />
-          <span>{{ memberDetails.billing.country }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Zip/Postal Code</label>
-          <br />
-          <span>{{ memberDetails.billing.zipPostal }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Phone</label>
-          <br />
-          <span>{{ memberDetails.billing.phone }}</span>
-        </div>
-      </div>
-      <div class="section-header bg-secondary">
-        <span class="text-white">Shipping Details</span>
-      </div>
-      <div class="row px-1">
-        <div class="col-sm-6">
-          <label class="text-info">Name</label>
-          <br />
-          <span>{{ memberDetails.shipping.name }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Email</label>
-          <br />
-          <span>{{ memberDetails.shipping.email }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address1</label>
-          <br />
-          <span>{{ memberDetails.shipping.address1 }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Address 2</label>
-          <br />
-          <span>{{ memberDetails.shipping.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">City</label>
-          <br />
-          <span>{{ memberDetails.shipping.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label class="text-info">State/Province</label>
-          <br />
-          <span>{{ memberDetails.shipping.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label class="text-info">Country</label>
-          <br />
-          <span>{{ memberDetails.shipping.country }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Zip/Postal Code</label>
-          <br />
-          <span>{{ memberDetails.shipping.zipPostal }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label class="text-info">Phone</label>
-          <br />
-          <span>{{ memberDetails.shipping.phone }}</span>
+        <div class="shippingSection col-sm-4">
+          <div class="section-header bg-secondary">
+            <span class="text-white">Shipping</span>
+          </div>
+          <div class="row info-spans">
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Name</label>
+              <br />
+              <span>{{ memberDetails.shipping.name }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Email</label>
+              <br />
+              <span>{{ memberDetails.shipping.email }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address1</label>
+              <br />
+              <span>{{ memberDetails.shipping.address1 }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Address 2</label>
+              <br />
+              <span>{{ memberDetails.shipping.address2 || '--' }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">City</label>
+              <br />
+              <span>{{ memberDetails.shipping.city }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">State/Province</label>
+              <br />
+              <span>{{ memberDetails.shipping.stateProv }}</span>
+            </div>
+            <div class="col-sm-6 mb-1">
+              <label class="text-info">Country</label>
+              <br />
+              <span>{{ memberDetails.shipping.country }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Zip/Postal Code</label>
+              <br />
+              <span>{{ memberDetails.shipping.zipPostal }}</span>
+            </div>
+            <div class="col-sm-12 mb-1">
+              <label class="text-info">Phone</label>
+              <br />
+              <span>{{ memberDetails.shipping.phone }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

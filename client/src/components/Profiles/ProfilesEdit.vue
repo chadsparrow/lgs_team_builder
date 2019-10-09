@@ -85,6 +85,17 @@
                 />
               </div>
               <div class="form-group col-sm-6">
+                <label for="country">Country</label>
+                <country-select
+                  id="country"
+                  v-model="memberDetails.country"
+                  :country="memberDetails.country"
+                  class="form-control form-control-sm"
+                  @input="checkCountry"
+                  ref="country"
+                />
+              </div>
+              <div class="form-group col-sm-6">
                 <label for="stateProv">State/Province</label>
                 <region-select
                   id="stateProv"
@@ -97,17 +108,7 @@
                   ref="stateProv"
                 />
               </div>
-              <div class="form-group col-sm-6">
-                <label for="country">Country</label>
-                <country-select
-                  id="country"
-                  v-model="memberDetails.country"
-                  :country="memberDetails.country"
-                  class="form-control form-control-sm"
-                  @input="checkCountry"
-                  ref="country"
-                />
-              </div>
+
               <div class="form-group col-sm-12">
                 <label for="zipPostal">Zip/Postal Code</label>
                 <input
@@ -207,6 +208,18 @@
                 />
               </div>
               <div class="form-group col-sm-6">
+                <label for="billingCountry">Country</label>
+                <country-select
+                  id="billingCountry"
+                  v-model="memberDetails.billing.country"
+                  :country="memberDetails.billing.country"
+                  class="form-control form-control-sm"
+                  :readonly="billingSame"
+                  @input="checkBillingCountry"
+                  ref="billingCountry"
+                />
+              </div>
+              <div class="form-group col-sm-6">
                 <label for="billingStateProv">State/Province</label>
                 <region-select
                   id="billingStateProv"
@@ -219,18 +232,7 @@
                   ref="billingStateProv"
                 />
               </div>
-              <div class="form-group col-sm-6">
-                <label for="billingCountry">Country</label>
-                <country-select
-                  id="billingCountry"
-                  v-model="memberDetails.billing.country"
-                  :country="memberDetails.billing.country"
-                  class="form-control form-control-sm"
-                  :readonly="billingSame"
-                  @input="checkBillingCountry"
-                  ref="billingCountry"
-                />
-              </div>
+
               <div class="form-group col-sm-12">
                 <label for="billingZipPostal">Zip/Postal Code</label>
                 <input
@@ -341,6 +343,18 @@
                 />
               </div>
               <div class="form-group col-sm-6">
+                <label for="shippingCountry">Country</label>
+                <country-select
+                  id="shippingCountry"
+                  v-model="memberDetails.shipping.country"
+                  :country="memberDetails.shipping.country"
+                  class="form-control form-control-sm"
+                  @input="checkShippingCountry"
+                  :readonly="shippingSame"
+                  ref="shippingCountry"
+                />
+              </div>
+              <div class="form-group col-sm-6">
                 <label for="shippingStateProv">State/Province</label>
                 <region-select
                   id="shippingStateProv"
@@ -354,18 +368,7 @@
                   ref="shippingStateProv"
                 />
               </div>
-              <div class="form-group col-sm-6">
-                <label for="shippingCountry">Country</label>
-                <country-select
-                  id="shippingCountry"
-                  v-model="memberDetails.shipping.country"
-                  :country="memberDetails.shipping.country"
-                  class="form-control form-control-sm"
-                  @input="checkShippingCountry"
-                  :readonly="shippingSame"
-                  ref="shippingCountry"
-                />
-              </div>
+
               <div class="form-group col-sm-12">
                 <label for="shippingZipPostal">Zip/Postal Code</label>
                 <input
@@ -664,9 +667,7 @@ export default {
         billingCountry: this.memberDetails.billing.country,
         billingZipPostal: this.memberDetails.billing.zipPostal,
         billingPhone: this.memberDetails.billing.phone,
-        billingEmail: this.memberDetails.billing.email,
-        disabled: this.memberDetails.invites.disabled,
-        autoAccept: this.memberDetails.invites.autoAccept
+        billingEmail: this.memberDetails.billing.email
       };
 
       try {

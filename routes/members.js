@@ -67,25 +67,6 @@ router.get('/:id/me', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send(me);
 });
 
-router.post('/:id/invite', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
-  const team = await Team.findById(req.body.team);
-  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
-
-  if (!member.invites.invitations.includes(req.body.team)) {
-    member.invites.invitations.push(req.body.team);
-    member.notifications.push({
-      date: Date.now(),
-      message: `You have an invitation to join Team ${team.name}`,
-      clickTo: `/dashboard/teams/${team._id}`
-    });
-    await member.save();
-    return res.status(200).send([{ message: 'Invitation Sent' }]);
-  }
-  return res.status(400).send([{ message: 'Invitation already sent - awaiting response' }]);
-});
-
 // POST /api/members
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewMember(req.body);
@@ -242,9 +223,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     billingCountry,
     billingZipPostal,
     billingPhone,
-    billingEmail,
-    disabled,
-    autoAccept
+    billingEmail
   } = req.body;
 
   const updateMember = await Member.findById(req.params.id);
@@ -262,8 +241,6 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   updateMember.phone = phone;
   updateMember.timezone = timezone;
   updateMember.timezoneAbbrev = timezoneAbbrev;
-  updateMember.invites.disabled = disabled;
-  updateMember.invites.autoAccept = autoAccept;
 
   if (shippingSame) {
     updateMember.shipping.name = updateMember.name;
