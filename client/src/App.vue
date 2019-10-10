@@ -3,10 +3,10 @@
     <loading
       :active.sync="isLoading"
       :is-full-page="true"
-      color="#111"
+      color="#000"
       background-color="#000"
       :opacity="0.0"
-      loader="dots"
+      loader="spinner"
     ></loading>
     <transition name="fade" mode="out-in">
       <router-view />

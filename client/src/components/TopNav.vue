@@ -1,6 +1,6 @@
 <template>
   <div id="topNav">
-    <Breadcrumbs />
+    <Breadcrumbs class="breadCrumbs" />
     <div class="navBar">
       <Notifications />
       <Cart class="ml-2" v-if="member && !member.isAdmin" />
@@ -82,6 +82,18 @@ $black-text: #000000;
         align-items: center;
         flex-wrap: no-wrap;
       }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .dashboard {
+    grid-template-columns: 60px 1fr;
+  }
+  #topNav {
+    justify-content: flex-end;
+    .breadCrumbs {
+      display: none;
     }
   }
 }

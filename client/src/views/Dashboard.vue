@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <SideNav />
-    <TopNav />
+    <TopNav class="topNavBar" />
     <transition name="fade" mode="out-in">
       <router-view class="mainContent"></router-view>
     </transition>
