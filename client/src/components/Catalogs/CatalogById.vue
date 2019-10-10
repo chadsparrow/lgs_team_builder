@@ -1,30 +1,8 @@
 <template>
   <div class="page">
-    <div class="top-buttons" v-if="catalog && catalog._id">
-      <div class="row">
-        <div class="col-sm-3">
-          <router-link
-            class="btn btn-block btn-info"
-            :to="`/dashboard/catalogs/${catalog._id}/add`"
-            tag="a"
-          >
-            <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
-          </router-link>
-        </div>
-        <div class="col-sm-3">
-          <router-link
-            class="btn btn-block btn-info"
-            :to="`/dashboard/catalogs/${catalog._id}/edit`"
-            tag="a"
-          >
-            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
-          </router-link>
-        </div>
-      </div>
-    </div>
-    <div class="gallery" v-if="catalogItems && catalogItems.length > 0">
+    <div class="gallery mb-3 px-2" v-if="catalogItems && catalogItems.length > 0">
       <div class="card" v-for="item of catalogItems" :key="item._id">
-        <img src="@/assets/missing_item.jpg" class="card-img-top" alt="item.name" />
+        <img src="@/assets/missing_item.jpg" class="card-img-top img-responsive" alt="item.name" />
         <div class="card-body">
           <div class="row text-center">
             <span class="card-title col-sm-12">{{item.name}}</span>
@@ -37,6 +15,28 @@
             class="btn btn-sm btn-info btn-block"
             :to="`/dashboard/catalogItems/${item._id}`"
           >View/Edit</router-link>
+        </div>
+      </div>
+    </div>
+    <div v-if="catalog && catalog._id">
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <router-link
+            class="btn btn-block btn-success"
+            :to="`/dashboard/catalogs/${catalog._id}/add`"
+            tag="a"
+          >
+            <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
+          </router-link>
+        </div>
+        <div class="col-md-6">
+          <router-link
+            class="btn btn-block btn-success"
+            :to="`/dashboard/catalogs/${catalog._id}/edit`"
+            tag="a"
+          >
+            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
+          </router-link>
         </div>
       </div>
     </div>
@@ -82,36 +82,26 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px 1fr;
+  grid-template-rows: 1fr;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
-  grid-template-areas:
-    'top-buttons'
-    'gallery';
-}
-.gallery {
-  display: flex;
-  flex-flow: row wrap;
-
-  .card {
-    width: 14rem;
-    margin: 0.6rem;
-
-    &:hover {
-      box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
-    }
-  }
-}
-
-.topButtons {
-  grid-area: top-buttons;
+  grid-template-areas: 'gallery';
 }
 
 .gallery {
   grid-area: gallery;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  grid-gap: 0.75rem;
   overflow-x: hidden;
   overflow-y: auto;
+  .card {
+    min-width: 14rem;
+    &:hover {
+      box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    }
+  }
 }
 </style>
 
