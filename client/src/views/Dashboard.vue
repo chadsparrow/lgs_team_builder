@@ -18,11 +18,6 @@ export default {
     SideNav,
     TopNav
   },
-  computed: {
-    isLoggedIn: function() {
-      return this.$store.getters.isLoggedIn;
-    }
-  },
   methods: {}
 };
 </script>

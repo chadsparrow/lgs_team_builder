@@ -23,9 +23,6 @@ export default {
     Loading
   },
   computed: {
-    isLoggedIn: function() {
-      return this.$store.getters.isLoggedIn;
-    },
     isLoading: function() {
       return this.$store.getters.isLoading;
     }

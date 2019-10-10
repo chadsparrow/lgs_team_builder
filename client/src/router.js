@@ -29,6 +29,8 @@ import TeamsById from './components/Teams/TeamsById.vue';
 import TeamsByIdEdit from './components/Teams/TeamsByIdEdit.vue';
 import TeamsByIdAddStore from './components/Teams/TeamsByIdAddStore.vue';
 
+import store from './store';
+
 Vue.use(Router);
 
 let router = new Router({
@@ -282,27 +284,27 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem('token') === null) {
+    if (!store.getters.isLoggedIn) {
       Vue.toasted.error('Access Denied');
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
       });
-    } else {
-      let member = JSON.parse(localStorage.getItem('member'));
-      if (to.matched.some(record => record.meta.isAdmin)) {
-        if (member.isAdmin) {
-          next();
-        } else {
-          Vue.toasted.error('Access Denied');
-          next({ name: from.name });
-        }
-      } else {
+      return;
+    }
+    const member = JSON.parse(localStorage.getItem('member'));
+    if (to.matched.some(record => record.meta.isAdmin)) {
+      if (member.isAdmin) {
         next();
+      } else {
+        Vue.toasted.error('Access Denied');
+        next({ name: from.name });
       }
+    } else {
+      next();
     }
   } else if (to.matched.some(record => record.meta.guest)) {
-    if (localStorage.getItem('token') === null) {
+    if (!store.getters.isLoggedIn) {
       next();
     } else {
       next({ name: 'dashboardIndex' });

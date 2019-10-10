@@ -11,6 +11,8 @@ import Datetime from 'vue-datetime';
 import 'vue-datetime/dist/vue-datetime.css';
 import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 
 Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
@@ -25,8 +27,14 @@ Vue.use(Toasted, {
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);
+Vue.use(VueAxios, axios);
 
 Vue.config.productionTip = false;
+
+const token = localStorage.getItem('token');
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
 
 new Vue({
   router,
