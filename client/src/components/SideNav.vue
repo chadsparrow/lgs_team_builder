@@ -6,21 +6,11 @@
     <div class="copyright text-center mb-4">
       <small>&copy; 2019 Garneau.com</small>
     </div>
-    <router-link
-      class="btn btn-block btn-dark"
-      to="/dashboard/members"
-      tag="a"
-      v-if="member && member.isAdmin"
-    >
+    <router-link class="btn btn-block btn-dark" to="/dashboard/members" tag="a" v-if="adminStatus">
       <i class="fas fa-user"></i>
       <span>Members</span>
     </router-link>
-    <router-link
-      class="btn btn-block btn-dark"
-      to="/dashboard/teams"
-      tag="a"
-      v-if="member && member.isAdmin"
-    >
+    <router-link class="btn btn-block btn-dark" to="/dashboard/teams" tag="a" v-if="adminStatus">
       <i class="fas fa-users"></i>
       <span>Teams</span>
     </router-link>
@@ -28,12 +18,7 @@
       <i class="fas fa-users"></i>
       <span>My Teams</span>
     </router-link>
-    <router-link
-      class="btn btn-block btn-dark"
-      to="/dashboard/stores"
-      tag="a"
-      v-if="member && member.isAdmin"
-    >
+    <router-link class="btn btn-block btn-dark" to="/dashboard/stores" tag="a" v-if="adminStatus">
       <i class="fas fa-store"></i>
       <span>Stores</span>
     </router-link>
@@ -41,12 +26,7 @@
       <i class="fas fa-store"></i>
       <span>My Stores</span>
     </router-link>
-    <router-link
-      class="btn btn-block btn-dark"
-      to="/dashboard/orders"
-      tag="a"
-      v-if="member && member.isAdmin"
-    >
+    <router-link class="btn btn-block btn-dark" to="/dashboard/orders" tag="a" v-if="adminStatus">
       <i class="fas fa-receipt"></i>
       <span>Orders</span>
     </router-link>
@@ -54,12 +34,7 @@
       <i class="fas fa-receipt"></i>
       <span>My Orders</span>
     </router-link>
-    <router-link
-      class="btn btn-block btn-dark"
-      to="/dashboard/catalogs"
-      tag="a"
-      v-if="member && member.isAdmin"
-    >
+    <router-link class="btn btn-block btn-dark" to="/dashboard/catalogs" tag="a" v-if="adminStatus">
       <i class="fas fa-book"></i>
       <span>Catalogs</span>
     </router-link>
@@ -71,7 +46,10 @@ export default {
   name: 'SideNav',
   computed: {
     member: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
+    },
+    adminStatus: function() {
+      if (this.member) return this.member.isAdmin;
     }
   }
 };

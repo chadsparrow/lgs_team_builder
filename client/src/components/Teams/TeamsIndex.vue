@@ -110,7 +110,7 @@ export default {
       }
     },
     member: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
     },
     teams: function() {
       return this.$store.getters.teams;

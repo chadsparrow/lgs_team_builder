@@ -434,7 +434,7 @@ export default {
   },
   computed: {
     member: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
     },
     members: function() {
       return this.$store.getters.allMembers;

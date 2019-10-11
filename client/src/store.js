@@ -12,7 +12,8 @@ export default new Vuex.Store({
     isLoading: false,
     status: '',
     token: localStorage.getItem('token') || '',
-    member: localStorage.getItem('member') || null,
+    // member: localStorage.getItem('member') || null,
+    loggedInMember: {},
     catalogs: [],
     currentCatalog: {},
     emails: [],
@@ -36,16 +37,27 @@ export default new Vuex.Store({
           commit('AUTH_REQUEST');
           const res = await axios.post('/api/v1/auth/login', loginCreds);
           const token = res.data[0].token;
-          let member = res.data[0].member;
-          member = JSON.stringify(member);
+          const member = res.data[0].member;
           const emails = res.data[0].emails;
           localStorage.setItem('token', token);
-          localStorage.setItem('member', member);
+          localStorage.setItem('member', member._id);
           commit('AUTH_SUCCESS', { token, member, emails });
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
           localStorage.removeItem('token');
+          reject(err);
+        }
+      });
+    },
+    setLoggedInMember({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get(`/api/v1/members/${id}`);
+          const member = res.data;
+          commit('SET_LOGGED_IN', member);
+          resolve(res);
+        } catch (err) {
           reject(err);
         }
       });
@@ -559,11 +571,14 @@ export default new Vuex.Store({
     AUTH_SUCCESS(state, { token, member, emails }) {
       state.status = 'success';
       state.token = token;
-      state.member = member;
+      state.loggedInMember = member;
       state.emails = emails;
     },
     AUTH_ERROR(state) {
       state.status = 'error';
+    },
+    SET_LOGGED_IN(state, member) {
+      state.loggedInMember = member;
     },
     LOGOUT(state) {
       state.status = '';
@@ -641,9 +656,7 @@ export default new Vuex.Store({
     isLoading: state => state.isLoading,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    getCurrentMember: state => {
-      return JSON.parse(state.member);
-    },
+    loggedInMember: state => state.loggedInMember,
     allMembers: state => state.allMembers,
     teams: state => state.teams,
     currentTeam: state => state.currentTeam,

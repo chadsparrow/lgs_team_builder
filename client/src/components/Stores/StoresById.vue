@@ -140,7 +140,7 @@ export default {
       return this.$store.getters.currentStore;
     },
     member: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
     },
     orders: function() {
       return this.$store.getters.orders;

@@ -88,7 +88,7 @@
           <span>{{ member.phone }}</span>
         </div>
       </div>
-      <div class="section-header bg-secondary">
+      <div class="section-header mt-2 bg-secondary">
         <span class="text-white">Billing</span>
       </div>
       <div class="row px-1 info-spans">
@@ -143,7 +143,7 @@
           <span>{{ member.billing.phone }}</span>
         </div>
       </div>
-      <div class="section-header bg-secondary">
+      <div class="section-header mt-2 bg-secondary">
         <span class="text-white">Shipping Details</span>
       </div>
       <div class="row mb-4 px-1 info-spans">
@@ -219,7 +219,7 @@ export default {
   },
   computed: {
     currentMember: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
     },
     isAdmin: function() {
       if (this.currentMember) return this.currentMember.isAdmin;

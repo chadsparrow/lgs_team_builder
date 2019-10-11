@@ -282,7 +282,7 @@ let router = new Router({
   ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!store.getters.isLoggedIn) {
       Vue.toasted.error('Access Denied');
@@ -292,7 +292,13 @@ router.beforeEach((to, from, next) => {
       });
       return;
     }
-    const member = JSON.parse(localStorage.getItem('member'));
+
+    const memberId = localStorage.getItem('member');
+    let member = store.getters.loggedInMember;
+    if (memberId && member && !member.isAdmin) {
+      await store.dispatch('setLoggedInMember', memberId);
+      member = store.getters.loggedInMember;
+    }
     if (to.matched.some(record => record.meta.isAdmin)) {
       if (member.isAdmin) {
         next();

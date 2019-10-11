@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     member: function() {
-      return this.$store.getters.getCurrentMember;
+      return this.$store.getters.loggedInMember;
     },
     notifications: function() {
       return this.$store.getters.notifications;
