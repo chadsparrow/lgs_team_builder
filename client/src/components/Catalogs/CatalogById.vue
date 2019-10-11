@@ -2,8 +2,12 @@
   <div class="page">
     <div class="gallery mb-3 px-2" v-if="catalogItems && catalogItems.length > 0">
       <div class="card" v-for="item of catalogItems" :key="item._id">
-        <img src="@/assets/missing_item.jpg" class="card-img-top img-responsive" alt="item.name" />
-        <div class="card-body">
+        <img
+          src="@/assets/missing_item_300.png"
+          class="card-img-top img-responsive"
+          alt="item.name"
+        />
+        <div class="card-body p-2">
           <div class="row text-center">
             <span class="card-title col-sm-12">{{item.name}}</span>
             <small class="card-subtitle text-muted col-sm-12">ERP - {{item.productCode}}</small>
@@ -11,10 +15,20 @@
           </div>
         </div>
         <div class="card-footer">
-          <router-link
-            class="btn btn-sm btn-info btn-block"
-            :to="`/dashboard/catalogItems/${item._id}`"
-          >View/Edit</router-link>
+          <div class="row px-2">
+            <router-link
+              class="btn btn-sm btn-info col-sm-10"
+              :to="`/dashboard/catalogItems/${item._id}`"
+            >View/Edit</router-link>
+            <button
+              class="btn btn-sm btn-danger col-sm-2"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Remove from Catalog"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>

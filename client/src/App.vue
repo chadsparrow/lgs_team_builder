@@ -89,7 +89,7 @@ html {
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
   font-size: 16px;
-
+  scroll-behavior: smooth;
   a {
     cursor: pointer;
   }
