@@ -1,47 +1,43 @@
 <template>
   <div class="page">
-    <div class="gallery mb-3 px-2" v-if="catalogItems && catalogItems.length > 0">
-      <div class="card" v-for="item of catalogItems" :key="item._id">
-        <img
-          src="@/assets/missing_item_300.png"
-          class="card-img-top img-responsive"
-          alt="item.name"
-        />
-        <div class="card-body p-2">
-          <div class="row text-center">
-            <span class="card-title col-sm-12">{{item.name}}</span>
-            <small class="card-subtitle text-muted col-sm-12">ERP - {{item.productCode}}</small>
-            <small class="card-subtitle text-muted col-sm-12">STYLE - {{item.styleCode}}</small>
+    <div class="header" v-if="catalog">
+      <div>{{catalog.brand}} - {{catalog.season}} - {{catalog.year}}</div>
+      <div>
+        <button class="btn btn-sm" @click="setView(true)">
+          <i class="fas fa-grip-horizontal fa-lg"></i>
+        </button>
+        <button class="btn btn-sm" @click="setView(false)">
+          <i class="fas fa-align-justify fa-lg"></i>
+        </button>
+      </div>
+    </div>
+    <div
+      :class="viewGrid ? 'galleryThumb' : 'galleryList'"
+      v-if="catalogItems && catalogItems.length > 0"
+    >
+      <div class="thumbnail" v-for="item of catalogItems" :key="item._id">
+        <div class="info-container">
+          <div class="thumbnail-img">
+            <img :src="getImgUrl(item)" :alt="item.name" />
           </div>
-        </div>
-        <div class="card-footer">
-          <div class="row px-2">
-            <router-link
-              class="btn btn-sm btn-info col-sm-10"
-              :to="`/dashboard/catalogItems/${item._id}`"
-            >View/Edit</router-link>
-            <button
-              class="btn btn-sm btn-danger col-sm-2"
-              data-toggle="tooltip"
-              data-placement="top"
-              title="Remove from Catalog"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
+          <div class="thumbnail-body">
+            <span>{{item.name}}</span>
+            <br />
+            <small class="text-muted">PRODUCT - {{item.productCode}}</small>
+            <br />
+            <small class="text-muted">STYLE - {{item.styleCode}}</small>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="catalog && catalog._id">
+    <div class="buttonGroup" v-if="catalog && catalog._id">
       <div class="row">
         <div class="col-md-6 mb-2">
           <router-link
             class="btn btn-block btn-success"
             :to="`/dashboard/catalogs/${catalog._id}/add`"
             tag="a"
-          >
-            <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i> Add Catalog Item
-          </router-link>
+          >Add Item</router-link>
         </div>
         <div class="col-md-6">
           <router-link
@@ -49,7 +45,7 @@
             :to="`/dashboard/catalogs/${catalog._id}/edit`"
             tag="a"
           >
-            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Edit Catalog
+            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Settings
           </router-link>
         </div>
       </div>
@@ -60,6 +56,11 @@
 <script>
 export default {
   name: 'CatalogById',
+  data() {
+    return {
+      viewGrid: true
+    };
+  },
   computed: {
     catalog: function() {
       return this.$store.getters.currentCatalog;
@@ -88,7 +89,17 @@ export default {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
-  methods: {}
+  methods: {
+    getImgUrl(item) {
+      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
+
+      return require(`${item.images[0]}`);
+    },
+    setView(bool) {
+      if (bool) this.viewGrid = true;
+      if (!bool) this.viewGrid = false;
+    }
+  }
 };
 </script>
 
@@ -96,25 +107,119 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
+  grid-template-rows: 35px 1fr 40px;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
-  grid-template-areas: 'gallery';
-}
+  grid-template-areas:
+    'header'
+    'gallery'
+    'footer';
 
-.gallery {
-  grid-area: gallery;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  grid-gap: 0.75rem;
-  overflow-x: hidden;
-  overflow-y: auto;
-  .card {
-    min-width: 14rem;
-    &:hover {
-      box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+  .header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    padding: 0.75rem;
+    border-radius: 5px;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .galleryThumb {
+    grid-area: gallery;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    grid-auto-rows: min-content;
+    grid-gap: 0.75rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0.25rem;
+
+    .thumbnail {
+      position: relative;
+      border-radius: 5px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+
+      .thumbnail-img {
+        img {
+          width: 100%;
+          border-radius: 5px 5px 0 0;
+          object-fit: cover;
+        }
+      }
+
+      .thumbnail-body {
+        text-align: center;
+        padding: 0.4rem;
+      }
+
+      &:hover {
+        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+      }
     }
+  }
+
+  .galleryList {
+    grid-area: gallery;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 0.75rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0.25rem;
+
+    .thumbnail {
+      border-radius: 5px;
+      background-color: white;
+      height: 125px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 1rem;
+
+      .info-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        .thumbnail-img {
+          width: 125px;
+          margin-right: 1rem;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px 0 0 5px;
+            object-fit: cover;
+          }
+        }
+
+        .thumbnail-body {
+          padding: 0.4rem;
+          span {
+            font-size: 1.5rem;
+            font-weight: 700;
+          }
+        }
+      }
+
+      &:hover {
+        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  .buttonGroup {
+    grid-area: footer;
   }
 }
 </style>
