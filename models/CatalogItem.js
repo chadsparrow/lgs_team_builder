@@ -42,6 +42,16 @@ const CatalogItemSchema = new mongoose.Schema(
       required: true,
       min: 0.0
     },
+    priceBreaks: [
+      {
+        break: {
+          type: Number
+        },
+        price: {
+          type: Number
+        }
+      }
+    ],
     gender: {
       type: String,
       required: true,
@@ -98,6 +108,10 @@ function validateCatalogItem(catalogItem) {
     price: Joi.number()
       .required()
       .min(0),
+    priceBreaks: Joi.array().items({
+      break: Joi.number(),
+      price: Joi.number()
+    }),
     description: Joi.string()
       .required()
       .trim(),

@@ -15,7 +15,8 @@ const CatalogSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      uppercase: true
+      uppercase: true,
+      default: 'CUSTOM'
     },
     year: {
       type: String,
@@ -41,7 +42,7 @@ function validateCatalog(catalog) {
       .required()
       .trim()
       .uppercase()
-      .valid(['SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER']),
+      .valid(['CUSTOM', 'SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER']),
     year: Joi.string()
       .required()
       .regex(/^\d{4}$/)

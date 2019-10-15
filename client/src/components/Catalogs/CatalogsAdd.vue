@@ -20,6 +20,8 @@
         <div class="col-sm-12 mb-2">
           <label for="season">Season</label>
           <select class="form-control form-control-sm" id="season" v-model="season" ref="season">
+            <option value="CUSTOM">CUSTOM</option>
+            <option disabled="disabled">--------</option>
             <option value="SPRING/SUMMER">SPRING/SUMMER</option>
             <option value="FALL/WINTER">FALL/WINTER</option>
             <option disabled="disabled">--------</option>

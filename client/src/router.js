@@ -14,6 +14,7 @@ import CatalogsAdd from './components/Catalogs/CatalogsAdd.vue';
 import CatalogById from './components/Catalogs/CatalogById.vue';
 import CatalogByIdEdit from './components/Catalogs/CatalogByIdEdit.vue';
 import CatalogItemsAdd from './components/Catalogs/CatalogItemsAdd.vue';
+import CatalogItemById from './components/Catalogs/CatalogItemById.vue';
 import OrdersIndex from './components/Orders/OrdersIndex.vue';
 import MembersIndex from './components/Members/MembersIndex.vue';
 import MembersAdd from './components/Members/MembersAdd.vue';
@@ -147,6 +148,15 @@ let router = new Router({
           path: 'catalogs/:id/add',
           name: 'catalogsItemsAdd',
           component: CatalogItemsAdd,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
+          path: 'catalogItems/:id',
+          name: 'catalogItemById',
+          component: CatalogItemById,
           meta: {
             requiresAuth: true,
             isAdmin: true

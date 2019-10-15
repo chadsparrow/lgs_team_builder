@@ -3,6 +3,12 @@
     <div class="header" v-if="catalog">
       <div>{{catalog.brand}} - {{catalog.season}} - {{catalog.year}}</div>
       <div>
+        <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">
+          <i class="fas fa-plus fa-lg"></i>
+        </router-link>
+        <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/edit`" tag="a">
+          <i class="fas fa-cog fa-lg"></i>
+        </router-link>
         <button class="btn btn-sm" @click="setView(true)">
           <i class="fas fa-grip-horizontal fa-lg"></i>
         </button>
@@ -15,7 +21,12 @@
       :class="viewGrid ? 'galleryThumb' : 'galleryList'"
       v-if="catalogItems && catalogItems.length > 0"
     >
-      <div class="thumbnail" v-for="item of catalogItems" :key="item._id">
+      <router-link
+        class="thumbnail"
+        v-for="item of catalogItems"
+        :key="item._id"
+        :to="`/dashboard/catalogItems/${item._id}`"
+      >
         <div class="info-container">
           <div class="thumbnail-img">
             <img :src="getImgUrl(item)" :alt="item.name" />
@@ -28,27 +39,7 @@
             <small class="text-muted">STYLE - {{item.styleCode}}</small>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="buttonGroup" v-if="catalog && catalog._id">
-      <div class="row">
-        <div class="col-md-6 mb-2">
-          <router-link
-            class="btn btn-block btn-success"
-            :to="`/dashboard/catalogs/${catalog._id}/add`"
-            tag="a"
-          >Add Item</router-link>
-        </div>
-        <div class="col-md-6">
-          <router-link
-            class="btn btn-block btn-success"
-            :to="`/dashboard/catalogs/${catalog._id}/edit`"
-            tag="a"
-          >
-            <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i>Settings
-          </router-link>
-        </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -107,14 +98,13 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 35px 1fr 40px;
+  grid-template-rows: 35px auto;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
   grid-template-areas:
     'header'
-    'gallery'
-    'footer';
+    'gallery';
 
   .header {
     grid-area: header;
@@ -124,8 +114,11 @@ export default {
     background-color: whitesmoke;
     padding: 0.75rem;
     border-radius: 5px;
-    font-size: 1.25rem;
     font-weight: 700;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   .galleryThumb {
@@ -137,6 +130,10 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0.25rem;
+
+    a {
+      color: black;
+    }
 
     .thumbnail {
       position: relative;
@@ -169,9 +166,6 @@ export default {
 
   .galleryList {
     grid-area: gallery;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 0.75rem;
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0.25rem;
@@ -179,12 +173,18 @@ export default {
     .thumbnail {
       border-radius: 5px;
       background-color: white;
+      color: black;
       height: 125px;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       padding-right: 1rem;
+      margin-bottom: 1rem;
+
+      a {
+        color: black;
+      }
 
       .info-container {
         display: flex;
@@ -216,10 +216,6 @@ export default {
         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
       }
     }
-  }
-
-  .buttonGroup {
-    grid-area: footer;
   }
 }
 </style>

@@ -25,6 +25,8 @@
             v-model="catalog.season"
             ref="season"
           >
+            <option value="CUSTOM">CUSTOM</option>
+            <option disabled="disabled">--------</option>
             <option value="SPRING/SUMMER">SPRING/SUMMER</option>
             <option value="FALL/WINTER">FALL/WINTER</option>
             <option disabled="disabled">--------</option>
@@ -54,8 +56,7 @@
             tag="a"
             class="btn btn-block btn-danger"
             :to="`/dashboard/catalogs/${catalog._id}`"
-            >Cancel</router-link
-          >
+          >Cancel</router-link>
         </div>
       </div>
     </form>
