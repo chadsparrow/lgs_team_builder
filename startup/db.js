@@ -10,7 +10,8 @@ module.exports = async function(DB_HOST) {
     useNewUrlParser: true,
     autoReconnect: true,
     useFindAndModify: false,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useUnifiedTopology: true
   });
   logger.info('Connected to MongoDB..');
 
