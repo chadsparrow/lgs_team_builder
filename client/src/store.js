@@ -12,7 +12,6 @@ export default new Vuex.Store({
     isLoading: false,
     status: '',
     token: localStorage.getItem('token') || '',
-    // member: localStorage.getItem('member') || null,
     loggedInMember: {},
     catalogs: [],
     currentCatalog: {},
@@ -27,6 +26,7 @@ export default new Vuex.Store({
     currentTeamStores: [],
     currentMember: {},
     currentCatalogItems: [],
+    currentCatalogItem: {},
     currentStore: {},
     currentOrder: {}
   },
@@ -226,6 +226,20 @@ export default new Vuex.Store({
         try {
           commit('TOGGLE_LOADING');
           const res = await axios.post(`/api/v1/catalogitems/`, catalogItem);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getCatalogItem({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.get(`/api/v1/catalogitems/${id}`);
+          commit('SET_CURRENT_CATALOG_ITEM', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -594,6 +608,7 @@ export default new Vuex.Store({
       state.currentTeamStores = null;
       state.currentCatalog = null;
       state.currentCatalogItems = null;
+      state.currentCatalogItem = null;
       state.currentStore = null;
       state.currentOrder = null;
     },
@@ -639,6 +654,9 @@ export default new Vuex.Store({
     SET_CURRENT_CATALOG_ITEMS(state, payload) {
       state.currentCatalogItems = payload;
     },
+    SET_CURRENT_CATALOG_ITEM(state, payload) {
+      state.currentCatalogItem = payload;
+    },
     SET_NOTIFICATIONS(state, payload) {
       state.notifications = payload;
     },
@@ -670,6 +688,7 @@ export default new Vuex.Store({
     catalogs: state => state.catalogs,
     currentCatalog: state => state.currentCatalog,
     currentCatalogItems: state => state.currentCatalogItems,
+    currentCatalogItem: state => state.currentCatalogItem,
     currentStore: state => state.currentStore
   }
 });

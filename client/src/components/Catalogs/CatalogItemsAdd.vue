@@ -3,9 +3,13 @@
     <div v-if="catalog && catalog._id">
       <form @submit.prevent="addCatalogItem" novalidate>
         <div class="row">
-          <div class="form-group col-sm-12">
-            <label for="name">Name</label>
-            <input id="name" type="text" class="form-control" v-model="name" ref="name" />
+          <div class="form-group col-sm-6">
+            <label for="nameEN">Name (EN)</label>
+            <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="nameFR">Name (FR)</label>
+            <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
           </div>
           <div class="form-group col-sm-6">
             <label for="productCode">ERP Product Code</label>
@@ -122,51 +126,75 @@
               <label class="form-check-label" for="size4XL">4XL</label>
             </div>
           </div>
-          <div class="form-group col-sm-4">
+          <div class="form-group col-sm-6">
             <label for="gender">Gender</label>
             <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
-              <option value="M">Men's</option>
-              <option value="W">Women's</option>
-              <option value="U">Unisex</option>
+              <option value="M">Mens</option>
+              <option value="W">Womens</option>
               <option value="J">Junior</option>
+              <option value="U">Unisex</option>
             </select>
           </div>
-          <div class="form-group col-sm-4">
-            <label for="category">Category</label>
-            <select
-              class="form-control form-control"
-              id="category"
+          <div class="form-group col-sm-6">
+            <label for="categories">Categories</label>
+            <vue-tags-input
+              style="width: 100%;"
               v-model="category"
-              ref="category"
-            >
-              <option value="JERSEYS">Jerseys</option>
-              <option value="JACKETS">Jackets</option>
-              <option value="SHORTS">Shorts</option>
-              <option value="ACCESSORIES">Accessories</option>
-            </select>
-            <small class="categoryHelp text-muted">Need list of categories - if necessary</small>
-          </div>
-          <div class="form-group col-sm-4">
-            <label for="price">Price</label>
-            <input
-              type="number"
-              id="price"
-              ref="price"
-              class="form-control"
-              min="0"
-              step="0.01"
-              v-model="price"
+              :tags="categories"
+              @tags-changed="newCategories => categories = newCategories"
             />
           </div>
-          <div class="form-group col-sm-12">
-            <label for="description">Description</label>
+          <div class="form-group col-sm-3">
+            <label for="descriptionEN">Description (EN)</label>
             <textarea
-              id="description"
-              ref="description"
+              id="descriptionEN"
+              ref="descriptionEN"
               class="form-control"
               rows="10"
-              v-model="description"
+              v-model="descriptionEN"
             ></textarea>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="descriptionFR">Description (FR)</label>
+            <textarea
+              id="descriptionFR"
+              ref="descriptionFR"
+              class="form-control"
+              rows="10"
+              v-model="descriptionFR"
+            ></textarea>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="priceBreaksCAD">Price Breaks (CAD)</label>
+            <ul class="list-group" id="priceBreaksCAD">
+              <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
+                <div>{{pb.priceBreak}}</div>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="form-control form-control-sm text-center"
+                  v-model="pb.price"
+                />
+              </li>
+              <li class="list-group-item py-1">250+ Contact Us</li>
+            </ul>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="priceBreaksUSD">Price Breaks (USD)</label>
+            <ul class="list-group" id="priceBreaksUSD">
+              <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
+                <div>{{pb.priceBreak}}</div>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="form-control form-control-sm text-center"
+                  v-model="pb.price"
+                />
+              </li>
+              <li class="list-group-item py-1">250+ Contact Us</li>
+            </ul>
           </div>
         </div>
         <div class="row mt-4">
@@ -187,11 +215,17 @@
 </template>
 
 <script>
+import VueTagsInput from '@johmun/vue-tags-input';
+
 export default {
   name: 'CatalogItemsAdd',
+  components: {
+    VueTagsInput
+  },
   data() {
     return {
-      name: '',
+      nameEN: '',
+      nameFR: '',
       productCode: '',
       styleCode: '',
       sizes: [],
@@ -204,10 +238,65 @@ export default {
       XXL: false,
       XXXL: false,
       XXXXL: false,
-      price: 0.0,
+      priceBreaks: {
+        CAD: [
+          {
+            priceBreak: '1',
+            price: 0.0
+          },
+          {
+            priceBreak: '2-5',
+            price: 0.0
+          },
+          {
+            priceBreak: '6-11',
+            price: 0.0
+          },
+          {
+            priceBreak: '12-49',
+            price: 0.0
+          },
+          {
+            priceBreak: '50-99',
+            price: 0.0
+          },
+          {
+            priceBreak: '100-249',
+            price: 0.0
+          }
+        ],
+        USD: [
+          {
+            priceBreak: '1',
+            price: 0.0
+          },
+          {
+            priceBreak: '2-5',
+            price: 0.0
+          },
+          {
+            priceBreak: '6-11',
+            price: 0.0
+          },
+          {
+            priceBreak: '12-49',
+            price: 0.0
+          },
+          {
+            priceBreak: '50-99',
+            price: 0.0
+          },
+          {
+            priceBreak: '100-249',
+            price: 0.0
+          }
+        ]
+      },
       gender: '',
-      description: '',
+      descriptionEN: '',
+      descriptionFR: '',
       category: '',
+      categories: [],
       images: [],
       isActive: true
     };
@@ -258,14 +347,16 @@ export default {
     addCatalogItem: async function() {
       const newCatalogItem = {
         catalogId: this.catalog._id,
-        name: this.name,
+        nameEN: this.nameEN,
+        nameFR: this.nameFR,
         productCode: this.productCode,
         styleCode: this.styleCode,
         sizes: this.sizes,
-        price: this.price,
+        priceBreaks: this.priceBreaks,
         gender: this.gender,
-        description: this.description,
-        category: this.category
+        descriptionEN: this.descriptionEN,
+        descriptionFR: this.descriptionFR,
+        categories: this.categories
       };
       try {
         const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);
@@ -290,3 +381,18 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.list-group-item {
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  input {
+    width: 80px;
+    height: 30px;
+  }
+}
+</style>

@@ -55,14 +55,16 @@ router.post('/', [auth, admin], async (req, res) => {
 
   const {
     catalogId,
-    name,
+    nameEN,
+    nameFR,
     productCode,
     styleCode,
     sizes,
-    price,
+    priceBreaks,
     gender,
-    description,
-    category
+    descriptionEN,
+    descriptionFR,
+    categories
   } = req.body;
 
   let item = await CatalogItem.findOne({
@@ -76,18 +78,19 @@ router.post('/', [auth, admin], async (req, res) => {
 
   item = new CatalogItem({
     catalogId,
-    name,
+    nameEN,
+    nameFR,
     productCode,
     styleCode,
     sizes,
-    price,
+    priceBreaks,
     gender,
-    description,
-    category
+    descriptionEN,
+    descriptionFR,
+    categories
   });
 
   await item.save();
-  // eslint-disable-next-line no-underscore-dangle
   return res.status(200).send([{ message: 'Item added to Catalog' }]);
 });
 
@@ -97,14 +100,16 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   if (error) return res.status(400).send(error.details);
 
   const {
-    name,
+    nameEN,
+    nameFR,
     productCode,
     styleCode,
     sizes,
-    price,
+    priceBreaks,
     gender,
-    description,
-    category,
+    descriptionEN,
+    descriptionFR,
+    categories,
     images,
     isActive
   } = req.body;
@@ -120,14 +125,16 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   });
   if (duplicateItem) return res.status(400).send([{ message: 'Item already exists.' }]);
 
-  item.name = name;
+  item.nameEN = nameEN;
+  item.nameFR = nameFR;
   item.productCode = productCode;
   item.styleCode = styleCode;
   item.sizes = sizes;
-  item.price = price;
+  item.priceBreaks = priceBreaks;
   item.gender = gender;
-  item.description = description;
-  item.category = category;
+  item.descriptionEN = descriptionEN;
+  item.descriptionFR = descriptionFR;
+  item.categories = categories;
   item.images = images;
   item.isActive = isActive;
 

@@ -10,11 +10,16 @@ const CatalogItemSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'catalogs'
     },
-    name: {
+    nameEN: {
       type: String,
       required: true,
-      minlength: 5,
-      trim: true
+      trim: true,
+      uppercase: true
+    },
+    nameFR: {
+      type: String,
+      trim: true,
+      uppercase: true
     },
     productCode: {
       type: String,
@@ -30,6 +35,7 @@ const CatalogItemSchema = new mongoose.Schema(
     },
     sizes: [
       {
+        _id: false,
         type: String,
         trim: true,
         required: true,
@@ -37,37 +43,56 @@ const CatalogItemSchema = new mongoose.Schema(
         uppercase: true
       }
     ],
-    price: {
-      type: Float,
-      required: true,
-      min: 0.0
-    },
-    priceBreaks: [
-      {
-        break: {
-          type: Number
-        },
-        price: {
-          type: Number
+    priceBreaks: {
+      CAD: [
+        {
+          _id: false,
+          priceBreak: {
+            type: String
+          },
+          price: {
+            type: Float
+          }
         }
-      }
-    ],
+      ],
+      USD: [
+        {
+          _id: false,
+          priceBreak: {
+            type: String
+          },
+          price: {
+            type: Float
+          }
+        }
+      ]
+    },
     gender: {
       type: String,
       required: true,
       uppercase: true,
       trim: true
     },
-    description: {
+    descriptionEN: {
       type: String,
       trim: true,
       required: true
     },
-    category: {
+    descriptionFR: {
       type: String,
-      required: true,
       trim: true
     },
+    categories: [
+      {
+        _id: false,
+        text: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        tiClasses: []
+      }
+    ],
     images: [{ type: String, trim: true }],
     isActive: {
       type: Boolean,
@@ -80,9 +105,11 @@ const CatalogItemSchema = new mongoose.Schema(
 function validateCatalogItem(catalogItem) {
   const schema = {
     catalogId: Joi.objectId().required(),
-    name: Joi.string()
-      .min(5)
+    nameEN: Joi.string()
       .required()
+      .trim(),
+    nameFR: Joi.string()
+      .allow('', null)
       .trim(),
     productCode: Joi.string()
       .required()
@@ -102,18 +129,21 @@ function validateCatalogItem(catalogItem) {
     gender: Joi.string()
       .required()
       .trim(),
-    category: Joi.string()
+    categories: Joi.array().items({
+      text: Joi.string()
+        .allow('', null)
+        .trim(),
+      tiClasses: Joi.array()
+    }),
+    priceBreaks: Joi.object({
+      CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
+      USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
+    }),
+    descriptionEN: Joi.string()
       .required()
       .trim(),
-    price: Joi.number()
-      .required()
-      .min(0),
-    priceBreaks: Joi.array().items({
-      break: Joi.number(),
-      price: Joi.number()
-    }),
-    description: Joi.string()
-      .required()
+    descriptionFR: Joi.string()
+      .allow('', null)
       .trim(),
     images: Joi.array().items(
       Joi.string()
@@ -126,9 +156,11 @@ function validateCatalogItem(catalogItem) {
 
 function validateCatalogItemEdit(catalogItem) {
   const schema = {
-    name: Joi.string()
-      .min(5)
+    nameEN: Joi.string()
       .required()
+      .trim(),
+    nameFR: Joi.string()
+      .allow('', null)
       .trim(),
     productCode: Joi.string()
       .required()
@@ -145,16 +177,25 @@ function validateCatalogItemEdit(catalogItem) {
           .min(1)
           .trim()
       ),
-    price: Joi.number()
-      .required()
-      .min(0),
     gender: Joi.string()
       .required()
       .trim(),
-    description: Joi.string().trim(),
-    category: Joi.string()
+    descriptionEN: Joi.string()
       .required()
       .trim(),
+    descriptionFR: Joi.string()
+      .trim()
+      .allow('', null),
+    categories: Joi.array().items({
+      text: Joi.string()
+        .allow('', null)
+        .trim(),
+      tiClasses: Joi.array()
+    }),
+    priceBreaks: Joi.object({
+      CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
+      USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
+    }),
     images: Joi.array().items(Joi.string().uri()),
     isActive: Joi.boolean()
   };

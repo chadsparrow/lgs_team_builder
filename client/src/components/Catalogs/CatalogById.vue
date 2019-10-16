@@ -29,10 +29,10 @@
       >
         <div class="info-container">
           <div class="thumbnail-img">
-            <img :src="getImgUrl(item)" :alt="item.name" />
+            <img :src="getImgUrl(item)" :alt="item.nameEN" />
           </div>
           <div class="thumbnail-body">
-            <span>{{item.name}}</span>
+            <span>{{item.nameEN}}</span>
             <br />
             <small class="text-muted">PRODUCT - {{item.productCode}}</small>
             <br />
