@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-4 container-fluid">
-    <div v-if="member && !member.isAdmin">
+  <div class="mt-4 container-fluid" v-if='dataReady'>
+    <div v-if="!member.isAdmin">
       <span>You do not have access to Add Members</span>
       <br />
       <br />
@@ -16,14 +16,14 @@
       </div>
       <div class="row mt-2">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-info" :disabled="!chosenMember">Add Member</button>
+          <button type="submit" class="btn btn-block btn-info" :disabled="!chosenMember">
+            Add Member
+          </button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/teams/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>
@@ -38,6 +38,7 @@ export default {
   name: 'TeamsAddMember',
   data() {
     return {
+      dataReady: false,
       id: '',
       name: '',
       managerId: '',
@@ -96,6 +97,7 @@ export default {
       });
 
       this.members = availMembers;
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

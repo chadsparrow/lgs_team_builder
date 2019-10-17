@@ -1,15 +1,19 @@
 <template>
   <div class="navItem">
-    <button class="btn btn-info" @click="showNotifications=!showNotifications">
+    <button class="btn btn-info" @click="showNotifications = !showNotifications">
       <i class="fas fa-envelope fa-lg"></i>
-      <span class="badge badge-danger ml-2" v-if="notifications.length >0">{{notifications.length}}</span>
-      <span class="badge badge-info ml-2" v-else>{{notifications.length}}</span>
+      <span class="badge badge-danger ml-2" v-if="notifications.length > 0">{{
+        notifications.length
+      }}</span>
+      <span class="badge badge-info ml-2" v-else>{{ notifications.length }}</span>
     </button>
     <ul class="notificationsList list-group" v-if="showNotifications">
       <li
         class="list-group-item list-group-item-action list-group-item-empty"
-        v-if="notifications.length ===0"
-      >You have no notifications</li>
+        v-if="notifications.length === 0"
+      >
+        You have no notifications
+      </li>
       <li
         class="list-group-item list-group-item-action"
         v-for="notification of notifications"
@@ -19,11 +23,11 @@
           <div>
             <small class="text-muted">
               {{
-              notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+                notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </small>
           </div>
-          <div>{{notification.message}}</div>
+          <div>{{ notification.message }}</div>
         </div>
         <button class="btn btn-danger btn-sm" @click="deleteNotification(notification._id)">
           <i class="fas fa-times"></i>
@@ -122,4 +126,3 @@ export default {
   }
 }
 </style>
-

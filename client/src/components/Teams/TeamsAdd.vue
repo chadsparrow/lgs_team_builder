@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" v-if="dataReady">
     <div class="row">
       <div class="col middle-section">
         <form novalidate>
@@ -35,15 +35,15 @@
                 v-model="adminId"
                 ref="adminId"
               >
-                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
-                  {{
-                  admin.name
-                  }}
-                </option>
+                <option
+                  v-for="admin of adminsList"
+                  :key="admin._id"
+                  :value="admin._id"
+                >{{ admin.name }}</option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-6" v-if="members && members.length > 0">
+            <div class="form-group col-sm-6" v-if="members.length > 0">
               <label for="managerId">Team Manager</label>
               <vSelect
                 id="managerId"
@@ -397,6 +397,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       name: '',
       logo: null,
       adminId: '',
@@ -447,7 +448,7 @@ export default {
 
       await this.$store.dispatch('getMembers');
       this.adminId = this.member._id;
-
+      this.dataReady = true;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

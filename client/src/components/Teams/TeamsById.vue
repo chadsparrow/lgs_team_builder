@@ -1,8 +1,8 @@
 <template>
-  <div class="teampage">
+  <div class="teampage" v-if="dataReady">
     <!-- TEAM INFO GRID SECTION -->
     <div class="team-info">
-      <div v-if="team && team.name">
+      <div v-if="team.name">
         <avatar
           :username="team.name"
           :size="150"
@@ -29,12 +29,14 @@
 
         <div class="row p-1" v-if="team.createdAt && team.timezone">
           <small class="col-sm-12 text-info">Team Since:</small>
-          <span
-            class="col-sm-12"
-          >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
+          <span class="col-sm-12">
+            {{
+            team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
+            }}
+          </span>
         </div>
 
-        <div class="row p-1" v-if="team.adminId && team.adminId.name">
+        <div class="row p-1" v-if="team.adminId.name">
           <small class="col-sm-12 text-info">Team Admin:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}
@@ -43,7 +45,7 @@
           </span>
         </div>
 
-        <div class="row p-1" v-if="team.managerId && team.managerId.name">
+        <div class="row p-1" v-if="team.managerId.name">
           <small class="col-sm-12 text-info">Team Manager:</small>
           <span class="col-sm-12">
             {{ team.managerId.name }}
@@ -67,7 +69,7 @@
 
     <!-- MEMBER LIST SECTION -->
     <div class="member-list">
-      <div class="row p-1" v-if="team && team.members && team.members.length > 0">
+      <div class="row p-1" v-if="team.members.length > 0">
         <small class="text-info col-sm-12 mb-1">
           Member List:
           <span class="ml-3">{{ team.members.length }}</span>
@@ -83,7 +85,7 @@
               <div class="memberIcons">
                 <i
                   class="fas fa-certificate text-warning mr-2"
-                  v-if="team.managerId && team.managerId._id === teammember._id"
+                  v-if="team.managerId._id === teammember._id"
                 ></i>
                 <span>{{ teammember.name }}</span>
               </div>
@@ -101,7 +103,7 @@
     </div>
 
     <!-- MEMBER BUTTONS SECTION -->
-    <div class="member-buttons" v-if="team && member && member.isAdmin">
+    <div class="member-buttons" v-if="member.isAdmin">
       <div class="row p-1">
         <div class="col-sm-12">
           <router-link
@@ -119,7 +121,7 @@
     </div>
 
     <!-- STORES SECTION -->
-    <div class="stores-section" v-if="team && team.managerId && team.managerId.name">
+    <div class="stores-section" v-if="team.managerId.name">
       <router-link
         :to="`/dashboard/teams/${team._id}/addstore`"
         class="btn btn-info mb-2"
@@ -127,7 +129,7 @@
       >
         <i class="fas fa-plus mr-2"></i>Add Team Store
       </router-link>
-      <div class="table-responsive" v-if="stores && stores.length > 0">
+      <div class="table-responsive" v-if="stores.length > 0">
         <table class="table table-hover table-striped">
           <tbody>
             <tr>
@@ -188,7 +190,7 @@
 
     <!-- CONTACT BAR SECTION -->
     <div class="contact-bar">
-      <div v-if="team && team.managerId && team.managerId.name">
+      <div v-if="team.managerId.name">
         <div class="section-header bg-secondary">Main Contact</div>
         <div class="row info-spans">
           <div class="col-sm-12">
@@ -206,32 +208,32 @@
             <br />
             <span>{{ team.mainContact.email }}</span>
           </div>
-          <div class="col-sm-12" v-if="member && member.isAdmin">
+          <div class="col-sm-12" v-if="member.isAdmin">
             <small>Address 1</small>
             <br />
             <span>{{ team.mainContact.address1 }}</span>
           </div>
-          <div class="col-sm-12" v-if="member && member.isAdmin && team.mainContact.address2">
+          <div class="col-sm-12" v-if="member.isAdmin && team.mainContact.address2">
             <small>Address 2</small>
             <br />
-            <span>{{ team.mainContact.address2}}</span>
+            <span>{{ team.mainContact.address2 }}</span>
           </div>
-          <div class="col-sm-12" v-if="member && member.isAdmin">
+          <div class="col-sm-12" v-if="member.isAdmin">
             <small>City</small>
             <br />
             <span>{{ team.mainContact.city }}</span>
           </div>
-          <div class="col-sm-12" v-if="member && member.isAdmin">
+          <div class="col-sm-12" v-if="member.isAdmin">
             <small>State/Province</small>
             <br />
             <span>{{ team.mainContact.stateProv }}</span>
           </div>
-          <div class="col-sm-6" v-if="member && member.isAdmin">
+          <div class="col-sm-6" v-if="member.isAdmin">
             <small>Country</small>
             <br />
             <span>{{ team.mainContact.country }}</span>
           </div>
-          <div class="col-sm-6" v-if="member && member.isAdmin">
+          <div class="col-sm-6" v-if="member.isAdmin">
             <small>Zip/Postal</small>
             <br />
             <span>{{ team.mainContact.zipPostal }}</span>
@@ -267,7 +269,7 @@
           <div class="col-sm-12" v-if="team.bulkShipping.address2">
             <small>Address 2</small>
             <br />
-            <span>{{ team.bulkShipping.address2}}</span>
+            <span>{{ team.bulkShipping.address2 }}</span>
           </div>
           <div class="col-sm-12">
             <small>City</small>
@@ -298,7 +300,7 @@
         <router-link
           :to="`/dashboard/teams/${team._id}/edit`"
           class="btn btn-block btn-info mt-3"
-          v-if="member && member.isAdmin"
+          v-if="member.isAdmin"
         >
           <i class="fas fa-cog mr-3"></i>Edit Team Details
         </router-link>
@@ -317,6 +319,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 10
     };
@@ -376,6 +379,7 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeamStores', this.$route.params.id);
+      this.dataReady = true;
     } catch (err) {
       if (err.response.data[0].message !== 'Team has no stores.')
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -391,7 +395,7 @@ export default {
       this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
     },
     loadMember: function(id) {
-      if (this.member && this.member._id === id) {
+      if (this.dataReady && this.member._id === id) {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
       } else if (this.access) {
         return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});

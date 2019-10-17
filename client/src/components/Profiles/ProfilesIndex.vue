@@ -1,13 +1,11 @@
 <template>
-  <div class="page">
-    <div class="sidebar-left" v-if="memberDetails && memberDetails._id">
+  <div class="page" v-if="dataReady">
+    <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="memberDetails.email" default-img="mp" :size="255" />
-        <a
-          href="https://gravatar.com"
-          target="_blank"
-          class="btn btn-sm btn-block btn-info mt-1"
-        >Update your Gravatar</a>
+        <a href="https://gravatar.com" target="_blank" class="btn btn-sm btn-block btn-info mt-1"
+          >Update your Gravatar</a
+        >
       </div>
       <div class="row p-1 mt-3">
         <small class="col-sm-12 text-info">My Timezone:</small>
@@ -17,8 +15,8 @@
         <small class="col-sm-12 text-info">Member Since:</small>
         <span class="col-sm-12">
           {{
-          memberDetails.createdAt
-          | moment('timezone', memberDetails.timezone, 'MMM Do YYYY - hh:mm a - z')
+            memberDetails.createdAt
+              | moment('timezone', memberDetails.timezone, 'MMM Do YYYY - hh:mm a - z')
           }}
         </span>
       </div>
@@ -32,7 +30,7 @@
         <i class="fas fa-envelope mr-2" style="vertical-align: middle;"></i>Update Email Address
       </router-link>
     </div>
-    <div class="middle-section" v-if="memberDetails && memberDetails._id">
+    <div class="middle-section">
       <div class="row">
         <div class="contactSection col-sm-4">
           <div class="section-header bg-secondary">
@@ -210,6 +208,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       memberDetails: {}
     };
   },
@@ -225,6 +224,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       const res = await this.$store.dispatch('getMemberDetails', this.member._id);
       this.memberDetails = res.data.member;
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
@@ -243,4 +243,3 @@ export default {
   grid-template-areas: 'sidebar-left middle-section';
 }
 </style>
-

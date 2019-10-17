@@ -1,6 +1,6 @@
 <template>
-  <div class="page">
-    <div class="sidebar-left" v-if="member && member.name">
+  <div class="page" v-if="dataReady">
+    <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="member.email" default-img="mp" :size="255" />
       </div>
@@ -30,7 +30,7 @@
         v-if="!member.isAdmin"
       >Deactivate Member</button>
     </div>
-    <div class="middle-section" v-if="member && member.name">
+    <div class="middle-section">
       <form class="mb-5">
         <div class="row">
           <div class="contactSection col-sm-4">
@@ -475,6 +475,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       shippingSame: false,
       billingSame: false,
       backupBilling: {},
@@ -495,6 +496,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      this.dataReady = true;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

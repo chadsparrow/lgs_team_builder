@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 container">
+  <div class="mt-4 container" v-if="dataReady">
     <div v-if="!access && id">
       <span>You do not have access to Remove Members</span>
       <br />
@@ -53,6 +53,7 @@ export default {
   name: 'TeamsRemoveMembers',
   data() {
     return {
+      dataReady: false,
       id: '',
       name: '',
       manager: '',
@@ -85,11 +86,11 @@ export default {
       ];
     },
     access: function() {
-      if (this.member && this.member.isAdmin) return true;
-
-      if (this.manager._id === this.member._id) return true;
-
-      return false;
+      if (this.dataReady) {
+        if (this.member.isAdmin) return true;
+        if (this.manager._id === this.member._id) return true;
+        return false;
+      }
     }
   },
   created: async function() {
@@ -107,6 +108,7 @@ export default {
       });
 
       this.members = filtered;
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

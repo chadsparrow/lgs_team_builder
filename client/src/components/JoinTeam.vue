@@ -7,7 +7,7 @@
             <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
           </div>
           <div class="col-sm-9 text-center">
-            <h1>{{team.name}} Welcomes You!</h1>
+            <h1>{{ team.name }} Welcomes You!</h1>
             <small>Please fill in your information to join the team.</small>
           </div>
         </div>
@@ -503,8 +503,7 @@ export default {
   },
   created: async function() {
     try {
-      const res = await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
-      const teamName = res.data.name;
+      await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

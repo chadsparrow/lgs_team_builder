@@ -1,6 +1,6 @@
 <template>
-  <div class="page">
-    <div class="sidebar-left" v-if="memberDetails && memberDetails.name">
+  <div class="page" v-if="dataReady">
+    <div class="sidebar-left">
       <div class="row p-1">
         <small class="col-sm-12 text-info">Your Timezone:</small>
         <span class="col-sm-12">{{ memberDetails.timezone }}</span>
@@ -13,15 +13,17 @@
             <em>** Important Notice **</em>
           </strong>
         </span>
-        <small
-          class="col-sm-12 mt-2 text-muted"
-        >Changes to your profile will only update shipping details for orders that have not been processed, or for stores that are currently open.</small>
-        <small
-          class="col-sm-12 mt-2 text-muted"
-        >Your shipping information will stay the same for already processed orders or stores that are closed as they were recorded at that time.</small>
+        <small class="col-sm-12 mt-2 text-muted">
+          Changes to your profile will only update shipping details for orders that have not been
+          processed, or for stores that are currently open.
+        </small>
+        <small class="col-sm-12 mt-2 text-muted">
+          Your shipping information will stay the same for already processed orders or stores that
+          are closed as they were recorded at that time.
+        </small>
       </div>
     </div>
-    <div class="middle-section" v-if="memberDetails && memberDetails.name">
+    <div class="middle-section">
       <form>
         <div class="row">
           <div class="contactSection col-sm-4">
@@ -423,16 +425,15 @@
 <script>
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
-import Switches from 'vue-switches';
 
 export default {
   name: 'ProfilesEdit',
   components: {
-    VuePhoneNumberInput,
-    Switches
+    VuePhoneNumberInput
   },
   data() {
     return {
+      dataReady: false,
       shippingSame: false,
       billingSame: false,
       backupBilling: {},
@@ -462,6 +463,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       const res = await this.$store.dispatch('getMemberDetails', this.member._id);
       this.memberDetails = res.data.member;
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

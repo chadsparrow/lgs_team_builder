@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dataReady">
     <div class="row mb-3" v-if="isAdmin">
       <div class="col-sm-12">
         <router-link to="/dashboard/teams/add" class="btn btn-info">
@@ -10,7 +10,7 @@
         <input
           type="text"
           id="teamSearchText"
-          v-if="teams && teams.length > 0"
+          v-if="teams.length > 0"
           class="form-control form-control-sm"
           v-model="teamSearchText"
           placeholder="Enter any text to filter the team list..."
@@ -21,15 +21,12 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <span v-if="currentTeams && currentTeams.length === 0 && isAdmin">No Teams Found</span>
+        <span v-if="currentTeams.length === 0 && isAdmin">No Teams Found</span>
         <span
-          v-else-if="currentTeams && currentTeams.length === 0"
+          v-else-if="currentTeams.length === 0"
         >No Teams Found - Contact your team manager to add you</span>
         <div class="table-responsive" v-else>
-          <table
-            class="table table-hover table-striped"
-            v-if="currentTeams && currentTeams.length > 0"
-          >
+          <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
             <tbody>
               <tr>
                 <th scope="col">Account #</th>
@@ -45,7 +42,7 @@
                 <td>
                   <i
                     class="fas fa-certificate text-warning mr-1"
-                    v-if="member && team.managerId && team.managerId._id === member._id"
+                    v-if="team.managerId._id === member._id"
                   ></i>
                   {{ team.managerId.name }}
                 </td>
@@ -82,6 +79,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12,
       breadcrumbs: [
@@ -99,13 +97,14 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
       await this.$store.dispatch('getTeams');
       await this.$store.commit('CLEAR_CURRENTS');
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   computed: {
     isAdmin: function() {
-      if (this.member) {
+      if (this.dataReady) {
         return this.member.isAdmin;
       }
     },
@@ -116,16 +115,18 @@ export default {
       return this.$store.getters.teams;
     },
     filteredTeams: function() {
-      return this.teams.filter(team => {
-        if (
-          team.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-          team.teamId.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-          team.adminId.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-          team.managerId.name.toLowerCase().includes(this.teamSearchText.toLowerCase())
-        ) {
-          return team;
-        }
-      });
+      if (this.dataReady) {
+        return this.teams.filter(team => {
+          if (
+            team.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+            team.teamId.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+            team.adminId.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+            team.managerId.name.toLowerCase().includes(this.teamSearchText.toLowerCase())
+          ) {
+            return team;
+          }
+        });
+      }
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-2">
+  <div class="mt-2" v-if="dataReady">
     <form @submit.prevent="editCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
@@ -66,6 +66,11 @@
 <script>
 export default {
   name: 'CatalogByIdEdit',
+  data() {
+    return {
+      dataReady: false
+    };
+  },
   computed: {
     catalog: function() {
       return this.$store.getters.currentCatalog;
@@ -74,6 +79,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
+      this.dataReady = true;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

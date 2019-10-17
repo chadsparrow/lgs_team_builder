@@ -1,6 +1,5 @@
 <template>
-  <div class="container">
-    <div v-if="catalog && catalog._id">
+  <div class="container" v-if="dataReady">
       <form @submit.prevent="addCatalogItem" novalidate>
         <div class="row">
           <div class="form-group col-sm-6">
@@ -141,7 +140,7 @@
               style="width: 100%;"
               v-model="category"
               :tags="categories"
-              @tags-changed="newCategories => categories = newCategories"
+              @tags-changed="newCategories => (categories = newCategories)"
             />
           </div>
           <div class="form-group col-sm-3">
@@ -168,7 +167,7 @@
             <label for="priceBreaksCAD">Price Breaks (CAD)</label>
             <ul class="list-group" id="priceBreaksCAD">
               <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
-                <div>{{pb.priceBreak}}</div>
+                <div>{{ pb.priceBreak }}</div>
                 <input
                   type="number"
                   min="0"
@@ -184,7 +183,7 @@
             <label for="priceBreaksUSD">Price Breaks (USD)</label>
             <ul class="list-group" id="priceBreaksUSD">
               <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
-                <div>{{pb.priceBreak}}</div>
+                <div>{{ pb.priceBreak }}</div>
                 <input
                   type="number"
                   min="0"
@@ -210,7 +209,6 @@
           </div>
         </div>
       </form>
-    </div>
   </div>
 </template>
 
@@ -224,6 +222,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       nameEN: '',
       nameFR: '',
       productCode: '',
@@ -309,6 +308,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
+      this.dataReady = true;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

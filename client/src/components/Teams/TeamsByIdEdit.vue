@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
+  <div class="page" v-if="dataReady">
     <div class="sidebar-left">
-      <div v-if="team && team.name">
+      <div v-if="team.name">
         <avatar
           :username="team.name"
           :size="225"
@@ -16,16 +16,18 @@
         </div>
         <div class="row p-1" v-if="team.createdAt && team.timezone">
           <small class="col-sm-12 text-info">Team Since:</small>
-          <span
-            class="col-sm-12"
-          >{{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
+          <span class="col-sm-12">
+            {{
+            team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
+            }}
+          </span>
         </div>
       </div>
       <div v-else>
         <div class="placeholderImg"></div>
       </div>
     </div>
-    <div class="middle-section" v-if="team && team.name">
+    <div class="middle-section" v-if="team.name">
       <form novalidate>
         <div class="row">
           <div class="form-group col-sm-12">
@@ -51,15 +53,15 @@
               v-model="team.adminId._id"
               ref="adminId"
             >
-              <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">
-                {{
-                admin.name
-                }}
-              </option>
+              <option
+                v-for="admin of adminsList"
+                :key="admin._id"
+                :value="admin._id"
+              >{{ admin.name }}</option>
             </select>
           </div>
           <!-- MANAGER SELECTOR -->
-          <div class="form-group col-sm-4" v-if="team.members && team.members.length > 0">
+          <div class="form-group col-sm-4" v-if="team.members.length > 0">
             <label for="managerId">Manager</label>
             <select
               class="form-control form-control-sm"
@@ -68,11 +70,11 @@
               ref="managerId"
               @change="getManagerDetails()"
             >
-              <option v-for="manager of team.members" :key="manager._id" :value="manager._id">
-                {{
-                manager.name
-                }}
-              </option>
+              <option
+                v-for="manager of team.members"
+                :key="manager._id"
+                :value="manager._id"
+              >{{ manager.name }}</option>
             </select>
           </div>
         </div>
@@ -429,6 +431,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       managerDetails: {},
       useManagerDetails: false,
       bulkUseDetails: 'other',
@@ -474,6 +477,7 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

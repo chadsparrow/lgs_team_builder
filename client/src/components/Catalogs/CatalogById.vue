@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
-    <div class="header" v-if="catalog">
-      <div>{{catalog.brand}} - {{catalog.season}} - {{catalog.year}}</div>
+  <div class="page" v-if="dataReady">
+    <div class="header">
+      <div>{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</div>
       <div>
         <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">
           <i class="fas fa-plus fa-lg"></i>
@@ -17,10 +17,7 @@
         </button>
       </div>
     </div>
-    <div
-      :class="viewGrid ? 'galleryThumb' : 'galleryList'"
-      v-if="catalogItems && catalogItems.length > 0"
-    >
+    <div :class="viewGrid ? 'galleryThumb' : 'galleryList'" v-if="catalogItems.length > 0">
       <router-link
         class="thumbnail"
         v-for="item of catalogItems"
@@ -32,11 +29,11 @@
             <img :src="getImgUrl(item)" :alt="item.nameEN" />
           </div>
           <div class="thumbnail-body">
-            <span>{{item.nameEN}}</span>
+            <span>{{ item.nameEN }}</span>
             <br />
-            <small class="text-muted">PRODUCT - {{item.productCode}}</small>
+            <small class="text-muted">PRODUCT - {{ item.productCode }}</small>
             <br />
-            <small class="text-muted">STYLE - {{item.styleCode}}</small>
+            <small class="text-muted">STYLE - {{ item.styleCode }}</small>
           </div>
         </div>
       </router-link>
@@ -49,6 +46,7 @@ export default {
   name: 'CatalogById',
   data() {
     return {
+      dataReady: false,
       viewGrid: true
     };
   },
@@ -76,15 +74,16 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogItems', this.catalog._id);
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
     getImgUrl(item) {
-      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
+      if (item.images.length === 0) return '@/assets/missing_item_800.png';
 
-      return require(`${item.images[0]}`);
+      return item.images[0];
     },
     setView(bool) {
       if (bool) this.viewGrid = true;
@@ -219,4 +218,3 @@ export default {
   }
 }
 </style>
-

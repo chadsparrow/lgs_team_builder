@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <span v-if="currentOrders && currentOrders.length === 0">No Orders Found</span>
+  <div v-if="dataReady">
+    <span v-if="currentOrders.length === 0">No Orders Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -49,6 +49,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12
     };
@@ -88,6 +89,7 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getOrders');
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

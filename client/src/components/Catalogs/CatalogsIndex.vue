@@ -1,12 +1,12 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" v-if="dataReady">
     <div class="row">
       <div class="col-sm-12 mb-2">
         <router-link to="/dashboard/catalogs/add" class="btn btn-info">
           <i class="fas fa-plus mr-2"></i> Add Catalog
         </router-link>
       </div>
-      <div class="col-sm-12 mb-2" v-if="currentCatalogs && currentCatalogs.length === 0">
+      <div class="col-sm-12 mb-2" v-if="currentCatalogs.length === 0">
         <span>No Catalogs Found</span>
       </div>
       <div class="col-sm-12" v-else>
@@ -53,6 +53,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 15
     };
@@ -69,6 +70,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogs');
       await this.$store.commit('CLEAR_CURRENTS');
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

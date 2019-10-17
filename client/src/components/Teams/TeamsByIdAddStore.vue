@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
+  <div class="page" v-if="dataReady">
     <div class="sidebar-left">
-      <div v-if="team && team.name">
+      <div v-if="team.name">
         <avatar
           :username="team.name"
           :size="225"
@@ -35,7 +35,7 @@
         <div class="placeholderImg"></div>
       </div>
     </div>
-    <div class="middle-section" v-if="team && team.managerId && team.managerId.name">
+    <div class="middle-section" v-if="team.managerId.name">
       <form novalidate>
         <!-- STORE INFO-->
         <div class="section-header mb-2 bg-secondary">
@@ -261,6 +261,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       storeName: '',
       storeCountry: '',
       currency: '',
@@ -308,6 +309,7 @@ export default {
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.storeCountry = this.team.bulkShipping.country;
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

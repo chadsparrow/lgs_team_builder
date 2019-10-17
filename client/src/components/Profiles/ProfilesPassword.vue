@@ -33,7 +33,9 @@
         />
       </div>
       <div class="col sm-6">
-        <button class="btn btn-block btn-info" @click.prevent="changePassword">Change Password</button>
+        <button class="btn btn-block btn-info" @click.prevent="changePassword">
+          Change Password
+        </button>
       </div>
       <div class="col sm-6">
         <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
@@ -113,4 +115,3 @@ form {
   width: 600px;
 }
 </style>
-

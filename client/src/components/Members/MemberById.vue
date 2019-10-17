@@ -1,16 +1,14 @@
 <template>
-  <div class="page">
-    <div class="sidebar-left" v-if="member && member.name">
+  <div class="page" v-if="dataReady">
+    <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="member.email" default-img="mp" :size="255" />
       </div>
       <div class="row p-1 mt-2">
         <small class="col-sm-12 text-info">Member Since:</small>
-        <span class="col-sm-12">
-          {{
-          member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
-          }}
-        </span>
+        <span
+          class="col-sm-12"
+        >{{ member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Member Role:</small>
@@ -32,7 +30,7 @@
         </ul>
       </div>
     </div>
-    <div class="middle-section" v-if="member && member.name">
+    <div class="middle-section">
       <div class="section-header bg-secondary">
         <span class="text-white">Contact</span>
       </div>
@@ -45,7 +43,7 @@
         <div class="col-sm-3">
           <label class="text-info">Company</label>
           <br />
-          <span>{{ member.company || '--'}}</span>
+          <span>{{ member.company || '--' }}</span>
         </div>
         <div class="col-sm-6">
           <label class="text-info">Email</label>
@@ -100,7 +98,7 @@
         <div class="col-sm-3">
           <label class="text-info">Company</label>
           <br />
-          <span>{{ member.billing.company || '--'}}</span>
+          <span>{{ member.billing.company || '--' }}</span>
         </div>
         <div class="col-sm-6">
           <label class="text-info">Email</label>
@@ -155,7 +153,7 @@
         <div class="col-sm-3">
           <label class="text-info">Company</label>
           <br />
-          <span>{{ member.shipping.company || '--'}}</span>
+          <span>{{ member.shipping.company || '--' }}</span>
         </div>
         <div class="col-sm-6">
           <label class="text-info">Email</label>
@@ -217,6 +215,11 @@ export default {
   components: {
     Gravatar
   },
+  data() {
+    return {
+      dataReady: false
+    };
+  },
   computed: {
     currentMember: function() {
       return this.$store.getters.loggedInMember;
@@ -237,6 +240,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      this.dataReady = true;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

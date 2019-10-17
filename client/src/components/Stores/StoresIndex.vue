@@ -1,11 +1,11 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" v-if="dataReady">
     <div class="row">
       <div class="col-sm-4">
         <input
           type="text"
           id="storesSearchText"
-          v-if="stores && stores.length > 0"
+          v-if="stores.length > 0"
           class="form-control form-control-sm mb-3"
           v-model="storesSearchText"
           placeholder="Enter any text to filter the stores list..."
@@ -14,7 +14,9 @@
       </div>
     </div>
 
-    <span class="text-center" v-if="currentStores && currentStores.length === 0">No Stores Found</span>
+    <span class="text-center" v-if="currentStores.length === 0"
+      >No Stores Found</span
+    >
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -41,15 +43,17 @@
             <td>{{ store.closingDate || 'No Closing Date' }}</td>
             <td
               :class="
-                  store.mode === 'OPEN'
-                    ? 'bg-success text-white text-center'
-                    : store.mode === 'CLOSED'
-                    ? 'bg-danger text-white text-center'
-                    : store.mode === 'HOLD'
-                    ? 'bg-warning text-white text-center'
-                    : null
-                "
-            >{{ store.mode }}</td>
+                store.mode === 'OPEN'
+                  ? 'bg-success text-white text-center'
+                  : store.mode === 'CLOSED'
+                  ? 'bg-danger text-white text-center'
+                  : store.mode === 'HOLD'
+                  ? 'bg-warning text-white text-center'
+                  : null
+              "
+            >
+              {{ store.mode }}
+            </td>
             <td>{{ store.totalOrders }}</td>
             <td>{{ store.currency }}</td>
             <td>{{ store.collectedAmount }}</td>
@@ -83,6 +87,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12,
       storesSearchText: ''
@@ -100,6 +105,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getStores');
       await this.$store.commit('CLEAR_CURRENTS');
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
@@ -154,4 +160,3 @@ table {
   font-size: 0.8rem;
 }
 </style>
-

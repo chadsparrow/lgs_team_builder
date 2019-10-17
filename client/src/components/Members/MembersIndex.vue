@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dataReady">
     <div class="row mb-3">
       <div class="col-sm-12">
         <router-link to="/dashboard/members/add" class="btn btn-info">
@@ -10,7 +10,7 @@
         <input
           type="text"
           id="memberSearch"
-          v-if="members && members.length > 0"
+          v-if="members.length > 0"
           class="form-control form-control-sm"
           v-model="memberSearchText"
           placeholder="Enter name or email to find a member..."
@@ -18,7 +18,7 @@
         />
       </div>
     </div>
-    <span v-if="members && members.length === 0">No Members Found</span>
+    <span v-if="members.length === 0">No Members Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -67,6 +67,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12,
       memberSearchText: ''
@@ -84,6 +85,7 @@ export default {
       ];
       await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }

@@ -28,6 +28,7 @@
     "vue-select": "^3.2.0",
     "vue-switches": "^2.0.1",
     "vue-toasted": "^1.1.27",
+    "vuedraggable": "^2.23.2",
     "vuejs-dialog": "^1.4.1",
     "vuejs-paginate": "^2.1.0",
     "vuex": "^3.0.1",
