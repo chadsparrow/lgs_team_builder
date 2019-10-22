@@ -597,7 +597,7 @@ export default new Vuex.Store({
     LOGOUT(state) {
       state.status = '';
       state.token = '';
-      state.member = null;
+      state.loggedInMember = null;
     },
     SET_BREADCRUMBS(state, breadcrumbs) {
       state.breadcrumbs = breadcrumbs;

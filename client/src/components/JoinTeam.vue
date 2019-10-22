@@ -159,15 +159,12 @@
                   @change="copyMembertoBilling"
                   ref="billingSame"
                 />
-                <small
-                  class="form-check-small text-white"
-                  for="billingSame"
-                >Use Contact Information for Billing</small>
+                <small class="form-check-small text-white" for="billingSame">Use Contact</small>
               </div>
             </div>
             <div class="row p-1">
               <div class="form-group col-sm-12">
-                <label for="billingName">Billing Name</label>
+                <label for="billingName">Name</label>
                 <input
                   id="billingName"
                   type="text"
@@ -178,7 +175,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingCompany">Billing Company</label>
+                <label for="billingCompany">Company</label>
                 <input
                   id="billingCompany"
                   type="text"
@@ -189,7 +186,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingEmail">Billing Email</label>
+                <label for="billingEmail">Email</label>
                 <input
                   id="billingEmail"
                   type="text"
@@ -200,7 +197,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingAddress1">Billing Address 1</label>
+                <label for="billingAddress1">Address 1</label>
                 <input
                   id="billingAddress1"
                   type="text"
@@ -211,7 +208,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingAddress2">Billing Address 2</label>
+                <label for="billingAddress2">Address 2</label>
                 <input
                   id="billingAddress2"
                   type="text"
@@ -222,7 +219,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingCity">Billing City</label>
+                <label for="billingCity">City</label>
                 <input
                   id="billingCity"
                   type="text"
@@ -233,7 +230,7 @@
                 />
               </div>
               <div class="form-group col-sm-6">
-                <label for="billingCountry">Billing Country</label>
+                <label for="billingCountry">Country</label>
                 <country-select
                   id="billingCountry"
                   v-model="billingCountry"
@@ -245,7 +242,7 @@
                 />
               </div>
               <div class="form-group col-sm-6">
-                <label for="billingStateProv">Billing State/Province</label>
+                <label for="billingStateProv">State/Province</label>
                 <region-select
                   id="billingStateProv"
                   v-model="billingStateProv"
@@ -258,7 +255,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingZipPostal">Billing Zip/Postal Code</label>
+                <label for="billingZipPostal">Zip/Postal Code</label>
                 <input
                   id="billingZipPostal"
                   type="text"
@@ -269,7 +266,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingPhone">Billing Phone</label>
+                <label for="billingPhone">Phone</label>
                 <input
                   type="text"
                   id="billingPhone"
@@ -304,15 +301,12 @@
                   @change="copyMemberToShipping"
                   ref="shippingSame"
                 />
-                <small
-                  class="form-check-label text-white"
-                  for="shippingSame"
-                >Use Contact Information for Shipping</small>
+                <small class="form-check-label text-white" for="shippingSame">Use Contact</small>
               </div>
             </div>
             <div class="row p-1">
               <div class="form-group col-sm-12">
-                <label for="shippingName">Shipping Name</label>
+                <label for="shippingName">Name</label>
                 <input
                   id="shippingName"
                   type="text"
@@ -323,7 +317,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingCompany">Shipping Company</label>
+                <label for="shippingCompany">Company</label>
                 <input
                   id="shippingCompany"
                   type="text"
@@ -334,7 +328,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingEmail">Shipping Email</label>
+                <label for="shippingEmail">Email</label>
                 <input
                   id="shippingEmail"
                   type="text"
@@ -345,7 +339,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingAddress1">Shipping Address 1</label>
+                <label for="shippingAddress1">Address 1</label>
                 <input
                   id="shippingAddress1"
                   type="text"
@@ -356,7 +350,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingAddress2">Shipping Address 2</label>
+                <label for="shippingAddress2">Address 2</label>
                 <input
                   id="shippingAddress2"
                   type="text"
@@ -367,7 +361,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingCity">Shipping City</label>
+                <label for="shippingCity">City</label>
                 <input
                   id="shippingCity"
                   type="text"
@@ -378,7 +372,7 @@
                 />
               </div>
               <div class="form-group col-sm-6">
-                <label for="shippingCountry">Shipping Country</label>
+                <label for="shippingCountry">Country</label>
                 <country-select
                   id="shippingCountry"
                   v-model="shippingCountry"
@@ -390,7 +384,7 @@
                 />
               </div>
               <div class="form-group col-sm-6">
-                <label for="shippingStateProv">Shipping State/Province</label>
+                <label for="shippingStateProv">State/Province</label>
                 <region-select
                   id="shippingStateProv"
                   v-model="shippingStateProv"
@@ -404,7 +398,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
+                <label for="shippingZipPostal">Zip/Postal Code</label>
                 <input
                   id="shippingZipPostal"
                   type="text"
@@ -415,7 +409,7 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingPhone">Shipping Phone</label>
+                <label for="shippingPhone">Phone</label>
                 <input
                   type="text"
                   id="shippingPhone"

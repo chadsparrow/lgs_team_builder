@@ -43,6 +43,17 @@
                 />
               </div>
               <div class="form-group col-sm-12">
+                <label for="company">Company</label>
+                <input
+                  id="company"
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-model="memberDetails.company"
+                  @change="changeDetails"
+                  ref="company"
+                />
+              </div>
+              <div class="form-group col-sm-12">
                 <label for="email">Email</label>
                 <input
                   id="email"
@@ -166,7 +177,18 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="billingName">Email</label>
+                <label for="billingCompany">Company</label>
+                <input
+                  id="billingCompany"
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-model="memberDetails.billing.company"
+                  ref="billingCompany"
+                  :readonly="billingSame"
+                />
+              </div>
+              <div class="form-group col-sm-12">
+                <label for="billingEmail">Email</label>
                 <input
                   id="billingEmail"
                   type="text"
@@ -300,7 +322,18 @@
                 />
               </div>
               <div class="form-group col-sm-12">
-                <label for="shippingName">Email</label>
+                <label for="shippingCompany">Company</label>
+                <input
+                  id="shippingCompany"
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-model="memberDetails.shipping.company"
+                  ref="shippingCompany"
+                  :readonly="shippingSame"
+                />
+              </div>
+              <div class="form-group col-sm-12">
+                <label for="shippingEmail">Email</label>
                 <input
                   id="shippingEmail"
                   type="text"
@@ -444,8 +477,7 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
-    },
-    invitesDisabled: function() {}
+    }
   },
   created: async function() {
     try {
@@ -472,6 +504,7 @@ export default {
     copyDetails: function() {
       if (this.shippingSame === true) {
         this.memberDetails.shipping.name = this.memberDetails.name;
+        this.memberDetails.shipping.company = this.memberDetails.company;
         this.memberDetails.shipping.address1 = this.memberDetails.address1;
         this.memberDetails.shipping.address2 = this.memberDetails.address2;
         this.memberDetails.shipping.city = this.memberDetails.city;
@@ -483,6 +516,7 @@ export default {
       }
       if (this.billingSame === true) {
         this.memberDetails.billing.name = this.memberDetails.name;
+        this.memberDetails.billing.company = this.memberDetails.company;
         this.memberDetails.billing.address1 = this.memberDetails.address1;
         this.memberDetails.billing.address2 = this.memberDetails.address2;
         this.memberDetails.billing.city = this.memberDetails.city;
@@ -504,6 +538,8 @@ export default {
           this.memberDetails.shipping.email = this.memberDetails.email;
         } else if (target === 'name') {
           this.memberDetails.shipping.name = this.memberDetails.name;
+        } else if (target === 'company') {
+          this.memberDetails.shipping.company = this.memberDetails.company;
         } else if (target === 'address1') {
           this.memberDetails.shipping.address1 = this.memberDetails.address1;
         } else if (target === 'address2') {
@@ -520,6 +556,8 @@ export default {
           this.memberDetails.billing.email = this.memberDetails.email;
         } else if (target === 'name') {
           this.memberDetails.billing.name = this.memberDetails.name;
+        } else if (target === 'company') {
+          this.memberDetails.billing.company = this.memberDetails.company;
         } else if (target === 'address1') {
           this.memberDetails.billing.address1 = this.memberDetails.address1;
         } else if (target === 'address2') {
@@ -545,6 +583,7 @@ export default {
         this.backupBilling = this.memberDetails.billing;
         this.memberDetails.billing = {
           name: this.memberDetails.name,
+          company: this.memberDetails.company,
           email: this.memberDetails.email,
           address1: this.memberDetails.address1,
           address2: this.memberDetails.address2,
@@ -563,6 +602,7 @@ export default {
         this.backupShipping = this.memberDetails.shipping;
         this.memberDetails.shipping = {
           name: this.memberDetails.name,
+          company: this.memberDetails.company,
           email: this.memberDetails.email,
           address1: this.memberDetails.address1,
           address2: this.memberDetails.address2,
@@ -641,6 +681,7 @@ export default {
     updateProfile: async function() {
       const updatedMember = {
         name: this.memberDetails.name,
+        company: this.memberDetails.company,
         phone: this.memberDetails.phone,
         address1: this.memberDetails.address1,
         address2: this.memberDetails.address2,
@@ -652,6 +693,7 @@ export default {
         timezoneAbbrev: this.memberDetails.timezoneAbbrev,
         shippingSame: this.shippingSame,
         shippingName: this.memberDetails.shipping.name,
+        shippingCompany: this.memberDetails.shipping.company,
         shippingAddress1: this.memberDetails.shipping.address1,
         shippingAddress2: this.memberDetails.shipping.address2,
         shippingCity: this.memberDetails.shipping.city,
@@ -662,6 +704,7 @@ export default {
         shippingEmail: this.memberDetails.shipping.email,
         billingSame: this.billingSame,
         billingName: this.memberDetails.billing.name,
+        billingCompany: this.memberDetails.billing.company,
         billingAddress1: this.memberDetails.billing.address1,
         billingAddress2: this.memberDetails.billing.address2,
         billingCity: this.memberDetails.billing.city,

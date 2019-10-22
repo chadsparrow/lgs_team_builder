@@ -89,8 +89,8 @@ export default {
       if (this.dataReady) {
         if (this.member.isAdmin) return true;
         if (this.manager._id === this.member._id) return true;
-        return false;
       }
+      return false;
     }
   },
   created: async function() {
