@@ -699,13 +699,13 @@ export default {
         this.member.shipping.country
       ) {
         const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=Psfm8OjiPQikFbEv9jZ7vCbTpD1hAOlm&inFormat=json&outFormat=json&json={"location":{"street":"${this.member.shipping.city} ${this.member.shipping.stateProv} ${this.member.shipping.country}"},"options":{"thumbMaps":false}}`
+          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.member.shipping.city} ${this.member.shipping.stateProv} ${this.member.shipping.country}"},"options":{"thumbMaps":false}}`
         );
         if (location) {
           const lat = location.data.results[0].locations[0].latLng.lat;
           const lng = location.data.results[0].locations[0].latLng.lng;
           const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=UYO5UGHKPVBL&format=json&by=position&lat=${lat}&lng=${lng}`
+            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
           );
           if (
             response.data.zoneName &&

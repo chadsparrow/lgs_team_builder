@@ -57,10 +57,7 @@ let router = new Router({
     {
       path: '/join/:id',
       name: 'jointeam',
-      component: JoinTeam,
-      meta: {
-        guest: true
-      }
+      component: JoinTeam
     },
     {
       path: '/dashboard',
@@ -74,7 +71,9 @@ let router = new Router({
           path: 'index',
           name: 'dashboardIndex',
           component: ProfilesIndex,
-          meta: { requiresAuth: true }
+          meta: {
+            requiresAuth: true
+          }
         },
         {
           path: 'profile',
