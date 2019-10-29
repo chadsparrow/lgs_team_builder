@@ -9,6 +9,8 @@
               ? 'row p-2 modeBox text-center bg-danger text-white'
               : store.mode === 'HOLD'
               ? 'row p-2 modeBox text-center bg-warning text-white'
+              : store.mode === 'SURVEY'
+              ? 'row p-2 modeBox text-center bg-secondary text-white'
               : null
           "
       >
@@ -125,7 +127,7 @@
     <div class="middle-section">Store Items</div>
     <div class="button-section" v-if="member.isAdmin">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
           <router-link
             class="btn btn-info btn-block"
             :to="`/dashboard/stores/${store._id}/add`"
@@ -135,7 +137,7 @@
             Add Store Item
           </router-link>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
           <router-link
             class="btn btn-info btn-block"
             :to="`/dashboard/catalogs/${store._id}/edit`"
@@ -144,6 +146,11 @@
             <i class="fas fa-cog fa-lg"></i>
             Store Settings
           </router-link>
+        </div>
+        <div class="col-sm-4">
+          <button @click="duplicateOrder" class="btn btn-info btn-block">
+            <i class="fas fa-clone fa-lg"></i> Duplicate Store
+          </button>
         </div>
       </div>
     </div>
@@ -188,6 +195,20 @@ export default {
     },
     orders: function() {
       return this.$store.getters.orders;
+    }
+  },
+  methods: {
+    duplicateOrder: async function() {
+      try {
+        const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
+        // duplicate Store items
+        this.$router
+          .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
+          .catch(() => {});
+        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
     }
   }
 };

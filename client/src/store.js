@@ -518,6 +518,19 @@ export default new Vuex.Store({
         }
       });
     },
+    duplicateTeamStore({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/stores/${id}/dup`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     sendInviteNotification({ commit }, { id, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {

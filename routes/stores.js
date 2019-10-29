@@ -173,6 +173,34 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.status(201).send([{ message: 'Team Store Added' }]);
 });
 
+router.post('/:id/dup', [auth, admin], async (req, res) => {
+  const store = await Store.findById(req.params.id);
+
+  const newStore = new Store({
+    totalOrders: 0,
+    totalItemsOrdered: 0,
+    ordersTotalValue: 0,
+    teamId: store.teamId,
+    storeName: `${store.storeName} ${store._id} COPY`,
+    storeCountry: store.storeCountry,
+    currency: store.currency,
+    orderReference: store.orderReference,
+    adminId: store.adminId,
+    managerId: store.managerId,
+    mode: 'HOLD',
+    opendingDate: null,
+    closingDate: null,
+    timezone: store.timezone,
+    storeMessage: null,
+    shippingType: store.shippingType,
+    extraCharges: store.extraCharges,
+    collectedShippingCharges: []
+  });
+
+  await newStore.save();
+  return res.status(200).send([{ message: 'Team Store duplicated', store: newStore }]);
+});
+
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStore(req.body);
   if (error) return res.status(400).send(error.details);

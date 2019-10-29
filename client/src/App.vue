@@ -17,6 +17,7 @@
 <script>
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import axios from 'axios';
 
 export default {
   components: {
@@ -61,6 +62,8 @@ export default {
         const token = localStorage.getItem('token');
         if (token && config.url.includes('/api/v1')) {
           config.headers['Authorization'] = `Bearer ${token}`;
+        } else {
+          delete axios.defaults.headers.common['Authorization'];
         }
 
         return config;
