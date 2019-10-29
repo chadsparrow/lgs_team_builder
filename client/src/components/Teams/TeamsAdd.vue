@@ -61,7 +61,7 @@
             <div class="form-check text-center">
               <input
                 type="checkbox"
-                class="form-check-input mt-2"
+                class="form-check-input"
                 id="useManagerDetails"
                 v-model="useManagerDetails"
                 @change="copyManagertoMain"
@@ -75,7 +75,7 @@
             </div>
           </div>
           <div class="row px-2">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-3">
               <label for="contactName">Name</label>
               <input
                 id="contactName"
@@ -83,6 +83,18 @@
                 class="form-control form-control-sm"
                 v-model="contactName"
                 ref="contactName"
+                @change="changeDetails"
+                :readonly="useManagerDetails"
+              />
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="contactCompany">Company</label>
+              <input
+                id="contactCompany"
+                type="text"
+                class="form-control form-control-sm"
+                v-model="contactCompany"
+                ref="contactCompany"
                 @change="changeDetails"
                 :readonly="useManagerDetails"
               />
@@ -204,7 +216,7 @@
             <div class="radios">
               <div class="form-check form-check-inline mr-4">
                 <input
-                  class="form-check-input mt-1"
+                  class="form-check-input"
                   type="radio"
                   name="bulkUseDetails"
                   id="useAboveDetails"
@@ -216,7 +228,7 @@
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
-                  class="form-check-input mt-1"
+                  class="form-check-input"
                   type="radio"
                   name="bulkUseDetails"
                   id="useManagerDetails"
@@ -232,7 +244,7 @@
               </div>
               <div class="form-check form-check-inline">
                 <input
-                  class="form-check-input mt-1"
+                  class="form-check-input"
                   type="radio"
                   name="bulkUseDetails"
                   id="useNewDetails"
@@ -246,7 +258,7 @@
           </div>
           <div class="row px-2">
             <div class="form-group col-sm-3">
-              <label for="shippingName">Shipping Name</label>
+              <label for="shippingName">Name</label>
               <input
                 id="shippingName"
                 type="text"
@@ -257,7 +269,7 @@
               />
             </div>
             <div class="form-group col-sm-3">
-              <label for="shippingName">Shipping Company</label>
+              <label for="shippingCompany">Company</label>
               <input
                 id="shippingCompany"
                 type="text"
@@ -267,7 +279,7 @@
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="shippingEmail">Shipping Email</label>
+              <label for="shippingEmail">Email</label>
               <input
                 id="shippingEmail"
                 type="text"
@@ -278,7 +290,7 @@
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="shippingAddress1">Shipping Address 1</label>
+              <label for="shippingAddress1">Address 1</label>
               <input
                 id="shippingAddress1"
                 type="text"
@@ -289,7 +301,7 @@
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="shippingAddress2">Shipping Address 2</label>
+              <label for="shippingAddress2">Address 2</label>
               <input
                 id="shippingAddress2"
                 type="text"
@@ -300,7 +312,7 @@
               />
             </div>
             <div class="form-group col-sm-6">
-              <label for="shippingCity">Shipping City</label>
+              <label for="shippingCity">City</label>
               <input
                 id="shippingCity"
                 type="text"
@@ -312,7 +324,7 @@
               />
             </div>
             <div class="form-group col-sm-3">
-              <label for="shippingCountry">Shipping Country</label>
+              <label for="shippingCountry">Country</label>
               <country-select
                 id="shippingCountry"
                 v-model="shippingCountry"
@@ -323,7 +335,7 @@
               />
             </div>
             <div class="form-group col-sm-3">
-              <label for="shippingStateProv">Shipping State/Province</label>
+              <label for="shippingStateProv">State/Province</label>
               <region-select
                 id="shippingStateProv"
                 v-model="shippingStateProv"
@@ -337,7 +349,7 @@
             </div>
 
             <div class="form-group col-sm-6">
-              <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
+              <label for="shippingZipPostal">Zip/Postal Code</label>
               <input
                 id="shippingZipPostal"
                 type="text"
@@ -404,6 +416,7 @@ export default {
       managerId: '',
       teamId: '',
       contactName: '',
+      contactCompany: '',
       contactAddress1: '',
       contactAddress2: '',
       contactCity: '',
@@ -447,8 +460,8 @@ export default {
       this.adminsList = admins.data;
 
       await this.$store.dispatch('getMembers');
-      this.adminId = this.member._id;
       this.dataReady = true;
+      this.adminId = this.member._id;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -464,6 +477,7 @@ export default {
       this.$refs.teamId.focus();
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   },
   methods: {
@@ -475,6 +489,7 @@ export default {
         managerId: this.managerId,
         teamId: this.teamId,
         contactName: this.contactName,
+        contactCompany: this.contactCompany,
         contactAddress1: this.contactAddress1,
         contactAddress2: this.contactAddress2,
         contactCity: this.contactCity,
@@ -518,6 +533,7 @@ export default {
           const {
             _id,
             name,
+            company,
             address1,
             address2,
             city,
@@ -533,6 +549,7 @@ export default {
 
           this.managerDetails = {
             name,
+            company,
             address1,
             address2,
             city,
@@ -562,6 +579,7 @@ export default {
       if (this.useManagerDetails) {
         this.backupContact = {
           name: this.contactName,
+          company: this.contactCompany,
           address1: this.contactAddress1,
           address2: this.contactAddress2,
           city: this.contactCity,
@@ -574,6 +592,7 @@ export default {
 
         const {
           name,
+          company,
           address1,
           address2,
           city,
@@ -584,6 +603,7 @@ export default {
           phone
         } = this.managerDetails;
         this.contactName = name;
+        this.contactCompany = company;
         this.contactAddress1 = address1;
         this.contactAddress2 = address2;
         this.contactCity = city;
@@ -597,6 +617,7 @@ export default {
       } else {
         const {
           name,
+          company,
           address1,
           address2,
           city,
@@ -607,6 +628,7 @@ export default {
           email
         } = this.backupContact;
         this.contactName = name;
+        this.contactCompany = company;
         this.contactAddress1 = address1;
         this.contactAddress2 = address2;
         this.contactCity = city;
@@ -634,6 +656,7 @@ export default {
         };
 
         this.shippingName = this.contactName;
+        this.shippingCompany = this.contactCompany;
         this.shippingAddress1 = this.contactAddress1;
         this.shippingAddress2 = this.contactAddress2;
         this.shippingCity = this.contactCity;
@@ -662,6 +685,7 @@ export default {
           email: this.shippingEmail
         };
         this.shippingName = shipping.name;
+        this.shippingCompany = shipping.company;
         this.shippingAddress1 = shipping.address1;
         this.shippingAddress2 = shipping.address2;
         this.shippingCity = shipping.city;
@@ -686,6 +710,7 @@ export default {
           email: this.shippingEmail
         };
         this.shippingName = this.contactName;
+        this.shippingCompany = this.contactCompany;
         this.shippingAddress1 = this.contactAddress1;
         this.shippingAddress2 = this.contactAddress2;
         this.shippingCity = this.contactCity;
@@ -737,6 +762,8 @@ export default {
             this.shippingEmail = this.contactEmail;
           } else if (target === 'contactName') {
             this.shippingName = this.contactName;
+          } else if (target === 'contactCompany') {
+            this.shippingCompany = this.contactCompany;
           } else if (target === 'contactAddress1') {
             this.shippingAddress1 = this.contactAddress1;
           } else if (target === 'contactAddress2') {

@@ -1,214 +1,214 @@
 <template>
   <div class="container" v-if="dataReady">
-      <form @submit.prevent="addCatalogItem" novalidate>
-        <div class="row">
-          <div class="form-group col-sm-6">
-            <label for="nameEN">Name (EN)</label>
-            <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
+    <form @submit.prevent="addCatalogItem" novalidate>
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label for="nameEN">Name (EN)</label>
+          <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="nameFR">Name (FR)</label>
+          <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="productCode">ERP Product Code</label>
+          <input
+            id="productCode"
+            type="text"
+            class="form-control"
+            v-model="productCode"
+            ref="productCode"
+          />
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="styleCode">Production Style Code</label>
+          <input
+            id="styleCode"
+            type="text"
+            class="form-control"
+            v-model="styleCode"
+            ref="styleCode"
+          />
+        </div>
+        <div class="form-group col-sm-12 text-center my-3 sizesBox">
+          <div class="mb-3">
+            <label>Available Sizes</label>
           </div>
-          <div class="form-group col-sm-6">
-            <label for="nameFR">Name (FR)</label>
-            <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="productCode">ERP Product Code</label>
+          <div class="form-check form-check-inline">
             <input
-              id="productCode"
-              type="text"
-              class="form-control"
-              v-model="productCode"
-              ref="productCode"
+              class="form-check-input"
+              v-model="XXS"
+              type="checkbox"
+              id="size2XS"
+              @change="setSizes"
             />
+            <label class="form-check-label" for="size2XS">2XS</label>
           </div>
-          <div class="form-group col-sm-6">
-            <label for="styleCode">Production Style Code</label>
+          <div class="form-check form-check-inline mx-3">
             <input
-              id="styleCode"
-              type="text"
-              class="form-control"
-              v-model="styleCode"
-              ref="styleCode"
+              class="form-check-input"
+              v-model="XS"
+              type="checkbox"
+              id="sizeXS"
+              @change="setSizes"
             />
+            <label class="form-check-label" for="sizeXS">XS</label>
           </div>
-          <div class="form-group col-sm-12 text-center my-3 sizesBox">
-            <div class="mb-3">
-              <label>Available Sizes</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input
-                class="form-check-input"
-                v-model="XXS"
-                type="checkbox"
-                id="size2XS"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="size2XS">2XS</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="XS"
-                type="checkbox"
-                id="sizeXS"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="sizeXS">XS</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="S"
-                type="checkbox"
-                id="sizeS"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="sizeS">S</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="M"
-                type="checkbox"
-                id="sizeM"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="sizeM">M</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="L"
-                type="checkbox"
-                id="sizeL"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="sizeL">L</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="XL"
-                type="checkbox"
-                id="sizeXL"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="sizeXL">XL</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="XXL"
-                type="checkbox"
-                id="size2XL"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="size2XL">2XL</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="XXXL"
-                type="checkbox"
-                id="size3XL"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="size3XL">3XL</label>
-            </div>
-            <div class="form-check form-check-inline mx-3">
-              <input
-                class="form-check-input"
-                v-model="XXXXL"
-                type="checkbox"
-                id="size4XL"
-                @change="setSizes"
-              />
-              <label class="form-check-label" for="size4XL">4XL</label>
-            </div>
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="gender">Gender</label>
-            <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
-              <option value="M">Mens</option>
-              <option value="W">Womens</option>
-              <option value="J">Junior</option>
-              <option value="U">Unisex</option>
-            </select>
-          </div>
-          <div class="form-group col-sm-6">
-            <label for="categories">Categories</label>
-            <vue-tags-input
-              style="width: 100%;"
-              v-model="category"
-              :tags="categories"
-              @tags-changed="newCategories => (categories = newCategories)"
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="S"
+              type="checkbox"
+              id="sizeS"
+              @change="setSizes"
             />
+            <label class="form-check-label" for="sizeS">S</label>
           </div>
-          <div class="form-group col-sm-3">
-            <label for="descriptionEN">Description (EN)</label>
-            <textarea
-              id="descriptionEN"
-              ref="descriptionEN"
-              class="form-control"
-              rows="10"
-              v-model="descriptionEN"
-            ></textarea>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="M"
+              type="checkbox"
+              id="sizeM"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="sizeM">M</label>
           </div>
-          <div class="form-group col-sm-3">
-            <label for="descriptionFR">Description (FR)</label>
-            <textarea
-              id="descriptionFR"
-              ref="descriptionFR"
-              class="form-control"
-              rows="10"
-              v-model="descriptionFR"
-            ></textarea>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="L"
+              type="checkbox"
+              id="sizeL"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="sizeL">L</label>
           </div>
-          <div class="form-group col-sm-3">
-            <label for="priceBreaksCAD">Price Breaks (CAD)</label>
-            <ul class="list-group" id="priceBreaksCAD">
-              <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
-                <div>{{ pb.priceBreak }}</div>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  class="form-control form-control-sm text-center"
-                  v-model="pb.price"
-                />
-              </li>
-              <li class="list-group-item py-1">250+ Contact Us</li>
-            </ul>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="XL"
+              type="checkbox"
+              id="sizeXL"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="sizeXL">XL</label>
           </div>
-          <div class="form-group col-sm-3">
-            <label for="priceBreaksUSD">Price Breaks (USD)</label>
-            <ul class="list-group" id="priceBreaksUSD">
-              <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
-                <div>{{ pb.priceBreak }}</div>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  class="form-control form-control-sm text-center"
-                  v-model="pb.price"
-                />
-              </li>
-              <li class="list-group-item py-1">250+ Contact Us</li>
-            </ul>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="XXL"
+              type="checkbox"
+              id="size2XL"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="size2XL">2XL</label>
+          </div>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="XXXL"
+              type="checkbox"
+              id="size3XL"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="size3XL">3XL</label>
+          </div>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
+              v-model="XXXXL"
+              type="checkbox"
+              id="size4XL"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="size4XL">4XL</label>
           </div>
         </div>
-        <div class="row mt-4">
-          <div class="col-sm-6">
-            <button type="submit" class="btn btn-block btn-info">Add Catalog Item</button>
-          </div>
-          <div class="col-sm-6">
-            <router-link
-              tag="a"
-              class="btn btn-danger btn-block"
-              :to="`/dashboard/catalogs/${catalog._id}`"
-            >Cancel</router-link>
-          </div>
+        <div class="form-group col-sm-6">
+          <label for="gender">Gender</label>
+          <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
+            <option value="M">Mens</option>
+            <option value="W">Womens</option>
+            <option value="J">Junior</option>
+            <option value="U">Unisex</option>
+          </select>
         </div>
-      </form>
+        <div class="form-group col-sm-6">
+          <label for="categories">Categories</label>
+          <vue-tags-input
+            style="width: 100%;"
+            v-model="category"
+            :tags="categories"
+            @tags-changed="newCategories => (categories = newCategories)"
+          />
+        </div>
+        <div class="form-group col-sm-3">
+          <label for="descriptionEN">Description (EN)</label>
+          <textarea
+            id="descriptionEN"
+            ref="descriptionEN"
+            class="form-control"
+            rows="10"
+            v-model="descriptionEN"
+          ></textarea>
+        </div>
+        <div class="form-group col-sm-3">
+          <label for="descriptionFR">Description (FR)</label>
+          <textarea
+            id="descriptionFR"
+            ref="descriptionFR"
+            class="form-control"
+            rows="10"
+            v-model="descriptionFR"
+          ></textarea>
+        </div>
+        <div class="form-group col-sm-3">
+          <label for="priceBreaksCAD">Price Breaks (CAD)</label>
+          <ul class="list-group" id="priceBreaksCAD">
+            <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
+              <div>{{ pb.priceBreak }}</div>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                class="form-control form-control-sm text-center"
+                v-model="pb.price"
+              />
+            </li>
+            <li class="list-group-item py-1">250+ Contact Us</li>
+          </ul>
+        </div>
+        <div class="form-group col-sm-3">
+          <label for="priceBreaksUSD">Price Breaks (USD)</label>
+          <ul class="list-group" id="priceBreaksUSD">
+            <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
+              <div>{{ pb.priceBreak }}</div>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                class="form-control form-control-sm text-center"
+                v-model="pb.price"
+              />
+            </li>
+            <li class="list-group-item py-1">250+ Contact Us</li>
+          </ul>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-6">
+          <button type="submit" class="btn btn-block btn-info">Add Catalog Item</button>
+        </div>
+        <div class="col-sm-6">
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            :to="`/dashboard/catalogs/${catalog._id}`"
+          >Cancel</router-link>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -327,6 +327,7 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   },
   methods: {

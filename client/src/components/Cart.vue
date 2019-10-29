@@ -12,7 +12,9 @@
 export default {
   name: 'Cart',
   data() {
-    return {};
+    return {
+      dataReady: false
+    };
   },
   computed: {
     member: function() {

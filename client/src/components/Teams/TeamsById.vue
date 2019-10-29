@@ -383,6 +383,8 @@ export default {
     } catch (err) {
       if (err.response.data[0].message !== 'Team has no stores.')
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+
+      this.dataReady = true;
     }
   },
   methods: {

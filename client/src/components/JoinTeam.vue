@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dataReady">
     <div class="bg-dark headerBlock mb-3">
       <div class="container">
         <div class="row text-white p-4">
@@ -458,6 +458,7 @@ export default {
   },
   data() {
     return {
+      dataReady: false,
       email: '',
       password: '',
       name: '',
@@ -498,8 +499,10 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   },
   computed: {

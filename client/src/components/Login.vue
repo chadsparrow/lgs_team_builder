@@ -7,14 +7,7 @@
         </div>
         <div class="form-group">
           <label for="email">Email address</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            ref="email"
-            v-model="email"
-            autofocus
-          />
+          <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
         </div>
         <div class="form-group mb-4">
           <label for="password">Password</label>

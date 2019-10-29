@@ -244,6 +244,7 @@ export default {
       this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   }
 };

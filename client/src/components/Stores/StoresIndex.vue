@@ -14,9 +14,7 @@
       </div>
     </div>
 
-    <span class="text-center" v-if="currentStores.length === 0"
-      >No Stores Found</span
-    >
+    <span class="text-center" v-if="currentStores.length === 0">No Stores Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -51,9 +49,7 @@
                   ? 'bg-warning text-white text-center'
                   : null
               "
-            >
-              {{ store.mode }}
-            </td>
+            >{{ store.mode }}</td>
             <td>{{ store.totalOrders }}</td>
             <td>{{ store.currency }}</td>
             <td>{{ store.collectedAmount }}</td>
@@ -108,6 +104,7 @@ export default {
       this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   },
   computed: {

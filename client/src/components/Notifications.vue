@@ -1,19 +1,19 @@
 <template>
-  <div class="navItem">
+  <div class="navItem" v-if="dataReady">
     <button class="btn btn-info" @click="showNotifications = !showNotifications">
       <i class="fas fa-envelope fa-lg"></i>
-      <span class="badge badge-danger ml-2" v-if="notifications.length > 0">{{
+      <span class="badge badge-danger ml-2" v-if="notifications.length > 0">
+        {{
         notifications.length
-      }}</span>
+        }}
+      </span>
       <span class="badge badge-info ml-2" v-else>{{ notifications.length }}</span>
     </button>
     <ul class="notificationsList list-group" v-if="showNotifications">
       <li
         class="list-group-item list-group-item-action list-group-item-empty"
         v-if="notifications.length === 0"
-      >
-        You have no notifications
-      </li>
+      >You have no notifications</li>
       <li
         class="list-group-item list-group-item-action"
         v-for="notification of notifications"
@@ -23,7 +23,7 @@
           <div>
             <small class="text-muted">
               {{
-                notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+              notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </small>
           </div>
@@ -42,6 +42,7 @@ export default {
   name: 'Notifications',
   data() {
     return {
+      dataReady: false,
       showNotifications: false,
       polling: null
     };
@@ -58,8 +59,10 @@ export default {
     try {
       await this.$store.dispatch('getMe', this.member._id);
       this.getNotifications();
+      this.dataReady = true;
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.dataReady = true;
     }
   },
   beforeDestroy: function() {
