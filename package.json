@@ -45,7 +45,6 @@
     "saslprep": "^1.0.3",
     "swearjar": "^0.2.0",
     "winston": "^2.4.0",
-    "winston-daily-rotate-file": "^3.9.0",
-    "winston-mongodb": "^5.0.0"
+    "winston-daily-rotate-file": "^3.9.0"
   }
 }
