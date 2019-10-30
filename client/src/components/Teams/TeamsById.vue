@@ -36,7 +36,7 @@
           </span>
         </div>
 
-        <div class="row p-1" v-if="team.adminId.name">
+        <div class="row p-1" v-if="team.adminId.name && access">
           <small class="col-sm-12 text-info">Team Admin:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}
@@ -51,6 +51,8 @@
             {{ team.managerId.name }}
             <br />
             {{ team.managerId.email }}
+            <br />
+            {{ team.managerId.phone }}
           </span>
         </div>
 
@@ -122,13 +124,19 @@
 
     <!-- STORES SECTION -->
     <div class="stores-section" v-if="team.managerId.name">
-      <router-link
-        :to="`/dashboard/teams/${team._id}/addstore`"
-        class="btn btn-info mb-2"
-        v-if="member && member.isAdmin"
-      >
-        <i class="fas fa-plus mr-2"></i>Add Team Store
-      </router-link>
+      <span>
+        <h2>
+          Team Stores
+          <router-link
+            :to="`/dashboard/teams/${team._id}/addstore`"
+            class="btn btn-info ml-2"
+            v-if="member && member.isAdmin"
+          >
+            <i class="fas fa-plus mr-2"></i>Add Team Store
+          </router-link>
+        </h2>
+      </span>
+
       <div class="table-responsive" v-if="stores.length > 0">
         <table class="table table-hover table-striped">
           <tbody>
@@ -429,7 +437,7 @@ $black-text: #000000;
   grid-template-rows: 1fr 1fr 76px;
   width: 100%;
   height: 100%;
-  grid-gap: 0.6rem;
+  grid-gap: 1rem;
   grid-template-areas:
     'left-bar stores right-bar'
     'members stores right-bar'

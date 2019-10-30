@@ -54,7 +54,7 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id)
-    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'managerId', select: 'name email phone' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
     .select('-updatedAt -__v ');

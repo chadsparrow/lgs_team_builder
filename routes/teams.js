@@ -41,7 +41,7 @@ router.get('/', auth, async (req, res) => {
 // GET /api/teams/:id
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id)
-    .populate({ path: 'managerId', select: 'name email' })
+    .populate({ path: 'managerId', select: 'name email phone' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .select('-updatedAt -__v');

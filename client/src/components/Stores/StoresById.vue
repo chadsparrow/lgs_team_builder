@@ -1,12 +1,6 @@
 <template>
   <div class="page" v-if="dataReady">
     <div class="sidebar-left">
-      <div class="row p-1 mb-2" v-if="currentDateTime">
-        <small class="col-sm-12 text-info">Current Store Time:</small>
-        <span
-          class="col-sm-12"
-        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
-      </div>
       <div
         :class="
             store.mode === 'OPEN'
@@ -73,7 +67,7 @@
         <small class="col-sm-12 text-info">Account #:</small>
         <span class="col-sm-12">{{ store.teamId.teamId }}</span>
       </div>
-      <div class="row p-1">
+      <div class="row p-1" v-if="access">
         <small class="col-sm-12 text-info">Store Admin:</small>
         <span class="col-sm-12">{{ store.adminId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.adminId.email }}</span>
@@ -82,6 +76,7 @@
         <small class="col-sm-12 text-info">Store Manager:</small>
         <span class="col-sm-12">{{ store.managerId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.email }}</span>
+        <span class="col-sm-12 text-muted">{{ store.managerId.phone }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Main Contact:</small>
@@ -136,6 +131,12 @@
         <span class="col-sm-12">{{ store.bulkShipping.zipPostal }}</span>
         <span class="col-sm-12">{{ store.bulkShipping.phone }}</span>
         <span class="col-sm-12">{{ store.bulkShipping.email }}</span>
+      </div>
+      <div class="row p-1" v-if="currentDateTime">
+        <small class="col-sm-12 text-info">Current Store Time:</small>
+        <span
+          class="col-sm-12"
+        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
       </div>
     </div>
     <div class="middle-section">Store Items</div>
@@ -220,6 +221,19 @@ export default {
     },
     orders: function() {
       return this.$store.getters.orders;
+    },
+    access: function() {
+      if (this.member && this.member.isAdmin) return true;
+
+      if (
+        this.member &&
+        this.store &&
+        this.store.managerId &&
+        this.member._id === this.store.managerId._id
+      )
+        return true;
+
+      return false;
     }
   },
   methods: {
