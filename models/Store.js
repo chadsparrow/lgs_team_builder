@@ -83,6 +83,54 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       enum: ['BULK', 'DROP']
     },
+    bulkShipping: {
+      name: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      company: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      address1: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      address2: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      city: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      stateProv: {
+        type: String,
+        trim: true
+      },
+      country: {
+        type: String,
+        uppercase: true,
+        trim: true
+      },
+      zipPostal: {
+        type: String,
+        trim: true,
+        uppercase: true
+      },
+      phone: {
+        type: String
+      },
+      email: {
+        type: String,
+        trim: true
+      }
+    },
     extraCharges: [
       {
         name: {

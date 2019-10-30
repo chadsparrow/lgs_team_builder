@@ -6,7 +6,7 @@
           <div class="row">
             <div class="form-group col-sm-8">
               <label for="name">Team Name</label>
-              <input id="name" type="text" class="form-control" v-model="name" ref="name" />
+              <input id="name" type="text" class="form-control" v-model="name" ref="name" autofocus />
             </div>
             <div class="col-sm-4">
               <label>Team Timezone:</label>
@@ -276,6 +276,7 @@
                 class="form-control form-control-sm"
                 v-model="shippingCompany"
                 ref="shippingCompany"
+                :readonly="bulkUseDetails !== 'other'"
               />
             </div>
             <div class="form-group col-sm-6">
@@ -517,6 +518,7 @@ export default {
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teams' });
       } catch (err) {
+        console.log(err);
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

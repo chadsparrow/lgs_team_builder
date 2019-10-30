@@ -91,7 +91,13 @@
             </div>
             <div class="form-group col">
               <label for="currency">Store Mode:</label>
-              <select class="form-control form-control-sm" id="mode" v-model="mode" ref="mode">
+              <select
+                class="form-control form-control-sm"
+                id="mode"
+                v-model="mode"
+                ref="mode"
+                @change="setOpen"
+              >
                 <option value="SURVEY">SURVEY</option>
                 <option value="OPEN">OPEN</option>
                 <option value="CLOSED">CLOSED</option>
@@ -253,6 +259,7 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import moment from 'moment-timezone';
 
 export default {
   name: 'TeamsAddStore',
@@ -316,6 +323,17 @@ export default {
     }
   },
   methods: {
+    setOpen: function() {
+      if (this.mode === 'OPEN') {
+        this.opening = new Date().toISOString();
+        this.closing = null;
+      }
+
+      if (this.mode === 'CLOSED') {
+        this.closing = new Date().toISOString();
+        this.opening = null;
+      }
+    },
     addStore: async function() {
       const newStore = {
         teamId: this.team._id,

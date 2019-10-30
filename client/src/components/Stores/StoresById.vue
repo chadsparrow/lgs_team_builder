@@ -1,6 +1,12 @@
 <template>
   <div class="page" v-if="dataReady">
     <div class="sidebar-left">
+      <div class="row p-1 mb-2" v-if="currentDateTime">
+        <small class="col-sm-12 text-info">Current Store Time:</small>
+        <span
+          class="col-sm-12"
+        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
+      </div>
       <div
         :class="
             store.mode === 'OPEN'
@@ -19,6 +25,34 @@
         </small>
       </div>
       <div class="row p-1 mt-2">
+        <div class="col-sm-6">
+          <small class="text-info">Opening:</small>
+          <br />
+          <span v-if="store.openingDate">
+            {{
+            store.openingDate
+            | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+            }}
+            <br />
+            <small class="text-secondary">({{ openingDifference | duration('humanize', true) }})</small>
+          </span>
+          <span v-else>No Opening Date</span>
+        </div>
+        <div class="col-sm-6">
+          <small class="text-info">Closing:</small>
+          <br />
+          <span v-if="store.closingDate">
+            {{
+            store.closingDate
+            | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+            }}
+            <br />
+            <small class="text-secondary">({{ closingDifference | duration('humanize', true) }})</small>
+          </span>
+          <span v-else>No Closing Date</span>
+        </div>
+      </div>
+      <div class="row p-1 mt-1">
         <small class="col-sm-12 text-info">Store Created:</small>
         <span class="col-sm-12">
           {{
@@ -48,26 +82,6 @@
         <small class="col-sm-12 text-info">Store Manager:</small>
         <span class="col-sm-12">{{ store.managerId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.email }}</span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Opening Date:</small>
-        <span class="col-sm-12" v-if="store.openingDate">
-          {{
-          store.openingDate
-          | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
-          }}
-        </span>
-        <span class="col-sm-12" v-else>No Opening Date</span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Closing Date:</small>
-        <span class="col-sm-12" v-if="store.closingDate">
-          {{
-          store.closingDate
-          | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
-          }}
-        </span>
-        <span class="col-sm-12" v-else>No Closing Date</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Main Contact:</small>
@@ -102,26 +116,26 @@
       </div>
       <div class="row p-1" v-if="(store.shippingType = 'BULK')">
         <small class="col-sm-12 text-info">Bulk Shipping Information:</small>
-        <span class="col-sm-12">{{ store.teamId.bulkShipping.name }}</span>
-        <span class="col-sm-12" v-if="store.teamId.bulkShipping.company">
+        <span class="col-sm-12">{{ store.bulkShipping.name }}</span>
+        <span class="col-sm-12" v-if="store.bulkShipping.company">
           {{
-          store.teamId.bulkShipping.company
+          store.bulkShipping.company
           }}
         </span>
-        <span class="col-sm-12">{{ store.teamId.bulkShipping.address1 }}</span>
-        <span class="col-sm-12" v-if="store.teamId.bulkShipping.address2">
+        <span class="col-sm-12">{{ store.bulkShipping.address1 }}</span>
+        <span class="col-sm-12" v-if="store.bulkShipping.address2">
           {{
-          store.teamId.bulkShipping.address2
+          store.bulkShipping.address2
           }}
         </span>
         <span class="col-sm-12">
-          {{ store.teamId.bulkShipping.city }},
-          {{ store.teamId.bulkShipping.stateProv }},
-          {{ store.teamId.bulkShipping.country }}
+          {{ store.bulkShipping.city }},
+          {{ store.bulkShipping.stateProv }},
+          {{ store.bulkShipping.country }}
         </span>
-        <span class="col-sm-12">{{ store.teamId.bulkShipping.zipPostal }}</span>
-        <span class="col-sm-12">{{ store.teamId.bulkShipping.phone }}</span>
-        <span class="col-sm-12">{{ store.teamId.bulkShipping.email }}</span>
+        <span class="col-sm-12">{{ store.bulkShipping.zipPostal }}</span>
+        <span class="col-sm-12">{{ store.bulkShipping.phone }}</span>
+        <span class="col-sm-12">{{ store.bulkShipping.email }}</span>
       </div>
     </div>
     <div class="middle-section">Store Items</div>
@@ -158,11 +172,16 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
 export default {
   name: 'StoresById',
   data() {
     return {
-      dataReady: false
+      dataReady: false,
+      currentDateTime: null,
+      polling: null,
+      openingDifference: null,
+      closingDifference: null
     };
   },
   created: async function() {
@@ -186,6 +205,12 @@ export default {
       this.dataReady = true;
     }
   },
+  mounted: function() {
+    this.polling = setInterval(this.getNow, 1000);
+  },
+  beforeDestroy: function() {
+    clearInterval(this.polling);
+  },
   computed: {
     store: function() {
       return this.$store.getters.currentStore;
@@ -198,6 +223,15 @@ export default {
     }
   },
   methods: {
+    getNow: function() {
+      this.currentDateTime = new Date();
+      if (this.store.openingDate) {
+        this.openingDifference = moment(this.store.openingDate) - moment(this.currentDateTime);
+      }
+      if (this.store.closingDate) {
+        this.closingDifference = moment(this.store.closingDate) - moment(this.currentDateTime);
+      }
+    },
     duplicateOrder: async function() {
       try {
         const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);

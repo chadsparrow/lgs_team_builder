@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const swearjar = require('swearjar');
 const { Member } = require('../models/Member');
 const { Team, validateTeam, validateAddMember } = require('../models/Team');
+const { Store } = require('../models/Store');
 
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -141,7 +142,9 @@ router.post('/', [auth, admin], async (req, res) => {
 
   team.mainContact = {
     name: contactName,
+    company: contactCompany,
     address1: contactAddress1,
+    address2: contactAddress2,
     city: contactCity,
     stateProv: contactStateProv,
     country: contactCountry,
@@ -149,12 +152,12 @@ router.post('/', [auth, admin], async (req, res) => {
     phone: contactPhone,
     email: contactEmail
   };
-  if (contactAddress2) team.mainContact.address2 = contactAddress2;
-  if (contactCompany) team.mainContact.company = contactCompany;
 
   team.bulkShipping = {
     name: shippingName,
+    company: shippingCompany,
     address1: shippingAddress1,
+    address2: shippingAddress2,
     city: shippingCity,
     stateProv: shippingStateProv,
     country: shippingCountry,
@@ -162,8 +165,6 @@ router.post('/', [auth, admin], async (req, res) => {
     phone: shippingPhone,
     email: shippingEmail
   };
-  if (shippingAddress2) team.bulkshipping.address2 = shippingAddress2;
-  if (shippingCompany) team.bulkshipping.company = shippingCompany;
 
   team.timezone = timezone;
   team.timezoneAbbrev = timezoneAbbrev;
@@ -251,13 +252,16 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     return res.status(403).send([{ message: 'Manager: Member cannot be an admin' }]);
   team.managerId = managerId;
   team.name = name;
+  team.teamId = teamId;
   if (logo !== '' || logo) {
     team.logo = logo;
   }
 
   team.mainContact = {
     name: contactName,
+    company: contactCompany,
     address1: contactAddress1,
+    address2: contactAddress2,
     city: contactCity,
     stateProv: contactStateProv,
     country: contactCountry,
@@ -265,12 +269,12 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     phone: contactPhone,
     email: contactEmail
   };
-  if (contactAddress2) team.mainContact.address2 = contactAddress2;
-  if (contactCompany) team.mainContact.company = contactCompany;
 
   team.bulkShipping = {
     name: shippingName,
+    company: shippingCompany,
     address1: shippingAddress1,
+    address2: shippingAddress2,
     city: shippingCity,
     stateProv: shippingStateProv,
     country: shippingCountry,
@@ -278,13 +282,18 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     phone: shippingPhone,
     email: shippingEmail
   };
-  if (shippingAddress2) team.bulkshipping.address2 = shippingAddress2;
-  if (shippingCompany) team.bulkShipping.company = shippingCompany;
 
   team.timezone = timezone;
   team.timezoneAbbrev = timezoneAbbrev;
 
   await team.save();
+
+  const stores = await Store.find({ teamId: team._id, mode: { $ne: 'CLOSED' } });
+  if (stores.length > 0) {
+    stores.forEach(async store => {
+      await Store.findByIdAndUpdate(store._id, { bulkShipping: team.bulkShipping });
+    });
+  }
 
   return res.status(200).send([{ message: 'Team Updated' }]);
 });

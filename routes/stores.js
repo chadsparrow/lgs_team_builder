@@ -6,6 +6,7 @@ const { Store, validateStore, validateStoreItem } = require('../models/Store');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
 const { CatalogItem } = require('../models/CatalogItem');
+const { StoreItem } = require('../models/StoreItem');
 
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -151,6 +152,12 @@ router.post('/', [auth, admin], async (req, res) => {
       .status(400)
       .send([{ message: 'Manager with the given ID not found', context: { key: 'managerId' } }]);
 
+  const team = await Team.findById(teamId);
+  if (!team)
+    return res
+      .status(400)
+      .send([{ message: 'Team with the given ID not found', context: { key: 'teamId' } }]);
+
   store = new Store({
     teamId,
     storeName,
@@ -167,6 +174,8 @@ router.post('/', [auth, admin], async (req, res) => {
     shippingType
   });
 
+  store.bulkShipping = team.bulkShipping;
+
   await store.save();
 
   await Team.updateOne({ _id: teamId }, { $push: { stores: store._id } });
@@ -175,13 +184,16 @@ router.post('/', [auth, admin], async (req, res) => {
 
 router.post('/:id/dup', [auth, admin], async (req, res) => {
   const store = await Store.findById(req.params.id);
+  const newStoreName = store.storeName.split(' ');
+  let newStoreID = store._id.toString();
+  newStoreID = newStoreID.substring(0, 7);
 
   const newStore = new Store({
     totalOrders: 0,
     totalItemsOrdered: 0,
     ordersTotalValue: 0,
     teamId: store.teamId,
-    storeName: `${store.storeName} ${store._id} COPY`,
+    storeName: `${newStoreName[0]} ${newStoreID} COPY`,
     storeCountry: store.storeCountry,
     currency: store.currency,
     orderReference: store.orderReference,
@@ -194,10 +206,49 @@ router.post('/:id/dup', [auth, admin], async (req, res) => {
     storeMessage: null,
     shippingType: store.shippingType,
     extraCharges: store.extraCharges,
-    collectedShippingCharges: []
+    collectedShippingCharges: [],
+    bulkShipping: store.bulkShipping
   });
 
   await newStore.save();
+
+  const storeItems = await StoreItem.find({ storeId: store._id });
+  if (storeItems.length > 0) {
+    storeItems.forEach(async storeItem => {
+      const {
+        storeId,
+        itemId,
+        brand,
+        isActive,
+        sizesOffered,
+        category,
+        name,
+        code,
+        number,
+        images,
+        mandatoryItem,
+        price,
+        priceBreakGoal
+      } = storeItem;
+
+      await StoreItem.create({
+        storeId,
+        itemId,
+        brand,
+        surveyLikedBy: [],
+        isActive,
+        sizesOffered,
+        category,
+        name,
+        code,
+        number,
+        images,
+        mandatoryItem,
+        price,
+        priceBreakGoal
+      });
+    });
+  }
   return res.status(200).send([{ message: 'Team Store duplicated', store: newStore }]);
 });
 
@@ -238,6 +289,9 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const manager = await Member.findById(managerId);
   if (!manager) return res.status(400).send([{ message: 'Manager with the given ID not found.' }]);
 
+  const team = await Team.findById(teamId);
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+
   store.teamId = teamId;
   store.storeName = storeName;
   store.storeCountry = storeCountry;
@@ -251,6 +305,10 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   store.timezone = timezone;
   store.storeMessage = storeMessage;
   store.shippingType = shippingType;
+
+  if (store.mode !== 'CLOSED') {
+    store.bulkShipping = team.bulkShipping;
+  }
 
   await store.save();
   return res.send(store);

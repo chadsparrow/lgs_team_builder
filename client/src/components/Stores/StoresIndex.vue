@@ -37,8 +37,20 @@
             <td>{{ store.teamId.teamId }}</td>
             <td>{{ store.orderReference }}</td>
             <td>{{ store.adminId.name }}</td>
-            <td>{{ store.openingDate || 'No Opening Date' }}</td>
-            <td>{{ store.closingDate || 'No Closing Date' }}</td>
+            <td v-if="store.openingDate">
+              {{
+              store.openingDate
+              | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+              }}
+            </td>
+            <td v-else>No Opening Date</td>
+            <td v-if="store.closingDate">
+              {{
+              store.closingDate
+              | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+              }}
+            </td>
+            <td v-else>No Closing Date</td>
             <td
               :class="
                 store.mode === 'OPEN'
@@ -47,12 +59,14 @@
                   ? 'bg-danger text-white text-center'
                   : store.mode === 'HOLD'
                   ? 'bg-warning text-white text-center'
+                  : store.mode === 'SURVEY'
+                  ? 'text-center'
                   : null
               "
             >{{ store.mode }}</td>
-            <td>{{ store.totalOrders }}</td>
+            <td class="text-center">{{ store.totalOrders }}</td>
             <td>{{ store.currency }}</td>
-            <td>{{ store.collectedAmount }}</td>
+            <td class="text-center">{{ store.collectedAmount }}</td>
           </tr>
         </tbody>
       </table>
@@ -132,6 +146,8 @@ export default {
         if (
           store.storeName.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.teamId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.teamId.teamId.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.orderReference.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.adminId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.managerId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.mode.toLowerCase().includes(this.storesSearchText.toLowerCase())
