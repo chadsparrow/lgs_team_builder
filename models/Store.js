@@ -20,6 +20,12 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
+    brand: {
+      type: String,
+      uppercase: true,
+      trim: true,
+      enum: ['GARNEAU', 'SUGOI', 'SOMBRIO']
+    },
     currency: {
       type: String,
       required: true,

@@ -410,7 +410,6 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       name: '',
       logo: null,
       adminId: '',
@@ -453,6 +452,9 @@ export default {
     },
     members: function() {
       return this.$store.getters.allMembers;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   created: async function() {
@@ -461,7 +463,7 @@ export default {
       this.adminsList = admins.data;
 
       await this.$store.dispatch('getMembers');
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
       this.adminId = this.member._id;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -478,8 +480,11 @@ export default {
       this.$refs.teamId.focus();
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     addTeam: async function() {

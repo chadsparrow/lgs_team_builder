@@ -53,7 +53,6 @@ export default {
   name: 'TeamsRemoveMembers',
   data() {
     return {
-      dataReady: false,
       id: '',
       name: '',
       manager: '',
@@ -65,6 +64,9 @@ export default {
     vSelect
   },
   computed: {
+    dataReady: function() {
+      return this.$store.getters.dataReady;
+    },
     member: function() {
       return this.$store.getters.loggedInMember;
     },
@@ -108,11 +110,14 @@ export default {
       });
 
       this.members = filtered;
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     removeMembers: async function() {

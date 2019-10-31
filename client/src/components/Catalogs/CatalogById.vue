@@ -46,11 +46,13 @@ export default {
   name: 'CatalogById',
   data() {
     return {
-      dataReady: false,
       viewGrid: true
     };
   },
   computed: {
+    dataReady: function() {
+      return this.$store.getters.dataReady;
+    },
     catalog: function() {
       return this.$store.getters.currentCatalog;
     },
@@ -74,11 +76,14 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogItems', this.catalog._id);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     getImgUrl(item) {

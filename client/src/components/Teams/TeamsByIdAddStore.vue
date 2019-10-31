@@ -42,7 +42,7 @@
           <span>Store Information</span>
         </div>
         <div class="row px-2">
-          <div class="col-sm-8">
+          <div class="col-sm-6">
             <div class="form-group">
               <label for="storeName">Store Name</label>
               <input
@@ -54,7 +54,17 @@
               />
             </div>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="brand">Store Brand</label>
+              <select class="form-control" id="brand" v-model="brand" ref="brand">
+                <option value="GARNEAU">GARNEAU</option>
+                <option value="SUGOI">SUGOI</option>
+                <option value="SOMBRIO">SOMBRIO</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-3">
             <div class="form-group">
               <label for="storeCountry">Store Country</label>
               <country-select
@@ -113,6 +123,7 @@
                 v-model="opening"
                 :value-zone="team.timezone"
                 :zone="team.timezone"
+                :minute-step="60"
                 use12-hour
                 :phrases="{ ok: 'Continue', cancel: 'Exit' }"
                 :week-start="7"
@@ -129,6 +140,7 @@
                 :value-zone="team.timezone"
                 :zone="team.timezone"
                 use12-hour
+                :minute-step="60"
                 :phrases="{ ok: 'Continue', cancel: 'Exit' }"
                 :week-start="7"
                 :min-datetime="opening"
@@ -249,7 +261,7 @@
         <div class="row px-2">
           <span class="col">
             All orders from this store will ship to the
-            <strong>Team Member's</strong> address specified in their own profile.
+            <strong>Team Member's Shipping Address</strong> specified in their own profile.
           </span>
         </div>
       </div>
@@ -259,7 +271,6 @@
 
 <script>
 import Avatar from 'vue-avatar';
-import moment from 'moment-timezone';
 
 export default {
   name: 'TeamsAddStore',
@@ -268,10 +279,10 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       storeName: '',
       storeCountry: '',
       currency: '',
+      brand: '',
       orderReference: '',
       mode: 'HOLD',
       opening: null,
@@ -281,6 +292,9 @@ export default {
     };
   },
   computed: {
+    dataReady: function() {
+      return this.$store.getters.dataReady;
+    },
     member: function() {
       return this.$store.getters.loggedInMember;
     },
@@ -316,11 +330,14 @@ export default {
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.storeCountry = this.team.bulkShipping.country;
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     setOpen: function() {
@@ -340,6 +357,7 @@ export default {
         storeName: this.storeName,
         storeCountry: this.storeCountry,
         currency: this.currency,
+        brand: this.brand,
         orderReference: this.orderReference,
         adminId: this.team.adminId._id,
         managerId: this.team.managerId._id,

@@ -466,7 +466,6 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       shippingSame: false,
       billingSame: false,
       backupBilling: {},
@@ -477,6 +476,9 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   created: async function() {
@@ -495,11 +497,14 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       const res = await this.$store.dispatch('getMemberDetails', this.member._id);
       this.memberDetails = res.data.member;
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     copyDetails: function() {

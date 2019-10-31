@@ -327,12 +327,14 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       currentPage: 1,
       itemsPerPage: 10
     };
   },
   computed: {
+    dataReady: function(){
+      return this.$store.getters.dataReady;
+    },
     joinLink: function() {
       return `${window.location.origin}/join/${this.team._id}`;
     },
@@ -387,13 +389,16 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeamStores', this.$route.params.id);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       if (err.response.data[0].message !== 'Team has no stores.')
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
 
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     onCopy: function() {

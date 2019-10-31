@@ -66,20 +66,18 @@
 <script>
 export default {
   name: 'CatalogByIdEdit',
-  data() {
-    return {
-      dataReady: false
-    };
-  },
   computed: {
     catalog: function() {
       return this.$store.getters.currentCatalog;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -98,8 +96,11 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     editCatalog: async function() {

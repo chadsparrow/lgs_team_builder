@@ -215,11 +215,6 @@ export default {
   components: {
     Gravatar
   },
-  data() {
-    return {
-      dataReady: false
-    };
-  },
   computed: {
     currentMember: function() {
       return this.$store.getters.loggedInMember;
@@ -235,12 +230,15 @@ export default {
     },
     teams: function() {
       if (this.memberDetails) return this.memberDetails.teams;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   created: async function() {
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -255,8 +253,11 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     loadTeam: function(id) {

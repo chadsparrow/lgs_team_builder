@@ -17,7 +17,6 @@ export default {
   name: 'CatalogItemById',
   data() {
     return {
-      dataReady: false,
       images: [
         {
           id: '1',
@@ -52,6 +51,9 @@ export default {
     },
     catalogItem: function() {
       return this.$store.getters.currentCatalogItem;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   methods: {
@@ -86,11 +88,14 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   }
 };
 </script>

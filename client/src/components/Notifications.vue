@@ -1,5 +1,5 @@
 <template>
-  <div class="navItem" v-if="dataReady">
+  <div class="navItem" v-if="notificationsReady">
     <button class="btn btn-info" @click="showNotifications = !showNotifications">
       <i class="fas fa-envelope fa-lg"></i>
       <span class="badge badge-danger ml-2" v-if="notifications.length > 0">
@@ -42,12 +42,14 @@ export default {
   name: 'Notifications',
   data() {
     return {
-      dataReady: false,
       showNotifications: false,
       polling: null
     };
   },
   computed: {
+    notificationsReady: function() {
+      return this.$store.getters.notificationsReady;
+    },
     member: function() {
       return this.$store.getters.loggedInMember;
     },
@@ -59,14 +61,15 @@ export default {
     try {
       await this.$store.dispatch('getMe', this.member._id);
       this.getNotifications();
-      this.dataReady = true;
+      this.$store.dispatch('setNotificationsReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setNotificationsReadyTrue');
     }
   },
   beforeDestroy: function() {
     clearInterval(this.polling);
+    this.$store.dispatch('setNotificationsReadyFalse');
   },
   methods: {
     getNotifications: function() {

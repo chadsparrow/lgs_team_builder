@@ -49,12 +49,14 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12
     };
   },
   computed: {
+    dataReady: function() {
+      return this.$store.getters.dataReady;
+    },
     orders: function() {
       return this.$store.getters.orders;
     },
@@ -89,13 +91,15 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getOrders');
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
   },
-
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
+  },
   methods: {
     loadOrder: function(id) {
       this.$router.push({ name: 'orderById', params: { id } }).catch(() => {});

@@ -10,6 +10,8 @@ Vue.use(VueAxios, axios);
 export default new Vuex.Store({
   state: {
     isLoading: false,
+    dataReady: false,
+    notificationsReady: false,
     status: '',
     token: localStorage.getItem('token') || '',
     loggedInMember: {},
@@ -586,11 +588,35 @@ export default new Vuex.Store({
           reject(err);
         }
       });
+    },
+    setDataReadyTrue({ commit }) {
+      commit('SET_DATA_READY_TRUE');
+    },
+    setDataReadyFalse({ commit }) {
+      commit('SET_DATA_READY_FALSE');
+    },
+    setNotificationsReadyTrue({ commit }) {
+      commit('SET_NOTIFICATIONS_READY_TRUE');
+    },
+    setNotificationsReadyFalse({ commit }) {
+      commit('SET_NOTIFICATIONS_READY_FALSE');
     }
   },
   mutations: {
     TOGGLE_LOADING(state) {
       state.isLoading = !state.isLoading;
+    },
+    SET_DATA_READY_TRUE(state) {
+      state.dataReady = true;
+    },
+    SET_DATA_READY_FALSE(state) {
+      state.dataReady = false;
+    },
+    SET_NOTIFICATIONS_READY_TRUE(state) {
+      state.notificationsReady = true;
+    },
+    SET_NOTIFICATIONS_READY_FALSE(state) {
+      state.notificationsReady = false;
     },
     AUTH_REQUEST(state) {
       state.status = 'loading';
@@ -685,6 +711,8 @@ export default new Vuex.Store({
   },
   getters: {
     isLoading: state => state.isLoading,
+    dataReady: state => state.dataReady,
+    notificationsReady: state => state.notificationsReady,
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     loggedInMember: state => state.loggedInMember,

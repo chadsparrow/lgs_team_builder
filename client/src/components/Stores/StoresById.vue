@@ -178,7 +178,6 @@ export default {
   name: 'StoresById',
   data() {
     return {
-      dataReady: false,
       currentDateTime: null,
       polling: null,
       openingDifference: null,
@@ -200,10 +199,10 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
   },
   mounted: function() {
@@ -211,8 +210,12 @@ export default {
   },
   beforeDestroy: function() {
     clearInterval(this.polling);
+    this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
+    dataReady: function() {
+      return this.$store.getters.dataReady;
+    },
     store: function() {
       return this.$store.getters.currentStore;
     },

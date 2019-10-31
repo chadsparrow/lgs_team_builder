@@ -38,7 +38,6 @@ export default {
   name: 'TeamsAddMember',
   data() {
     return {
-      dataReady: false,
       id: '',
       name: '',
       managerId: '',
@@ -53,6 +52,9 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   created: async function() {
@@ -97,11 +99,14 @@ export default {
       });
 
       this.members = availMembers;
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     addTeamMember: async function() {

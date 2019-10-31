@@ -458,7 +458,6 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       email: '',
       password: '',
       name: '',
@@ -499,15 +498,21 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
     team: function() {
       return this.$store.getters.currentTeam;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   methods: {

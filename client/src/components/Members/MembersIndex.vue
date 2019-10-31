@@ -67,7 +67,6 @@ export default {
   },
   data() {
     return {
-      dataReady: false,
       currentPage: 1,
       itemsPerPage: 12,
       memberSearchText: ''
@@ -85,11 +84,14 @@ export default {
       ];
       await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.dataReady = true;
+      this.$store.dispatch('setDataReadyTrue');
     }
+  },
+  beforeDestroy: function() {
+    this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
     filteredMembers: function() {
@@ -123,6 +125,9 @@ export default {
         }
       }
       return pageArray.length;
+    },
+    dataReady: function() {
+      return this.$store.getters.dataReady;
     }
   },
   methods: {
