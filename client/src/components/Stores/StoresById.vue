@@ -60,12 +60,16 @@
         <span class="col-sm-12">{{ store.timezone }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Store Country:</small>
-        <span class="col-sm-12">{{ store.storeCountry }}</span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Account #:</small>
-        <span class="col-sm-12">{{ store.teamId.teamId }}</span>
+        <div class="col-sm-6">
+          <small class="text-info">Store Country:</small>
+          <br />
+          <span>{{ store.storeCountry }}</span>
+        </div>
+        <div class="col-sm-6">
+          <small class="text-info">Account #:</small>
+          <br />
+          <span>{{ store.teamId.teamId }}</span>
+        </div>
       </div>
       <div class="row p-1" v-if="access">
         <small class="col-sm-12 text-info">Store Admin:</small>
