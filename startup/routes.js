@@ -15,6 +15,5 @@ module.exports = function(app) {
   app.use('/api/v1/stores', require('../routes/stores'));
   app.use('/api/v1/storeitems', require('../routes/storeitems'));
   app.use('/api/v1/orders', require('../routes/orders'));
-  app.use('/api/v1/joinrequests', require('../routes/joinrequests'));
   app.use(error);
 };
