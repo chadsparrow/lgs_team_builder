@@ -34,6 +34,8 @@ module.exports = async function(DB_HOST) {
       zipPostal: 'zip_postal',
       phone: '1111111111',
       email: rootEmail,
+      timezoneAbbrev: 'PST',
+      timezone: 'America/Vancouver',
       shipping: {
         name: 'rootuser',
         address1: '123 Any Street',

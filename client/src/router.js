@@ -303,13 +303,13 @@ router.beforeEach(async (to, from, next) => {
     }
 
     const memberId = localStorage.getItem('member');
-    let member = store.getters.loggedInMember;
-    if (memberId && member && !member.isAdmin) {
+    const member = store.getters.loggedInMember;
+    if (memberId && !member.name) {
       await store.dispatch('setLoggedInMember', memberId);
-      member = store.getters.loggedInMember;
     }
+
     if (to.matched.some(record => record.meta.isAdmin)) {
-      if (member.isAdmin) {
+      if (member && member.isAdmin) {
         next();
       } else {
         Vue.toasted.error('Access Denied');

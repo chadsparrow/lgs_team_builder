@@ -63,6 +63,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
+      
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {

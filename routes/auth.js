@@ -8,7 +8,9 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
-const { Team } = require('../models/Team');
+
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
@@ -75,7 +77,7 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /api/members
-router.post('/register', async (req, res) => {
+router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewRegister(req.body.member);
   if (error) return res.status(400).send(error.details);
 
@@ -115,7 +117,7 @@ router.post('/register', async (req, res) => {
     billingZipPostal,
     billingPhone,
     billingEmail
-  } = req.body.member;
+  } = req.body;
 
   const userEmail = email.split('@')[0];
   if (password.includes('password'))
@@ -191,16 +193,6 @@ router.post('/register', async (req, res) => {
     newMember.billing.phone = billingPhone;
     newMember.billing.email = billingEmail;
   }
-
-  const team = await Team.findById(req.body.teamId);
-  team.members.push(newMember._id);
-  await team.save();
-
-  newMember.notifications.push({
-    date: new Date(),
-    message: `You are now part of team ${team.name}`
-  });
-  newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
 
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);

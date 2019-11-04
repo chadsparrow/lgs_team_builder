@@ -167,7 +167,12 @@ const StoreSchema = new mongoose.Schema(
 function validateStore(store) {
   const schema = {
     teamId: Joi.objectId().required(),
-    storeName: Joi.string().trim(),
+    storeName: Joi.string()
+      .required()
+      .trim(),
+    brand: Joi.string()
+      .required()
+      .trim(),
     storeCountry: Joi.string()
       .required()
       .trim(),

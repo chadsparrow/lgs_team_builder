@@ -183,6 +183,8 @@ router.post('/register', [auth, admin], async (req, res) => {
 
   await newMember.save();
 
+  // SEND EMAIL TO USER TO ALLOW PASSWORD RESET USING TOKEN
+
   return res.status(201).send([{ message: 'Member Registered' }]);
 });
 

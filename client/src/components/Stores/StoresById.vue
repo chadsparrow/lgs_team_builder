@@ -1,6 +1,17 @@
 <template>
   <div class="page" v-if="dataReady">
     <div class="sidebar-left">
+      <div class="row p-1">
+        <div class="col-sm-12">
+          <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="store.brand === 'GARNEAU'" />
+          <img
+            src="@/assets/sombrio_logo.png"
+            alt="Sombrio Logo"
+            v-else-if="store.brand === 'SOMBRIO'"
+          />
+          <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-else-if="store.brand === 'SUGOI'" />
+        </div>
+      </div>
       <div
         :class="
             store.mode === 'OPEN'
@@ -46,7 +57,13 @@
           <span v-else>No Closing Date</span>
         </div>
       </div>
-      <div class="row p-1 mt-1">
+      <div class="row p-1 mt-1" v-if="currentDateTime">
+        <small class="col-sm-12 text-info">Current Store Time:</small>
+        <span
+          class="col-sm-12"
+        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
+      </div>
+      <div class="row p-1">
         <small class="col-sm-12 text-info">Store Created:</small>
         <span class="col-sm-12">
           {{
@@ -54,10 +71,6 @@
           | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
           }}
         </span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Store Timezone:</small>
-        <span class="col-sm-12">{{ store.timezone }}</span>
       </div>
       <div class="row p-1">
         <div class="col-sm-6">
@@ -81,29 +94,6 @@
         <span class="col-sm-12">{{ store.managerId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.email }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.phone }}</span>
-      </div>
-      <div class="row p-1">
-        <small class="col-sm-12 text-info">Main Contact:</small>
-        <span class="col-sm-12">{{ store.teamId.mainContact.name }}</span>
-        <span class="col-sm-12" v-if="store.teamId.mainContact.company">
-          {{
-          store.teamId.mainContact.company
-          }}
-        </span>
-        <span class="col-sm-12">{{ store.teamId.mainContact.address1 }}</span>
-        <span class="col-sm-12" v-if="store.teamId.mainContact.address2">
-          {{
-          store.teamId.mainContact.address2
-          }}
-        </span>
-        <span class="col-sm-12">
-          {{ store.teamId.mainContact.city }},
-          {{ store.teamId.mainContact.stateProv }},
-          {{ store.teamId.mainContact.country }}
-        </span>
-        <span class="col-sm-12">{{ store.teamId.mainContact.zipPostal }}</span>
-        <span class="col-sm-12">{{ store.teamId.mainContact.phone }}</span>
-        <span class="col-sm-12">{{ store.teamId.mainContact.email }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Shipping Type:</small>
@@ -135,12 +125,6 @@
         <span class="col-sm-12">{{ store.bulkShipping.zipPostal }}</span>
         <span class="col-sm-12">{{ store.bulkShipping.phone }}</span>
         <span class="col-sm-12">{{ store.bulkShipping.email }}</span>
-      </div>
-      <div class="row p-1" v-if="currentDateTime">
-        <small class="col-sm-12 text-info">Current Store Time:</small>
-        <span
-          class="col-sm-12"
-        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
       </div>
     </div>
     <div class="middle-section">Store Items</div>
@@ -190,6 +174,7 @@ export default {
   },
   created: async function() {
     try {
+      this.polling = setInterval(this.getNow, 1000);
       await this.$store.dispatch('getStore', this.$route.params.id);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -208,9 +193,6 @@ export default {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  mounted: function() {
-    this.polling = setInterval(this.getNow, 1000);
   },
   beforeDestroy: function() {
     clearInterval(this.polling);
@@ -286,6 +268,9 @@ export default {
   grid-area: sidebar-left;
   overflow-x: hidden;
   overflow-y: auto;
+  img {
+    width: 100%;
+  }
 }
 
 .middle-section {
