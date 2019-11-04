@@ -98,7 +98,7 @@ export default {
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
 
-      return `/images/catalogs/${this.catalog._id}/${item._id}_front_800.png`;
+      return `/images/catalogs/${this.catalog._id}/${item.images[0]}_800.png`;
     },
     setView(bool) {
       if (bool) this.viewGrid = true;
