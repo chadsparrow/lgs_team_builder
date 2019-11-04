@@ -3,25 +3,39 @@ const express = require('express');
 require('express-async-errors');
 
 const app = express();
+
+// security and sanitization modules
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
 // const cors = require('cors');
+
 const config = require('config');
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const logger = require('./middleware/logger');
 const requestLogger = require('./middleware/requestLogger');
+app.use(requestLogger);
 
-// Set up express, security
+// Set up express & mongo sanitations and security
 app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
+app.use(hpp());
 // app.use(cors());
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 250
+});
+app.use(limiter);
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(requestLogger);
 
 // app.use(cors());  //** Re-enable if needed for CORS Errors */
 app.enable('trust proxy');
