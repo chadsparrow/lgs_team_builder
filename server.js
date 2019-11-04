@@ -17,6 +17,7 @@ const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const logger = require('./middleware/logger');
 const requestLogger = require('./middleware/requestLogger');
+
 app.use(requestLogger);
 
 // Set up express & mongo sanitations and security
