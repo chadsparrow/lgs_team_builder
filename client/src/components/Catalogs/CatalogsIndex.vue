@@ -22,10 +22,10 @@
                   <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
                 </td>
                 <td v-if="catalog.brand === 'SUGOI'">
-                  <img src="@/assets/sugoi_logo.png" alt="Garneau Logo" />
+                  <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" />
                 </td>
                 <td v-if="catalog.brand === 'SOMBRIO'">
-                  <img src="@/assets/sombrio_logo.png" alt="Garneau Logo" />
+                  <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
                 </td>
                 <td>{{ catalog.year }}</td>
                 <td>{{ catalog.season }}</td>

@@ -1,7 +1,12 @@
 <template>
   <div class="page" v-if="dataReady">
     <div class="header">
-      <div>{{ catalog.brand }} - {{ catalog.season }} - {{ catalog.year }}</div>
+      <div>
+        <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="catalog.brand ==='GARNEAU'" />
+        <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="catalog.brand ==='SUGOI'" />
+        <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" v-if="catalog.brand ==='SOMBRIO'" />
+        {{ catalog.season }} - {{ catalog.year }}
+      </div>
       <div>
         <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">
           <i class="fas fa-plus fa-lg"></i>
@@ -124,6 +129,11 @@ export default {
     padding: 0.75rem;
     border-radius: 5px;
     font-weight: 700;
+
+    img {
+      height: 40px;
+      margin-right: 2rem;
+    }
   }
 
   a {

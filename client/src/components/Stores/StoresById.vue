@@ -72,7 +72,7 @@
           }}
         </span>
       </div>
-      <div class="row p-1">
+      <div class="row p-1" v-if="access">
         <div class="col-sm-6">
           <small class="text-info">Store Country:</small>
           <br />

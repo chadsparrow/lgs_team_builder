@@ -198,6 +198,7 @@ router.post('/:id/dup', [auth, admin], async (req, res) => {
     storeName: `${newStoreName[0]} ${newStoreID} COPY`,
     storeCountry: store.storeCountry,
     currency: store.currency,
+    brand: store.brand,
     orderReference: store.orderReference,
     adminId: store.adminId,
     managerId: store.managerId,
