@@ -383,18 +383,6 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
     .send([{ message: 'Email address updated - this will be your new login.' }]);
 });
 
-// PATCH /api/v1/members/admin/:id
-router.patch('/admin/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const member = await Member.findById(req.params.id);
-  if (!member) return res.status(400).send([{ message: 'Member with the given ID not found.' }]);
-
-  member.isAdmin = !member.isAdmin;
-
-  await member.save();
-
-  return res.status(200).send([{ message: 'Member Updated' }]);
-});
-
 // PATCH /api/members/password/:id
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);

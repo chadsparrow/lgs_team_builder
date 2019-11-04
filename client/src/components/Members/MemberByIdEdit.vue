@@ -15,16 +15,6 @@
       <hr />
       <small class="text-info">Actions</small>
       <button
-        class="btn btn-sm btn-block btn-info mt-2"
-        @click.prevent="toggleAdmin"
-        v-if="!member.isAdmin"
-      >Give Admin Status</button>
-      <button
-        class="btn btn-sm btn-block btn-info mt-2"
-        @click.prevent="toggleAdmin"
-        v-else
-      >Revoke Admin Status</button>
-      <button
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
@@ -533,17 +523,6 @@ export default {
             this.$toasted.success(res.data[0].message);
             this.$router.push({ name: 'members' });
           }
-        }
-      } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      }
-    },
-    toggleAdmin: async function() {
-      try {
-        if (confirm('Are you sure?')) {
-          const res = await this.$store.dispatch('toggleAdmin', this.member._id);
-          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-          this.member.isAdmin = !this.member.isAdmin;
         }
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });

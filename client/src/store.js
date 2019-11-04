@@ -382,19 +382,6 @@ export default new Vuex.Store({
         }
       });
     },
-    toggleAdmin({ commit }, id) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          commit('TOGGLE_LOADING');
-          const res = await axios.patch(`/api/v1/members/admin/${id}`);
-          commit('TOGGLE_LOADING');
-          resolve(res);
-        } catch (err) {
-          commit('TOGGLE_LOADING');
-          reject(err);
-        }
-      });
-    },
     getTeams({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
