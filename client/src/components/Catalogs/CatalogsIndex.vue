@@ -18,9 +18,17 @@
                 :key="catalog._id"
                 @click.prevent="loadCatalog(catalog._id)"
               >
+                <td v-if="catalog.brand === 'GARNEAU'">
+                  <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
+                </td>
+                <td v-if="catalog.brand === 'SUGOI'">
+                  <img src="@/assets/sugoi_logo.png" alt="Garneau Logo" />
+                </td>
+                <td v-if="catalog.brand === 'SOMBRIO'">
+                  <img src="@/assets/sombrio_logo.png" alt="Garneau Logo" />
+                </td>
                 <td>{{ catalog.year }}</td>
                 <td>{{ catalog.season }}</td>
-                <td>{{ catalog.brand }}</td>
               </tr>
             </tbody>
           </table>
@@ -109,3 +117,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+td {
+  img {
+    height: 40%;
+  }
+}
+</style>

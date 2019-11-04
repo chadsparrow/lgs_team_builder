@@ -17,7 +17,10 @@
         </button>
       </div>
     </div>
-    <div :class="viewGrid ? 'galleryThumb' : 'galleryList'" v-if="catalogItems.length > 0">
+    <div
+      :class="viewGrid ? 'galleryThumb' : 'galleryList'"
+      v-if="catalogItems && catalogItems.length > 0"
+    >
       <router-link
         class="thumbnail"
         v-for="item of catalogItems"
@@ -63,7 +66,7 @@ export default {
   created: async function() {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-      
+
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -88,9 +91,9 @@ export default {
   },
   methods: {
     getImgUrl(item) {
-      if (item.images.length === 0) return '@/assets/missing_item_800.png';
+      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
 
-      return item.images[0];
+      return `/images/catalogs/${this.catalog._id}/${item._id}_front_800.png`;
     },
     setView(bool) {
       if (bool) this.viewGrid = true;

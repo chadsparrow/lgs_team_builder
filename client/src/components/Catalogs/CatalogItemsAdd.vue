@@ -351,6 +351,8 @@ export default {
       this.sizes = activeSizes;
     },
     addCatalogItem: async function() {
+      const mappedCategories = this.categories.map(cat => cat.text);
+
       const newCatalogItem = {
         catalogId: this.catalog._id,
         nameEN: this.nameEN,
@@ -362,7 +364,7 @@ export default {
         gender: this.gender,
         descriptionEN: this.descriptionEN,
         descriptionFR: this.descriptionFR,
-        categories: this.categories
+        categories: mappedCategories
       };
       try {
         const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);

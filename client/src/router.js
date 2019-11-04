@@ -303,9 +303,10 @@ router.beforeEach(async (to, from, next) => {
     }
 
     const memberId = localStorage.getItem('member');
-    const member = store.getters.loggedInMember;
+    let member = store.getters.loggedInMember;
     if (memberId && !member.name) {
       await store.dispatch('setLoggedInMember', memberId);
+      member = store.getters.loggedInMember;
     }
 
     if (to.matched.some(record => record.meta.isAdmin)) {

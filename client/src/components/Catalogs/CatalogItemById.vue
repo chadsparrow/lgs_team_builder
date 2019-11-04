@@ -64,7 +64,7 @@ export default {
 
         if (!this.catalogItem.images[index]) return require(`@/assets/missing_item_${size}.png`);
 
-        return this.catalogItem.images[index];
+        return `/images/catalogs/${this.catalog._id}/${this.catalogItem.images[index]}_${size}.png`;
       }
     }
   },

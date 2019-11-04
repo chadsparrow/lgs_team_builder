@@ -84,13 +84,9 @@ const CatalogItemSchema = new mongoose.Schema(
     },
     categories: [
       {
-        _id: false,
-        text: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        tiClasses: []
+        type: String,
+        uppercase: true,
+        trim: true
       }
     ],
     images: [{ type: String, trim: true }],
@@ -129,12 +125,11 @@ function validateCatalogItem(catalogItem) {
     gender: Joi.string()
       .required()
       .trim(),
-    categories: Joi.array().items({
-      text: Joi.string()
+    categories: Joi.array().items(
+      Joi.string()
         .allow('', null)
-        .trim(),
-      tiClasses: Joi.array()
-    }),
+        .trim()
+    ),
     priceBreaks: Joi.object({
       CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
       USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
