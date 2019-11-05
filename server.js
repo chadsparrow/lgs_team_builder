@@ -1,6 +1,6 @@
 const path = require('path');
 const express = require('express');
-require('express-async-errors');
+require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
 
 const app = express();
 
@@ -10,11 +10,16 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
-// const cors = require('cors');
+// const cors = require('cors');  // un-comment if calls will come from another domain on front-end
 
+// config to use env variables
 const config = require('config');
+
+// setup input validation and sanitization
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
+
+// setup logger/request logger during development
 const logger = require('./middleware/logger');
 const requestLogger = require('./middleware/requestLogger');
 
@@ -25,9 +30,9 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
-// app.use(cors());
+// app.use(cors()); // un-comment if calls will come from another domain on front-end
 
-// Rate Limiting
+// Rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 250
@@ -36,11 +41,14 @@ app.use(limiter);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+
+// sets public folder for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(cors());  //** Re-enable if needed for CORS Errors */
+// allows calls if server is behind a proxy
 app.enable('trust proxy');
 
+// set up database connection
 const DB_USER = config.get('database.user');
 const DB_PASS = config.get('database.pass');
 const DB_ADMINSOURCE = config.get('database.adminSource');
@@ -75,6 +83,7 @@ if (!config.get('jwtPrivateKey')) {
   process.exit(1);
 }
 
+// establishes all endpoints allowed from front end
 require('./startup/routes')(app);
 
 // configures server port

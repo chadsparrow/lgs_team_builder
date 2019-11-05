@@ -14,7 +14,7 @@ const admin = require('../middleware/admin');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
-function validate(req) {
+function validateLogin(req) {
   const schema = {
     email: Joi.string()
       .email()
@@ -27,17 +27,22 @@ function validate(req) {
   return Joi.validate(req, schema, joiOptions);
 }
 
-// POST /api/members
+// @desc    Member login
+// @route   POST /api/v1/auth/login
+// @access  Public
 router.post('/login', async (req, res) => {
-  const { error } = validate(req.body);
+  const { error } = validateLogin(req.body);
   if (error) return res.status(400).send(error.details);
 
+  // checks if user with email exists
   const member = await Member.findOne({ email: req.body.email });
   if (!member) return res.status(400).send([{ message: 'Invalid email or password.' }]);
 
+  // compares input password with db password
   const validPassword = await bcrypt.compare(req.body.password, member.password);
   if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
+  // checks if account is closed
   if (member.closedAccount)
     return res.status(401).send([
       {
@@ -45,8 +50,10 @@ router.post('/login', async (req, res) => {
       }
     ]);
 
+  // generates an JSONWebToken once authenticated
   const token = member.generateAuthToken();
 
+  // gathers emails for current member - currently not being used on front-end, may delete
   const emails = await Email.find({
     $or: [
       { recipients: { $elemMatch: { memberId: mongoose.Types.ObjectId(member._id) } } },
@@ -76,7 +83,9 @@ router.post('/login', async (req, res) => {
   ]);
 });
 
-// POST /api/members
+// @desc    Member Register
+// @route   POST /api/v1/auth/register
+// @access  Private - Admin
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewRegister(req.body.member);
   if (error) return res.status(400).send(error.details);
@@ -119,6 +128,7 @@ router.post('/register', [auth, admin], async (req, res) => {
     billingEmail
   } = req.body;
 
+  // checks if the word "password" or email address is in their password and denies creation
   const userEmail = email.split('@')[0];
   if (password.includes('password'))
     return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
@@ -127,6 +137,7 @@ router.post('/register', [auth, admin], async (req, res) => {
       .status(400)
       .send([{ message: 'Please do not use your email username in your password' }]);
 
+  // checks if email already registered
   const member = await Member.findOne({ email });
   if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
 

@@ -7,6 +7,9 @@ const auth = require('../middleware/auth');
 const validateObjectId = require('../middleware/validateObjectId');
 
 // GET /api/notifcations/me
+// @desc    Gets all notifications for current user
+// @route   GET /api/v1/notifications/me
+// @access  Private
 router.get('/me', auth, async (req, res) => {
   const member = await Member.findById(req.member._id);
   if (!member)
@@ -14,6 +17,9 @@ router.get('/me', auth, async (req, res) => {
   return res.send(member.notifications);
 });
 
+// @desc    Adds a notification to all recipients in request body
+// @route   POST /api/v1/notifications/
+// @access  Private
 router.post('/', auth, async (req, res) => {
   const { error } = validateNotification(req.body);
   if (error) return res.status(400).send(error.details);
@@ -36,6 +42,9 @@ router.post('/', auth, async (req, res) => {
   return res.status(200).send([{ message: 'Notification sent' }]);
 });
 
+// @desc    Deletes all notifications for current member
+// @route   DELETE /api/v1/notifications/all
+// @access  Private
 router.delete('/all', auth, async (req, res) => {
   const member = await Member.findById(req.member._id);
   member.notifications = [];
@@ -43,6 +52,9 @@ router.delete('/all', auth, async (req, res) => {
   return res.status(200).send([{ message: 'Notifications cleared' }]);
 });
 
+// @desc    Deletes specific notification from current member
+// @route   DELETE /api/v1/notifications/:id
+// @access  Private
 router.delete('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.member._id);
   if (member.notifications.length > 0) {

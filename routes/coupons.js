@@ -27,7 +27,9 @@ function populateCoupon(couponId) {
   });
 }
 
-// Collects all coupons from the database, also allows query (?code={code})
+// @desc    Collects all coupons and filters by code using AQP (api query params)
+// @route   GET /api/v1/coupons/(allows queries)
+// @access  Private
 router.get('/', auth, async (req, res) => {
   const { filter } = aqp(req.query);
   const coupons = await Coupon.find(filter)
@@ -40,7 +42,9 @@ router.get('/', auth, async (req, res) => {
   return res.send(coupons);
 });
 
-// Collects all coupons for the current authenticated user
+// @desc    Collects all coupons for the current authenticated user
+// @route   GET /api/v1/coupons/me
+// @access  Private
 router.get('/me', auth, async (req, res) => {
   const coupons = await Coupon.find({ recipients: { $elemMatch: { memberId: req.member._id } } })
     .populate({ path: 'recipients.memberId', select: 'name email' })
@@ -56,7 +60,9 @@ router.get('/me', auth, async (req, res) => {
   return res.send(coupons);
 });
 
-// Collects all coupons for a specified store based on given ID.
+// @desc    Collects all coupons for a specified store based on given ID.
+// @route   GET /api/v1/coupons/store/:id
+// @access  Private
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const coupons = await Coupon.find({ storeId: req.params.id })
     .populate({ path: 'recipients.memberId', select: 'name email' })
@@ -68,7 +74,9 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(coupons);
 });
 
-// Collects a coupon with a given ID
+// @desc    Collects a coupon with a given ID
+// @route   GET /api/v1/coupons/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id)
     .populate({ path: 'recipients.memberId', select: 'name email' })
@@ -79,7 +87,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(coupon);
 });
 
-// Adds a new coupon, cannot make duplicate coupon in a single store
+// @desc    Add a new coupon, cannot make duplicate coupon in a single store
+// @route   POST /api/v1/coupons/
+// @access  Private - admin
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCoupon(req.body);
   if (error) return res.status(400).send(error.details);
@@ -136,8 +146,10 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.send(await populateCoupon(coupon._id));
 });
 
-// Verifies coupon sent by client
-router.post('/verify/', [auth], async (req, res) => {
+// @desc    Verifies coupon sent by client - must sent storeId and code in query params
+// @route   POST /api/v1/coupons/verify?storeId=storeId&code=code
+// @access  Private
+router.post('/verify/', auth, async (req, res) => {
   const coupon = await Coupon.findOne({ storeId: req.query.store, code: req.query.code });
   if (!coupon) return res.status(400).send([{ message: 'Invalid coupon' }]);
 
@@ -164,7 +176,10 @@ router.post('/verify/', [auth], async (req, res) => {
   return res.status(200).send([{ message: 'Verified' }]);
 });
 
-// Updates coupon, but doesnt allow duplicate codes in single store
+//
+// @desc    Update coupon based on given ID
+// @route   PUT /api/v1/coupons/:id
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCouponEdit(req.body);
   if (error) return res.status(400).send(error.details);
@@ -192,6 +207,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   if (!coupon)
     return res.status(400).send([{ message: 'Coupon with the given ID was not found.' }]);
 
+  // checks if coupon already exists in the store with the same code and denies
   const duplicateCoupon = await Coupon.findOne({
     _id: { $ne: req.params.id },
     storeId: coupon.storeId,
@@ -221,13 +237,19 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(await populateCoupon(coupon._id));
 });
 
-router.patch('/use/:id', [validateObjectId, auth], async (req, res) => {
+// @desc    Consumes a coupon based on given ID
+// @route   PATCH /api/v1/coupons/:id/use
+// @access  Private
+router.patch('/:id/use', [validateObjectId, auth], async (req, res) => {
   const coupon = await Coupon.findById(req.params.id);
   if (!coupon)
     return res.status(400).send([{ message: 'Coupon with the given ID was not found.' }]);
+
+  // checks to make sure there are some remaining before consuming.
   if (coupon.couponsRemaining === 0)
     return res.status(400).send([{ message: 'Coupon is now expired.' }]);
 
+  // adjusts remaining and used integers
   coupon.couponsUsed += 1;
   coupon.couponsRemaining = parseInt(coupon.maxCoupons - coupon.couponsUsed, 10);
 
@@ -236,7 +258,10 @@ router.patch('/use/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(await populateCoupon(coupon._id));
 });
 
-router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
+// @desc    Adds more to an existing coupon code
+// @route   PATCH /api/v1/coupons/:id/add
+// @access  Private - admin
+router.patch('/:id/add', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateAddAmount(req.query);
   if (error) return res.status(400).send(error.details);
 
@@ -252,6 +277,9 @@ router.patch('/add/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(await populateCoupon(coupon._id));
 });
 
+// @desc    Deletes a coupon
+// @route   DELETE /api/v1/coupons/:id
+// @access  Private - admin
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const coupon = await Coupon.findByIdAndRemove(req.params.id);
   if (!coupon) return res.status(400).send([{ message: 'Coupon with the given ID not found.' }]);

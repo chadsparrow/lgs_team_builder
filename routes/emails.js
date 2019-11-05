@@ -1,4 +1,7 @@
 /* eslint-disable no-underscore-dangle */
+
+// THIS WHOLE FEATURE MAY NOT BE USED, LEFT CODE JUST IN CASE
+
 const express = require('express');
 const mongoose = require('mongoose');
 

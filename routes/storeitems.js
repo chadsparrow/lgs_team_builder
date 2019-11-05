@@ -13,9 +13,9 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
-// GET /api/storeitems/store/<storeId>
-// DESC - Get all store items linked to a given store id
-// ACCESS - Private
+// @desc    Get all items for a specific store
+// @route   GET /api/v1/storeitems/store/:id
+// @access  Private
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   const storeitems = await StoreItem.find({ storeId: req.params.id });
   if (storeitems && storeitems.length === 0)
@@ -24,9 +24,9 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(storeitems);
 });
 
-// GET /api/storeitems/<itemId>
-// DESC - Get a specific store item based on a given item id
-// ACCESS - Private
+// @desc    Get a specific store item
+// @route   GET /api/v1/storeitems/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const storeitem = await StoreItem.findById(req.params.id);
   if (!storeitem)
@@ -35,9 +35,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(storeitem);
 });
 
-// GET /api/storeitems/all
-// DESC - Get all store item in the database
-// ACCESS - Private - Admin only
+// @desc    Get all store items
+// @route   GET /api/v1/storeitems/all
+// @access  Private - admin
 router.get('/all', [auth, admin], async (req, res) => {
   const storeitems = await StoreItem.find();
   if (storeitems && storeitems.length === 0)
@@ -46,9 +46,9 @@ router.get('/all', [auth, admin], async (req, res) => {
   return res.send(storeitems);
 });
 
-// POST /api/storeitems/<storeId>
-// DESC - Add a new store item into store based on given ID
-// ACCESS - Private - Admin only
+// @desc    Add a new item to a store - using catalog item ID as itemId
+// @route   POST /api/v1/storeitems/:id
+// @access  Private - admin
 router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItem(req.body);
   if (error) return res.status(400).send(error.details);
@@ -74,6 +74,8 @@ router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
     price
   } = req.body;
 
+  // MAY NEED TO CHANGE CATEGORY to ARRAY - confirm
+
   const storeItem = new StoreItem({
     storeId,
     itemId,
@@ -92,9 +94,9 @@ router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(storeItem);
 });
 
-// PUT /api/storeitems/<itemId>
-// DESC - Edit a store item based on given ID (not images)
-// ACCESS - Private - Admin only
+// @desc    Update a store item
+// @route   PUT /api/v1/storeitems/:id
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItemEdit(req.body);
   if (error) return res.status(400).send(error.details);
@@ -107,7 +109,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   storeItem.isActive = isActive;
   storeItem.sizesOffered = sizesOffered;
-  storeItem.category = category;
+  storeItem.category = category; // MAY NEED TO CHANGE TO ARRAY
   storeItem.name = name;
   storeItem.code = code;
   storeItem.number = number;
@@ -118,9 +120,9 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(storeItem);
 });
 
-// PATCH /api/storeitems/<itemId>/images?index=<image index number>
-// DESC - Edit a store item images based on a given ID
-// ACCESS - Private - Admin only
+// @desc    Update image for store item
+// @route   PATCH /api/v1/storeitems/:id?index=index
+// @access  Private - admin
 router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStoreItemImage(req.body);
   if (error) return res.status(400).send(error.details);
@@ -135,9 +137,9 @@ router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(storeItem);
 });
 
-// DELETE /api/storeitems/<itemId>
-// DESC - Delete a store item based on a given ID
-// ACCESS - Private - Admin only
+// @desc    Delete a store item
+// @route   DELETE /api/v1/storeitems/:id
+// @access  Private - admin
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const storeItem = await StoreItem.findByIdAndDelete(req.params.id);
   if (!storeItem)

@@ -14,6 +14,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 
 const populateOptions = { path: 'catalogId', select: 'brand season year' };
 
+// this function populates all the catalogitem reference fields
 function populateCatalogItem(catalogItem) {
   return new Promise(async resolve => {
     const populatedCatalogItem = await CatalogItem.findById(catalogItem).populate(populateOptions);
@@ -21,7 +22,9 @@ function populateCatalogItem(catalogItem) {
   });
 }
 
-// Collects all catalog items
+// @desc    Gets all catalog items
+// @route   GET /api/v1/catalogitems/
+// @access  Private
 router.get('/', auth, async (req, res) => {
   const items = await CatalogItem.find().populate(populateOptions);
   if (items && items.length === 0)
@@ -30,7 +33,9 @@ router.get('/', auth, async (req, res) => {
   return res.json(items);
 });
 
-// Collects all items from a specific catalog item based on given ID
+// @desc    Collects all items from a specific catalog
+// @route   GET /api/v1/catalogitems/catalog/:id
+// @access  Private
 router.get('/catalog/:id', [validateObjectId, auth], async (req, res) => {
   const items = await CatalogItem.find({ catalogId: req.params.id });
   if (items && items.length === 0)
@@ -39,7 +44,9 @@ router.get('/catalog/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(items);
 });
 
-// Collects an item based on a given ID
+// @desc    Collects a specific catalog item
+// @route   GET /api/v1/catalogitems/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const item = await CatalogItem.findById(req.params.id).populate(populateOptions);
   if (!item)
@@ -48,7 +55,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(item);
 });
 
-// adds a new catalog item, doesnt allow duplicates
+// @desc    Add a new catalog item
+// @route   POST /api/v1/catalogitems/
+// @access  Private - admin
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCatalogItem(req.body);
   if (error) return res.status(400).send(error.details);
@@ -67,6 +76,7 @@ router.post('/', [auth, admin], async (req, res) => {
     categories
   } = req.body;
 
+  // Checks if catalog item with the same product code or stylecode in the current catalog exists and denies
   let item = await CatalogItem.findOne({
     $and: [
       { catalogId },
@@ -94,7 +104,9 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.status(200).send([{ message: 'Item added to Catalog' }]);
 });
 
-// Edits a certain item in a catalog, doesnt allow duplicates
+// @desc    Update a catalog item
+// @route   PUT /api/v1/catalogitems/:id
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalogItemEdit(req.body);
   if (error) return res.status(400).send(error.details);
@@ -114,9 +126,11 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     isActive
   } = req.body;
 
+  // checks if item exists
   const item = await CatalogItem.findById(req.params.id);
   if (!item) return res.status(400).send([{ message: 'Item with the given ID not found.' }]);
 
+  // checks if there already is an item with the same product code & style code and denies
   const duplicateItem = await CatalogItem.findOne({
     _id: { $ne: req.params.id },
     catalog_id: item.catalog_id,
@@ -142,22 +156,28 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(populateCatalogItem(item._id));
 });
 
-// adds an image URI to the items image array
+// @desc    Adds an image file name to the item's image array
+// @route   PATCH /api/v1/catalogitems/img/add/:id
+// @access  Private - admin
 router.patch('/img/add/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalogImg(req.body);
   if (error) return res.status(400).send(error.details);
 
+  // checks if catalog item exists
   const item = await CatalogItem.findById(req.params.id);
   if (!item)
     return res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
 
+  // pushes image_url data into images array
   item.images.push(req.body.image_url);
   await item.save();
 
   return res.send(populateCatalogItem(item._id));
 });
 
-// edits an image URI in items image array
+// @desc    Update an image URI in item's image array
+// @route   PATCH /api/v1/catalogitems/img/edit/:id/:index
+// @access  Private - admin
 router.patch('/img/edit/:id/:index', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalogImg(req.body);
   if (error) return res.status(400).send(error.details);
@@ -172,6 +192,9 @@ router.patch('/img/edit/:id/:index', [validateObjectId, auth, admin], async (req
   return res.send(populateCatalogItem(item._id));
 });
 
+// @desc    Delete an image URI from item's image array
+// @route   DELETE /api/v1/catalogitems/img/delete/:id/:index
+// @access  Private - admin
 router.delete('/img/delete/:id/:index', [validateObjectId, auth, admin], async (req, res) => {
   const item = await CatalogItem.findById(req.params.id);
   if (!item)
@@ -185,6 +208,9 @@ router.delete('/img/delete/:id/:index', [validateObjectId, auth, admin], async (
   return res.status(200).send([{ message: 'Image removed.' }]);
 });
 
+// @desc    Delete a catalog item from catalog
+// @route   DELETE /api/v1/catalogitems/:id
+// @access  Private - admin
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const item = await CatalogItem.findByIdAndRemove(req.params.id);
   if (!item) res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);

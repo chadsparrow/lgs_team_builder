@@ -18,7 +18,9 @@ const {
   validatePassword
 } = require('../models/Member');
 
-// GET /api/v1/members
+// @desc    Get all members - Admin only
+// @route   GET /api/v1/members/
+// @access  Private - admin
 router.get('/', [auth, admin], async (req, res) => {
   const members = await Member.find({ _id: { $ne: req.member._id }, closedAccount: false })
     .select('_id name email isAdmin invites')
@@ -30,6 +32,9 @@ router.get('/', [auth, admin], async (req, res) => {
   return res.send(members);
 });
 
+// @desc    Get all admin members - only display id, name and email
+// @route   GET /api/v1/members/admins
+// @access  Private
 router.get('/admins', auth, async (req, res) => {
   const admins = await Member.find({ isAdmin: true, closedAccount: false }).select(
     '_id name email'
@@ -37,7 +42,9 @@ router.get('/admins', auth, async (req, res) => {
   return res.status(200).send(admins);
 });
 
-// GET /api/v1/members/:id
+// @desc    Gets specific member - only specific fields
+// @route   GET /api/v1/members/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
     '_id name email createdAt timezone isAdmin'
@@ -48,7 +55,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(member);
 });
 
-// GET /api/v1/members/:id/details
+// @desc    Gets more detailed info about certain member
+// @route   GET /api/v1/members/:id/details
+// @access  Private
 router.get('/:id/details', [validateObjectId, auth], async (req, res) => {
   const member = await Member.findById(req.params.id).select(
     '-__v -updatedAt -password -notifications'
@@ -62,12 +71,17 @@ router.get('/:id/details', [validateObjectId, auth], async (req, res) => {
   return res.send({ member, teams });
 });
 
+// @desc    Gets detailed info on current member logged in.
+// @route   GET /api/v1/members/:id/me
+// @access  Private
 router.get('/:id/me', [validateObjectId, auth], async (req, res) => {
   const me = await Member.findById(req.params.id).select('-__v -updatedAt -password');
   return res.status(200).send(me);
 });
 
-// POST /api/members
+// @desc    Add a new member - creates password automatically - reset token must be used to reset it
+// @route   GET /api/v1/members/register
+// @access  Private
 router.post('/register', [auth, admin], async (req, res) => {
   const { error } = validateNewMember(req.body);
   if (error) return res.status(400).send(error.details);
@@ -188,7 +202,9 @@ router.post('/register', [auth, admin], async (req, res) => {
   return res.status(201).send([{ message: 'Member Registered' }]);
 });
 
-// PUT /api/members/:id
+// @desc    Update a member
+// @route   PUT /api/v1/members/:id
+// @access  Private
 router.put('/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateUpdateMember(req.body);
   if (error) return res.status(400).send(error.details);
@@ -307,6 +323,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     email: updateMember.email
   };
 
+  // also updates information for team there email is used in main contact or bulk shipping information
   const teamsToUpdate = await Team.find({
     $or: [{ 'mainContact.email': updateMember.email }, { 'bulkShipping.email': updateMember.email }]
   });
@@ -335,7 +352,9 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member Updated' }]);
 });
 
-// PATCH /api/members/:id/email
+// @desc    Update the email of a user
+// @route   PATCH /api/v1/members/email/:id
+// @access  Private
 router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validateEmail(req.body);
   if (error) return res.status(400).send(error.details);
@@ -354,6 +373,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
       ]);
   }
 
+  // checks if new email already exists in the database and denies
   const emailCheck = await Member.findOne({
     _id: { $ne: req.params.id },
     email: newEmail
@@ -377,6 +397,7 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
 
   await member.save();
 
+  // also updates any team where the old email should be replaced with the new email in mainContact or bulkShipping info
   await Team.updateMany({ 'mainContact.email': currentEmail }, { 'mainContact.email': newEmail });
   await Team.updateMany({ 'bulkShipping.email': currentEmail }, { 'bulkShipping.email': newEmail });
 
@@ -385,7 +406,9 @@ router.patch('/email/:id', [validateObjectId, auth], async (req, res) => {
     .send([{ message: 'Email address updated - this will be your new login.' }]);
 });
 
-// PATCH /api/members/password/:id
+// @desc    Update a members password
+// @route   PATCH /api/v1/members/password/:id
+// @access  Private
 router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   const { error } = validatePassword(req.body);
   if (error) return res.status(400).send(error.details);
@@ -396,11 +419,13 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
+  // checks to make sure the current password is correct
   const result = await bcrypt.compare(oldPassword, member.password);
   if (!result) return res.status(400).send([{ message: 'Old Password incorrect.' }]);
 
   const userEmail = member.email.split('@')[0];
 
+  // doesnt allow member to use 'password' in their password or the email address in their password
   if (newPassword.includes('password'))
     return res.status(400).send([{ message: "Please do not use 'password' in your NEW password" }]);
   if (newPassword.includes(userEmail))
@@ -417,23 +442,30 @@ router.patch('/password/:id', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member password updated' }]);
 });
 
-// DELETE /api/members/:id
+// @desc    Deactivates a member (no deletion)
+// @route   DELETE /api/v1/members/:id
+// @access  Private - admin
 router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const member = await Member.updateOne({ _id: req.params.id }, { closedAccount: true });
-  if (!member)
-    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
-
+  // if member is a manager of a team, will not allow - need to pick a new manager in team window first
   const teams = await Team.find({ 'managerId._id': req.params.id });
   if (teams && teams.length > 0)
     return res
       .status(400)
       .send([{ message: 'Contact your Team Admin to select a new Team Manager first' }]);
 
+  const member = await Member.updateOne({ _id: req.params.id }, { closedAccount: true });
+  if (!member)
+    return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
+
+  // removes member from all teams that member was a part of
   await Team.updateMany({ members: req.params.id }, { $pull: { members: req.params.id } });
 
   return res.status(200).send([{ message: 'Member Account Cancelled' }]);
 });
 
+// @desc    Deletes a members notification - may not be used (CHECK)
+// @route   DELETE /api/v1/members/:id/notifications/:nId
+// @access  Private
 router.delete('/:id/notification/:nId', auth, async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member)

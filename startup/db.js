@@ -6,6 +6,7 @@ const logger = require('../middleware/logger');
 const { Member } = require('../models/Member');
 
 module.exports = async function(DB_HOST) {
+  // connects to mongodb
   await mongoose.connect(DB_HOST, {
     useNewUrlParser: true,
     autoReconnect: true,
@@ -15,11 +16,13 @@ module.exports = async function(DB_HOST) {
   });
   logger.info('Connected to MongoDB..');
 
+  // disconnects from mongodb if requested by SIGINT call
   process.on('SIGINT', async () => {
     await mongoose.disconnect();
     process.exit(0);
   });
 
+  // checks if the database has a single admin - if not it creates it from env variables
   const admins = await Member.find({ isAdmin: true });
   if (admins && admins.length === 0) {
     logger.info('No admin users detected - creating root user.');

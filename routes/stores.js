@@ -2,10 +2,9 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const swearjar = require('swearjar');
-const { Store, validateStore, validateStoreItem } = require('../models/Store');
+const { Store, validateStore } = require('../models/Store');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
-const { CatalogItem } = require('../models/CatalogItem');
 const { StoreItem } = require('../models/StoreItem');
 
 const router = express.Router();
@@ -17,8 +16,13 @@ function validateId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
+// @desc    Gets all stores
+// @route   GET /api/v1/stores/
+// @access  Private
 router.get('/', auth, async (req, res) => {
   let stores = [];
+
+  // Only gets all stores if current user is an admin
   if (req.member.isAdmin) {
     stores = await Store.find()
       .populate({ path: 'managerId', select: 'name email' })
@@ -32,6 +36,7 @@ router.get('/', auth, async (req, res) => {
     return res.send(stores);
   }
 
+  // Only gets stores for current member - cycles through teams they are a part of and adds to response
   const teams = await Team.find({ members: req.member._id });
   if (teams && teams.length === 0)
     return res.status(400).send([{ message: 'You are currently not a member of any team' }]);
@@ -40,6 +45,7 @@ router.get('/', auth, async (req, res) => {
     stores = [...stores, ...team.stores];
   });
 
+  // only sends stores that are NOT on HOLD
   stores = await Store.find({ _id: { $in: stores }, mode: { $nin: ['HOLD'] } })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
@@ -52,6 +58,9 @@ router.get('/', auth, async (req, res) => {
   return res.send(stores);
 });
 
+// @desc    Get a specific store
+// @route   GET /api/v1/stores/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id)
     .populate({ path: 'managerId', select: 'name email phone' })
@@ -63,8 +72,12 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(store);
 });
 
+// @desc    Get all stores for specific team
+// @route   GET /api/v1/stores/team/:id
+// @access  Private
 router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   let stores = [];
+  // shows all stores if user is admin
   if (req.member.isAdmin) {
     stores = await Store.find({ teamId: req.params.id })
       .populate({ path: 'managerId', select: 'name email' })
@@ -77,6 +90,7 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
     return res.send(stores);
   }
 
+  // shows all stores NOT on hold for anyone else
   stores = await Store.find({ teamId: req.params.id, mode: { $nin: ['HOLD'] } });
   if (stores && stores.length === 0)
     return res.status(404).send([{ message: 'Team has no open stores.' }]);
@@ -84,7 +98,11 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(stores);
 });
 
+// @desc    Add a new store
+// @route   POST /api/v1/stores/
+// @access  Private - admin
 router.post('/', [auth, admin], async (req, res) => {
+  // checks store name for profanity and denies
   if (req.body.storeName) {
     if (swearjar.profane(req.body.storeName))
       return res
@@ -94,6 +112,7 @@ router.post('/', [auth, admin], async (req, res) => {
         ]);
   }
 
+  // checks store message for profanity and denies
   if (req.body.storeMessage) {
     if (swearjar.profane(req.body.storeMessage))
       return res
@@ -123,6 +142,7 @@ router.post('/', [auth, admin], async (req, res) => {
     shippingType
   } = req.body;
 
+  // checks if store already exists with the current name - denies duplicates
   let store = await Store.findOne({ storeName });
   if (store)
     return res
@@ -141,6 +161,7 @@ router.post('/', [auth, admin], async (req, res) => {
       .status(400)
       .send([{ message: 'Admin with the given ID not found', context: { key: 'adminId' } }]);
 
+  // checks if store has a valid manager
   if (!validateId(managerId))
     return res
       .status(400)
@@ -176,6 +197,7 @@ router.post('/', [auth, admin], async (req, res) => {
     shippingType
   });
 
+  // copies team bulkshipping info over to store bulkshipping
   store.bulkShipping = team.bulkShipping;
 
   await store.save();
@@ -184,7 +206,10 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.status(201).send([{ message: 'Team Store Added' }]);
 });
 
-router.post('/:id/dup', [auth, admin], async (req, res) => {
+// @desc    Duplicates a current store - resets amounts needed - duplicates store items as well
+// @route   POST /api/v1/stores/:id/dup
+// @access  Private - admin
+router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
   const store = await Store.findById(req.params.id);
   const newStoreName = store.storeName.split(' ');
   let newStoreID = store._id.toString();
@@ -255,6 +280,9 @@ router.post('/:id/dup', [auth, admin], async (req, res) => {
   return res.status(200).send([{ message: 'Team Store duplicated', store: newStore }]);
 });
 
+// @desc    Update a store
+// @route   PUT /api/v1/stores/:id
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateStore(req.body);
   if (error) return res.status(400).send(error.details);
@@ -264,6 +292,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     storeName,
     storeCountry,
     mode,
+    brand,
     currency,
     orderReference,
     adminId,
@@ -297,6 +326,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   store.teamId = teamId;
   store.storeName = storeName;
+  store.brand = brand;
   store.storeCountry = storeCountry;
   store.currency = currency;
   store.orderReference = orderReference;
@@ -309,59 +339,13 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   store.storeMessage = storeMessage;
   store.shippingType = shippingType;
 
+  // updates stores bulkshipping with current team bulkshipping info
   if (store.mode !== 'CLOSED') {
     store.bulkShipping = team.bulkShipping;
   }
 
   await store.save();
   return res.send(store);
-});
-
-router.patch('/add/item/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const { error } = validateStoreItem(req.body);
-  if (error) return res.status(400).send(error.details);
-
-  const store = await Store.findById(req.params.id);
-  if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
-
-  const { itemId, sizesOffered, category, name, code, number, images } = req.body;
-
-  if (!validateId(itemId)) return res.status(400).send([{ message: 'Invalid ID. (Item)' }]);
-  const catalogItem = await CatalogItem.findById(itemId);
-  if (!catalogItem)
-    res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
-
-  const newItem = {
-    itemId,
-    sizesOffered,
-    category,
-    name,
-    code,
-    number,
-    images
-  };
-
-  store.items.push(newItem);
-
-  await store.save();
-  return res.send(store.items);
-});
-
-router.delete('/:id/item/:itemId', [validateObjectId, auth, admin], async (req, res) => {
-  const store = await Store.findById(req.params.id);
-  if (!store) res.status(400).send([{ message: 'Store with the given ID not found.' }]);
-
-  if (!validateId(req.params.itemId))
-    return res.status(400).send([{ message: 'Invalid ID. (Item)' }]);
-
-  const filtered = store.items.filter(item => {
-    return item.itemId !== req.params.itemId;
-  });
-
-  store.items = filtered;
-
-  await store.save();
-  return res.send(store.items);
 });
 
 module.exports = router;

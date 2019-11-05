@@ -7,8 +7,10 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
-// Collects all catalogs
-router.get('/', auth, async (req, res) => {
+// @desc    Collects all catalogs
+// @route   GET /api/v1/catalogs
+// @access  Private - admin
+router.get('/', [auth, admin], async (req, res) => {
   const { filter } = aqp(req.query);
   if (filter.year) {
     const pattern = new RegExp(/^\d{4}$/);
@@ -23,20 +25,25 @@ router.get('/', auth, async (req, res) => {
   return res.send(catalogs);
 });
 
-// Collects a specific catalog based on given ID
-router.get('/:id', [validateObjectId, auth], async (req, res) => {
+// @desc    Collects specific catalog based on ID
+// @route   GET /api/v1/catalogs/:id
+// @access  Private - admin
+router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const catalog = await Catalog.findById(req.params.id);
   if (!catalog) return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
 
   return res.json(catalog);
 });
 
-// Adds a new catalog, doesn't allow duplicate brand/season/year
+// @desc    Add new catalog
+// @route   POST /api/v1/catalogs/
+// @access  Private - admin
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
   if (error) return res.status(400).send(error.details);
   const { brand, season, year, coverImg } = req.body;
 
+  // checks if catalog already exists and denies
   let catalog = await Catalog.findOne({
     brand: brand.toUpperCase(),
     season: season.toUpperCase(),
@@ -57,7 +64,9 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.send(catalog);
 });
 
-// Edits a specific catalog, doesnt allow duplicate brand/season/year
+// @desc    Update a specific catalog based on ID
+// @route   PUT /api/v1/catalogs/:id
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCatalog(req.body);
   if (error) return res.status(400).send(error.details);
@@ -67,6 +76,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const catalog = await Catalog.findById(req.params.id);
   if (!catalog) return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
 
+  // checks to see if updated catalog already matches an existing catalog in the database and denies
   const duplicateCatalog = await Catalog.findOne({
     brand: brand.toUpperCase(),
     season: season.toUpperCase(),
@@ -83,8 +93,10 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(catalog);
 });
 
-// edits the cover image URI of the catalog
-router.patch('/coverImg/:id', [validateObjectId, auth, admin], async (req, res) => {
+// @desc    Update catalog cover image
+// @route   PATCH /api/v1/catalogs/:id/coverImg
+// @access  Private - admin
+router.patch('/:id/coverImg', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateCoverImage(req.body);
   if (error) return res.status(400).send(error.details);
 

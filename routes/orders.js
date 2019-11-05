@@ -10,8 +10,13 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
+// @desc    Gets all orders
+// @route   GET /api/v1/orders/
+// @access  Private
 router.get('/', auth, async (req, res) => {
   let orders = [];
+
+  // Gets all orders if current user is an admin
   if (req.member.isAdmin) {
     orders = await Order.find()
       .populate({ path: 'memberId', select: 'name email' })
@@ -23,6 +28,7 @@ router.get('/', auth, async (req, res) => {
     return res.send(orders);
   }
 
+  // Gets only orders owned by the current user
   orders = await Order.find({ memberId: req.member._id })
     .populate({ path: 'memberId', select: 'name email' })
     .select('-updatedAt -__v');
@@ -33,12 +39,12 @@ router.get('/', auth, async (req, res) => {
   return res.send(orders);
 });
 
-router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
+// @desc    Gets all orders for a specific team
+// @route   GET /api/v1/orders/team/:id
+// @access  Private - Admin
+router.get('/team/:id', [validateObjectId, auth, admin], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
-
-  if (req.member._id !== team.managerId || !req.member.isAdmin)
-    return res.status(403).send([{ message: 'Access Denied' }]);
 
   const orders = await Order.find({ teamId: req.params.id });
   if (orders && orders.length === 0)
@@ -47,6 +53,9 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(orders);
 });
 
+// @desc    Get all orders for a specific member
+// @route   GET /api/v1/orders/member/:id
+// @access  Private - admin
 router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
   const member = await Member.findById(req.params.id);
   if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
@@ -58,12 +67,12 @@ router.get('/member/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.send(orders);
 });
 
-router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
+// @desc    Get all orders for a specific store
+// @route   GET /api/v1/orders/store/:id
+// @access  Private
+router.get('/store/:id', [validateObjectId, auth, admin], async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).send([{ message: 'Store with given ID not found' }]);
-
-  if (req.member._id !== store.managerId || !req.member.isAdmin)
-    return res.status(403).send([{ message: 'Access Denied' }]);
 
   const orders = await Order.find({ storeId: req.params.id });
   if (orders && orders.length === 0)
@@ -72,6 +81,9 @@ router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(orders);
 });
 
+// @desc    Add a new order
+// @route   POST /api/v1/orders/
+// @access  Private
 router.post('/', auth, async (req, res) => {
   const { error } = validateOrder(req.body);
   if (error) return res.status(400).send(error.details);
@@ -134,6 +146,7 @@ router.post('/', auth, async (req, res) => {
   });
 
   order.subTotal = itemsTotal;
+  //  REPLACE TAX CALCULATIONS WITH AVALARA API CALLS
   const taxAmount = (order.subTotal - order.discount) * (order.taxPercentage / 100);
   order.totalAmount = order.subTotal - order.discount + taxAmount;
 

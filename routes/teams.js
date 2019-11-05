@@ -11,10 +11,13 @@ const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
-// GET /api/teams
+// @desc    Get all teams
+// @route   GET /api/v1/teams/
+// @access  Private
 router.get('/', auth, async (req, res) => {
   let teams = [];
 
+  // only show all teams if user is admin
   if (req.member.isAdmin) {
     teams = await Team.find()
       .populate({ path: 'managerId', select: 'name email' })
@@ -27,6 +30,7 @@ router.get('/', auth, async (req, res) => {
     return res.send(teams);
   }
 
+  // only show teams that current user is a member of
   teams = await Team.find({ members: req.member._id })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
@@ -38,7 +42,9 @@ router.get('/', auth, async (req, res) => {
   return res.send(teams);
 });
 
-// GET /api/teams/:id
+// @desc    Get a specific team
+// @route   GET /api/v1/teams/:id
+// @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id)
     .populate({ path: 'managerId', select: 'name email phone' })
@@ -50,7 +56,9 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
   return res.send(team);
 });
 
-// GET /api/teams/:id/register
+// @desc    GET a team register ?? NEEDED ?? CHECK FRONT END
+// @route   GET /api/v1/teams/:id/register
+// @access  Private
 router.get('/:id/register', validateObjectId, async (req, res) => {
   const team = await Team.findById(req.params.id).select('_id name');
   if (!team) return res.status(404).send([{ message: 'Team with the given ID not found.' }]);
@@ -58,7 +66,9 @@ router.get('/:id/register', validateObjectId, async (req, res) => {
   return res.send(team);
 });
 
-// POST /api/teams
+// @desc    Add a new team
+// @route   POST /api/v1/teams/:id
+// @access  Private - admin
 router.post('/', [auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);
   if (error) return res.status(400).send(error.details);
@@ -92,6 +102,7 @@ router.post('/', [auth, admin], async (req, res) => {
     timezoneAbbrev
   } = req.body;
 
+  // checks team name for profanity and denies
   if (swearjar.profane(name))
     return res
       .status(400)
@@ -102,6 +113,7 @@ router.post('/', [auth, admin], async (req, res) => {
     teamId = teamId.toUpperCase();
   }
 
+  // checks if team name or ID already is registered and denies
   let team = await Team.findOne({ $or: [{ name }, { teamId }] });
   if (team)
     if (team.name === name) {
@@ -173,7 +185,9 @@ router.post('/', [auth, admin], async (req, res) => {
   return res.send([{ message: 'Team Added' }]);
 });
 
-// PUT /api/teams/:id
+// @desc    Update a team
+// @route   PUT /api/v1/teams/:id
+// @access  Private
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);
   if (error) return res.status(400).send([{ message: error.details[0].message }]);
@@ -210,6 +224,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   let team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found' }]);
 
+  // checks if new team name has profanity and denies
   if (swearjar.profane(name))
     return res
       .status(400)
@@ -220,6 +235,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     teamId = teamId.toUpperCase();
   }
 
+  // checks if new team name or team ID is already registered before updating
   if (team.name !== name && team.teamId !== teamId) {
     team = await Team.findOne({ $or: [{ name }, { teamId }] });
     if (team) {
@@ -288,6 +304,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   await team.save();
 
+  // updates the bulkshipping info for all team stores
   const stores = await Store.find({ teamId: team._id, mode: { $ne: 'CLOSED' } });
   if (stores.length > 0) {
     stores.forEach(async store => {
@@ -298,6 +315,9 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   return res.status(200).send([{ message: 'Team Updated' }]);
 });
 
+// @desc    Add a member to a specific team
+// @route   GET /api/v1/coupons/:id
+// @access  Private
 router.post('/:id/addmember', [validateObjectId, auth], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
