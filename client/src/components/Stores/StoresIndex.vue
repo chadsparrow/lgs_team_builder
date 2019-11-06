@@ -20,6 +20,7 @@
         <tbody>
           <tr>
             <th scope="col">Store Name</th>
+            <th scope="col">Brand</th>
             <th scope="col">Team Name</th>
             <th scope="col">Account #</th>
             <th scope="col">Order #</th>
@@ -33,6 +34,15 @@
           </tr>
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
             <td scope="row">{{ store.storeName }}</td>
+            <td v-if="store.brand === 'GARNEAU'">
+              <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
+            </td>
+            <td v-if="store.brand === 'SUGOI'">
+              <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" />
+            </td>
+            <td v-if="store.brand === 'SOMBRIO'">
+              <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
+            </td>
             <td>{{ store.teamId.name }}</td>
             <td>{{ store.teamId.teamId }}</td>
             <td>{{ store.orderReference }}</td>
@@ -176,5 +186,11 @@ export default {
 <style lang="scss" scoped>
 table {
   font-size: 0.8rem;
+
+  td {
+    img {
+      height: 45%;
+    }
+  }
 }
 </style>

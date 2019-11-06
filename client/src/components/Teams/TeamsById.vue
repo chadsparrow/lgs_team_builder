@@ -142,6 +142,7 @@
           <tbody>
             <tr>
               <th scope="col">Name</th>
+              <th scope="col">Brand</th>
               <th scope="col">Opening Date</th>
               <th scope="col">Closing Date</th>
               <th scope="col">Mode</th>
@@ -152,6 +153,15 @@
               @click.prevent="loadStore(store._id)"
             >
               <td>{{ store.storeName }}</td>
+              <td v-if="store.brand === 'GARNEAU'">
+                <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
+              </td>
+              <td v-if="store.brand === 'SUGOI'">
+                <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" />
+              </td>
+              <td v-if="store.brand === 'SOMBRIO'">
+                <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
+              </td>
               <td v-if="store.openingDate">
                 {{
                 store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
@@ -332,7 +342,7 @@ export default {
     };
   },
   computed: {
-    dataReady: function(){
+    dataReady: function() {
       return this.$store.getters.dataReady;
     },
     joinLink: function() {
@@ -358,9 +368,6 @@ export default {
     },
     access: function() {
       if (this.member && this.member.isAdmin) return true;
-
-      if (this.member && this.team.managerId && this.member._id === this.team.managerId._id)
-        return true;
 
       return false;
     },
@@ -500,6 +507,11 @@ $black-text: #000000;
 .stores-section {
   grid-area: stores;
   font-size: 0.85rem;
+  td {
+    img {
+      height: 50%;
+    }
+  }
 }
 
 .contact-bar {

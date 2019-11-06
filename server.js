@@ -12,12 +12,17 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 // const cors = require('cors');  // un-comment if calls will come from another domain on front-end
 
+// cron module
+const cron = require('node-cron');
+
 // config to use env variables
 const config = require('config');
 
 // setup input validation and sanitization
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
+
+const { Store } = require('./models/Store');
 
 // setup logger/request logger during development
 const logger = require('./middleware/logger');
@@ -85,6 +90,18 @@ if (!config.get('jwtPrivateKey')) {
 
 // establishes all endpoints allowed from front end
 require('./startup/routes')(app);
+
+// setup cron job to open close stores
+const task = cron.schedule(
+  '0 * * * * *',
+  async () => {
+    const stores = await Store.find();
+    stores.forEach(store => console.log(store.openingDate, Date.now()));
+  },
+  { scheduled: true, timezone: 'Etc/UTC' }
+);
+
+task.start();
 
 // configures server port
 const PORT = config.get('app.port') || 5001;

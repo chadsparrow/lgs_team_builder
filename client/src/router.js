@@ -307,6 +307,7 @@ router.beforeEach(async (to, from, next) => {
     if (memberId && !member.name) {
       await store.dispatch('setLoggedInMember', memberId);
       member = store.getters.loggedInMember;
+      next();
     }
 
     if (to.matched.some(record => record.meta.isAdmin)) {

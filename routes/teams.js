@@ -187,7 +187,7 @@ router.post('/', [auth, admin], async (req, res) => {
 
 // @desc    Update a team
 // @route   PUT /api/v1/teams/:id
-// @access  Private
+// @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const { error } = validateTeam(req.body);
   if (error) return res.status(400).send([{ message: error.details[0].message }]);
@@ -317,18 +317,10 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
 // @desc    Add a member to a specific team
 // @route   GET /api/v1/coupons/:id
-// @access  Private
-router.post('/:id/addmember', [validateObjectId, auth], async (req, res) => {
+// @access  Private - admin
+router.post('/:id/addmember', [validateObjectId, auth, admin], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
-
-  let access = false;
-
-  if (req.member._id === team.managerId) access = true;
-
-  if (req.member.isAdmin) access = true;
-
-  if (!access) return res.status(403).send([{ message: 'Access Denied' }]);
 
   const { error } = validateAddMember(req.body);
   if (error) return res.status(400).send(error.details);
@@ -356,15 +348,13 @@ router.post('/:id/addmember', [validateObjectId, auth], async (req, res) => {
   return res.status(200).send([{ message: 'Member Added to Team' }]);
 });
 
-router.post('/:id/removemembers', [validateObjectId, auth], async (req, res) => {
+// @desc    Remove a member from a specific team
+// @route   PUT /api/v1/teams/:id/removemembers
+// @access  Private - admin
+router.post('/:id/removemembers', [validateObjectId, auth, admin], async (req, res) => {
   const team = await Team.findById(req.params.id);
   if (!team) return res.status(400).send([{ message: 'Team with the given ID was not found.' }]);
 
-  let access = false;
-
-  if (req.member._id === team.managerId) access = true;
-  if (req.member.isAdmin) access = true;
-  if (!access) return res.status(403).send([{ message: 'Access Denied' }]);
   const { members } = req.body;
   const deleteMembers = members;
   await Team.updateOne({ _id: req.params.id }, { $pull: { members: { $in: deleteMembers } } });
