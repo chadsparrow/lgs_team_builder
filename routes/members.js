@@ -1,10 +1,18 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
 const generator = require('generate-password');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const config = require('config');
+// eslint-disable-next-line prefer-destructuring
+const Tzdb = require('timezonedb').Tzdb;
+
+const tzdb = new Tzdb({
+  apiToken: config.get('app.timezonedbKey')
+});
+
+const geocoder = require('../utils/geocoder');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -196,6 +204,18 @@ router.post('/register', [auth, admin], async (req, res) => {
     newMember.billing.email = billingEmail;
   }
 
+  const geoCodeAddress = `${newMember.shipping.address1} ${newMember.shipping.address2} ${newMember.shipping.city} ${newMember.shipping.stateProv} ${newMember.shipping.country} ${newMember.shipping.zipPostal}`;
+  const loc = await geocoder.geocode(geoCodeAddress);
+
+  const data = await tzdb.getTimeZoneByPosition({ lat: loc[0].latitude, lng: loc[0].longitude });
+
+  newMember.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  newMember.timezone = data.zoneName;
+
   await newMember.save();
 
   // SEND EMAIL TO USER TO ALLOW PASSWORD RESET USING TOKEN
@@ -219,8 +239,6 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     stateProv,
     country,
     zipPostal,
-    timezone,
-    timezoneAbbrev,
     shippingSame,
     shippingName,
     shippingCompany,
@@ -258,8 +276,6 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
   updateMember.country = country;
   updateMember.zipPostal = zipPostal;
   updateMember.phone = phone;
-  updateMember.timezone = timezone;
-  updateMember.timezoneAbbrev = timezoneAbbrev;
 
   if (shippingSame) {
     updateMember.shipping.name = updateMember.name;
@@ -341,8 +357,7 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
           {
             $set: {
               bulkShipping: updateMember.shipping,
-              timezone: updateMember.timezone,
-              timezoneAbbrev: updateMember.timezoneAbbrev
+              timezone: updateMember.timezone
             }
           }
         );

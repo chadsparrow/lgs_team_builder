@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
-const timezonedb = require('timezonedb-node')(config.get('app.timezonedbKey'));
-const geocoder = require('../utils/geocoder');
 
 const joiOptions = { language: { key: '{{key}} ' } };
 
@@ -79,12 +77,13 @@ const MemberSchema = new mongoose.Schema(
       },
       coordinates: {
         type: [Number],
-        required: true,
-        index: '2dsphere'
+        index: '2dsphere',
+        required: true
       }
     },
     timezone: {
       type: String,
+      required: true,
       trim: true
     },
     billing: {
@@ -316,6 +315,7 @@ function validateNewRegister(member) {
 
   return Joi.validate(member, schema, joiOptions);
 }
+
 function validateNewMember(member) {
   const schema = {
     email: Joi.string()
@@ -601,8 +601,7 @@ function validateUpdateMember(member) {
         .trim()
         .email()
         .required()
-    }),
-    isAdmin: Joi.boolean()
+    })
   };
   return Joi.validate(member, schema, joiOptions);
 }
@@ -664,25 +663,6 @@ MemberSchema.methods.generateAuthToken = function() {
   const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'), signOptions);
   return token;
 };
-
-// Geocode & create location field & set timezone string
-MemberSchema.pre('save', async function(next) {
-  const { address1, address2, city, stateProv, country, zipPostal } = this.shipping;
-  const address = `${address1} ${address2} ${city} ${stateProv} ${country} ${zipPostal}`;
-  const loc = await geocoder.geocode(address);
-  this.location = {
-    type: 'Point',
-    coordinates: [loc[0].longitude, loc[0].latitude]
-  };
-
-  const res = await timezonedb.getTimeZoneData({
-    zone: 'none',
-    lng: loc[0].longitude,
-    lat: loc[0].latitude
-  });
-  this.timezone = res.zoneName;
-  next();
-});
 
 exports.Member = mongoose.model('members', MemberSchema);
 exports.validateNewRegister = validateNewRegister;

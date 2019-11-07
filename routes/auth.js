@@ -68,15 +68,7 @@ router.post('/login', async (req, res) => {
   return res.send([
     {
       token,
-      member: _.pick(member, [
-        '_id',
-        'email',
-        'name',
-        'isAdmin',
-        'timezone',
-        'timezoneAbbrev',
-        'createdAt'
-      ]),
+      member: _.pick(member, ['_id', 'email', 'name', 'isAdmin', 'timezone', 'createdAt']),
       message: 'Welcome Back!',
       emails
     }
@@ -105,8 +97,6 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
     country,
     zipPostal,
     phone,
-    timezone,
-    timezoneAbbrev,
     shippingSame,
     shippingName,
     shippingCompany,
@@ -155,8 +145,6 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
     zipPostal,
     phone,
     email,
-    timezone,
-    timezoneAbbrev,
     isAdmin: false
   });
 
