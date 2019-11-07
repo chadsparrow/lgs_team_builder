@@ -49,6 +49,7 @@
     "node-geocoder": "^3.25.0",
     "saslprep": "^1.0.3",
     "swearjar": "^0.2.0",
+    "timezonedb-node": "^1.0.7",
     "winston": "^2.4.0",
     "winston-daily-rotate-file": "^3.9.0",
     "xss-clean": "^0.1.1"

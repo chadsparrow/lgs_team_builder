@@ -97,8 +97,6 @@ router.post('/register', [auth, admin], async (req, res) => {
     zipPostal,
     phone,
     email,
-    timezone,
-    timezoneAbbrev,
     shippingSame,
     shippingName,
     shippingCompany,
@@ -137,8 +135,6 @@ router.post('/register', [auth, admin], async (req, res) => {
     zipPostal,
     phone,
     email,
-    timezone,
-    timezoneAbbrev,
     isAdmin: false
   });
 

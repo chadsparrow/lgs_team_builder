@@ -1,7 +1,10 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+const timezonedb = require('timezonedb-node')(config.get('app.timezonedbKey'));
+const geocoder = require('../utils/geocoder');
 
 const joiOptions = { language: { key: '{{key}} ' } };
 
@@ -67,13 +70,22 @@ const MemberSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    location: {
+      // GeoJSON Point
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+        index: '2dsphere'
+      }
+    },
     timezone: {
       type: String,
       trim: true
-    },
-    timezoneAbbrev: {
-      type: String,
-      required: true
     },
     billing: {
       name: {
@@ -242,8 +254,6 @@ function validateNewRegister(member) {
     phone: Joi.string()
       .trim()
       .required(),
-    timezone: Joi.string().trim(),
-    timezoneAbbrev: Joi.string().trim(),
     shippingSame: Joi.boolean(),
     shippingName: Joi.string()
       .required()
@@ -341,12 +351,6 @@ function validateNewMember(member) {
     phone: Joi.string()
       .trim()
       .required(),
-    timezone: Joi.string()
-      .allow('', null)
-      .trim(),
-    timezoneAbbrev: Joi.string()
-      .allow('', null)
-      .trim(),
     shippingSame: Joi.boolean(),
     shippingName: Joi.string()
       .required()
@@ -441,12 +445,6 @@ function validateUpdateMember(member) {
       .trim(),
     phone: Joi.string()
       .required()
-      .trim(),
-    timezone: Joi.string()
-      .allow('', null)
-      .trim(),
-    timezoneAbbrev: Joi.string()
-      .allow('', null)
       .trim(),
     shippingSame: Joi.boolean().required(),
     shippingName: Joi.when('shippingSame', {
@@ -666,6 +664,25 @@ MemberSchema.methods.generateAuthToken = function() {
   const token = jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'), signOptions);
   return token;
 };
+
+// Geocode & create location field & set timezone string
+MemberSchema.pre('save', async function(next) {
+  const { address1, address2, city, stateProv, country, zipPostal } = this.shipping;
+  const address = `${address1} ${address2} ${city} ${stateProv} ${country} ${zipPostal}`;
+  const loc = await geocoder.geocode(address);
+  this.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  const res = await timezonedb.getTimeZoneData({
+    zone: 'none',
+    lng: loc[0].longitude,
+    lat: loc[0].latitude
+  });
+  this.timezone = res.zoneName;
+  next();
+});
 
 exports.Member = mongoose.model('members', MemberSchema);
 exports.validateNewRegister = validateNewRegister;
