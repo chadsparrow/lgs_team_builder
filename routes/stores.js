@@ -46,7 +46,7 @@ router.get('/', auth, async (req, res) => {
   });
 
   // only sends stores that are NOT on HOLD
-  stores = await Store.find({ _id: { $in: stores }, mode: { $nin: ['HOLD'] } })
+  stores = await Store.find({ _id: { $in: stores }, mode: { $ne: 'HOLD' } })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId' })
@@ -91,7 +91,7 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   }
 
   // shows all stores NOT on hold for anyone else
-  stores = await Store.find({ teamId: req.params.id, mode: { $nin: ['HOLD'] } });
+  stores = await Store.find({ teamId: req.params.id, mode: { $ne: 'HOLD' } });
   if (stores && stores.length === 0)
     return res.status(404).send([{ message: 'Team has no open stores.' }]);
 
@@ -239,6 +239,8 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
   });
 
   await newStore.save();
+
+  await Team.updateOne({ _id: newStore.teamId }, { $push: { stores: newStore._id } });
 
   const storeItems = await StoreItem.find({ storeId: store._id });
   if (storeItems.length > 0) {

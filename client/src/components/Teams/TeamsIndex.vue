@@ -29,14 +29,14 @@
           <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
             <tbody>
               <tr>
-                <th scope="col">Account #</th>
+                <th scope="col" v-if="isAdmin">Account #</th>
                 <th scope="col">Name</th>
                 <th scope="col">Admin</th>
                 <th scope="col">Manager</th>
                 <th scope="col">Members</th>
               </tr>
               <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
-                <td scope="row">{{ team.teamId }}</td>
+                <td scope="row" v-if="isAdmin">{{ team.teamId }}</td>
                 <td>{{ team.name }}</td>
                 <td>{{ team.adminId.name }}</td>
                 <td>

@@ -21,13 +21,13 @@
           <tr>
             <th scope="col">Store Name</th>
             <th scope="col">Brand</th>
-            <th scope="col">Team Name</th>
+            <th scope="col">Team</th>
             <th scope="col" v-if="access">Account #</th>
             <th scope="col" v-if="access">Order #</th>
-            <th scope="col">Admin</th>
+            <th scope="col" v-if="access">Admin</th>
             <th scope="col">Opening Date</th>
             <th scope="col">Closing Date</th>
-            <th scope="col">Mode</th>
+            <th scope="col" class="text-center">Mode</th>
             <th scope="col" v-if="access">Total Orders</th>
             <th scope="col" v-if="access">Currency</th>
             <th scope="col" v-if="access">Total Collected</th>
@@ -46,7 +46,7 @@
             <td>{{ store.teamId.name }}</td>
             <td v-if="access">{{ store.teamId.teamId }}</td>
             <td v-if="access">{{ store.orderReference }}</td>
-            <td>{{ store.adminId.name }}</td>
+            <td v-if="access">{{ store.adminId.name }}</td>
             <td v-if="store.openingDate">
               {{
               store.openingDate
@@ -122,8 +122,8 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      await this.$store.dispatch('getStores');
       await this.$store.commit('CLEAR_CURRENTS');
+      await this.$store.dispatch('getStores');
       this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -159,6 +159,7 @@ export default {
     filteredStores: function() {
       return this.stores.filter(store => {
         if (
+          store.brand.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.storeName.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.teamId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.teamId.teamId.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||

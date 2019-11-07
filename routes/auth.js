@@ -8,9 +8,9 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
+const { Team } = require('../models/Team');
 
-const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 
 const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
@@ -85,10 +85,13 @@ router.post('/login', async (req, res) => {
 
 // @desc    Member Register
 // @route   POST /api/v1/auth/register
-// @access  Private - Admin
-router.post('/register', [auth, admin], async (req, res) => {
+// @access  Public
+router.post('/register/:id', validateObjectId, async (req, res) => {
   const { error } = validateNewRegister(req.body.member);
   if (error) return res.status(400).send(error.details);
+
+  const team = await Team.findById(req.params.id);
+  if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
 
   const {
     email,

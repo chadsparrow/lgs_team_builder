@@ -143,7 +143,12 @@ router.post('/register', [auth, admin], async (req, res) => {
   });
 
   newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
-  const password = generator.generate({ length: 10, numbers: true });
+  let password;
+  if (process.env.NODE_ENV === 'development') {
+    password = 'password';
+  } else {
+    password = generator.generate({ length: 10, numbers: true });
+  }
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
 

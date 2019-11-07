@@ -77,7 +77,7 @@ export default new Vuex.Store({
     joinTeam({ commit }, { member, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post('/api/v1/auth/register', { member, teamId });
+          const res = await axios.post(`/api/v1/auth/register/${teamId}`, { member });
           resolve(res);
         } catch (err) {
           reject(err);

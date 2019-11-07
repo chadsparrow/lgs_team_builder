@@ -37,9 +37,20 @@
           <div class="form-check form-check-inline">
             <input
               class="form-check-input"
+              v-model="ONE"
+              type="checkbox"
+              id="sizeONE"
+              @change="setSizes"
+            />
+            <label class="form-check-label" for="sizeONE">ONE SIZE</label>
+          </div>
+          <div class="form-check form-check-inline mx-3">
+            <input
+              class="form-check-input"
               v-model="XXS"
               type="checkbox"
               id="size2XS"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="size2XS">2XS</label>
@@ -50,6 +61,7 @@
               v-model="XS"
               type="checkbox"
               id="sizeXS"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="sizeXS">XS</label>
@@ -60,6 +72,7 @@
               v-model="S"
               type="checkbox"
               id="sizeS"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="sizeS">S</label>
@@ -70,6 +83,7 @@
               v-model="M"
               type="checkbox"
               id="sizeM"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="sizeM">M</label>
@@ -80,6 +94,7 @@
               v-model="L"
               type="checkbox"
               id="sizeL"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="sizeL">L</label>
@@ -90,6 +105,7 @@
               v-model="XL"
               type="checkbox"
               id="sizeXL"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="sizeXL">XL</label>
@@ -100,6 +116,7 @@
               v-model="XXL"
               type="checkbox"
               id="size2XL"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="size2XL">2XL</label>
@@ -110,6 +127,7 @@
               v-model="XXXL"
               type="checkbox"
               id="size3XL"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="size3XL">3XL</label>
@@ -120,6 +138,7 @@
               v-model="XXXXL"
               type="checkbox"
               id="size4XL"
+              :disabled="ONE"
               @change="setSizes"
             />
             <label class="form-check-label" for="size4XL">4XL</label>
@@ -227,6 +246,7 @@ export default {
       productCode: '',
       styleCode: '',
       sizes: [],
+      ONE: false,
       XXS: false,
       XS: false,
       S: false,
@@ -338,15 +358,28 @@ export default {
   methods: {
     setSizes: function() {
       const activeSizes = [];
-      if (this.XXS) activeSizes.push('2XS');
-      if (this.XS) activeSizes.push('XS');
-      if (this.S) activeSizes.push('S');
-      if (this.M) activeSizes.push('M');
-      if (this.L) activeSizes.push('L');
-      if (this.XL) activeSizes.push('XL');
-      if (this.XXL) activeSizes.push('2XL');
-      if (this.XXXL) activeSizes.push('3XL');
-      if (this.XXXXL) activeSizes.push('4XL');
+      if (this.ONE) {
+        this.XXS = false;
+        this.XS = false;
+        this.S = false;
+        this.M = false;
+        this.L = false;
+        this.XL = false;
+        this.XXL = false;
+        this.XXXL = false;
+        this.XXXXL = false;
+        activeSizes.push('ONE SIZE FITS ALL');
+      } else {
+        if (this.XXS) activeSizes.push('2XS');
+        if (this.XS) activeSizes.push('XS');
+        if (this.S) activeSizes.push('S');
+        if (this.M) activeSizes.push('M');
+        if (this.L) activeSizes.push('L');
+        if (this.XL) activeSizes.push('XL');
+        if (this.XXL) activeSizes.push('2XL');
+        if (this.XXXL) activeSizes.push('3XL');
+        if (this.XXXXL) activeSizes.push('4XL');
+      }
 
       this.sizes = activeSizes;
     },

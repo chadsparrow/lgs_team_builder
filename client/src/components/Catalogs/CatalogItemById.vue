@@ -7,7 +7,33 @@
         </div>
       </div>
     </div>
-    <div class="info-section">Info</div>
+    <div class="info-section">
+      <div class="row">
+        <div class="col-sm-12">
+          <span class="text-muted mr-2">{{item.categories[0]}}</span>
+          <span class="text-muted mr-2">/ {{item.categories[1]}}</span>
+          <span class="text-muted mr-2" v-if="item.categories[2]">/ {{item.categories[2]}}</span>
+          <span class="text-muted mr-2" v-if="item.categories[3]">/ {{item.categories[3]}}</span>
+        </div>
+        <div class="col-sm-12">
+          <h3>{{item.nameEN}}</h3>
+        </div>
+        <div class="col-sm-12">
+          <span class="text-info">{{item.productCode}} - {{item.productCode}}</span>
+        </div>
+        <div class="col-sm-12">
+          <p style="white-space: pre-line;" class="mt-3 text-muted">{{item.descriptionEN}}</p>
+        </div>
+        <div class="col-sm-12">
+          <span class="text-info mr-2">Gender:</span>
+          <span>{{item.gender}} - {{item.gender==="U" ? '(Unisex)' : item.gender==="M" ? "(Men's)" : item.gender==="F" ? "(Women's)" : "(Junior)"}}</span>
+        </div>
+        <div class="col-sm-12">
+          <span class="text-info mr-2">Sizes Offered:</span>
+          <span class="mr-2" v-for="size in item.sizes" :key="size">{{size}}</span>
+        </div>
+      </div>
+    </div>
     <div class="button-section">buttons</div>
   </div>
 </template>
@@ -49,7 +75,7 @@ export default {
     catalog: function() {
       return this.$store.getters.currentCatalog;
     },
-    catalogItem: function() {
+    item: function() {
       return this.$store.getters.currentCatalogItem;
     },
     dataReady: function() {
@@ -59,20 +85,19 @@ export default {
   methods: {
     getImgUrl(index, size) {
       if (this.dataReady) {
-        if (this.catalogItem.images.length === 0)
-          return require(`@/assets/missing_item_${size}.png`);
+        if (this.item.images.length === 0) return require(`@/assets/missing_item_${size}.png`);
 
-        if (!this.catalogItem.images[index]) return require(`@/assets/missing_item_${size}.png`);
+        if (!this.item.images[index]) return require(`@/assets/missing_item_${size}.png`);
         const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
 
-        return `/images/catalogs/${folderName}/${size}/${this.catalogItem.images[index]}_${size}.jpg`;
+        return `/images/catalogs/${folderName}/${size}/${this.item.images[index]}_${size}.jpg`;
       }
     }
   },
   created: async function() {
     try {
       await this.$store.dispatch('getCatalogItem', this.$route.params.id);
-      await this.$store.dispatch('getCatalog', this.catalogItem.catalogId._id);
+      await this.$store.dispatch('getCatalog', this.item.catalogId._id);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -84,7 +109,7 @@ export default {
           link: `/dashboard/catalogs/${this.catalog._id}`
         },
         {
-          text: `${this.catalogItem.nameEN} (${this.catalogItem.styleCode})`,
+          text: `${this.item.nameEN} (${this.item.styleCode})`,
           link: '#'
         }
       ];
@@ -104,7 +129,7 @@ export default {
 <style lang="scss" scoped>
 .page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 800px 1fr;
   grid-template-rows: 1fr 40px;
   grid-gap: 1.5rem;
   width: 100%;
