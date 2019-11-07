@@ -14,11 +14,11 @@
         <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/edit`" tag="a">
           <i class="fas fa-cog fa-lg"></i>
         </router-link>
-        <button class="btn btn-sm" @click="setView(true)">
-          <i class="fas fa-grip-horizontal fa-lg"></i>
-        </button>
         <button class="btn btn-sm" @click="setView(false)">
           <i class="fas fa-align-justify fa-lg"></i>
+        </button>
+        <button class="btn btn-sm" @click="setView(true)">
+          <i class="fas fa-grip-horizontal fa-lg"></i>
         </button>
       </div>
     </div>
@@ -54,7 +54,7 @@ export default {
   name: 'CatalogById',
   data() {
     return {
-      viewGrid: true
+      viewGrid: false
     };
   },
   computed: {
@@ -97,8 +97,8 @@ export default {
   methods: {
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-
-      return `/images/catalogs/${this.catalog._id}/${item.images[0]}_800.png`;
+      const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
+      return `/images/catalogs/${folderName}/800/${item.images[0]}_800.jpg`;
     },
     setView(bool) {
       if (bool) this.viewGrid = true;

@@ -226,19 +226,24 @@ export default {
     }
   },
   methods: {
-    getNow: function() {
+    getNow: async function() {
       this.currentDateTime = new Date();
       if (this.store.openingDate) {
         this.openingDifference = moment(this.store.openingDate) - moment(this.currentDateTime);
+        if (this.store.mode === 'SURVEY' && this.openingDifference < 0) {
+          await this.$store.dispatch('getStore', this.store._id);
+        }
       }
       if (this.store.closingDate) {
         this.closingDifference = moment(this.store.closingDate) - moment(this.currentDateTime);
+        if (this.store.mode === 'OPEN' && this.closingDifference < 0) {
+          await this.$store.dispatch('getStore', this.store._id);
+        }
       }
     },
     duplicateOrder: async function() {
       try {
         const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
-        // duplicate Store items
         this.$router
           .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
           .catch(() => {});

@@ -22,15 +22,15 @@
             <th scope="col">Store Name</th>
             <th scope="col">Brand</th>
             <th scope="col">Team Name</th>
-            <th scope="col">Account #</th>
-            <th scope="col">Order #</th>
+            <th scope="col" v-if="access">Account #</th>
+            <th scope="col" v-if="access">Order #</th>
             <th scope="col">Admin</th>
             <th scope="col">Opening Date</th>
             <th scope="col">Closing Date</th>
             <th scope="col">Mode</th>
-            <th scope="col">Total Orders</th>
-            <th scope="col">Currency</th>
-            <th scope="col">Total Collected</th>
+            <th scope="col" v-if="access">Total Orders</th>
+            <th scope="col" v-if="access">Currency</th>
+            <th scope="col" v-if="access">Total Collected</th>
           </tr>
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
             <td scope="row">{{ store.storeName }}</td>
@@ -44,8 +44,8 @@
               <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
             </td>
             <td>{{ store.teamId.name }}</td>
-            <td>{{ store.teamId.teamId }}</td>
-            <td>{{ store.orderReference }}</td>
+            <td v-if="access">{{ store.teamId.teamId }}</td>
+            <td v-if="access">{{ store.orderReference }}</td>
             <td>{{ store.adminId.name }}</td>
             <td v-if="store.openingDate">
               {{
@@ -74,9 +74,9 @@
                   : null
               "
             >{{ store.mode }}</td>
-            <td class="text-center">{{ store.totalOrders }}</td>
-            <td>{{ store.currency }}</td>
-            <td class="text-center">{{ store.collectedAmount }}</td>
+            <td class="text-center" v-if="access">{{ store.totalOrders }}</td>
+            <td v-if="access">{{ store.currency }}</td>
+            <td class="text-center" v-if="access">{{ store.collectedAmount }}</td>
           </tr>
         </tbody>
       </table>
@@ -173,6 +173,11 @@ export default {
     },
     stores: function() {
       return this.$store.getters.stores;
+    },
+    access: function() {
+      if (this.member && this.member.isAdmin) return true;
+
+      return false;
     }
   },
   methods: {

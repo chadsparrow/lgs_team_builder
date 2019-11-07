@@ -22,25 +22,25 @@ export default {
           id: '1',
           index: 0,
           size: 800,
-          alt: 'front_image'
+          alt: 'Product Image 1'
         },
         {
           id: '2',
           index: 1,
           size: 300,
-          alt: 'back_image'
+          alt: 'Product Image 2'
         },
         {
           id: '3',
           index: 2,
           size: 300,
-          alt: 'alt_image1'
+          alt: 'Product Image 3'
         },
         {
           id: '4',
           index: 3,
           size: 300,
-          alt: 'alt_image2'
+          alt: 'Product Image 4'
         }
       ]
     };
@@ -63,8 +63,9 @@ export default {
           return require(`@/assets/missing_item_${size}.png`);
 
         if (!this.catalogItem.images[index]) return require(`@/assets/missing_item_${size}.png`);
+        const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
 
-        return `/images/catalogs/${this.catalog._id}/${this.catalogItem.images[index]}_${size}.png`;
+        return `/images/catalogs/${folderName}/${size}/${this.catalogItem.images[index]}_${size}.jpg`;
       }
     }
   },
@@ -83,7 +84,7 @@ export default {
           link: `/dashboard/catalogs/${this.catalog._id}`
         },
         {
-          text: `${this.catalogItem.nameEN}`,
+          text: `${this.catalogItem.nameEN} (${this.catalogItem.styleCode})`,
           link: '#'
         }
       ];
@@ -155,10 +156,6 @@ export default {
       width: 100%;
     }
   }
-}
-
-.grid-move {
-  transition: all 0.3s;
 }
 
 .info-section {

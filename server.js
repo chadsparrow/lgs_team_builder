@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const path = require('path');
 const express = require('express');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
@@ -91,17 +92,31 @@ if (!config.get('jwtPrivateKey')) {
 // establishes all endpoints allowed from front end
 require('./startup/routes')(app);
 
-// setup cron job to open close stores
-const task = cron.schedule(
-  '0 * * * * *',
+// setup cron job to open & close stores every hour based on openingDate & closingDate compared to current dateTime
+cron.schedule(
+  '0 * * * *',
   async () => {
     const stores = await Store.find();
-    stores.forEach(store => console.log(store.openingDate, Date.now()));
+    stores.forEach(async store => {
+      if (store.mode !== 'HOLD') {
+        if (
+          store.openingDate &&
+          store.openingDate <= Date.now() &&
+          (store.closingDate && store.closingDate >= Date.now())
+        ) {
+          if (store.mode === 'SURVEY' && store.mode !== 'OPEN') {
+            await Store.findByIdAndUpdate(store._id, { mode: 'OPEN' });
+          }
+        } else if (store.closingDate && store.closingDate <= Date.now()) {
+          if (store.mode === 'OPEN' && store.mode !== 'CLOSED') {
+            await Store.findByIdAndUpdate(store._id, { mode: 'CLOSED' });
+          }
+        }
+      }
+    });
   },
   { scheduled: true, timezone: 'Etc/UTC' }
 );
-
-task.start();
 
 // configures server port
 const PORT = config.get('app.port') || 5001;
