@@ -46,6 +46,7 @@
     "mongoose-float": "^1.0.4",
     "morgan": "^1.9.1",
     "node-cron": "^2.0.3",
+    "node-geocoder": "^3.25.0",
     "saslprep": "^1.0.3",
     "swearjar": "^0.2.0",
     "winston": "^2.4.0",
