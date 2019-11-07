@@ -231,7 +231,7 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
     opendingDate: null,
     closingDate: null,
     timezone: store.timezone,
-    storeMessage: null,
+    storeMessage: `Copy of Store ${newStoreName[0]}`,
     shippingType: store.shippingType,
     extraCharges: store.extraCharges,
     collectedShippingCharges: [],
@@ -345,7 +345,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   }
 
   await store.save();
-  return res.send(store);
+  return res.send([{ message: 'Store updated' }]);
 });
 
 module.exports = router;

@@ -31,7 +31,7 @@
       </div>
       <div class="row p-1 mt-2">
         <div class="col-sm-6">
-          <small class="text-info">Opening:</small>
+          <small class="text-info">Opening Date:</small>
           <br />
           <span v-if="store.openingDate">
             {{
@@ -44,7 +44,7 @@
           <span v-else>No Opening Date</span>
         </div>
         <div class="col-sm-6">
-          <small class="text-info">Closing:</small>
+          <small class="text-info">Closing Date:</small>
           <br />
           <span v-if="store.closingDate">
             {{
@@ -82,6 +82,11 @@
           <small class="text-info">Account #:</small>
           <br />
           <span>{{ store.teamId.teamId }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small class="text-info">Order Reference:</small>
+          <br />
+          <span>{{ store.orderReference }}</span>
         </div>
       </div>
       <div class="row p-1" v-if="access">
@@ -127,35 +132,34 @@
         <span class="col-sm-12">{{ store.bulkShipping.email }}</span>
       </div>
     </div>
-    <div class="middle-section">Store Items</div>
-    <div class="button-section" v-if="member.isAdmin">
-      <div class="row">
-        <div class="col-sm-4">
-          <router-link
-            class="btn btn-info btn-block"
-            :to="`/dashboard/stores/${store._id}/add`"
-            tag="a"
-          >
-            <i class="fas fa-plus fa-lg"></i>
-            Add Store Item
-          </router-link>
-        </div>
-        <div class="col-sm-4">
-          <router-link
-            class="btn btn-info btn-block"
-            :to="`/dashboard/catalogs/${store._id}/edit`"
-            tag="a"
-          >
-            <i class="fas fa-cog fa-lg"></i>
+    <div class="middle-section">
+      <div class="button-section row mb-4" v-if="member.isAdmin">
+        <div class="col">
+          <router-link class="btn btn-info btn-block" :to="`/dashboard/stores/${store._id}/edit`">
+            <i class="fas fa-cog fa-lg mr-2"></i>
             Store Settings
           </router-link>
         </div>
-        <div class="col-sm-4">
+        <div class="col">
+          <router-link class="btn btn-info btn-block" :to="`/dashboard/stores/${store._id}/add`">
+            <i class="fas fa-plus fa-lg mr-2"></i>
+            Add Store Item
+          </router-link>
+        </div>
+
+        <div class="col">
+          <button @click="addStoreExtra" class="btn btn-info btn-block">
+            <i class="fas fa-plus fa-lg mr-2"></i> Add Store Extra
+          </button>
+        </div>
+        <div class="col">
           <button @click="duplicateOrder" class="btn btn-info btn-block">
-            <i class="fas fa-clone fa-lg"></i> Duplicate Store
+            <i class="fas fa-clone fa-lg mr-2"></i> Duplicate Store
           </button>
         </div>
       </div>
+      <h3 class="text-success mb-2" v-if="store.storeMessage">{{store.storeMessage}}</h3>
+      <div class="storeGrid">StoreItems</div>
     </div>
   </div>
 </template>
@@ -251,6 +255,9 @@ export default {
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
+    },
+    addStoreExtra: function() {
+      // CODE
     }
   }
 };
@@ -260,13 +267,11 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 255px 1fr;
-  grid-template-rows: 1fr 40px;
-  grid-gap: 1rem;
+  grid-template-rows: 1fr;
+  grid-gap: 1.5rem;
   width: 100%;
   height: 100%;
-  grid-template-areas:
-    'sidebar-left middle-section'
-    'sidebar-left button-section';
+  grid-template-areas: 'sidebar-left middle-section';
 }
 
 .sidebar-left {
@@ -282,12 +287,10 @@ export default {
   grid-area: middle-section;
   overflow-x: hidden;
   overflow-y: auto;
-  display: grid;
-}
 
-.button-section {
-  grid-area: button-section;
-  overflow: hidden;
+  .storeGrid {
+    display: grid;
+  }
 }
 
 .modeBox {
