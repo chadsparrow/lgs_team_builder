@@ -4,16 +4,16 @@
       <div class="col middle-section">
         <form novalidate>
           <div class="row">
-            <div class="form-group col-sm-8">
+            <div class="form-group col-sm-12">
               <label for="name">Team Name</label>
-              <input id="name" type="text" class="form-control" v-model="name" ref="name" autofocus />
-            </div>
-            <div class="col-sm-4">
-              <label>Team Timezone:</label>
-              <br />
-              <small class="timezoneBox">
-                <strong class="text-info">{{ timezone || 'Waiting for Shipping Details' }}</strong>
-              </small>
+              <input
+                id="name"
+                type="text"
+                class="form-control form-control-lg"
+                v-model="name"
+                ref="name"
+                autofocus
+              />
             </div>
 
             <!-- ADMIN SELECTOR -->
@@ -344,7 +344,6 @@
                 :region="shippingStateProv"
                 class="form-control form-control-sm"
                 :regionName="true"
-                @input="geoTimezone"
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
@@ -441,8 +440,6 @@ export default {
       adminsList: [],
       backupContact: {},
       backupShipping: {},
-      timezone: '',
-      timezoneAbbrev: '',
       chosenMember: ''
     };
   },
@@ -513,9 +510,7 @@ export default {
         shippingCountry: this.shippingCountry,
         shippingZipPostal: this.shippingZipPostal,
         shippingPhone: this.shippingPhone,
-        shippingEmail: this.shippingEmail,
-        timezone: this.timezone,
-        timezoneAbbrev: this.timezoneAbbrev
+        shippingEmail: this.shippingEmail
       };
 
       try {
@@ -550,7 +545,6 @@ export default {
             email,
             phone,
             timezone,
-            timezoneAbbrev,
             shipping
           } = manager;
 
@@ -566,7 +560,6 @@ export default {
             email,
             phone,
             timezone,
-            timezoneAbbrev,
             shipping
           };
 
@@ -619,8 +612,6 @@ export default {
         this.contactZipPostal = zipPostal;
         this.contactPhone = phone;
         this.contactEmail = email;
-
-        this.geoTimezone();
       } else {
         const {
           name,
@@ -644,8 +635,6 @@ export default {
         this.contactZipPostal = zipPostal;
         this.contactPhone = phone;
         this.contactEmail = email;
-
-        this.geoTimezone();
       }
 
       if (this.bulkUseDetails === 'above') {
@@ -672,13 +661,11 @@ export default {
         this.shippingZipPostal = this.contactZipPostal;
         this.shippingPhone = this.contactPhone;
         this.shippingEmail = this.contactEmail;
-
-        this.geoTimezone();
       }
     },
     copytoBulk: function() {
       if (this.bulkUseDetails === 'manager') {
-        const { shipping, timezone, timezoneAbbrev } = this.managerDetails;
+        const { shipping, timezone } = this.managerDetails;
         this.backupShipping = {
           name: this.shippingName,
           company: this.shippingCompany,
@@ -702,7 +689,6 @@ export default {
         this.shippingPhone = shipping.phone;
         this.shippingEmail = shipping.email;
         this.timezone = timezone;
-        this.timezoneAbbrev = timezoneAbbrev;
       } else if (this.bulkUseDetails === 'above') {
         this.backupShipping = {
           name: this.shippingName,
@@ -726,7 +712,6 @@ export default {
         this.shippingZipPostal = this.contactZipPostal;
         this.shippingPhone = this.contactPhone;
         this.shippingEmail = this.contactEmail;
-        this.geoTimezone();
       } else {
         const {
           name,
@@ -751,18 +736,11 @@ export default {
         this.shippingPhone = phone;
         this.shippingEmail = email;
         this.$refs.shippingName.focus();
-        this.geoTimezone();
       }
     },
     changeDetails: function(event) {
       if (event.target) {
         const target = event.target.id;
-        if (
-          target === 'shippingCity' &&
-          (this.shippingStateProv && this.shippingCity && this.shippingCountry)
-        ) {
-          this.geoTimezone();
-        }
 
         if (this.bulkUseDetails === 'above') {
           if (target === 'contactEmail') {
@@ -777,7 +755,6 @@ export default {
             this.shippingAddress2 = this.contactAddress2;
           } else if (target === 'contactCity') {
             this.shippingCity = this.contactCity;
-            this.geoTimezone();
           } else if (target === 'contactZipPostal') {
             this.shippingZipPostal = this.contactZipPostal;
           }
@@ -792,7 +769,6 @@ export default {
     checkRegion: function() {
       if (this.bulkUseDetails === 'above') {
         this.shippingStateProv = this.contactStateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
@@ -806,32 +782,6 @@ export default {
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
-      this.geoTimezone();
-    },
-    geoTimezone: async function() {
-      if (this.shippingStateProv && this.shippingCity && this.shippingCountry) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.shippingCity} ${this.shippingStateProv} ${this.shippingCountry}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.timezone = response.data.zoneName;
-            this.timezoneAbbrev = response.data.abbreviation;
-          }
-        }
-      } else {
-        this.timezone = '';
-        this.timezoneAbbrev = '';
-      }
     }
   }
 };
@@ -841,12 +791,5 @@ export default {
 form {
   max-width: 900px;
   margin: 0 auto;
-
-  .timezoneBox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0.75rem;
-  }
 }
 </style>

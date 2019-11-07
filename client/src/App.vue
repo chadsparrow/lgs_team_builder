@@ -211,13 +211,6 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   font-size: 0.9rem;
-
-  .timezoneBox {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 0.75rem;
-  }
 }
 
 .info-spans {

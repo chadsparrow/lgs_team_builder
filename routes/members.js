@@ -325,6 +325,18 @@ router.put('/:id', [validateObjectId, auth], async (req, res) => {
     updateMember.billing.email = billingEmail;
   }
 
+  const geoCodeAddress = `${updateMember.shipping.address1} ${updateMember.shipping.address2} ${updateMember.shipping.city} ${updateMember.shipping.stateProv} ${updateMember.shipping.country} ${updateMember.shipping.zipPostal}`;
+  const loc = await geocoder.geocode(geoCodeAddress);
+
+  const data = await tzdb.getTimeZoneByPosition({ lat: loc[0].latitude, lng: loc[0].longitude });
+
+  updateMember.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  updateMember.timezone = data.zoneName;
+
   await updateMember.save();
 
   const updateMemberMainContact = {

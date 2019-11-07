@@ -6,6 +6,15 @@ const _ = require('lodash');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
+const config = require('config');
+// eslint-disable-next-line prefer-destructuring
+const Tzdb = require('timezonedb').Tzdb;
+
+const tzdb = new Tzdb({
+  apiToken: config.get('app.timezonedbKey')
+});
+
+const geocoder = require('../utils/geocoder');
 const { Member, validateNewRegister } = require('../models/Member');
 const { Email } = require('../models/Email');
 const { Team } = require('../models/Team');
@@ -198,6 +207,18 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   newMember.password = await bcrypt.hash(password, salt);
+
+  const geoCodeAddress = `${newMember.shipping.address1} ${newMember.shipping.address2} ${newMember.shipping.city} ${newMember.shipping.stateProv} ${newMember.shipping.country} ${newMember.shipping.zipPostal}`;
+  const loc = await geocoder.geocode(geoCodeAddress);
+
+  const data = await tzdb.getTimeZoneByPosition({ lat: loc[0].latitude, lng: loc[0].longitude });
+
+  newMember.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  newMember.timezone = data.zoneName;
 
   await newMember.save();
 

@@ -2,6 +2,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const swearjar = require('swearjar');
+const config = require('config');
+// eslint-disable-next-line prefer-destructuring
+const Tzdb = require('timezonedb').Tzdb;
+
+const tzdb = new Tzdb({
+  apiToken: config.get('app.timezonedbKey')
+});
+
+const geocoder = require('../utils/geocoder');
 const { Member } = require('../models/Member');
 const { Team, validateTeam, validateAddMember } = require('../models/Team');
 const { Store } = require('../models/Store');
@@ -97,9 +106,7 @@ router.post('/', [auth, admin], async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail,
-    timezone,
-    timezoneAbbrev
+    shippingEmail
   } = req.body;
 
   // checks team name for profanity and denies
@@ -178,8 +185,17 @@ router.post('/', [auth, admin], async (req, res) => {
     email: shippingEmail
   };
 
-  team.timezone = timezone;
-  team.timezoneAbbrev = timezoneAbbrev;
+  const geoCodeAddress = `${team.bulkShipping.address1} ${team.bulkShipping.address2} ${team.bulkShipping.city} ${team.bulkShipping.stateProv} ${team.bulkShipping.country} ${team.bulkShipping.zipPostal}`;
+  const loc = await geocoder.geocode(geoCodeAddress);
+
+  const data = await tzdb.getTimeZoneByPosition({ lat: loc[0].latitude, lng: loc[0].longitude });
+
+  team.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  team.timezone = data.zoneName;
 
   await team.save();
   return res.send([{ message: 'Team Added' }]);

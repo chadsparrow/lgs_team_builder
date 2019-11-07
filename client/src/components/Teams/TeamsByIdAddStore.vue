@@ -372,7 +372,7 @@ export default {
       try {
         const res = await this.$store.dispatch('addTeamStore', newStore);
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
-        this.$toasted.success(res.data[0].message);
+        this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;

@@ -391,7 +391,6 @@
                   :country="shippingCountry"
                   :region="shippingStateProv"
                   class="form-control form-control-sm"
-                  @input="geoTimezone"
                   :readonly="shippingSame"
                   :regionName="true"
                   ref="shippingStateProv"
@@ -469,8 +468,6 @@ export default {
       country: '',
       zipPostal: '',
       phone: '',
-      timezone: '',
-      timezoneAbbrev: '',
       billingSame: true,
       billingName: '',
       billingCompany: '',
@@ -518,7 +515,6 @@ export default {
   methods: {
     register: async function() {
       try {
-        await this.geoTimezone();
         const member = {
           email: this.email,
           password: this.password,
@@ -531,8 +527,6 @@ export default {
           country: this.country,
           zipPostal: this.zipPostal,
           phone: this.phone,
-          timezone: this.timezone,
-          timezoneAbbrev: this.timezoneAbbrev,
           shippingSame: this.shippingSame,
           shippingName: this.shippingName,
           shippingCompany: this.shippingCompany,
@@ -626,9 +620,6 @@ export default {
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (target === 'shippingCity') {
-        this.geoTimezone();
-      }
 
       if (this.shippingSame) {
         switch (target) {
@@ -697,7 +688,6 @@ export default {
 
       if (this.shippingSame) {
         this.shippingStateProv = this.stateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
@@ -720,38 +710,6 @@ export default {
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
-    },
-    geoTimezone: async function() {
-      if (
-        this.shippingCity !== '' &&
-        this.shippingStateProv !== '' &&
-        this.shippingCountry !== ''
-      ) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.shippingCity} ${this.shippingStateProv} ${this.shippingCountry}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.timezone = response.data.zoneName;
-            this.timezoneAbbrev = response.data.abbreviation;
-          } else {
-            this.timezone = '';
-            this.timezoneAbbrev = '';
-          }
-        }
-      } else {
-        this.timezone = '';
-        this.timezoneAbbrev = '';
-      }
     }
   }
 };

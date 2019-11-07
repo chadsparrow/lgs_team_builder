@@ -6,19 +6,13 @@
         <input
           id="email"
           type="text"
-          class="form-control"
+          class="form-control form-control-lg"
           v-model="email"
           ref="email"
           @change="changeDetails"
         />
       </div>
-      <div class="col-sm-6">
-        <label>Member Timezone:</label>
-        <br />
-        <small class="timezoneBox">
-          <strong class="text-info">{{ timezone || 'Waiting for Shipping Details' }}</strong>
-        </small>
-      </div>
+      <div class="col-sm-6 mb-3"></div>
       <div class="col-sm-4 contactSection">
         <div class="section-header bg-secondary mb-2">Contact</div>
         <div class="row">
@@ -377,7 +371,6 @@
               :country="shippingCountry"
               :region="shippingStateProv"
               class="form-control form-control-sm"
-              @input="geoTimezone"
               :readonly="shippingSame"
               :regionName="true"
               ref="shippingStateProv"
@@ -462,8 +455,6 @@ export default {
       country: '',
       zipPostal: '',
       phone: '',
-      timezone: '',
-      timezoneAbbrev: '',
       shippingSame: true,
       shippingName: '',
       shippingCompany: '',
@@ -519,8 +510,6 @@ export default {
         country: this.country,
         zipPostal: this.zipPostal,
         phone: this.phone,
-        timezone: this.timezone,
-        timezoneAbbrev: this.timezoneAbbrev,
         shippingSame: this.shippingSame,
         shippingName: this.shippingName,
         shippingCompany: this.shippingCompany,
@@ -573,7 +562,6 @@ export default {
         this.shippingZipPostal = this.zipPostal;
         this.shippingPhone = this.phone;
         this.shippingEmail = this.email;
-        this.geoTimezone();
       } else {
         this.shippingName = '';
         this.shippingCompany = '';
@@ -585,7 +573,6 @@ export default {
         this.shippingZipPostal = '';
         this.shippingPhone = '';
         this.shippingEmail = '';
-        this.geoTimezone();
       }
     },
     copyMembertoBilling: function() {
@@ -600,7 +587,6 @@ export default {
         this.billingZipPostal = this.zipPostal;
         this.billingPhone = this.phone;
         this.billingEmail = this.email;
-        this.geoTimezone();
       } else {
         this.billingName = '';
         this.billingCompany = '';
@@ -612,15 +598,10 @@ export default {
         this.billingZipPostal = '';
         this.billingPhone = '';
         this.billingEmail = '';
-        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (target === 'shippingCity') {
-        this.geoTimezone();
-      }
-
       if (this.shippingSame) {
         switch (target) {
           case 'email':
@@ -640,7 +621,6 @@ export default {
             break;
           case 'city':
             this.shippingCity = this.city;
-            this.geoTimezone();
             break;
           case 'zipPostal':
             this.shippingZipPostal = this.zipPostal;
@@ -689,7 +669,6 @@ export default {
 
       if (this.shippingSame) {
         this.shippingStateProv = this.stateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
@@ -704,7 +683,6 @@ export default {
         this.shippingCountry = this.country;
         this.shippingStateProv = '';
       }
-      this.geoTimezone();
     },
     checkBillingCountry: function() {
       this.$refs.billingPhone.countryCode = this.billingCountry;
@@ -713,31 +691,6 @@ export default {
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
-    },
-    geoTimezone: async function() {
-      if (this.shippingStateProv && this.shippingCity && this.shippingCountry) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.shippingCity} ${this.shippingStateProv} ${this.shippingCountry}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.timezone = response.data.zoneName;
-            this.timezoneAbbrev = response.data.abbreviation;
-          }
-        }
-      } else {
-        this.timezone = '';
-        this.timezoneAbbrev = '';
-      }
     }
   }
 };

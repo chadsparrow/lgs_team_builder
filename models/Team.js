@@ -149,10 +149,20 @@ const TeamSchema = new mongoose.Schema(
         ref: 'teams'
       }
     ],
-    timezone: {
-      type: String
+    location: {
+      // GeoJSON Point
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true
+      },
+      coordinates: {
+        type: [Number],
+        index: '2dsphere',
+        required: true
+      }
     },
-    timezoneAbbrev: {
+    timezone: {
       type: String
     }
   },
@@ -223,9 +233,7 @@ function validateTeam(team) {
     shippingEmail: Joi.string()
       .email()
       .required()
-      .trim(),
-    timezone: Joi.string().required(),
-    timezoneAbbrev: Joi.string().required()
+      .trim()
   };
   return Joi.validate(team, schema, joiOptions);
 }
