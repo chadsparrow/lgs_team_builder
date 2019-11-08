@@ -13,7 +13,7 @@
           type="text"
           id="catalogItemSearch"
           v-if="catalogItems.length > 0"
-          class="form-control form-control-sm mr-2"
+          class="form-control form-control-sm mr-3"
           v-model="catalogItemSearch"
           placeholder="Enter any product info..."
           autofocus
@@ -82,9 +82,7 @@ export default {
           item.nameEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
           item.nameFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
           item.productCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.styleCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) //||
-          // item.descriptionEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          // item.descriptionFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase())
+          item.styleCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase())
         ) {
           if (
             (this.catalogItemSearch.toLowerCase() === "men's" ||

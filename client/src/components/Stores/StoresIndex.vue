@@ -76,7 +76,7 @@
             >{{ store.mode }}</td>
             <td class="text-center" v-if="access">{{ store.totalOrders }}</td>
             <td v-if="access">{{ store.currency }}</td>
-            <td class="text-center" v-if="access">{{ store.collectedAmount }}</td>
+            <td class="text-center" v-if="access">{{ store.collectedAmount | currency}}</td>
           </tr>
         </tbody>
       </table>
@@ -99,9 +99,11 @@
 
 <script>
 import Paginate from 'vuejs-paginate';
+import Vue2Filters from 'vue2-filters';
 
 export default {
   name: 'StoreIndex',
+  mixins: [Vue2Filters.mixin],
   components: {
     Paginate
   },

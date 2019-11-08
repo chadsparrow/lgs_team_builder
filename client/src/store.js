@@ -304,11 +304,11 @@ export default new Vuex.Store({
         }
       });
     },
-    removeNotification({ commit, dispatch }, { nId, id }) {
+    removeNotification({ commit, dispatch }, { nId }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
-          const res = await axios.delete(`/api/v1/members/${id}/notification/${nId}`);
+          const res = await axios.delete(`/api/v1/notifications/${nId}`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {

@@ -29,6 +29,7 @@
                 </td>
                 <td>{{ catalog.year }}</td>
                 <td>{{ catalog.season }}</td>
+                <td>{{ catalog.season }}</td>
               </tr>
             </tbody>
           </table>

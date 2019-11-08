@@ -55,7 +55,7 @@
               <ul class="list-group list-group-flush">
                 <li v-for="pb in item.priceBreaks.CAD" :key="pb.priceBreak" class="list-group-item">
                   <span class="pricebreaks">{{pb.priceBreak}}</span>
-                  <span class="prices text-info">{{pb.price}}</span>
+                  <span class="prices text-info">{{pb.price | currency}}</span>
                 </li>
                 <li class="list-group-item">
                   <span class="pricebreaks">250+</span>
@@ -68,7 +68,7 @@
               <ul class="list-group list-group-flush">
                 <li v-for="pb in item.priceBreaks.USD" :key="pb.priceBreak" class="list-group-item">
                   <span class="pricebreaks">{{pb.priceBreak}}</span>
-                  <span class="prices text-info">{{pb.price}}</span>
+                  <span class="prices text-info">{{pb.price | currency}}</span>
                 </li>
                 <li class="list-group-item">
                   <span class="pricebreaks">250+</span>
@@ -85,8 +85,11 @@
 </template>
 
 <script>
+import Vue2Filters from 'vue2-filters';
+
 export default {
   name: 'CatalogItemById',
+  mixins: [Vue2Filters.mixin],
   data() {
     return {
       images: [
@@ -215,7 +218,6 @@ export default {
   grid-area: image-section;
 
   .grid {
-    background-color: whitesmoke;
     display: grid;
     grid-template-columns: 800px 200px;
     grid-template-rows: 200px 200px 200px;
@@ -278,9 +280,6 @@ export default {
     }
     .prices {
       float: right;
-      &::before {
-        content: '$';
-      }
     }
   }
 }

@@ -83,7 +83,7 @@ export default {
     },
     deleteNotification: async function(nId) {
       try {
-        const res = await this.$store.dispatch('removeNotification', { nId, id: this.member._id });
+        const res = await this.$store.dispatch('removeNotification', { nId });
         await this.$store.dispatch('getMe', this.member._id);
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
       } catch (err) {

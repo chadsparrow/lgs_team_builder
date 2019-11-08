@@ -29,6 +29,7 @@ module.exports = async function(DB_HOST) {
     const rootPass = config.get('app.rootPass');
     const rootEmail = config.get('app.rootEmail');
     const newAdmin = new Member({
+      email: rootEmail,
       name: 'rootuser',
       address1: '123 Any Street',
       city: 'city',
@@ -36,20 +37,13 @@ module.exports = async function(DB_HOST) {
       country: 'country',
       zipPostal: 'zip_postal',
       phone: '1111111111',
-      email: rootEmail,
-      timezoneAbbrev: 'PST',
-      timezone: 'America/Vancouver',
-      shipping: {
-        name: 'rootuser',
-        address1: '123 Any Street',
-        city: 'city',
-        stateProv: 'stateProv',
-        country: 'country',
-        zipPostal: 'zipPostal',
-        phone: '1111111111',
-        email: rootEmail
+      location: {
+        type: 'Point',
+        coordinates: [0, 0]
       },
-      isAdmin: true
+      timezone: 'America/Vancouver',
+      isAdmin: true,
+      isVerified: true
     });
     const salt = await bcrypt.genSalt(10);
     newAdmin.password = await bcrypt.hash(rootPass, salt);

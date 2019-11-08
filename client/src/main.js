@@ -13,6 +13,7 @@ import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import Vue2Filters from 'vue2-filters';
 
 Vue.use(VueMoment, { moment });
 Vue.use(VuejsDialog);
@@ -28,6 +29,7 @@ Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);
 Vue.use(VueAxios, axios);
+Vue.use(Vue2Filters);
 
 Vue.config.productionTip = false;
 

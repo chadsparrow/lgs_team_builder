@@ -220,10 +220,41 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
 
   newMember.timezone = data.zoneName;
 
-  await newMember.save();
-
+  newMember.notifications.push({ date: new Date(), message: 'Welcome to Team Builder!' });
+  const notification = {
+    date: Date.now(),
+    message: `You are now part of team ${team.name}`,
+    clickTo: `/dashboard/teams/${team._id}`
+  };
+  newMember.notifications.push(notification);
   team.members.push(newMember._id);
   await team.save();
+
+  await newMember.save();
+
+  await Member.updateOne(
+    { _id: team.managerId },
+    {
+      $push: {
+        notifications: {
+          date: Date.now(),
+          message: `${newMember.name} just joined your team - ${team.name}!`
+        }
+      }
+    }
+  );
+
+  await Member.updateOne(
+    { _id: team.adminId },
+    {
+      $push: {
+        notifications: {
+          date: Date.now(),
+          message: `${newMember.name} just joined team - ${team.name}!`
+        }
+      }
+    }
+  );
 
   return res.send([{ message: 'You are now registered!' }]);
 });

@@ -56,16 +56,14 @@ router.delete('/all', auth, async (req, res) => {
 // @route   DELETE /api/v1/notifications/:id
 // @access  Private
 router.delete('/:id', [validateObjectId, auth], async (req, res) => {
-  const member = await Member.findById(req.member._id);
-  if (member.notifications.length > 0) {
-    member.notifications = member.notifications.filter(n => {
-      return n._id !== req.params.id;
-    });
-    await member.save();
-    return res.status(200).send([{ message: 'Notification deleted' }]);
-  }
+  const member = await Member.updateOne(
+    { _id: req.member._id },
+    { $pull: { notifications: { _id: req.params.id } } }
+  );
+  if (!member)
+    return res.status(400).send([{ message: 'Notification with the given ID not found' }]);
 
-  return res.status(400).send([{ message: 'Notifications with that ID not found.' }]);
+  return res.status(200).send([{ message: 'Notification deleted' }]);
 });
 
 module.exports = router;

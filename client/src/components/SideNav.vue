@@ -38,18 +38,43 @@
       <i class="fas fa-book"></i>
       <span>Catalogs</span>
     </router-link>
+    <div class="row text-center mt-4" v-if="currentDateTime">
+      <small class="col-sm-12">Current Date/Time:</small>
+      <small
+        class="col-sm-12 currentTime text-warning"
+      >{{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</small>
+    </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'SideNav',
+  data() {
+    return {
+      currentDateTime: null,
+      polling: null
+    };
+  },
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
     },
     adminStatus: function() {
       if (this.member) return this.member.isAdmin;
+    }
+  },
+  created: function() {
+    this.polling = setInterval(this.getNow, 1000);
+  },
+  beforeDestroy: function() {
+    clearInterval(this.polling);
+  },
+  methods: {
+    getNow: function() {
+      this.currentDateTime = new Date();
     }
   }
 };
@@ -66,6 +91,10 @@ export default {
     i {
       margin-right: 1rem;
     }
+  }
+
+  .currentTime {
+    font-size: 0.6rem;
   }
 
   .logo {
