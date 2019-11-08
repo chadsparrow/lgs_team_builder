@@ -198,7 +198,7 @@
       </div>
       <router-link
         :to="`/dashboard/members/${member._id}/edit`"
-        class="btn btn-block btn-info"
+        class="btn btn-info"
         v-if="isAdmin"
       >
         <i class="fas fa-cog mr-3"></i>Edit Member Details

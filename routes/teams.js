@@ -232,9 +232,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     shippingCountry,
     shippingZipPostal,
     shippingPhone,
-    shippingEmail,
-    timezone,
-    timezoneAbbrev
+    shippingEmail
   } = req.body;
 
   let team = await Team.findById(req.params.id);
@@ -315,8 +313,17 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     email: shippingEmail
   };
 
-  team.timezone = timezone;
-  team.timezoneAbbrev = timezoneAbbrev;
+  const geoCodeAddress = `${team.bulkShipping.address1} ${team.bulkShipping.address2} ${team.bulkShipping.city} ${team.bulkShipping.stateProv} ${team.bulkShipping.country} ${team.bulkShipping.zipPostal}`;
+  const loc = await geocoder.geocode(geoCodeAddress);
+
+  const data = await tzdb.getTimeZoneByPosition({ lat: loc[0].latitude, lng: loc[0].longitude });
+
+  team.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude]
+  };
+
+  team.timezone = data.zoneName;
 
   await team.save();
 

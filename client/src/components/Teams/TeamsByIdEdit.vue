@@ -365,7 +365,6 @@
               class="form-control form-control-sm"
               :readonly="bulkUseDetails !== 'other'"
               :regionName="true"
-              @input="geoTimezone"
             />
           </div>
           <div class="form-group col-sm-6">
@@ -515,9 +514,7 @@ export default {
         shippingCountry: this.team.bulkShipping.country,
         shippingZipPostal: this.team.bulkShipping.zipPostal,
         shippingPhone: this.team.bulkShipping.phone,
-        shippingEmail: this.team.bulkShipping.email,
-        timezone: this.team.timezone,
-        timezoneAbbrev: this.team.timezoneAbbrev
+        shippingEmail: this.team.bulkShipping.email
       };
 
       try {
@@ -582,16 +579,13 @@ export default {
       if (this.useManagerDetails) {
         this.backupContact = this.team.mainContact;
         this.team.mainContact = this.managerDetails;
-        this.geoTimezone();
       } else {
         this.team.mainContact = this.backupContact;
-        this.geoTimezone();
       }
 
       if (this.bulkUseDetails === 'above') {
         this.backupShipping = this.team.bulkShipping;
         this.team.bulkShipping = this.team.mainContact;
-        this.geoTimezone();
       }
     },
     copytoBulk: function() {
@@ -604,22 +598,12 @@ export default {
         this.backupBulk = this.team.bulkShipping;
         this.team.bulkShipping = this.team.mainContact;
         this.team.bulkShipping.company = this.backupBulk.company;
-        this.geoTimezone();
       } else {
         this.team.bulkShipping = this.backupBulk;
-        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (
-        target === 'shippingCity' &&
-        (this.team.bulkShipping.stateProv &&
-          this.team.bulkShipping.city &&
-          this.team.bulkShipping.country)
-      ) {
-        this.geoTimezone();
-      }
 
       if (this.bulkUseDetails === 'above') {
         if (target === 'contactEmail') {
@@ -634,7 +618,6 @@ export default {
           this.team.bulkShipping.address2 = this.team.mainContact.address2;
         } else if (target === 'contactCity') {
           this.team.bulkShipping.city = this.team.mainContact.city;
-          this.geoTimezone();
         } else if (target === 'contactZipPostal') {
           this.team.bulkShipping.zipPostal = this.team.mainContact.zipPostal;
         }
@@ -648,12 +631,12 @@ export default {
     checkRegion: function() {
       if (this.bulkUseDetails === 'above') {
         this.team.bulkShipping.stateProv = this.team.mainContact.stateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
       this.$refs.contactPhone.countryCode = this.team.mainContact.country;
       this.team.mainContact.stateProv = '';
+      this.$refs.contactStateProv.$el.focus();
 
       if (this.bulkUseDetails === 'above') {
         this.team.bulkShipping.country = this.team.mainContact.country;
@@ -663,35 +646,7 @@ export default {
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.team.bulkShipping.country;
       this.team.bulkShipping.stateProv = '';
-    },
-    geoTimezone: async function() {
-      if (
-        this.team.bulkShipping.stateProv !== '' &&
-        this.team.bulkShipping.city !== '' &&
-        this.team.bulkShipping.country !== ''
-      ) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.team.bulkShipping.city} ${this.team.bulkShipping.stateProv} ${this.team.bulkShipping.country}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.team.timezone = response.data.zoneName;
-            this.team.timezoneAbbrev = response.data.abbreviation;
-          }
-        }
-      } else {
-        this.team.timezone = '';
-        this.team.timezoneAbbrev = '';
-      }
+      this.$refs.shippingStateProv.$el.focus();
     }
   }
 };

@@ -435,7 +435,7 @@
             </div>
           </div>
         </div>
-        <div class="row my-3">
+        <div class="row my-4">
           <div class="col-sm-8">
             <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
           </div>
