@@ -674,6 +674,7 @@ export default {
     checkCountry: function() {
       this.$refs.phone.countryCode = this.country;
       this.stateProv = '';
+      this.$refs.stateProv.$el.focus();
       if (this.billingSame) {
         this.billingCountry = this.country;
         this.billingStateProv = '';
@@ -687,10 +688,12 @@ export default {
     checkBillingCountry: function() {
       this.$refs.billingPhone.countryCode = this.billingCountry;
       this.billingStateProv = '';
+      this.$refs.billingStateProv.$el.focus();
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
+      this.$refs.shippingStateProv.$el.focus();
     }
   }
 };

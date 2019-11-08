@@ -128,7 +128,7 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
     billingZipPostal,
     billingPhone,
     billingEmail
-  } = req.body;
+  } = req.body.member;
 
   // checks if the word "password" or email address is in their password and denies creation
   const userEmail = email.split('@')[0];
@@ -221,6 +221,9 @@ router.post('/register/:id', validateObjectId, async (req, res) => {
   newMember.timezone = data.zoneName;
 
   await newMember.save();
+
+  team.members.push(newMember._id);
+  await team.save();
 
   return res.send([{ message: 'You are now registered!' }]);
 });

@@ -21,7 +21,7 @@
             <input
               id="email"
               type="text"
-              class="form-control form-control-sm"
+              class="form-control form-control-lg"
               v-model="email"
               ref="email"
               @change="changeDetails"
@@ -32,7 +32,7 @@
             <input
               id="password"
               type="password"
-              class="form-control form-control-sm"
+              class="form-control form-control-lg"
               v-model="password"
               ref="password"
             />
@@ -693,6 +693,7 @@ export default {
     checkCountry: function() {
       this.$refs.phone.countryCode = this.country;
       this.stateProv = '';
+      this.$refs.stateProv.$el.focus();
       if (this.billingSame) {
         this.billingCountry = this.country;
         this.billingStateProv = '';
@@ -706,10 +707,12 @@ export default {
     checkBillingCountry: function() {
       this.$refs.billingPhone.countryCode = this.billingCountry;
       this.billingStateProv = '';
+      this.$refs.billingStateProv.$el.focus();
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
+      this.$refs.billingStateProv.$el.focus();
     }
   }
 };

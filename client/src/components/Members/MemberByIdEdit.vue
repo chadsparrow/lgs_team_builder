@@ -392,7 +392,6 @@
                   :country="member.shipping.country"
                   :region="member.shipping.stateProv"
                   class="form-control form-control-sm"
-                  @input="geoTimezone"
                   :readonly="shippingSame"
                   :regionName="true"
                   ref="shippingStateProv"
@@ -539,7 +538,6 @@ export default {
         this.member.shipping.country = this.member.country;
         this.member.shipping.zipPostal = this.member.zipPostal;
         this.member.shipping.email = this.member.email;
-        this.geoTimezone();
       }
       if (this.billingSame === true) {
         this.member.billing.name = this.member.name;
@@ -551,14 +549,10 @@ export default {
         this.member.billing.country = this.member.country;
         this.member.billing.zipPostal = this.member.zipPostal;
         this.member.billing.email = this.member.email;
-        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (target === 'shippingCity') {
-        this.geoTimezone();
-      }
 
       if (this.shippingSame) {
         if (target === 'email') {
@@ -573,7 +567,6 @@ export default {
           this.member.shipping.address2 = this.member.address2;
         } else if (target === 'city') {
           this.member.shipping.city = this.member.city;
-          this.geoTimezone();
         } else if (target === 'zipPostal') {
           this.member.shipping.zipPostal = this.member.zipPostal;
         }
@@ -639,10 +632,8 @@ export default {
           zipPostal: this.member.zipPostal,
           phone: this.member.phone
         };
-        this.geoTimezone();
       } else {
         this.member.shipping = this.backupShipping;
-        this.geoTimezone();
       }
     },
     checkRegion: function() {
@@ -652,12 +643,12 @@ export default {
 
       if (this.shippingSame) {
         this.member.shipping.stateProv = this.member.stateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
       this.$refs.phone.countryCode = this.member.country;
       this.member.stateProv = '';
+      this.$refs.stateProv.$el.focus();
       if (this.billingSame) {
         this.member.billing.country = this.member.country;
         this.member.billing.stateProv = '';
@@ -671,39 +662,12 @@ export default {
     checkBillingCountry: function() {
       this.$refs.billingPhone.countryCode = this.member.billing.country;
       this.member.billing.stateProv = '';
+      this.$refs.billingStateProv.$el.focus();
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.member.shipping.country;
       this.member.shipping.stateProv = '';
-    },
-    geoTimezone: async function() {
-      if (
-        this.member.shipping.stateProv &&
-        this.member.shipping.city &&
-        this.member.shipping.country
-      ) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.member.shipping.city} ${this.member.shipping.stateProv} ${this.member.shipping.country}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.member.timezone = response.data.zoneName;
-            this.member.timezoneAbbrev = response.data.abbreviation;
-          } else {
-            this.member.timezone = '';
-            this.member.timezoneAbbrev = '';
-          }
-        }
-      }
+      this.$refs.shippingStateProv.$el.focus();
     },
     updateMember: async function() {
       const updatedMember = {
@@ -716,8 +680,6 @@ export default {
         stateProv: this.member.stateProv,
         country: this.member.country,
         zipPostal: this.member.zipPostal,
-        timezone: this.member.timezone,
-        timezoneAbbrev: this.member.timezoneAbbrev,
         shippingSame: this.shippingSame,
         shippingName: this.member.shipping.name,
         shippingCompany: this.member.shipping.company,
