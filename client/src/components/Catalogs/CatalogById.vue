@@ -5,7 +5,19 @@
         <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="catalog.brand ==='GARNEAU'" />
         <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="catalog.brand ==='SUGOI'" />
         <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" v-if="catalog.brand ==='SOMBRIO'" />
-        {{ catalog.season }} - {{ catalog.year }}
+        {{catalog.season}} - {{catalog.year}}
+      </div>
+      <div class="form-group form-inline">
+        <label for="catalogItemSearch" class="mr-2">Search:</label>
+        <input
+          type="text"
+          id="catalogItemSearch"
+          v-if="catalogItems.length > 0"
+          class="form-control form-control-sm"
+          v-model="catalogItemSearch"
+          placeholder="Enter any product info..."
+          autofocus
+        />
       </div>
       <div>
         <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">
@@ -22,13 +34,10 @@
         </button>
       </div>
     </div>
-    <div
-      :class="viewGrid ? 'galleryThumb' : 'galleryList'"
-      v-if="catalogItems && catalogItems.length > 0"
-    >
+    <div :class="viewGrid ? 'galleryThumb' : 'galleryList'" v-if="filteredItems.length > 0">
       <router-link
         class="thumbnail"
-        v-for="item of catalogItems"
+        v-for="item of filteredItems"
         :key="item._id"
         :to="`/dashboard/catalogItems/${item._id}`"
       >
@@ -54,7 +63,8 @@ export default {
   name: 'CatalogById',
   data() {
     return {
-      viewGrid: false
+      viewGrid: false,
+      catalogItemSearch: ''
     };
   },
   computed: {
@@ -63,6 +73,21 @@ export default {
     },
     catalog: function() {
       return this.$store.getters.currentCatalog;
+    },
+    filteredItems: function() {
+      return this.catalogItems.filter(item => {
+        if (
+          item.categories.includes(this.catalogItemSearch.toUpperCase()) ||
+          item.nameEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
+          item.nameFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
+          item.productCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
+          item.styleCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
+          item.descriptionEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
+          item.descriptionFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase())
+        ) {
+          return item;
+        }
+      });
     },
     catalogItems: function() {
       return this.$store.getters.currentCatalogItems;
@@ -112,7 +137,7 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 35px auto;
+  grid-template-rows: 40px auto;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
@@ -129,10 +154,15 @@ export default {
     padding: 0.75rem;
     border-radius: 5px;
     font-weight: 700;
+    height: 40px;
 
     img {
-      height: 40px;
-      margin-right: 2rem;
+      height: 35px;
+      margin-right: 1.5rem;
+    }
+
+    .form-control {
+      width: 500px;
     }
   }
 

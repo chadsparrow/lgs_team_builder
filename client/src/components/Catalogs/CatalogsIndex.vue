@@ -121,7 +121,7 @@ export default {
 <style lang="scss" scoped>
 td {
   img {
-    height: 40%;
+    height: 60%;
   }
 }
 </style>
