@@ -25,6 +25,7 @@ router.get('/', auth, async (req, res) => {
   // Only gets all stores if current user is an admin
   if (req.member.isAdmin) {
     stores = await Store.find()
+      .sort({ createdAt: -1 })
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'teamId', select: 'name teamId' })
@@ -47,6 +48,7 @@ router.get('/', auth, async (req, res) => {
 
   // only sends stores that are NOT on HOLD
   stores = await Store.find({ _id: { $in: stores }, mode: { $ne: 'HOLD' } })
+    .sort({ createdAt: -1 })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId' })
@@ -63,6 +65,7 @@ router.get('/', auth, async (req, res) => {
 // @access  Private
 router.get('/:id', [validateObjectId, auth], async (req, res) => {
   const store = await Store.findById(req.params.id)
+    .sort({ createdAt: -1 })
     .populate({ path: 'managerId', select: 'name email phone' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
@@ -80,6 +83,7 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   // shows all stores if user is admin
   if (req.member.isAdmin) {
     stores = await Store.find({ teamId: req.params.id })
+      .sort({ createdAt: -1 })
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'teamId', select: 'name teamId' })
@@ -91,7 +95,9 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
   }
 
   // shows all stores NOT on hold for anyone else
-  stores = await Store.find({ teamId: req.params.id, mode: { $ne: 'HOLD' } });
+  stores = await Store.find({ teamId: req.params.id, mode: { $ne: 'HOLD' } }).sort({
+    createdAt: -1
+  });
   if (stores && stores.length === 0)
     return res.status(404).send([{ message: 'Team has no open stores.' }]);
 

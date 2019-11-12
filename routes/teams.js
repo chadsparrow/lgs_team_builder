@@ -29,6 +29,7 @@ router.get('/', auth, async (req, res) => {
   // only show all teams if user is admin
   if (req.member.isAdmin) {
     teams = await Team.find()
+      .sort({ createdAt: -1 })
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'members', select: 'name email' })
@@ -41,6 +42,7 @@ router.get('/', auth, async (req, res) => {
 
   // only show teams that current user is a member of
   teams = await Team.find({ members: req.member._id })
+    .sort({ createdAt: -1 })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'members', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })

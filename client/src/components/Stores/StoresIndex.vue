@@ -1,20 +1,21 @@
 <template>
   <div class="container-fluid" v-if="dataReady">
-    <div class="row">
-      <div class="col-sm-4">
+    <div class="header">
+      <div class="form-group form-inline mb-2">
+        <label for="storesSeachText" class="mr-2">Search:</label>
         <input
           type="text"
           id="storesSearchText"
           v-if="stores.length > 0"
-          class="form-control form-control-sm mb-3"
+          class="form-control form-control-sm mr-3"
           v-model="storesSearchText"
-          placeholder="Enter any text to filter the stores list..."
+          placeholder="Enter any text to filter stores..."
           autofocus
         />
+        <small class="text-muted">Showing: {{filteredCount}}/{{stores.length}}</small>
       </div>
     </div>
-
-    <span class="text-center" v-if="currentStores.length === 0">No Stores Found</span>
+    <h5 class="text-center" v-if="currentStores.length === 0">No Stores Found</h5>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
@@ -174,6 +175,9 @@ export default {
         }
       });
     },
+    filteredCount: function() {
+      return this.filteredStores.length;
+    },
     stores: function() {
       return this.$store.getters.stores;
     },
@@ -192,6 +196,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.header {
+  .form-control {
+    width: 500px;
+  }
+}
+
 table {
   font-size: 0.8rem;
 

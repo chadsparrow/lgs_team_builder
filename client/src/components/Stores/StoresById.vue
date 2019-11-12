@@ -133,33 +133,39 @@
       </div>
     </div>
     <div class="middle-section">
-      <div class="button-section row mb-4" v-if="member.isAdmin">
-        <div class="col">
-          <router-link class="btn btn-info btn-block" :to="`/dashboard/stores/${store._id}/edit`">
+      <div class="header">
+        <div class="form-group form-inline">
+          <label for="storeItemsSearchText" class="mr-2">Search:</label>
+          <input
+            type="text"
+            id="storeItemsSearchText"
+            v-if="storeItems.length > 0"
+            class="form-control form-control-sm mr-3"
+            v-model="storeItemsSearchText"
+            placeholder="Enter any product info..."
+            autofocus
+          />
+          <small class="text-muted">Showing: {{filteredCount}}/{{storeItems.length}}</small>
+        </div>
+        <div>
+          <router-link class="btn btn-sm" :to="`/dashboard/stores/${store._id}/edit`">
             <i class="fas fa-cog fa-lg mr-2"></i>
             Store Settings
           </router-link>
-        </div>
-        <div class="col">
-          <router-link class="btn btn-info btn-block" :to="`/dashboard/stores/${store._id}/add`">
+          <router-link class="btn btn-sm" :to="`/dashboard/stores/${store._id}/add`">
             <i class="fas fa-plus fa-lg mr-2"></i>
             Add Store Item
           </router-link>
-        </div>
-
-        <div class="col">
-          <button @click="addStoreExtra" class="btn btn-info btn-block">
+          <button @click="addStoreExtra" class="btn btn-sm">
             <i class="fas fa-plus fa-lg mr-2"></i> Add Store Extra
           </button>
-        </div>
-        <div class="col">
-          <button @click="duplicateOrder" class="btn btn-info btn-block">
+          <button @click="duplicateOrder" class="btn btn-sm">
             <i class="fas fa-clone fa-lg mr-2"></i> Duplicate Store
           </button>
         </div>
       </div>
-      <h3 class="text-success mb-2" v-if="store.storeMessage">{{store.storeMessage}}</h3>
-      <div class="storeGrid">StoreItems</div>
+      <h4 class="message text-success" v-if="store.storeMessage">{{store.storeMessage}}</h4>
+      <div class="store-grid">StoreItems</div>
     </div>
   </div>
 </template>
@@ -170,6 +176,8 @@ export default {
   name: 'StoresById',
   data() {
     return {
+      storeItems: [],
+      storeItemsSearchText: '',
       currentDateTime: null,
       polling: null,
       openingDifference: null,
@@ -227,6 +235,9 @@ export default {
         return true;
 
       return false;
+    },
+    filteredCount: function() {
+      return 1;
     }
   },
   methods: {
@@ -285,11 +296,94 @@ export default {
 
 .middle-section {
   grid-area: middle-section;
-  overflow-x: hidden;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px 50px 1fr;
+  grid-gap: 1rem;
+  width: 100%;
+  height: 100;
+  grid-template-areas:
+    'header'
+    'message'
+    'store-grid';
 
-  .storeGrid {
-    display: grid;
+  .header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    padding: 0.75rem;
+    border-radius: 5px;
+    font-weight: 700;
+    height: 40px;
+
+    img {
+      height: 35px;
+      margin-right: 1.5rem;
+    }
+
+    .form-control {
+      width: 500px;
+    }
+  }
+
+  .store-grid {
+    grid-area: store-grid;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0.25rem;
+
+    .thumbnail {
+      border-radius: 5px;
+      background-color: white;
+      color: black;
+      height: 125px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 1rem;
+      margin-bottom: 1rem;
+
+      a {
+        color: black;
+      }
+
+      .info-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        .thumbnail-img {
+          width: 125px;
+          margin-right: 1rem;
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px 0 0 5px;
+            object-fit: cover;
+          }
+        }
+
+        .thumbnail-body {
+          padding: 0.4rem;
+          span {
+            font-size: 1.5rem;
+            font-weight: 700;
+          }
+        }
+      }
+
+      &:hover {
+        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  .message {
+    grid-area: message;
   }
 }
 

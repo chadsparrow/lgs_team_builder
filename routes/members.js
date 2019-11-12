@@ -44,9 +44,9 @@ router.get('/', [auth, admin], async (req, res) => {
 // @route   GET /api/v1/members/admins
 // @access  Private
 router.get('/admins', auth, async (req, res) => {
-  const admins = await Member.find({ isAdmin: true, closedAccount: false }).select(
-    '_id name email'
-  );
+  const admins = await Member.find({ isAdmin: true, closedAccount: false })
+    .sort({ name: 1 })
+    .select('_id name email');
   return res.status(200).send(admins);
 });
 

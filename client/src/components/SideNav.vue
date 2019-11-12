@@ -42,7 +42,7 @@
       <small class="col-sm-12">Current Date/Time:</small>
       <small
         class="col-sm-12 currentTime text-warning"
-      >{{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</small>
+      >{{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z')}}</small>
     </div>
   </div>
 </template>
@@ -94,7 +94,7 @@ export default {
   }
 
   .currentTime {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
   }
 
   .logo {

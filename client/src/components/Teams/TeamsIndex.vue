@@ -1,25 +1,27 @@
 <template>
-  <div v-if="dataReady">
-    <div class="row mb-3" v-if="isAdmin">
-      <div class="col-sm-12">
-        <router-link to="/dashboard/teams/add" class="btn btn-info">
-          <i class="fas fa-plus mr-2"></i> Add Team
-        </router-link>
-      </div>
-      <div class="col-sm-4 mt-3">
+  <div v-if="dataReady" class="page">
+    <div class="header">
+      <div class="form-group form-inline m-0">
+        <label for="memberSearch" class="mr-2">Search:</label>
         <input
           type="text"
-          id="teamSearchText"
+          id="memberSearch"
           v-if="teams.length > 0"
-          class="form-control form-control-sm"
+          class="form-control form-control-sm mr-3"
           v-model="teamSearchText"
-          placeholder="Enter any text to filter the team list..."
+          placeholder="Enter any text to filter teams..."
           autofocus
         />
+        <small class="text-muted">Showing: {{filteredCount}}/{{teams.length}}</small>
+      </div>
+      <div>
+        <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
+          <i class="fas fa-plus mr-2"></i>Add Team
+        </router-link>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row team-list">
       <div class="col-sm-12">
         <span v-if="currentTeams.length === 0 && isAdmin">No Teams Found</span>
         <span
@@ -134,6 +136,9 @@ export default {
         });
       }
     },
+    filteredCount: function() {
+      return this.filteredTeams.length;
+    },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
@@ -161,3 +166,35 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.page {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px auto;
+  grid-gap: 1rem;
+  width: 100%;
+  height: 100%;
+  grid-template-areas:
+    'header'
+    'member-list';
+
+  .header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    padding: 1.5rem 0.5rem;
+
+    .form-control {
+      width: 500px;
+    }
+  }
+
+  .member-list {
+    grid-area: member-list;
+  }
+}
+</style>

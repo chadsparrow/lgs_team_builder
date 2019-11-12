@@ -124,20 +124,17 @@
 
     <!-- STORES SECTION -->
     <div class="stores-section" v-if="team.managerId.name">
-      <span>
-        <h2>
-          Team Stores
-          <router-link
-            :to="`/dashboard/teams/${team._id}/addstore`"
-            class="btn btn-info ml-2"
-            v-if="member && member.isAdmin"
-          >
-            <i class="fas fa-plus mr-2"></i>Add Team Store
+      <div class="header">
+        <div>
+          <h5>Team Stores</h5>
+        </div>
+        <div>
+          <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-sm btn-info">
+            <i class="fas fa-plus mr-2"></i>Add Store
           </router-link>
-        </h2>
-      </span>
-
-      <div class="table-responsive" v-if="stores.length > 0">
+        </div>
+      </div>
+      <div class="stores-table table-responsive" v-if="stores.length > 0">
         <table class="table table-hover table-striped">
           <tbody>
             <tr>
@@ -203,7 +200,7 @@
         ></paginate>
       </div>
 
-      <h6 v-else>No Stores</h6>
+      <h5 v-else>No Stores Found</h5>
     </div>
 
     <!-- CONTACT BAR SECTION -->
@@ -506,10 +503,32 @@ $black-text: #000000;
 
 .stores-section {
   grid-area: stores;
-  font-size: 0.85rem;
-  td {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 40px 1fr;
+  width: 100%;
+  height: 100%;
+  grid-gap: 1rem;
+  grid-template-areas:
+    'header'
+    'stores-list';
+
+  .header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    padding: 0.5rem;
+    height: 40px;
+  }
+  .stores-table {
+    grid-area: stores-list;
+    overflow-y: auto;
+    overflow-x: hidden;
     img {
-      height: 50%;
+      height: 30px;
     }
   }
 }
