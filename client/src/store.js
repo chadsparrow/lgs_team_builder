@@ -15,22 +15,24 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     loggedInMember: {},
-    catalogs: [],
-    currentCatalog: {},
     emails: [],
     notifications: [],
     breadcrumbs: [],
     allMembers: [],
+    catalogs: [],
     teams: [],
     stores: [],
     orders: [],
     currentTeam: {},
     currentTeamStores: [],
     currentMember: {},
+    currentCatalog: {},
     currentCatalogItems: [],
     currentCatalogItem: {},
     currentStore: {},
-    currentOrder: {}
+    currentOrder: {},
+    currentStoreItems: [],
+    currentStoreItem: {}
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -159,6 +161,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_CATALOGS');
           const res = await axios.get('/api/v1/catalogs');
           commit('SET_CATALOGS', res.data);
           commit('TOGGLE_LOADING');
@@ -213,6 +216,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_CATALOG_ITEMS');
           const res = await axios.get(`/api/v1/catalogitems/catalog/${id}`);
           commit('SET_CURRENT_CATALOG_ITEMS', res.data);
           commit('TOGGLE_LOADING');
@@ -537,6 +541,7 @@ export default new Vuex.Store({
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
+          commit('CLEAR_STORES');
           const res = await axios.get('/api/v1/stores');
           commit('SET_STORES', res.data);
           commit('TOGGLE_LOADING');
@@ -553,6 +558,21 @@ export default new Vuex.Store({
           commit('TOGGLE_LOADING');
           const res = await axios.get(`/api/v1/stores/${id}`);
           commit('SET_CURRENT_STORE', res.data);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    getStoreItems({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          commit('CLEAR_STORE_ITEMS');
+          const res = await axios.get(`/api/v1/storeitems/store/${id}`);
+          commit('SET_CURRENT_STORE_ITEMS', res.data);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
@@ -650,6 +670,8 @@ export default new Vuex.Store({
       state.currentCatalogItem = null;
       state.currentStore = null;
       state.currentOrder = null;
+      state.currentStoreItems = null;
+      state.currentStoreItem = null;
     },
     SET_ALL_MEMBERS(state, payload) {
       state.allMembers = payload;
@@ -684,17 +706,32 @@ export default new Vuex.Store({
     SET_CURRENT_STORE(state, payload) {
       state.currentStore = payload;
     },
+    CLEAR_CATALOGS(state) {
+      state.catalogs = [];
+    },
     SET_CATALOGS(state, payload) {
       state.catalogs = payload;
     },
     SET_CURRENT_CATALOG(state, payload) {
       state.currentCatalog = payload;
     },
+    CLEAR_CATALOG_ITEMS(state) {
+      state.currentCatalogItems = [];
+    },
     SET_CURRENT_CATALOG_ITEMS(state, payload) {
       state.currentCatalogItems = payload;
     },
     SET_CURRENT_CATALOG_ITEM(state, payload) {
       state.currentCatalogItem = payload;
+    },
+    CLEAR_STORE_ITEMS(state) {
+      state.currentStoreItems = [];
+    },
+    SET_CURRENT_STORE_ITEMS(state, payload) {
+      state.currentStoreItems = payload;
+    },
+    SET_CURRENT_STORE_ITEM(state, payload) {
+      state.currentStoreItem = payload;
     },
     SET_NOTIFICATIONS(state, payload) {
       state.notifications = payload;
@@ -730,6 +767,8 @@ export default new Vuex.Store({
     currentCatalog: state => state.currentCatalog,
     currentCatalogItems: state => state.currentCatalogItems,
     currentCatalogItem: state => state.currentCatalogItem,
-    currentStore: state => state.currentStore
+    currentStore: state => state.currentStore,
+    currentStoreItems: state => state.currentStoreItems,
+    currentStoreItem: state => state.currentStoreItem
   }
 });

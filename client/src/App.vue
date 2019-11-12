@@ -45,9 +45,6 @@ export default {
             reject(error);
           });
         }
-
-        localStorage.removeItem('token');
-        localStorage.removeItem('member');
         this.$store.dispatch('logout');
         this.$router.push({ name: 'login' });
 

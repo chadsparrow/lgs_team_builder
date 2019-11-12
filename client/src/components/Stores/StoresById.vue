@@ -133,6 +133,7 @@
       </div>
     </div>
     <div class="middle-section">
+      <h4 class="message text-success" v-if="store.storeMessage">{{store.storeMessage}}</h4>
       <div class="header">
         <div class="form-group form-inline">
           <label for="storeItemsSearchText" class="mr-2">Search:</label>
@@ -148,24 +149,45 @@
           <small class="text-muted">Showing: {{filteredCount}}/{{storeItems.length}}</small>
         </div>
         <div>
-          <router-link class="btn btn-sm" :to="`/dashboard/stores/${store._id}/edit`">
-            <i class="fas fa-cog fa-lg mr-2"></i>
+          <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/edit`">
+            <i class="fas fa-cog mr-2"></i>
             Store Settings
           </router-link>
-          <router-link class="btn btn-sm" :to="`/dashboard/stores/${store._id}/add`">
-            <i class="fas fa-plus fa-lg mr-2"></i>
+          <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/add`">
+            <i class="fas fa-plus mr-2"></i>
             Add Store Item
           </router-link>
-          <button @click="addStoreExtra" class="btn btn-sm">
-            <i class="fas fa-plus fa-lg mr-2"></i> Add Store Extra
+          <button @click="addStoreExtra" class="btn btn-sm btn-info mr-2">
+            <i class="fas fa-plus mr-2"></i> Add Store Extra
           </button>
-          <button @click="duplicateOrder" class="btn btn-sm">
-            <i class="fas fa-clone fa-lg mr-2"></i> Duplicate Store
+          <button @click="duplicateOrder" class="btn btn-sm btn-info">
+            <i class="fas fa-clone mr-2"></i> Duplicate Store
           </button>
         </div>
       </div>
-      <h4 class="message text-success" v-if="store.storeMessage">{{store.storeMessage}}</h4>
-      <div class="store-grid">StoreItems</div>
+
+      <div class="galleryList" v-if="filteredItems.length > 0">
+        <router-link
+          class="thumbnail"
+          v-for="item of filteredItems"
+          :key="item._id"
+          :to="`/dashboard/catalogItems/${item._id}`"
+        >
+          <div class="info-container">
+            <div class="thumbnail-img">
+              <img :src="getImgUrl(item)" :alt="item.nameEN" />
+            </div>
+            <div class="thumbnail-body">
+              <span>{{ item.nameEN }}</span>
+              <br />
+              <small class="text-muted">PRODUCT - {{ item.productCode }}</small>
+              <br />
+              <small class="text-muted">STYLE - {{ item.styleCode }}</small>
+            </div>
+          </div>
+        </router-link>
+      </div>
+      <h6 class="galleryList" v-else>No Store Items found</h6>
     </div>
   </div>
 </template>
@@ -176,7 +198,6 @@ export default {
   name: 'StoresById',
   data() {
     return {
-      storeItems: [],
       storeItemsSearchText: '',
       currentDateTime: null,
       polling: null,
@@ -200,6 +221,7 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      await this.$store.dispatch('getStoreItems', this.store._id);
       this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -222,6 +244,34 @@ export default {
     },
     orders: function() {
       return this.$store.getters.orders;
+    },
+    storeItems: function() {
+      return this.$store.getters.currentStoreItems;
+    },
+    filteredItems: function() {
+      return this.storeItems.filter(item => {
+        if (
+          item.categories.includes(this.storeItemsSearchText.toUpperCase()) ||
+          item.nameEN.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.nameFR.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.productCode.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.styleCode.toLowerCase().includes(this.storeItemsSearchText.toLowerCase())
+        ) {
+          if (
+            (this.storeItemsSearchText.toLowerCase() === "men's" ||
+              this.storeItemsSearchText.toLowerCase() === 'men') &&
+            (item.nameEN.toLowerCase().includes('women') === true ||
+              item.nameEN.toLowerCase().includes("women's") === true)
+          ) {
+            return null;
+          } else {
+            return item;
+          }
+        }
+      });
+    },
+    filteredCount: function() {
+      return this.filteredItems.length;
     },
     access: function() {
       if (this.member && this.member.isAdmin) return true;
@@ -269,6 +319,11 @@ export default {
     },
     addStoreExtra: function() {
       // CODE
+    },
+    getImgUrl(item) {
+      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
+      const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
+      return `/images/catalogs/${folderName}/800/${item.images[0]}_800.jpg`;
     }
   }
 };
@@ -298,13 +353,13 @@ export default {
   grid-area: middle-section;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px 50px 1fr;
-  grid-gap: 1rem;
+  grid-template-rows: 40px 40px 1fr;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100;
   grid-template-areas:
-    'header'
     'message'
+    'header'
     'store-grid';
 
   .header {
@@ -313,7 +368,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     background-color: whitesmoke;
-    padding: 0.75rem;
+    padding: 0.4rem;
     border-radius: 5px;
     font-weight: 700;
     height: 40px;
@@ -324,11 +379,11 @@ export default {
     }
 
     .form-control {
-      width: 500px;
+      width: 400px;
     }
   }
 
-  .store-grid {
+  .galleryList {
     grid-area: store-grid;
     overflow-x: hidden;
     overflow-y: auto;
