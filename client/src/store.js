@@ -169,6 +169,21 @@ export default new Vuex.Store({
         }
       });
     },
+    getCatalogsQuery({ commit }, brand) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          commit('CLEAR_CATALOGS');
+          const res = await axios.get(`/api/v1/catalogs?brand=${brand}`);
+          commit('SET_CATALOGS', res.data);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getCatalog({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {

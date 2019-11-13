@@ -23,6 +23,7 @@ import MemberByIdEdit from './components/Members/MemberByIdEdit.vue';
 import StoresIndex from './components/Stores/StoresIndex.vue';
 import StoresById from './components/Stores/StoresById.vue';
 import StoresByIdEdit from './components/Stores/StoresByIdEdit.vue';
+import StoresByIdAddItem from './components/Stores/StoresByIdAddItem.vue';
 import TeamsIndex from './components/Teams/TeamsIndex.vue';
 import TeamsAdd from './components/Teams/TeamsAdd.vue';
 import TeamsAddMember from './components/Teams/TeamsAddMember.vue';
@@ -190,6 +191,15 @@ let router = new Router({
           path: 'stores/:id/edit',
           name: 'storesByIdEdit',
           component: StoresByIdEdit,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
+          path: 'stores/:id/add',
+          name: 'storesByIdAddItem',
+          component: StoresByIdAddItem,
           meta: {
             requiresAuth: true,
             isAdmin: true
