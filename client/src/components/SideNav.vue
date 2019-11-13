@@ -40,9 +40,9 @@
     </router-link>
     <div class="row text-center mt-4" v-if="currentDateTime">
       <small class="col-sm-12">Current Date/Time:</small>
-      <small
-        class="col-sm-12 currentTime text-warning"
-      >{{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z')}}</small>
+      <small class="col-sm-12 currentTime text-warning" v-if="member && member.timezone">{{
+        currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z')
+      }}</small>
     </div>
   </div>
 </template>

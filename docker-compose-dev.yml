@@ -5,18 +5,18 @@ services:
     image: mongo:4.0
     restart: always
     ports:
-      - 27018:27018
+      - ${MONGO_INITDB_ROOT_PORT}:${MONGO_INITDB_ROOT_PORT}
     volumes:
       - mongodbdata:/data/db
     env_file:
       - .env.development
-    command: mongod --port 27018
+    command: mongod --port ${MONGO_INITDB_ROOT_PORT}
   server:
     container_name: team_builder_app_dev
     image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
     restart: always
     ports:
-      - 5001:5001
+      - ${PORT}:${PORT}
     volumes:
       - ./:/usr/src/app/
       - /usr/src/app/node_modules
@@ -25,7 +25,7 @@ services:
     env_file:
       - .env.development
     environment:
-      WAIT_HOSTS: mongo:27018
+      WAIT_HOSTS: mongo:${MONGO_INITDB_ROOT_PORT}
     command: npm run dev
 volumes:
   mongodbdata:

@@ -17,7 +17,6 @@
 <script>
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
-import axios from 'axios';
 
 export default {
   components: {
@@ -33,42 +32,6 @@ export default {
       await this.$store.dispatch('logout');
       this.$router.push({ name: 'login' }).catch(() => {});
     }
-  },
-  created: function() {
-    this.$http.interceptors.response.use(
-      response => {
-        return response;
-      },
-      async error => {
-        if (error.response.status !== 401) {
-          return new Promise((resolve, reject) => {
-            reject(error);
-          });
-        }
-        this.$store.dispatch('logout');
-        this.$router.push({ name: 'login' });
-
-        return new Promise((resolve, reject) => {
-          reject(error);
-        });
-      }
-    );
-
-    this.$http.interceptors.request.use(
-      config => {
-        const token = localStorage.getItem('token');
-        if (token && config.url.includes('/api/v1')) {
-          config.headers['Authorization'] = `Bearer ${token}`;
-        } else {
-          delete axios.defaults.headers.common['Authorization'];
-        }
-
-        return config;
-      },
-      err => {
-        return Promise.reject(err);
-      }
-    );
   }
 };
 </script>
