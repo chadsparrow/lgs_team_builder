@@ -25,8 +25,8 @@ export default {
 <style lang="scss">
 .dashboard {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  grid-template-rows: 60px auto;
+  grid-template-columns: 60px 1fr;
+  grid-template-rows: 60px 1fr;
   width: 100%;
   height: 100vh;
   grid-template-areas:
@@ -43,9 +43,9 @@ export default {
   overflow-y: auto;
 }
 
-@media (max-width: 575px) {
+@media (min-width: 576px) {
   .dashboard {
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 200px 1fr;
   }
 }
 </style>

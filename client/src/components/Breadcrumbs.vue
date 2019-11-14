@@ -3,9 +3,11 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item" v-for="breadcrumb of breadcrumbs" :key="breadcrumb.text">
-          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">{{
+          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">
+            {{
             breadcrumb.text
-          }}</router-link>
+            }}
+          </router-link>
         </li>
       </ol>
     </nav>

@@ -61,9 +61,13 @@ $black-text: #000000;
   grid-area: topnav;
   display: flex;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 0 1rem;
+
+  .breadCrumbs {
+    display: none;
+  }
 
   .navBar {
     display: flex;
@@ -81,20 +85,17 @@ $black-text: #000000;
       button {
         display: flex;
         align-items: center;
-        flex-wrap: no-wrap;
       }
     }
   }
 }
 
-@media (max-width: 575px) {
-  .dashboard {
-    grid-template-columns: 60px 1fr;
-  }
+@media (min-width: 768px) {
   #topNav {
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    justify-content: space-between;
     .breadCrumbs {
-      display: none;
+      display: block;
     }
   }
 }
