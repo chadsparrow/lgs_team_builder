@@ -28,31 +28,69 @@
         </select>
       </div>
       <div class="form-group form-inline catalogItemsSearchbar" v-if="currentCatalog">
-        <label for="catalogItemSearch" class="mr-2">Search:</label>
+        <label for="catalogItemSearch" class="mr-2">Filter:</label>
         <input
           type="text"
           id="catalogItemSearch"
-          v-if="catalogItems.length > 0"
+          v-if="catalogItems && catalogItems.length > 0"
           class="form-control form-control-sm mr-3"
           v-model="catalogItemSearch"
-          placeholder="Enter any product info..."
+          placeholder="Enter any product info to filter..."
           autofocus
         />
         <small class="text-muted">Showing: {{ filteredCount }}/{{ catalogItems.length }}</small>
       </div>
       <div class="catalogItemsList" v-if="currentCatalog">
-        <ul class="list-group">
-          <li class="list-group-item" v-for="item in filteredItems" :key="item._id">
+        <draggable
+          class="list-group"
+          :list="filteredItems"
+          :group="{ name: 'items', pull: 'clone', put: false }"
+          :clone="cloneItem"
+        >
+          <div class="list-group-item" v-for="item in filteredItems" :key="item._id">
             <div class="itemImage"><img :src="getImgUrl(item)" :alt="item.nameEN" /></div>
             <div class="itemInfo">
               {{ item.nameEN }}<br />
               <small class="text-muted">{{ item.productCode }} / {{ item.styleCode }}</small>
             </div>
-          </li>
-        </ul>
+          </div>
+        </draggable>
       </div>
     </div>
-    <div class="store-items"></div>
+    <div class="store-items">
+      <div class="store-items-header text-center">
+        <small>
+          Drag and drop from catalog list on the left to this dotted box to add store items. You can
+          also re-arrange by dragging and dropping.</small
+        >
+      </div>
+      <div class="store-items-list">
+        <div style="width: 100%" class="text-center" v-if="storeItems.length === 0">
+          <small>Drag and drop your first item here</small>
+        </div>
+        <draggable class="dragArea list-group" :list="storeItems" group="items" @change="addedItem">
+          <div
+            class="list-group-item mb-1"
+            v-for="(storeItem, index) in storeItems"
+            :key="storeItem._id"
+          >
+            <div class="itemImage"><img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" /></div>
+            <div class="itemInfo">
+              {{ storeItem.nameEN }}<br />
+              <small class="text-muted"
+                >{{ storeItem.productCode }} / {{ storeItem.styleCode }}</small
+              >
+            </div>
+            <div class="itemButtons">
+              <button class="btn btn-block btn-sm btn-info">Edit Item</button>
+              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">
+                Remove
+              </button>
+            </div>
+          </div>
+        </draggable>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,7 +105,8 @@ export default {
   data() {
     return {
       currentCatalog: {},
-      catalogItemSearch: ''
+      catalogItemSearch: '',
+      storeItems: []
     };
   },
   computed: {
@@ -85,9 +124,6 @@ export default {
     },
     catalogItems: function() {
       return this.$store.getters.currentCatalogItems;
-    },
-    storeItems: function() {
-      return this.$store.getters.currentStoreItems;
     },
     filteredItems: function() {
       return this.catalogItems.filter(item => {
@@ -116,9 +152,9 @@ export default {
     }
   },
   created: async function() {
+    this.$store.dispatch('setDataReadyFalse');
     try {
       await this.$store.dispatch('getStore', this.$route.params.id);
-      await this.$store.dispatch('getCatalogsQuery', this.store.brand);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -126,7 +162,7 @@ export default {
           link: '/dashboard/stores'
         },
         {
-          text: `${this.store.name}`,
+          text: `${this.store.storeName}`,
           link: `/dashboard/stores/${this.store._id}`
         },
         {
@@ -135,7 +171,14 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      await this.$store.dispatch('getStoreItems', this.store._id);
+      await this.$store.dispatch('getCatalogsQuery', this.store.brand);
+      const res = await this.$store.dispatch('getStoreItems', this.store._id);
+      this.storeItems = res.data;
+
+      if (this.storeItems.length > 0) {
+        await this.$store.dispatch('getCatalog', this.storeItems[0].catalogId);
+      }
+
       this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -146,6 +189,16 @@ export default {
     this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
+    addedItem: function(evt) {
+      if (evt.added) window.console.log(evt.added);
+    },
+    cloneItem: function(item) {
+      delete item._id;
+      return item;
+    },
+    removeStoreItem: function(index) {
+      this.storeItems = this.storeItems.filter((item, i) => i !== index);
+    },
     async getCatalog() {
       await this.$store.dispatch('getCatalog', this.currentCatalog._id);
       await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
@@ -195,7 +248,7 @@ export default {
     .catalogItemsSearchbar {
       grid-area: searchbar;
       .form-control {
-        width: 215px;
+        width: 240px;
       }
     }
 
@@ -232,8 +285,56 @@ export default {
 
   .store-items {
     grid-area: store-items;
-    overflow-x: none;
-    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 40px 1fr;
+    grid-gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+    grid-template-areas:
+      'store-items-header'
+      'store-items-list';
+
+    .store-items-header {
+      grid-area: store-items-header;
+    }
+
+    .store-items-list {
+      grid-area: store-items-list;
+      max-height: 850px;
+      border: 2px dotted red;
+      background-color: whitesmoke;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .list-group-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0px;
+      cursor: grab;
+      img {
+        width: 100px;
+      }
+
+      .itemInfo {
+        text-align: center;
+        font-size: 0.85rem;
+        width: 100%;
+        font-weight: 700;
+      }
+
+      .itemImage {
+        width: 100px;
+      }
+
+      .itemButtons {
+        width: 200px;
+        padding: 1rem;
+      }
+    }
   }
 }
 </style>
