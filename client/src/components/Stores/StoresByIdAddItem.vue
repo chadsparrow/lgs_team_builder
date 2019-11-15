@@ -9,7 +9,7 @@
         </div>
         <small for="catalogSelection">Select your catalog</small>
         <select
-          class="form-control form-control-sm"
+          class="form-control"
           id="catalogSelection"
           v-model="currentCatalog"
           @change="getCatalog"
@@ -18,7 +18,7 @@
             v-for="catalog in catalogs"
             :key="catalog._id"
             :value="catalog"
-          >{{ catalog.season }} -{{ catalog.year }}</option>
+          >{{ catalog.brand }} - {{ catalog.season }} -{{ catalog.year }}</option>
         </select>
       </div>
       <div
@@ -59,16 +59,29 @@
     </div>
     <div class="store-items">
       <div class="store-items-header text-center">
-        <small>
-          Drag and drop from catalog list on the left to this dotted box to add store items. You can
-          also re-arrange by dragging and dropping.
-        </small>
+        <div class="row">
+          <div class="col-sm-6">
+            <button
+              class="btn btn-block btn-success mt-2"
+              @click="updateStoreList"
+              :disabled="!listHasChanged"
+            >Commit Changes</button>
+          </div>
+          <div class="col-sm-6">
+            <router-link
+              :to="`/dashboard/stores/${store._id}`"
+              class="btn btn-block btn-danger mt-2"
+            >Cancel</router-link>
+          </div>
+        </div>
       </div>
       <div class="store-items-list">
-        <div style="width: 100%" class="text-center" v-if="storeItems.length === 0">
-          <small>Drag and drop your first item here</small>
-        </div>
-        <draggable class="dragArea list-group" :list="storeItems" group="items" @change="addedItem">
+        <draggable
+          class="dragArea list-group"
+          :list="storeItems"
+          group="items"
+          @change="listChanged"
+        >
           <div
             class="list-group-item mb-1"
             v-for="(storeItem, index) in storeItems"
@@ -87,6 +100,7 @@
               <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">Remove</button>
             </div>
           </div>
+          <div class="drag-spot mb-1">Drop New Item Here</div>
         </draggable>
       </div>
     </div>
@@ -104,7 +118,9 @@ export default {
   data() {
     return {
       currentCatalog: {},
-      catalogItemSearch: ''
+      catalogItemSearch: '',
+      storeItems: [],
+      listHasChanged: false
     };
   },
   computed: {
@@ -122,9 +138,6 @@ export default {
     },
     catalogItems: function() {
       return this.$store.getters.currentCatalogItems;
-    },
-    storeItems: function() {
-      return this.$store.getters.currentStoreItems;
     },
     filteredItems: function() {
       return this.catalogItems.filter(item => {
@@ -190,16 +203,28 @@ export default {
     this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
-    addedItem: async function(evt) {
-      console.log(this.storeItems[evt.added.newIndex]);
-      // create action to add store item to DB
-      await this.$store.dispatch('updateStoreItems', {
-        id: this.store._id,
-        storeItems: this.storeItems
-      });
+    listChanged: function() {
+      this.listHasChanged = true;
     },
-    removeStoreItem: function(index) {
-      // create action to remove store item from DB
+    updateStoreList: async function() {
+      try {
+        if (confirm('Are you sure?')) {
+          const res = await this.$store.dispatch('updateStoreItems', {
+            id: this.store._id,
+            storeItems: this.storeItems
+          });
+          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+          this.$router.push({ name: 'storesById', params: { id: this.store._id } }).catch(() => {});
+        }
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
+    },
+    removeStoreItem: async function(index) {
+      if (confirm('Are you sure?')) {
+        this.storeItems = this.storeItems.filter((item, i) => index !== i);
+        this.listHasChanged = true;
+      }
     },
     cloneItem: function(item) {
       item.itemId = item._id;
@@ -237,7 +262,7 @@ export default {
     grid-area: catalog-list;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 105px 40px 1fr;
+    grid-template-rows: 110px 40px 1fr;
     grid-gap: 0.5rem;
     width: 100%;
     height: 100%;
@@ -298,7 +323,7 @@ export default {
     grid-area: store-items;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 40px 1fr;
+    grid-template-rows: 50px 1fr;
     grid-gap: 0.5rem;
     width: 100%;
     height: 100%;
@@ -312,11 +337,26 @@ export default {
 
     .store-items-list {
       grid-area: store-items-list;
-      max-height: 850px;
+      padding: 0.5rem;
+      max-height: 840px;
       border: 2px dotted red;
       background-color: whitesmoke;
       overflow-x: hidden;
       overflow-y: auto;
+    }
+
+    .drag-spot {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: none;
+      border: 2px dotted grey;
+      color: grey;
+      font-weight: 700;
+      width: 100%;
+      height: 100px;
+      opacity: 0.4;
     }
 
     .list-group-item {
@@ -332,7 +372,7 @@ export default {
 
       .itemInfo {
         text-align: center;
-        font-size: 0.85rem;
+        font-size: 1.25rem;
         width: 100%;
         font-weight: 700;
       }

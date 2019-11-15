@@ -155,7 +155,7 @@
           </router-link>
           <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/add`">
             <i class="fas fa-plus mr-2"></i>
-            Add Store Item
+            Edit Store Items
           </router-link>
           <button @click="addStoreExtra" class="btn btn-sm btn-info mr-2">
             <i class="fas fa-plus mr-2"></i> Add Store Extra

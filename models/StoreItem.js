@@ -105,10 +105,6 @@ const StoreItemSchema = mongoose.Schema(
     },
     priceBreakGoal: {
       type: Number
-    },
-    storeIndex: {
-      type: Number,
-      required: true
     }
   },
   { timestamps: true }
@@ -164,10 +160,7 @@ function validateStoreItemEdit(item) {
     priceBreakGoal: Joi.number()
       .allow(null)
       .min(0)
-      .trim(),
-    storeIndex: Joi.number()
-      .min(0)
-      .required()
+      .trim()
   };
   return Joi.validate(item, schema, joiOptions);
 }

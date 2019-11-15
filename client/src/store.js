@@ -606,13 +606,26 @@ export default new Vuex.Store({
         }
       });
     },
-    updateStoreItems({ commit, dispatch }, { id, storeItems }) {
+    updateStoreItems({ commit }, { id, storeItems }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
           commit('CLEAR_STORE_ITEMS');
           const res = await axios.put(`/api/v1/storeitems/${id}`, { storeItems });
-          dispatch('getStoreItems', id);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    removeStoreItem({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          commit('CLEAR_STORE_ITEMS');
+          const res = await axios.delete(`/api/v1/storeitems/${id}`);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const express = require('express');
-const { StoreItem, validateStoreItemEdit } = require('../models/StoreItem');
+const { StoreItem } = require('../models/StoreItem');
 const { Store } = require('../models/Store');
 
 const router = express.Router();
@@ -12,7 +12,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 // @route   GET /api/v1/storeitems/store/:id
 // @access  Private
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
-  const storeitems = await StoreItem.find({ storeId: req.params.id }).sort({ storeIndex: 1 });
+  const storeitems = await StoreItem.find({ storeId: req.params.id });
   if (storeitems && storeitems.length === 0)
     return res.status(404).send([{ message: 'No store items found' }]);
 
@@ -34,7 +34,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 // @route   GET /api/v1/storeitems/all
 // @access  Private - admin
 router.get('/all', [auth, admin], async (req, res) => {
-  const storeitems = await StoreItem.find().sort({ storeIndex: 1 });
+  const storeitems = await StoreItem.find();
   if (storeitems && storeitems.length === 0)
     return res.status(404).send([{ message: 'No store items found' }]);
 
@@ -50,7 +50,9 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   await StoreItem.deleteMany({ storeId: store._id });
 
-  req.body.storeItems.forEach(async (item, index) => {
+  const { storeItems } = req.body;
+
+  storeItems.forEach(async item => {
     const {
       storeId,
       itemId,
@@ -70,11 +72,11 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
       images,
       mandatoryItem,
       price,
-      priceBreakGoal
+      priceBreakGoal,
+      surveyLikedBy
     } = item;
-    const storeIndex = index;
 
-    const newItem = new StoreItem({
+    await StoreItem.create({
       storeId,
       itemId,
       catalogId,
@@ -94,50 +96,13 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
       mandatoryItem,
       price,
       priceBreakGoal,
-      storeIndex
+      surveyLikedBy
     });
-
-    await newItem.save();
   });
 
+  await StoreItem.find({ storeId: store._id });
+
   return res.status(200).send([{ message: 'Store Items Updated' }]);
-});
-
-// @desc    Update a store item
-// @route   PUT /api/v1/storeitems/:id
-// @access  Private - admin
-router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const { error } = validateStoreItemEdit(req.body);
-  if (error) return res.status(400).send(error.details);
-
-  const storeItem = await StoreItem.findById(req.params.id);
-  if (!storeItem)
-    return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
-
-  const { isActive, sizesOffered, category, name, code, number, mandatory, price } = req.body;
-
-  storeItem.isActive = isActive;
-  storeItem.sizesOffered = sizesOffered;
-  storeItem.category = category; // MAY NEED TO CHANGE TO ARRAY
-  storeItem.name = name;
-  storeItem.code = code;
-  storeItem.number = number;
-  storeItem.mandatory = mandatory;
-  storeItem.price = price;
-
-  await storeItem.save();
-  return res.send(storeItem);
-});
-
-// @desc    Delete a store item
-// @route   DELETE /api/v1/storeitems/:id
-// @access  Private - admin
-router.delete('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const storeItem = await StoreItem.findByIdAndDelete(req.params.id);
-  if (!storeItem)
-    return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
-
-  return res.status(200).send([{ message: 'Store item deleted' }]);
 });
 
 module.exports = router;
