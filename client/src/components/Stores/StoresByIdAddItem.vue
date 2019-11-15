@@ -3,31 +3,28 @@
     <div class="catalog-list">
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">
-          <img
-            src="@/assets/garneau_logo.png"
-            alt="Garneau Logo"
-            v-if="store.brand === 'GARNEAU'"
-          />
+          <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="store.brand === 'GARNEAU'" />
           <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="store.brand === 'SUGOI'" />
-          <img
-            src="@/assets/sombrio_logo.png"
-            alt="Sombrio Logo"
-            v-if="store.brand === 'SOMBRIO'"
-          />
+          <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" v-if="store.brand === 'SOMBRIO'" />
         </div>
         <small for="catalogSelection">Select your catalog</small>
         <select
           class="form-control form-control-sm"
           id="catalogSelection"
           v-model="currentCatalog"
-          @change="getCatalog(catalog._id)"
+          @change="getCatalog"
         >
-          <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog"
-            >{{ catalog.season }} -{{ catalog.year }}</option
-          >
+          <option
+            v-for="catalog in catalogs"
+            :key="catalog._id"
+            :value="catalog"
+          >{{ catalog.season }} -{{ catalog.year }}</option>
         </select>
       </div>
-      <div class="form-group form-inline catalogItemsSearchbar" v-if="currentCatalog">
+      <div
+        class="form-group form-inline catalogItemsSearchbar"
+        v-if="catalogItems && catalogItems.length > 0"
+      >
         <label for="catalogItemSearch" class="mr-2">Filter:</label>
         <input
           type="text"
@@ -40,7 +37,7 @@
         />
         <small class="text-muted">Showing: {{ filteredCount }}/{{ catalogItems.length }}</small>
       </div>
-      <div class="catalogItemsList" v-if="currentCatalog">
+      <div class="catalogItemsList" v-if="currentCatalog._id">
         <draggable
           class="list-group"
           :list="filteredItems"
@@ -48,9 +45,12 @@
           :clone="cloneItem"
         >
           <div class="list-group-item" v-for="item in filteredItems" :key="item._id">
-            <div class="itemImage"><img :src="getImgUrl(item)" :alt="item.nameEN" /></div>
+            <div class="itemImage">
+              <img :src="getImgUrl(item)" :alt="item.nameEN" />
+            </div>
             <div class="itemInfo">
-              {{ item.nameEN }}<br />
+              {{ item.nameEN }}
+              <br />
               <small class="text-muted">{{ item.productCode }} / {{ item.styleCode }}</small>
             </div>
           </div>
@@ -61,8 +61,8 @@
       <div class="store-items-header text-center">
         <small>
           Drag and drop from catalog list on the left to this dotted box to add store items. You can
-          also re-arrange by dragging and dropping.</small
-        >
+          also re-arrange by dragging and dropping.
+        </small>
       </div>
       <div class="store-items-list">
         <div style="width: 100%" class="text-center" v-if="storeItems.length === 0">
@@ -74,18 +74,17 @@
             v-for="(storeItem, index) in storeItems"
             :key="storeItem._id"
           >
-            <div class="itemImage"><img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" /></div>
+            <div class="itemImage">
+              <img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
+            </div>
             <div class="itemInfo">
-              {{ storeItem.nameEN }}<br />
-              <small class="text-muted"
-                >{{ storeItem.productCode }} / {{ storeItem.styleCode }}</small
-              >
+              {{ storeItem.nameEN }}
+              <br />
+              <small class="text-muted">{{ storeItem.productCode }} / {{ storeItem.styleCode }}</small>
             </div>
             <div class="itemButtons">
               <button class="btn btn-block btn-sm btn-info">Edit Item</button>
-              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">
-                Remove
-              </button>
+              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">Remove</button>
             </div>
           </div>
         </draggable>
@@ -105,8 +104,7 @@ export default {
   data() {
     return {
       currentCatalog: {},
-      catalogItemSearch: '',
-      storeItems: []
+      catalogItemSearch: ''
     };
   },
   computed: {
@@ -124,6 +122,9 @@ export default {
     },
     catalogItems: function() {
       return this.$store.getters.currentCatalogItems;
+    },
+    storeItems: function() {
+      return this.$store.getters.currentStoreItems;
     },
     filteredItems: function() {
       return this.catalogItems.filter(item => {
@@ -189,19 +190,29 @@ export default {
     this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
-    addedItem: function(evt) {
-      if (evt.added) window.console.log(evt.added);
-    },
-    cloneItem: function(item) {
-      delete item._id;
-      return item;
+    addedItem: async function(evt) {
+      console.log(this.storeItems[evt.added.newIndex]);
+      // create action to add store item to DB
+      await this.$store.dispatch('updateStoreItems', {
+        id: this.store._id,
+        storeItems: this.storeItems
+      });
     },
     removeStoreItem: function(index) {
-      this.storeItems = this.storeItems.filter((item, i) => i !== index);
+      // create action to remove store item from DB
+    },
+    cloneItem: function(item) {
+      item.itemId = item._id;
+      item.storeId = this.store._id;
+      item.brand = this.store.brand;
+      item.refNumber = '';
+      return item;
     },
     async getCatalog() {
+      this.$store.dispatch('setDataReadyFalse');
       await this.$store.dispatch('getCatalog', this.currentCatalog._id);
       await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
+      this.$store.dispatch('setDataReadyTrue');
     },
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');

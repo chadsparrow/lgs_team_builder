@@ -1,12 +1,7 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
-const {
-  StoreItem,
-  validateStoreItem,
-  validateStoreItemEdit,
-  validateStoreItemImage
-} = require('../models/StoreItem');
+const { StoreItem, validateStoreItemEdit } = require('../models/StoreItem');
 const { Store } = require('../models/Store');
-const { CatalogItem } = require('../models/CatalogItem');
 
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -17,7 +12,7 @@ const validateObjectId = require('../middleware/validateObjectId');
 // @route   GET /api/v1/storeitems/store/:id
 // @access  Private
 router.get('/store/:id', [validateObjectId, auth], async (req, res) => {
-  const storeitems = await StoreItem.find({ storeId: req.params.id });
+  const storeitems = await StoreItem.find({ storeId: req.params.id }).sort({ storeIndex: 1 });
   if (storeitems && storeitems.length === 0)
     return res.status(404).send([{ message: 'No store items found' }]);
 
@@ -39,59 +34,73 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
 // @route   GET /api/v1/storeitems/all
 // @access  Private - admin
 router.get('/all', [auth, admin], async (req, res) => {
-  const storeitems = await StoreItem.find();
+  const storeitems = await StoreItem.find().sort({ storeIndex: 1 });
   if (storeitems && storeitems.length === 0)
     return res.status(404).send([{ message: 'No store items found' }]);
 
   return res.send(storeitems);
 });
 
-// @desc    Add a new item to a store - using catalog item ID as itemId
+// @desc    Updates store items
 // @route   POST /api/v1/storeitems/:id
 // @access  Private - admin
-router.post('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const { error } = validateStoreItem(req.body);
-  if (error) return res.status(400).send(error.details);
-
+router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const store = await Store.findById(req.params.id);
   if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
 
-  const catalogitem = await CatalogItem.findById(req.body.itemId);
-  if (!catalogitem)
-    return res.status(400).send([{ message: 'Catalog item with the given ID not found' }]);
+  await StoreItem.deleteMany({ storeId: store._id });
 
-  const {
-    storeId,
-    itemId,
-    isActive,
-    sizesOffered,
-    category,
-    name,
-    code,
-    number,
-    images,
-    mandatory,
-    price
-  } = req.body;
+  req.body.storeItems.forEach(async (item, index) => {
+    const {
+      storeId,
+      itemId,
+      catalogId,
+      brand,
+      isActive,
+      sizes,
+      gender,
+      categories,
+      nameEN,
+      nameFR,
+      descriptionEN,
+      descriptionFR,
+      productCode,
+      styleCode,
+      refNumber,
+      images,
+      mandatoryItem,
+      price,
+      priceBreakGoal
+    } = item;
+    const storeIndex = index;
 
-  // MAY NEED TO CHANGE CATEGORY to ARRAY - confirm
+    const newItem = new StoreItem({
+      storeId,
+      itemId,
+      catalogId,
+      brand,
+      isActive,
+      sizes,
+      gender,
+      categories,
+      nameEN,
+      nameFR,
+      descriptionEN,
+      descriptionFR,
+      productCode,
+      styleCode,
+      refNumber,
+      images,
+      mandatoryItem,
+      price,
+      priceBreakGoal,
+      storeIndex
+    });
 
-  const storeItem = new StoreItem({
-    storeId,
-    itemId,
-    isActive,
-    sizesOffered,
-    category,
-    name,
-    code,
-    number,
-    images,
-    mandatory,
-    price
+    await newItem.save();
   });
 
-  await storeItem.save();
-  return res.send(storeItem);
+  return res.status(200).send([{ message: 'Store Items Updated' }]);
 });
 
 // @desc    Update a store item
@@ -115,23 +124,6 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   storeItem.number = number;
   storeItem.mandatory = mandatory;
   storeItem.price = price;
-
-  await storeItem.save();
-  return res.send(storeItem);
-});
-
-// @desc    Update image for store item
-// @route   PATCH /api/v1/storeitems/:id?index=index
-// @access  Private - admin
-router.patch('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const { error } = validateStoreItemImage(req.body);
-  if (error) return res.status(400).send(error.details);
-
-  const storeItem = await StoreItem.findById(req.params.id);
-
-  const { index } = req.query;
-  storeItem.images[index].imageUrl = req.body.imageUrl;
-  storeItem.images[index].name = req.body.name;
 
   await storeItem.save();
   return res.send(storeItem);

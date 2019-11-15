@@ -166,7 +166,7 @@
         </div>
       </div>
 
-      <div class="galleryList" v-if="filteredItems.length > 0">
+      <!-- <div class="galleryList" v-if="filteredItems.length > 0">
         <router-link
           class="thumbnail"
           v-for="item of filteredItems"
@@ -186,8 +186,10 @@
             </div>
           </div>
         </router-link>
-      </div>
-      <h6 class="galleryList" v-else>No Store Items found</h6>
+      </div>-->
+
+      <h6 v-if="filteredItems.length > 0">Store Items</h6>
+      <h6 v-else>No Store Items found</h6>
     </div>
   </div>
 </template>

@@ -14,6 +14,10 @@ const StoreItemSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'catalogitems'
     },
+    catalogId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'catalogs'
+    },
     brand: {
       type: String,
       required: true,
@@ -29,47 +33,65 @@ const StoreItemSchema = mongoose.Schema(
       type: Boolean,
       default: true
     },
-    sizesOffered: [
+    sizes: [
       {
         type: String,
         trim: true,
         required: true,
         minlength: 1,
-        uppercase: true,
-        unique: true
+        uppercase: true
       }
     ],
-    category: {
+    gender: {
       type: String,
       uppercase: true,
       trim: true
     },
-    name: {
+    categories: [
+      {
+        type: String,
+        trim: true,
+        uppercase: true
+      }
+    ],
+    nameEN: {
       type: String,
       uppercase: true,
       trim: true
     },
-    code: {
+    nameFR: {
       type: String,
       uppercase: true,
       trim: true
     },
-    number: {
+    descriptionEN: {
+      type: String,
+      trim: true
+    },
+    descriptionFR: {
+      type: String,
+      trim: true
+    },
+    productCode: {
+      type: String,
+      uppercase: true,
+      trim: true
+    },
+    styleCode: {
+      type: String,
+      uppercase: true,
+      trim: true
+    },
+    refNumber: {
       type: String,
       uppercase: true,
       trim: true
     },
     images: [
       {
-        name: {
-          type: String,
-          uppercase: true,
-          trim: true
-        },
-        imageUrl: {
-          type: String,
-          trim: true
-        }
+        type: String,
+        lowercase: true,
+        trim: true
       }
     ],
     mandatoryItem: {
@@ -83,87 +105,72 @@ const StoreItemSchema = mongoose.Schema(
     },
     priceBreakGoal: {
       type: Number
+    },
+    storeIndex: {
+      type: Number,
+      required: true
     }
   },
   { timestamps: true }
 );
 
-function validateStoreItem(item) {
+function validateStoreItemEdit(item) {
   const schema = {
     storeId: Joi.objectId().require(),
     itemId: Joi.objectId().required(),
+    catalogId: Joi.objectId().required(),
+    brand: Joi.string()
+      .required()
+      .trim(),
+    gender: Joi.string()
+      .required()
+      .trim(),
     isActive: Joi.boolean(),
-    sizesOffered: Joi.array()
-      .unique()
-      .items(
-        Joi.string()
-          .min(1)
-          .required()
-          .trim()
-      ),
-    category: Joi.string().trim(),
-    name: Joi.string().trim(),
-    code: Joi.string().trim(),
-    number: Joi.string().trim(),
-    images: Joi.array().items(
-      Joi.object({
-        imageUrl: Joi.string()
-          .uri()
-          .trim(),
-        name: Joi.string().trim()
-      })
+    sizes: Joi.array().items(
+      Joi.string()
+        .min(1)
+        .required()
+        .trim()
     ),
+    categories: Joi.array().items(Joi.string().trim()),
+    nameEN: Joi.string()
+      .required()
+      .trim(),
+    nameFR: Joi.string()
+      .allow('', null)
+      .trim(),
+    descriptionEN: Joi.string()
+      .required()
+      .trim(),
+    descriptionFR: Joi.string()
+      .allow('', null)
+      .trim(),
+    productCode: Joi.string()
+      .required()
+      .trim(),
+    styleCode: Joi.string()
+      .required()
+      .trim(),
+    refNumber: Joi.string()
+      .allow('', null)
+      .trim(),
+    images: Joi.array().items(Joi.string().trim()),
     mandatoryItem: Joi.boolean(),
     price: Joi.number()
+      .allow(null)
       .min(0)
       .required()
       .trim(),
     priceBreakGoal: Joi.number()
+      .allow(null)
       .min(0)
-      .trim()
-  };
-  return Joi.validate(item, schema, joiOptions);
-}
-
-function validateStoreItemEdit(item) {
-  const schema = {
-    isActive: Joi.boolean(),
-    sizesOffered: Joi.array()
-      .unique()
-      .items(
-        Joi.string()
-          .min(1)
-          .required()
-          .trim()
-      ),
-    category: Joi.string().trim(),
-    name: Joi.string().trim(),
-    code: Joi.string().trim(),
-    number: Joi.string().trim(),
-    mandatory: Joi.boolean(),
-    price: Joi.number()
+      .trim(),
+    storeIndex: Joi.number()
       .min(0)
       .required()
-      .trim(),
-    priceBreakGoal: Joi.number()
-      .min(0)
-      .trim()
   };
   return Joi.validate(item, schema, joiOptions);
-}
-
-function validateStoreItemImage(image) {
-  const schema = {
-    imageUrl: Joi.string()
-      .uri()
-      .trim(),
-    name: Joi.string().trim()
-  };
-
-  return Joi.validate(image, schema, joiOptions);
 }
 
 exports.StoreItem = mongoose.model('storeitems', StoreItemSchema);
-exports.validateStoreItem = validateStoreItem;
 exports.validateStoreItemEdit = validateStoreItemEdit;
-exports.validateStoreItemImage = validateStoreItemImage;

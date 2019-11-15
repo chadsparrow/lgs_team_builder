@@ -578,6 +578,19 @@ export default new Vuex.Store({
         }
       });
     },
+    updateStore({ commit }, { id, updatedStore }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/stores/${id}`, updatedStore);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getStoreItems({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -593,11 +606,13 @@ export default new Vuex.Store({
         }
       });
     },
-    updateStore({ commit }, { id, updatedStore }) {
+    updateStoreItems({ commit, dispatch }, { id, storeItems }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('TOGGLE_LOADING');
-          const res = await axios.put(`/api/v1/stores/${id}`, updatedStore);
+          commit('CLEAR_STORE_ITEMS');
+          const res = await axios.put(`/api/v1/storeitems/${id}`, { storeItems });
+          dispatch('getStoreItems', id);
           commit('TOGGLE_LOADING');
           resolve(res);
         } catch (err) {
