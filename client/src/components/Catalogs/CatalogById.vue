@@ -228,7 +228,6 @@ export default {
     grid-area: gallery;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 0.25rem;
 
     .thumbnail {
       border-radius: 5px;
@@ -240,7 +239,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       padding-right: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
 
       a {
         color: black;

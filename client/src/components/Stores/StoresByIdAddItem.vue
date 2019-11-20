@@ -82,11 +82,7 @@
           group="items"
           @change="listChanged"
         >
-          <div
-            class="list-group-item mb-1"
-            v-for="(storeItem, index) in storeItems"
-            :key="storeItem._id"
-          >
+          <div class="list-group-item mb-1" v-for="(storeItem, index) in storeItems" :key="index">
             <div class="itemImage">
               <img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
             </div>
@@ -231,6 +227,13 @@ export default {
       item.storeId = this.store._id;
       item.brand = this.store.brand;
       item.refNumber = '';
+      if (this.store.currency === 'CAD') {
+        item.price = item.priceBreaks.CAD[3].price;
+        item.priceBreakGoal = item.priceBreaks.CAD[3].priceBreak.split('-')[0];
+      } else if (this.store.currency === 'USD') {
+        item.price = item.priceBreaks.USD[3].price;
+        item.priceBreakGoal = item.priceBreaks.USD[3].priceBreak.split('-')[0];
+      }
       return item;
     },
     async getCatalog() {

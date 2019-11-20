@@ -42,7 +42,7 @@ router.get('/all', [auth, admin], async (req, res) => {
 });
 
 // @desc    Updates store items
-// @route   POST /api/v1/storeitems/:id
+// @route   PUT /api/v1/storeitems/:id
 // @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const store = await Store.findById(req.params.id);
@@ -103,6 +103,36 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   await StoreItem.find({ storeId: store._id });
 
   return res.status(200).send([{ message: 'Store Items Updated' }]);
+});
+
+// @desc    Remove member like from store item
+// @route   PUT /api/v1/storeitems/:id/removelike
+// @access  Private
+router.put('/:id/removelike', [validateObjectId, auth], async (req, res) => {
+  const item = await StoreItem.findById(req.params.id);
+  if (!item) return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
+
+  if (item.surveyLikedBy.includes(req.member._id)) {
+    await StoreItem.findByIdAndUpdate(req.params.id, { $pull: { surveyLikedBy: req.member._id } });
+  }
+
+  return res.status(200).send([{ message: 'Updated' }]);
+});
+
+// @desc    Add like for member to store item
+// @route   PUT /api/v1/storeitems/:id/addlike
+// @access  Private
+router.put('/:id/addlike', [validateObjectId, auth], async (req, res) => {
+  const item = await StoreItem.findById(req.params.id);
+  if (!item) return res.status(400).send([{ message: 'Store item with the given ID not found' }]);
+
+  if (item.surveyLikedBy.includes(req.member._id)) {
+    return res.status(400).send([{ message: 'Already liked by this member' }]);
+  }
+
+  await StoreItem.findByIdAndUpdate(req.params.id, { $push: { surveyLikedBy: req.member._id } });
+
+  return res.status(200).send([{ message: 'Updated' }]);
 });
 
 module.exports = router;

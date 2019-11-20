@@ -155,7 +155,7 @@ let router = new Router({
           }
         },
         {
-          path: 'catalogItems/:id',
+          path: 'catalogitems/:id',
           name: 'catalogItemById',
           component: CatalogItemById,
           meta: {

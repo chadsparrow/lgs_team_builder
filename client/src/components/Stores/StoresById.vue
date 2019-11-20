@@ -148,7 +148,7 @@
           />
           <small class="text-muted">Showing: {{filteredCount}}/{{storeItems.length}}</small>
         </div>
-        <div>
+        <div class="header-buttons" v-if="member.isAdmin">
           <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/edit`">
             <i class="fas fa-cog mr-2"></i>
             Store Settings
@@ -166,29 +166,47 @@
         </div>
       </div>
 
-      <!-- <div class="galleryList" v-if="filteredItems.length > 0">
-        <router-link
-          class="thumbnail"
-          v-for="item of filteredItems"
-          :key="item._id"
-          :to="`/dashboard/catalogItems/${item._id}`"
-        >
-          <div class="info-container">
-            <div class="thumbnail-img">
-              <img :src="getImgUrl(item)" :alt="item.nameEN" />
+      <div class="gallery-list" v-if="filteredItems.length > 0">
+        <div class="card" v-for="item in filteredItems" :key="item._id">
+          <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
+          <div class="card-body text-center">
+            <h6 class="card-title mb-2">{{item.nameEN}}</h6>
+            <span class="card-text text-muted">{{item.productCode}}</span>
+            <br />
+            <span class="card-text text-muted">{{item.styleCode}}</span>
+          </div>
+          <div class="card-footer">
+            <div class="likes-section" v-if="access">
+              <i
+                class="fas fa-heart fa-2x text-danger"
+                v-if="item.surveyLikedBy.includes(member._id)"
+                @click="removeLike(item._id)"
+              ></i>
+              <i class="far fa-heart fa-2x text-secondary" v-else @click="addLike(item._id)"></i>
+              <span class="badge badge-danger ml-1" v-if="access">{{item.surveyLikedBy.length}}</span>
             </div>
-            <div class="thumbnail-body">
-              <span>{{ item.nameEN }}</span>
-              <br />
-              <small class="text-muted">PRODUCT - {{ item.productCode }}</small>
-              <br />
-              <small class="text-muted">STYLE - {{ item.styleCode }}</small>
+            <div class="cart-section" v-if="store.mode === 'OPEN'">
+              <div class="inputs">
+                <div class="form-inline">
+                  <label class="mr-1" for="size">Size:</label>
+                  <select class="form-control form-control-sm mr-2" id="size">
+                    <option v-for="size in item.sizes" :key="size">{{size}}</option>
+                  </select>
+                  <label class="mr-1" for="qty">Qty:</label>
+                  <input
+                    class="form-control form-control-sm"
+                    type="number"
+                    name="qty"
+                    min="0"
+                    step="1"
+                  />
+                </div>
+                <button class="btn btn-block btn-info mt-2">Add to Cart</button>
+              </div>
             </div>
           </div>
-        </router-link>
-      </div>-->
-
-      <h6 v-if="filteredItems.length > 0">Store Items</h6>
+        </div>
+      </div>
       <h6 v-else>No Store Items found</h6>
     </div>
   </div>
@@ -287,9 +305,6 @@ export default {
         return true;
 
       return false;
-    },
-    filteredCount: function() {
-      return 1;
     }
   },
   methods: {
@@ -324,8 +339,37 @@ export default {
     },
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
-      return `/images/catalogs/${folderName}/800/${item.images[0]}_800.jpg`;
+      return `/images/stores/${this.store._id}/300/${item.images[0].toUpperCase()}_300.jpg`;
+    },
+    removeLike: async function(id) {
+      try {
+        if (!this.member.isAdmin && this.store.mode === 'SURVEY') {
+          await this.$store.dispatch('removeLike', id);
+          this.storeItems.forEach(item => {
+            if (item._id === id) {
+              item.surveyLikedBy = item.surveyLikedBy.filter(like => like !== this.member._id);
+            }
+          });
+        }
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
+    },
+    addLike: async function(id) {
+      try {
+        if (!this.member.isAdmin && this.store.mode === 'SURVEY') {
+          await this.$store.dispatch('addLike', id);
+          this.storeItems.forEach(item => {
+            if (item._id === id) {
+              if (!item.surveyLikedBy.includes(this.member._id)) {
+                item.surveyLikedBy.push(this.member._id);
+              }
+            }
+          });
+        }
+      } catch (err) {
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
     }
   }
 };
@@ -370,7 +414,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     background-color: whitesmoke;
-    padding: 0.4rem;
     border-radius: 5px;
     font-weight: 700;
     height: 40px;
@@ -385,56 +428,53 @@ export default {
     }
   }
 
-  .galleryList {
+  .gallery-list {
     grid-area: store-grid;
     overflow-x: hidden;
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: min-content;
+    grid-gap: 0.75rem;
     padding: 0.25rem;
 
-    .thumbnail {
-      border-radius: 5px;
-      background-color: white;
-      color: black;
-      height: 125px;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding-right: 1rem;
-      margin-bottom: 1rem;
+    .card {
+      max-height: 500px;
 
-      a {
-        color: black;
+      .card-body {
+        padding: 1rem;
       }
 
-      .info-container {
+      .card-footer {
         display: flex;
         flex-direction: row;
+        flex-wrap: nowrap;
         justify-content: center;
         align-items: center;
+        padding: 1rem;
 
-        .thumbnail-img {
-          width: 125px;
-          margin-right: 1rem;
-          img {
-            width: 100%;
-            height: 100%;
-            border-radius: 5px 0 0 5px;
-            object-fit: cover;
+        .likes-section {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          i {
+            cursor: pointer;
+          }
+          .far {
+            opacity: 0.5;
+          }
+          .badge {
+            font-size: 0.85rem;
           }
         }
 
-        .thumbnail-body {
-          padding: 0.4rem;
-          span {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .cart-section {
+          padding: 0.25rem;
+          input {
+            max-width: 45px;
           }
         }
-      }
-
-      &:hover {
-        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
       }
     }
   }

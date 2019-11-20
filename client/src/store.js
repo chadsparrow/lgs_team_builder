@@ -620,6 +620,32 @@ export default new Vuex.Store({
         }
       });
     },
+    removeLike({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/storeitems/${id}/removelike`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    addLike({ commit }, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.put(`/api/v1/storeitems/${id}/addlike`);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     removeStoreItem({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
