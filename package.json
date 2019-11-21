@@ -22,7 +22,8 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "client/*"
+      "client/*",
+      "startup/seeder.js"
     ]
   },
   "dependencies": {
