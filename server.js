@@ -38,7 +38,7 @@ app.use(xss());
 app.use(hpp());
 // app.use(cors()); // un-comment if calls will come from another domain on front-end
 
-// Rate Limiting - 250 requests per 10 mins
+// rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   max: 250
@@ -72,13 +72,13 @@ if (config.get('env') === 'test') {
 DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@${DB_URI}:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}`;
 require('./startup/db')(DB_HOST);
 
-// handle all uncaught expceptions
+// handle all uncaught exceptions
 process.on('uncaughtException', ex => {
   logger.error(ex.message, ex);
   process.exit(1);
 });
 
-// throw an exception to uncaught exception handler if unhandle promise rejection is found.
+// throw an exception to uncaught exception handler if unhandled promise rejection is encountered.
 process.on('unhandledRejection', ex => {
   throw ex;
 });
@@ -120,7 +120,7 @@ const PORT = config.get('app.port') || 5001;
 
 // configures server to listen to configured server port above
 app.listen(PORT, () =>
-  logger.info(`Team Builder (${process.env.NODE_ENV}) now listening on port ${PORT}...`)
+  logger.info(`Team Builder (${config.get('env')}) now listening on port ${PORT}...`)
 );
 
 module.exports = app;

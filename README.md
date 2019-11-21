@@ -74,6 +74,16 @@ Navigate in your browser to [http://localhost:8080/](http://localhost:8080) and 
 
 ---
 
-Any changes made in the folder `'client/src'` will trigger the frontend to be rebuilt and automatically update live.
+> Any changes made in the folder `'client/src'` will trigger the frontend to be rebuilt and automatically update live.
 
-Any changes made in the `root` folder will trigger Node.js to restart the server (using nodemon).
+> Any changes made in the `root` folder will trigger Node.js to restart the server (using nodemon).
+
+---
+
+When you are finished simply run the command in the `root`folder
+
+```bash
+  docker-compose -f docker-compose-dev.yml down --rmi all
+```
+
+This will shut down all the containers and delete all the images related to the app, so that you force to download the most up-to-date image from the repository.
