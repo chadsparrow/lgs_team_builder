@@ -36,7 +36,7 @@
           </span>
         </div>
 
-        <div class="row p-1" v-if="team.adminId.name && access">
+        <div class="row p-1" v-if="access">
           <small class="col-sm-12 text-info">Team Admin:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}
@@ -105,7 +105,7 @@
     </div>
 
     <!-- MEMBER BUTTONS SECTION -->
-    <div class="member-buttons" v-if="member.isAdmin">
+    <div class="member-buttons" v-if="access">
       <div class="row p-1">
         <div class="col-sm-12">
           <router-link
@@ -123,12 +123,12 @@
     </div>
 
     <!-- STORES SECTION -->
-    <div class="stores-section" v-if="team.managerId.name">
+    <div class="stores-section">
       <div class="header">
         <div>
           <h5>Team Stores</h5>
         </div>
-        <div>
+        <div v-if="access">
           <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-sm btn-info">
             <i class="fas fa-plus mr-2"></i>Add Store
           </router-link>
@@ -205,121 +205,119 @@
 
     <!-- CONTACT BAR SECTION -->
     <div class="contact-bar">
-      <div v-if="team.managerId.name">
-        <div class="section-header bg-secondary">Main Contact</div>
-        <div class="row info-spans">
-          <div class="col-sm-12">
-            <small>Name</small>
-            <br />
-            <span>{{ team.mainContact.name }}</span>
-          </div>
-          <div class="col-sm-12" v-if="team.mainContact.company">
-            <small>Company</small>
-            <br />
-            <span>{{ team.mainContact.company }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>Email</small>
-            <br />
-            <span>{{ team.mainContact.email }}</span>
-          </div>
-          <div class="col-sm-12" v-if="member.isAdmin">
-            <small>Address 1</small>
-            <br />
-            <span>{{ team.mainContact.address1 }}</span>
-          </div>
-          <div class="col-sm-12" v-if="member.isAdmin && team.mainContact.address2">
-            <small>Address 2</small>
-            <br />
-            <span>{{ team.mainContact.address2 }}</span>
-          </div>
-          <div class="col-sm-12" v-if="member.isAdmin">
-            <small>City</small>
-            <br />
-            <span>{{ team.mainContact.city }}</span>
-          </div>
-          <div class="col-sm-12" v-if="member.isAdmin">
-            <small>State/Province</small>
-            <br />
-            <span>{{ team.mainContact.stateProv }}</span>
-          </div>
-          <div class="col-sm-6" v-if="member.isAdmin">
-            <small>Country</small>
-            <br />
-            <span>{{ team.mainContact.country }}</span>
-          </div>
-          <div class="col-sm-6" v-if="member.isAdmin">
-            <small>Zip/Postal</small>
-            <br />
-            <span>{{ team.mainContact.zipPostal }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>Phone</small>
-            <br />
-            <span>{{ team.mainContact.phone }}</span>
-          </div>
+      <div class="section-header bg-secondary">Main Contact</div>
+      <div class="row info-spans">
+        <div class="col-sm-12">
+          <small>Name</small>
+          <br />
+          <span>{{ team.mainContact.name }}</span>
         </div>
-        <div class="section-header bg-secondary mt-2">Bulk Shipping</div>
-        <div class="row info-spans">
-          <div class="col-sm-12">
-            <small>Name</small>
-            <br />
-            <span>{{ team.bulkShipping.name }}</span>
-          </div>
-          <div class="col-sm-12" v-if="team.bulkShipping.company">
-            <small>Company</small>
-            <br />
-            <span>{{ team.bulkShipping.company }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>Email</small>
-            <br />
-            <span>{{ team.bulkShipping.email }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>Address 1</small>
-            <br />
-            <span>{{ team.bulkShipping.address1 }}</span>
-          </div>
-          <div class="col-sm-12" v-if="team.bulkShipping.address2">
-            <small>Address 2</small>
-            <br />
-            <span>{{ team.bulkShipping.address2 }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>City</small>
-            <br />
-            <span>{{ team.bulkShipping.city }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>State/Province</small>
-            <br />
-            <span>{{ team.bulkShipping.stateProv }}</span>
-          </div>
-          <div class="col-sm-6">
-            <small>Country</small>
-            <br />
-            <span>{{ team.bulkShipping.country }}</span>
-          </div>
-          <div class="col-sm-6">
-            <small>Zip/Postal</small>
-            <br />
-            <span>{{ team.bulkShipping.zipPostal }}</span>
-          </div>
-          <div class="col-sm-12">
-            <small>Phone</small>
-            <br />
-            <span>{{ team.bulkShipping.phone }}</span>
-          </div>
+        <div class="col-sm-12" v-if="team.mainContact.company">
+          <small>Company</small>
+          <br />
+          <span>{{ team.mainContact.company }}</span>
         </div>
-        <router-link
-          :to="`/dashboard/teams/${team._id}/edit`"
-          class="btn btn-block btn-info mt-3"
-          v-if="member.isAdmin"
-        >
-          <i class="fas fa-cog mr-3"></i>Edit Team Details
-        </router-link>
+        <div class="col-sm-12">
+          <small>Email</small>
+          <br />
+          <span>{{ team.mainContact.email }}</span>
+        </div>
+        <div class="col-sm-12" v-if="member.isAdmin">
+          <small>Address 1</small>
+          <br />
+          <span>{{ team.mainContact.address1 }}</span>
+        </div>
+        <div class="col-sm-12" v-if="member.isAdmin && team.mainContact.address2">
+          <small>Address 2</small>
+          <br />
+          <span>{{ team.mainContact.address2 }}</span>
+        </div>
+        <div class="col-sm-12" v-if="member.isAdmin">
+          <small>City</small>
+          <br />
+          <span>{{ team.mainContact.city }}</span>
+        </div>
+        <div class="col-sm-12" v-if="member.isAdmin">
+          <small>State/Province</small>
+          <br />
+          <span>{{ team.mainContact.stateProv }}</span>
+        </div>
+        <div class="col-sm-6" v-if="member.isAdmin">
+          <small>Country</small>
+          <br />
+          <span>{{ team.mainContact.country }}</span>
+        </div>
+        <div class="col-sm-6" v-if="member.isAdmin">
+          <small>Zip/Postal</small>
+          <br />
+          <span>{{ team.mainContact.zipPostal }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>Phone</small>
+          <br />
+          <span>{{ team.mainContact.phone }}</span>
+        </div>
       </div>
+      <div class="section-header bg-secondary mt-2">Bulk Shipping</div>
+      <div class="row info-spans">
+        <div class="col-sm-12">
+          <small>Name</small>
+          <br />
+          <span>{{ team.bulkShipping.name }}</span>
+        </div>
+        <div class="col-sm-12" v-if="team.bulkShipping.company">
+          <small>Company</small>
+          <br />
+          <span>{{ team.bulkShipping.company }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>Email</small>
+          <br />
+          <span>{{ team.bulkShipping.email }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>Address 1</small>
+          <br />
+          <span>{{ team.bulkShipping.address1 }}</span>
+        </div>
+        <div class="col-sm-12" v-if="team.bulkShipping.address2">
+          <small>Address 2</small>
+          <br />
+          <span>{{ team.bulkShipping.address2 }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>City</small>
+          <br />
+          <span>{{ team.bulkShipping.city }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>State/Province</small>
+          <br />
+          <span>{{ team.bulkShipping.stateProv }}</span>
+        </div>
+        <div class="col-sm-6">
+          <small>Country</small>
+          <br />
+          <span>{{ team.bulkShipping.country }}</span>
+        </div>
+        <div class="col-sm-6">
+          <small>Zip/Postal</small>
+          <br />
+          <span>{{ team.bulkShipping.zipPostal }}</span>
+        </div>
+        <div class="col-sm-12">
+          <small>Phone</small>
+          <br />
+          <span>{{ team.bulkShipping.phone }}</span>
+        </div>
+      </div>
+      <router-link
+        :to="`/dashboard/teams/${team._id}/edit`"
+        class="btn btn-block btn-info mt-3"
+        v-if="member.isAdmin"
+      >
+        <i class="fas fa-cog mr-3"></i>Edit Team Details
+      </router-link>
     </div>
   </div>
 </template>
@@ -364,7 +362,7 @@ export default {
       return this.stores.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     access: function() {
-      if (this.member && this.member.isAdmin) return true;
+      if (this.member.isAdmin) return true;
 
       return false;
     },

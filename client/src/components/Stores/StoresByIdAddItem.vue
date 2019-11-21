@@ -161,6 +161,7 @@
                             type="text"
                             class="form-control text-center"
                             id="nameEN"
+                            placehold="Enter name..."
                             v-model="currentStoreItem.nameEN"
                           />
                         </div>
@@ -172,7 +173,7 @@
                             type="text"
                             class="form-control text-center"
                             id="nameFR"
-                            placeholder="Enter French Name"
+                            placeholder="Entrez le nom français..."
                             v-model="currentStoreItem.nameFR"
                           />
                         </div>

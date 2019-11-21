@@ -178,7 +178,7 @@
             <span class="card-text text-muted">{{item.styleCode}}</span>
           </div>
           <div class="card-footer">
-            <div class="likes-section mb-3" v-if="access">
+            <div class="likes-section mb-3">
               <i
                 class="fas fa-heart fa-2x text-danger"
                 v-if="item.surveyLikedBy.includes(member._id)"
@@ -233,7 +233,6 @@
 </template>
 
 <script>
-import moment from 'moment-timezone';
 export default {
   name: 'StoresById',
   data() {

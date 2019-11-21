@@ -234,7 +234,7 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
     adminId: store.adminId,
     managerId: store.managerId,
     mode: 'HOLD',
-    opendingDate: null,
+    openingDate: null,
     closingDate: null,
     timezone: store.timezone,
     storeMessage: `Copy of Store ${newStoreName[0]}`,
@@ -252,36 +252,51 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
   if (storeItems.length > 0) {
     storeItems.forEach(async storeItem => {
       const {
-        storeId,
         itemId,
+        catalogId,
         brand,
         isActive,
-        sizesOffered,
-        category,
-        name,
-        code,
-        number,
+        sizes,
+        gender,
+        categories,
+        nameEN,
+        nameFR,
+        descriptionEN,
+        descriptionFR,
+        productCode,
+        styleCode,
+        refNumber,
         images,
         mandatoryItem,
         price,
-        priceBreakGoal
+        priceBreakGoal,
+        upChargeType,
+        upChargeAmount
       } = storeItem;
 
       await StoreItem.create({
-        storeId,
+        storeId: newStore._id,
         itemId,
+        catalogId,
         brand,
         surveyLikedBy: [],
         isActive,
-        sizesOffered,
-        category,
-        name,
-        code,
-        number,
+        sizes,
+        gender,
+        categories,
+        nameEN,
+        nameFR,
+        descriptionEN,
+        descriptionFR,
+        productCode,
+        styleCode,
+        refNumber,
         images,
         mandatoryItem,
         price,
-        priceBreakGoal
+        priceBreakGoal,
+        upChargeType,
+        upChargeAmount
       });
     });
   }

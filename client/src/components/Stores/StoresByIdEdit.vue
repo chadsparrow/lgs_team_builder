@@ -333,6 +333,8 @@ export default {
       if (this.store.mode === 'SURVEY') {
         this.store.openingDate = null;
         this.store.closingDate = null;
+        this.store.storeMessage =
+          'Click like on all the items you think you may purchase to allow for the best possible price!';
       }
 
       if (this.store.mode === 'OPEN') {

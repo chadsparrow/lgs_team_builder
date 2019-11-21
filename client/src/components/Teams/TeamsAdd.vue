@@ -18,7 +18,7 @@
 
             <!-- ADMIN SELECTOR -->
             <div class="form-group col-sm-2">
-              <label for="teamId">Team ID#</label>
+              <label for="teamId">Team ID# (ERP)</label>
               <input
                 id="teamId"
                 type="text"
