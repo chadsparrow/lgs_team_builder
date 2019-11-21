@@ -38,8 +38,6 @@
             store.openingDate
             | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
             }}
-            <br />
-            <small class="text-secondary">({{ openingDifference | duration('humanize', true) }})</small>
           </span>
           <span v-else>No Opening Date</span>
         </div>
@@ -51,8 +49,6 @@
             store.closingDate
             | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
             }}
-            <br />
-            <small class="text-secondary">({{ closingDifference | duration('humanize', true) }})</small>
           </span>
           <span v-else>No Closing Date</span>
         </div>
@@ -134,6 +130,7 @@
     </div>
     <div class="middle-section">
       <h4 class="message text-success" v-if="store.storeMessage">{{store.storeMessage}}</h4>
+
       <div class="header">
         <div class="form-group form-inline">
           <label for="storeItemsSearchText" class="mr-2">Search:</label>
@@ -148,6 +145,7 @@
           />
           <small class="text-muted">Showing: {{filteredCount}}/{{storeItems.length}}</small>
         </div>
+
         <div class="header-buttons" v-if="member.isAdmin">
           <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/edit`">
             <i class="fas fa-cog mr-2"></i>
@@ -167,8 +165,12 @@
       </div>
 
       <div class="gallery-list" v-if="filteredItems.length > 0">
-        <div class="card" v-for="item in filteredItems" :key="item._id">
-          <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
+        <div class="card" v-for="(item, index) in filteredItems" :key="item._id">
+          <div class="card-image">
+            <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
+            <div class="mandatoryItem bg-light text-dark" v-if="item.mandatoryItem">Mandatory</div>
+            <div class="price-box">{{item.price | currency}} {{store.currency}}</div>
+          </div>
           <div class="card-body text-center">
             <h6 class="card-title mb-2">{{item.nameEN}}</h6>
             <span class="card-text text-muted">{{item.productCode}}</span>
@@ -176,7 +178,7 @@
             <span class="card-text text-muted">{{item.styleCode}}</span>
           </div>
           <div class="card-footer">
-            <div class="likes-section" v-if="access">
+            <div class="likes-section mb-3" v-if="access">
               <i
                 class="fas fa-heart fa-2x text-danger"
                 v-if="item.surveyLikedBy.includes(member._id)"
@@ -185,28 +187,46 @@
               <i class="far fa-heart fa-2x text-secondary" v-else @click="addLike(item._id)"></i>
               <span class="badge badge-danger ml-1" v-if="access">{{item.surveyLikedBy.length}}</span>
             </div>
-            <div class="cart-section" v-if="store.mode === 'OPEN'">
-              <div class="inputs">
-                <div class="form-inline">
-                  <label class="mr-1" for="size">Size:</label>
-                  <select class="form-control form-control-sm mr-2" id="size">
-                    <option v-for="size in item.sizes" :key="size">{{size}}</option>
-                  </select>
-                  <label class="mr-1" for="qty">Qty:</label>
-                  <input
-                    class="form-control form-control-sm"
-                    type="number"
-                    name="qty"
-                    min="0"
-                    step="1"
-                  />
-                </div>
-                <button class="btn btn-block btn-info mt-2">Add to Cart</button>
+            <div class="cart-section mb-2" v-if="store.mode === 'OPEN' && !member.isAdmin">
+              <div class="form-inline">
+                <label class="mr-1" for="size">Size:</label>
+                <select class="form-control form-control-sm mr-2" id="size" ref="size">
+                  <option v-for="size in item.sizes" :key="size">{{size}}</option>
+                </select>
+                <label class="mr-1" for="qty">Qty:</label>
+                <input
+                  class="form-control form-control-sm"
+                  type="number"
+                  name="qty"
+                  :min="item.mandatoryItem ? 1 : 0"
+                  step="1"
+                  ref="quantity"
+                />
+              </div>
+              <button
+                class="btn btn-block btn-info mt-2"
+                @click="addToCart(index)"
+                v-if="!item.mandatoryItem"
+              >Add to Cart</button>
+            </div>
+            <div class="progressBar text-center" v-if="access && store.mode ==='OPEN'">
+              <label for="progress" class="mt-2">Price Break Goal</label>
+              <div class="progress">
+                <div
+                  class="progress-bar progress-bar-striped bg-danger text-center"
+                  name="progress"
+                  role="progressbar"
+                  style="width: 25%;"
+                  aria-valuenow="4"
+                  aria-valuemin="0"
+                  :aria-valuemax="item.priceBreakGoal"
+                >4/{{item.priceBreakGoal}}</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <h6 v-else>No Store Items found</h6>
     </div>
   </div>
@@ -310,17 +330,10 @@ export default {
   methods: {
     getNow: async function() {
       this.currentDateTime = new Date();
-      if (this.store.openingDate) {
-        this.openingDifference = moment(this.store.openingDate) - moment(this.currentDateTime);
-        if (this.store.mode === 'SURVEY' && this.openingDifference < 0) {
-          await this.$store.dispatch('getStore', this.store._id);
-        }
-      }
-      if (this.store.closingDate) {
-        this.closingDifference = moment(this.store.closingDate) - moment(this.currentDateTime);
-        if (this.store.mode === 'OPEN' && this.closingDifference < 0) {
-          await this.$store.dispatch('getStore', this.store._id);
-        }
+      const minutes = this.currentDateTime.getMinutes();
+      const seconds = this.currentDateTime.getSeconds();
+      if (minutes == 0 && seconds == 0) {
+        await this.$store.dispatch('getStore', this.store._id);
       }
     },
     duplicateOrder: async function() {
@@ -337,9 +350,9 @@ export default {
     addStoreExtra: function() {
       // CODE
     },
-    getImgUrl(item) {
+    getImgUrl: function(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      return `/images/stores/${this.store._id}/300/${item.images[0].toUpperCase()}_300.jpg`;
+      return `/images/stores/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
     },
     removeLike: async function(id) {
       try {
@@ -370,6 +383,16 @@ export default {
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
+    },
+    addToCart: function(index) {
+      if (!this.$refs.quantity[index].value || this.$refs.quantity[index].value == 0) {
+        this.$toasted.error('quantity must be greater than 0', { icon: 'exclamation-triangle' });
+        this.$refs.quantity[index].value = 0;
+        return this.$refs.quantity[index].focus();
+      }
+
+      // add to cart
+      this.$toasted.success('Item added to Cart', { icon: 'shopping-cart' });
     }
   }
 };
@@ -417,6 +440,7 @@ export default {
     border-radius: 5px;
     font-weight: 700;
     height: 40px;
+    padding: 0.25rem;
 
     img {
       height: 35px;
@@ -430,16 +454,38 @@ export default {
 
   .gallery-list {
     grid-area: store-grid;
-    overflow-x: hidden;
-    overflow-y: auto;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-auto-rows: min-content;
-    grid-gap: 0.75rem;
-    padding: 0.25rem;
+    grid-gap: 1rem;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .card {
-      max-height: 500px;
+      .card-image {
+        position: relative;
+
+        .mandatoryItem {
+          position: absolute;
+          z-index: 2;
+          padding: 0.5rem;
+          color: white;
+          top: 0.5rem;
+          left: 0.5rem;
+          border-radius: 5px;
+        }
+
+        .price-box {
+          position: absolute;
+          z-index: 2;
+          bottom: 0.5rem;
+          right: 1rem;
+          font-size: 1.75rem;
+          font-weight: 200;
+          color: white;
+          text-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.65);
+        }
+      }
 
       .card-body {
         padding: 1rem;
@@ -447,16 +493,18 @@ export default {
 
       .card-footer {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: nowrap;
         justify-content: center;
         align-items: center;
         padding: 1rem;
+        width: 100%;
 
         .likes-section {
           display: flex;
           justify-content: center;
           align-items: center;
+          width: 100%;
 
           i {
             cursor: pointer;
@@ -470,10 +518,18 @@ export default {
         }
 
         .cart-section {
-          padding: 0.25rem;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
           input {
             max-width: 45px;
           }
+        }
+
+        .progressBar {
+          width: 100%;
         }
       }
     }

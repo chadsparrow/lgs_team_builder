@@ -98,20 +98,17 @@ cron.schedule(
   async () => {
     const stores = await Store.find();
     stores.forEach(async store => {
-      if (store.mode !== 'HOLD') {
-        if (
-          store.openingDate &&
-          store.openingDate <= Date.now() &&
-          (store.closingDate && store.closingDate >= Date.now())
-        ) {
-          if (store.mode === 'SURVEY' && store.mode !== 'OPEN') {
-            await Store.findByIdAndUpdate(store._id, { mode: 'OPEN' });
-          }
-        } else if (store.closingDate && store.closingDate <= Date.now()) {
-          if (store.mode === 'OPEN' && store.mode !== 'CLOSED') {
-            await Store.findByIdAndUpdate(store._id, { mode: 'CLOSED' });
-          }
-        }
+      if (
+        store.mode === 'SURVEY' &&
+        store.openingDate &&
+        store.openingDate <= Date.now() &&
+        (store.closingDate && store.closingDate >= Date.now())
+      ) {
+        await Store.findByIdAndUpdate(store._id, { mode: 'OPEN' });
+      }
+
+      if (store.mode === 'OPEN' && store.closingDate && store.closingDate <= Date.now()) {
+        await Store.findByIdAndUpdate(store._id, { mode: 'CLOSED' });
       }
     });
   },

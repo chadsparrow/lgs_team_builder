@@ -2,6 +2,7 @@
 const express = require('express');
 const { StoreItem } = require('../models/StoreItem');
 const { Store } = require('../models/Store');
+const { CatalogItem } = require('../models/CatalogItem');
 
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -52,6 +53,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   const { storeItems } = req.body;
 
+  // eslint-disable-next-line consistent-return
   storeItems.forEach(async item => {
     const {
       storeId,
@@ -73,8 +75,54 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
       mandatoryItem,
       price,
       priceBreakGoal,
-      surveyLikedBy
+      surveyLikedBy,
+      upChargeType,
+      upChargeAmount
     } = item;
+
+    const catalogItem = await CatalogItem.findById(itemId);
+    let priceBreaks;
+    if (store.currency === 'CAD') {
+      priceBreaks = catalogItem.priceBreaks.CAD;
+    } else if (store.currency === 'USD') {
+      priceBreaks = catalogItem.priceBreaks.USD;
+    }
+
+    let updatedPrice = 0;
+
+    switch (priceBreakGoal) {
+      case 1:
+        updatedPrice = priceBreaks[0].price;
+        break;
+      case 2:
+        updatedPrice = priceBreaks[1].price;
+        break;
+      case 6:
+        updatedPrice = priceBreaks[2].price;
+        break;
+      case 12:
+        updatedPrice = priceBreaks[3].price;
+        break;
+      case 50:
+        updatedPrice = priceBreaks[4].price;
+        break;
+      case 100:
+        updatedPrice = priceBreaks[5].price;
+        break;
+      case 250:
+        updatedPrice = price;
+        break;
+      default:
+        updatedPrice = price;
+    }
+
+    if (upChargeAmount > 0) {
+      if (upChargeType === '$') {
+        updatedPrice += parseFloat(upChargeAmount);
+      } else if (upChargeType === '%') {
+        updatedPrice += (parseFloat(upChargeAmount) / 100) * updatedPrice;
+      }
+    }
 
     await StoreItem.create({
       storeId,
@@ -94,13 +142,13 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
       refNumber,
       images,
       mandatoryItem,
-      price,
+      price: parseFloat(updatedPrice),
       priceBreakGoal,
-      surveyLikedBy
+      surveyLikedBy,
+      upChargeType,
+      upChargeAmount: parseFloat(upChargeAmount)
     });
   });
-
-  await StoreItem.find({ storeId: store._id });
 
   return res.status(200).send([{ message: 'Store Items Updated' }]);
 });

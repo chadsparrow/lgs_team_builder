@@ -106,7 +106,7 @@
                 id="mode"
                 v-model="store.mode"
                 ref="mode"
-                @change="setOpen"
+                @change="setMode"
               >
                 <option value="SURVEY">SURVEY</option>
                 <option value="OPEN">OPEN</option>
@@ -329,7 +329,12 @@ export default {
     this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
-    setOpen: function() {
+    setMode: function() {
+      if (this.store.mode === 'SURVEY') {
+        this.store.openingDate = null;
+        this.store.closingDate = null;
+      }
+
       if (this.store.mode === 'OPEN') {
         this.store.openingDate = new Date().toISOString();
         this.store.closingDate = null;

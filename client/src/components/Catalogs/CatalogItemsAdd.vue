@@ -368,7 +368,7 @@ export default {
         this.XXL = false;
         this.XXXL = false;
         this.XXXXL = false;
-        activeSizes.push('ONE SIZE FITS ALL');
+        activeSizes.push('ONE');
       } else {
         if (this.XXS) activeSizes.push('2XS');
         if (this.XS) activeSizes.push('XS');

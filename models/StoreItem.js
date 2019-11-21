@@ -105,6 +105,14 @@ const StoreItemSchema = mongoose.Schema(
     },
     priceBreakGoal: {
       type: Number
+    },
+    upChargeType: {
+      type: String,
+      default: '$'
+    },
+    upChargeAmount: {
+      type: Float,
+      default: 0.0
     }
   },
   { timestamps: true }
@@ -160,7 +168,13 @@ function validateStoreItemEdit(item) {
     priceBreakGoal: Joi.number()
       .allow(null)
       .min(0)
+      .trim(),
+    upChargeType: Joi.string()
       .trim()
+      .allow(null, ''),
+    upChargeAmount: Joi.number()
+      .allow(null)
+      .min(0)
   };
   return Joi.validate(item, schema, joiOptions);
 }

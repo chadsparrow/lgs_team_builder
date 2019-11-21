@@ -14,7 +14,7 @@
         />
         <small class="text-muted">Showing: {{filteredCount}}/{{teams.length}}</small>
       </div>
-      <div>
+      <div v-if="isAdmin">
         <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
           <i class="fas fa-plus mr-2"></i>Add Team
         </router-link>
