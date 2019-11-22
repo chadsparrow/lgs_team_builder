@@ -43,21 +43,21 @@ router.get('/', auth, async (req, res) => {
     return res.status(400).send([{ message: 'You are currently not a member of any team' }]);
 
   teams.forEach(team => {
-    stores = [...stores, ...team.stores];
+    stores.push(team.stores);
   });
 
   // only sends stores that are NOT on HOLD
-  stores = await Store.find({ _id: { $in: stores }, mode: { $ne: 'HOLD' } })
+  const collectedStores = await Store.find({ _id: { $in: stores }, mode: { $ne: 'HOLD' } })
     .sort({ createdAt: -1 })
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId' })
     .select('-updatedAt -__v ');
 
-  if (stores && stores.length === 0)
+  if (collectedStores && collectedStores.length === 0)
     return res.status(404).send([{ message: 'You have no open stores.' }]);
 
-  return res.send(stores);
+  return res.send(collectedStores);
 });
 
 // @desc    Get a specific store

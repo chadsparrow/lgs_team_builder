@@ -29,7 +29,9 @@ export default new Vuex.Store({
     currentStore: {},
     currentOrder: {},
     currentStoreItems: [],
-    currentStoreItem: {}
+    currentStoreItem: {},
+    showCart: false,
+    currentCart: {}
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -660,6 +662,35 @@ export default new Vuex.Store({
         }
       });
     },
+    getMemberStoreCart({ commit }, storeId) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          commit('CLEAR_CURRENT_CART');
+          const res = await axios.get(`/api/v1/carts/${storeId}`);
+          commit('SET_CURRENT_CART', res.data);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
+    addItemToCart({ commit }, { storeId, item }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('TOGGLE_LOADING');
+          const res = await axios.post(`/api/v1/carts/${storeId}`, item);
+          commit('SET_CURRENT_CART', res.data[0].updatedCart);
+          commit('TOGGLE_LOADING');
+          resolve(res);
+        } catch (err) {
+          commit('TOGGLE_LOADING');
+          reject(err);
+        }
+      });
+    },
     getOrders({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -738,6 +769,7 @@ export default new Vuex.Store({
       state.currentOrder = null;
       state.currentStoreItems = null;
       state.currentStoreItem = null;
+      state.currentCart = null;
     },
     SET_ALL_MEMBERS(state, payload) {
       state.allMembers = payload;
@@ -810,6 +842,18 @@ export default new Vuex.Store({
     },
     CLEAR_ORDERS(state) {
       state.orders = [];
+    },
+    SHOW_CART(state) {
+      state.showCart = true;
+    },
+    HIDE_CART(state) {
+      state.showCart = false;
+    },
+    CLEAR_CURRENT_CART(state) {
+      state.currentCart = null;
+    },
+    SET_CURRENT_CART(state, payload) {
+      state.currentCart = payload;
     }
   },
   getters: {
@@ -835,6 +879,8 @@ export default new Vuex.Store({
     currentCatalogItem: state => state.currentCatalogItem,
     currentStore: state => state.currentStore,
     currentStoreItems: state => state.currentStoreItems,
-    currentStoreItem: state => state.currentStoreItem
+    currentStoreItem: state => state.currentStoreItem,
+    showCart: state => state.showCart,
+    currentCart: state => state.currentCart
   }
 });

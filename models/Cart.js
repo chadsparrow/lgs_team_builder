@@ -10,10 +10,6 @@ const CartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'members'
     },
-    teamId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'teams'
-    },
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'stores'
@@ -27,14 +23,15 @@ const CartSchema = new mongoose.Schema(
       default: 0.0,
       min: 0
     },
-    taxPercentage: {
+    taxes: {
       type: Float,
       default: 0.0,
       min: 0.0
     },
     subTotal: {
       type: Float,
-      default: 0.0
+      default: 0.0,
+      min: 0.0
     },
     totalAmount: {
       type: Float,
@@ -48,23 +45,34 @@ const CartSchema = new mongoose.Schema(
     },
     items: [
       {
-        itemId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'storeitems'
+        nameEN: {
+          type: String,
+          trim: true,
+          required: true
+        },
+        nameFR: {
+          type: String,
+          trim: true
+        },
+        images: [{ type: String, trim: true }],
+        categories: [
+          {
+            type: String,
+            trim: true
+          }
+        ],
+        price: {
+          type: Float
         },
         quantity: {
           type: Number,
           default: 0,
           min: 1
         },
-        price: {
+        finalItemPrice: {
           type: Float,
           min: 0.0,
           default: 0.0
-        },
-        image: {
-          type: String,
-          trim: true
         },
         size: {
           type: String,
@@ -84,25 +92,21 @@ const CartSchema = new mongoose.Schema(
 function validateCart(cart) {
   const schema = {
     memberId: Joi.objectId().required(),
-    teamId: Joi.objectId().required(),
     storeId: Joi.objectId().required(),
-    couponId: Joi.object().required(),
-    orderDiscount: Joi.number().min(0),
-    taxPercentage: Joi.number().min(0),
-    currency: Joi.string().required(),
+    couponId: Joi.object().allow(null),
     items: Joi.array()
       .required()
       .items({
-        itemId: Joi.objectId().required(),
+        storeItemId: Joi.objectId().required(),
         quantity: Joi.number().min(1),
-        price: Joi.number().min(0),
-        image: Joi.string()
-          .uri()
-          .trim(),
         size: Joi.string()
           .min(1)
           .trim(),
-        discount: Joi.number().min(0)
+        images: Joi.array().items(
+          Joi.string()
+            .trim()
+            .allow('', null)
+        )
       })
   };
   return Joi.validate(cart, schema, joiOptions);

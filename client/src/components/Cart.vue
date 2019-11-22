@@ -2,8 +2,9 @@
   <div class="navItem">
     <button class="btn btn-info">
       <i class="fas fa-shopping-cart fa-lg"></i>
-      <!-- <span class="badge badge-danger ml-2" v-if="notifications.length >0">{{notifications.length}}</span>
-      <span class="badge badge-info ml-2" v-else>{{notifications.length}}</span>-->
+      <span class="badge badge-danger ml-2" v-if="currentCart && currentCart.items.length > 0">
+        {{ currentCart.items.length }}
+      </span>
     </button>
   </div>
 </template>
@@ -19,6 +20,9 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
+    },
+    currentCart: function() {
+      return this.$store.getters.currentCart;
     }
   },
   created: async function() {},

@@ -3,7 +3,7 @@
     <Breadcrumbs class="breadCrumbs" />
     <div class="navBar">
       <Notifications />
-      <Cart class="ml-2" v-if="member && !member.isAdmin" />
+      <Cart class="ml-2" v-if="member && !member.isAdmin && showCart" />
       <div class="navItem ml-2">
         <router-link to="/dashboard/profile" tag="a" v-if="member">
           <Gravatar :email="member.email" default-img="mp" :size="37.29" />
@@ -36,6 +36,9 @@ export default {
   computed: {
     member: function() {
       return this.$store.getters.loggedInMember;
+    },
+    showCart: function() {
+      return this.$store.getters.showCart;
     }
   },
   methods: {

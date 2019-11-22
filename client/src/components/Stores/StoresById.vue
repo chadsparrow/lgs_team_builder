@@ -170,7 +170,7 @@
             <span class="card-text text-muted">{{ item.styleCode }}</span>
           </div>
           <div class="card-footer">
-            <div class="likes-section mb-3">
+            <div class="likes-section mb-3" v-if="(store.mode === 'SURVEY' && !access) || access">
               <i
                 class="fas fa-heart fa-2x text-danger"
                 v-if="item.surveyLikedBy.includes(member._id)"
@@ -237,9 +237,7 @@ export default {
     return {
       storeItemsSearchText: '',
       currentDateTime: null,
-      polling: null,
-      openingDifference: null,
-      closingDifference: null
+      polling: null
     };
   },
   created: async function() {
@@ -259,6 +257,10 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getStoreItems', this.store._id);
+      if (this.store.mode === 'OPEN' || this.store.mode === 'CLOSED') {
+        await this.$store.dispatch('getMemberStoreCart', this.store._id);
+        this.$store.commit('SHOW_CART');
+      }
       this.$store.dispatch('setDataReadyTrue');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -267,6 +269,8 @@ export default {
   },
   beforeDestroy: function() {
     clearInterval(this.polling);
+    this.$store.commit('HIDE_CART');
+    this.$store.commit('CLEAR_CURRENT_CART');
     this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
@@ -322,6 +326,9 @@ export default {
         return true;
 
       return false;
+    },
+    currentCart: function() {
+      return this.$store.getters.currentCart;
     }
   },
   methods: {
@@ -331,6 +338,9 @@ export default {
       const seconds = this.currentDateTime.getSeconds();
       if (minutes == 0 && seconds == 0) {
         await this.$store.dispatch('getStore', this.store._id);
+        if (this.store.mode === 'OPEN' || this.store.mode === 'CLOSED') {
+          this.$store.commit('SHOW_CART');
+        }
       }
     },
     duplicateOrder: async function() {
@@ -381,15 +391,30 @@ export default {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
-    addToCart: function(index) {
+    addToCart: async function(index) {
       if (!this.$refs.quantity[index].value || this.$refs.quantity[index].value == 0) {
         this.$toasted.error('quantity must be greater than 0', { icon: 'exclamation-triangle' });
         this.$refs.quantity[index].value = 0;
         return this.$refs.quantity[index].focus();
       }
 
-      // add to cart
-      this.$toasted.success('Item added to Cart', { icon: 'shopping-cart' });
+      const item = {
+        storeItemId: this.storeItems[index]._id,
+        quantity: parseInt(this.$refs.quantity[index].value),
+        size: this.$refs.size[index].value
+      };
+
+      try {
+        const res = await this.$store.dispatch('addItemToCart', {
+          storeId: this.store._id,
+          item
+        });
+        this.$toasted.success(res.data[0].message, { icon: 'shopping-cart' });
+      } catch (err) {
+        return this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle'
+        });
+      }
     }
   }
 };
@@ -485,7 +510,7 @@ export default {
       }
 
       .card-body {
-        padding: 1rem;
+        padding: 0.5rem;
       }
 
       .card-footer {
@@ -527,6 +552,10 @@ export default {
 
         .progressBar {
           width: 100%;
+        }
+
+        &:empty {
+          display: none;
         }
       }
     }
