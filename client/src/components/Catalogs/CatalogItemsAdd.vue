@@ -224,7 +224,8 @@
             tag="a"
             class="btn btn-danger btn-block"
             :to="`/dashboard/catalogs/${catalog._id}`"
-          >Cancel</router-link>
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>

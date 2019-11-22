@@ -3,9 +3,7 @@
     <button class="btn btn-info" @click="showNotifications = !showNotifications">
       <i class="fas fa-envelope fa-lg"></i>
       <span class="badge badge-danger ml-2" v-if="notifications.length > 0">
-        {{
-        notifications.length
-        }}
+        {{ notifications.length }}
       </span>
       <span class="badge badge-info ml-2" v-else>{{ notifications.length }}</span>
     </button>
@@ -13,7 +11,9 @@
       <li
         class="list-group-item list-group-item-action list-group-item-empty"
         v-if="notifications.length === 0"
-      >You have no notifications</li>
+      >
+        You have no notifications
+      </li>
       <li
         class="list-group-item list-group-item-action"
         v-for="notification of notifications"
@@ -23,7 +23,7 @@
           <div>
             <small class="text-muted">
               {{
-              notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+                notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </small>
           </div>

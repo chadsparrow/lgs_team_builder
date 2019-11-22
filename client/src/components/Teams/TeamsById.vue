@@ -30,9 +30,7 @@
         <div class="row p-1" v-if="team.createdAt && team.timezone">
           <small class="col-sm-12 text-info">Team Since:</small>
           <span class="col-sm-12">
-            {{
-            team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
-            }}
+            {{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}
           </span>
         </div>
 
@@ -62,7 +60,9 @@
           v-clipboard:copy="joinLink"
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
-        >Copy Join Link</button>
+        >
+          Copy Join Link
+        </button>
       </div>
       <div v-else>
         <div class="placeholderImg"></div>
@@ -111,13 +111,15 @@
           <router-link
             :to="`/dashboard/teams/${team._id}/addmember`"
             class="btn btn-sm btn-block btn-info"
-          >Add Members</router-link>
+            >Add Members</router-link
+          >
         </div>
         <div class="col-sm-12 mt-2">
           <router-link
             :to="`/dashboard/teams/${team._id}/removemember`"
             class="btn btn-sm btn-block btn-danger"
-          >Remove Members</router-link>
+            >Remove Members</router-link
+          >
         </div>
       </div>
     </div>
@@ -161,13 +163,13 @@
               </td>
               <td v-if="store.openingDate">
                 {{
-                store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
                 }}
               </td>
               <td v-else>No Opening Date</td>
               <td v-if="store.closingDate">
                 {{
-                store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
                 }}
               </td>
               <td v-else>No Closing Date</td>
@@ -181,7 +183,9 @@
                     ? 'bg-warning text-white'
                     : null
                 "
-              >{{ store.mode }}</td>
+              >
+                {{ store.mode }}
+              </td>
             </tr>
           </tbody>
         </table>

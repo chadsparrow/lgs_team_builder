@@ -18,7 +18,9 @@
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
-      >Deactivate Member</button>
+      >
+        Deactivate Member
+      </button>
     </div>
     <div class="middle-section">
       <form class="mb-5">
@@ -437,13 +439,16 @@
         </div>
         <div class="row my-4">
           <div class="col-sm-8">
-            <button class="btn btn-block btn-info" @click.prevent="updateMember">Update Member</button>
+            <button class="btn btn-block btn-info" @click.prevent="updateMember">
+              Update Member
+            </button>
           </div>
           <div class="col-sm-4">
             <router-link
               :to="`/dashboard/members/${this.member._id}`"
               class="btn btn-block btn-danger"
-            >Cancel</router-link>
+              >Cancel</router-link
+            >
           </div>
         </div>
       </form>
@@ -475,10 +480,10 @@ export default {
       return this.$store.getters.getMember;
     },
     member: function() {
-      if (this.memberDetails) return this.memberDetails.member;
+      return this.memberDetails.member;
     },
     teams: function() {
-      if (this.memberDetails) return this.memberDetails.teams;
+      return this.memberDetails.teams;
     },
     dataReady: function() {
       return this.$store.getters.dataReady;

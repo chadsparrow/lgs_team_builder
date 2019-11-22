@@ -12,7 +12,7 @@
           placeholder="Enter name or email to find a member..."
           autofocus
         />
-        <small class="text-muted">Showing: {{filteredCount}}/{{members.length}}</small>
+        <small class="text-muted">Showing: {{ filteredCount }}/{{ members.length }}</small>
       </div>
       <div>
         <router-link to="/dashboard/members/add" class="btn btn-sm btn-info">
@@ -121,8 +121,7 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentMembers: function() {
-      if (this.filteredMembers)
-        return this.filteredMembers.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      return this.filteredMembers.slice(this.indexOfFirstItem, this.indexOfLastItem);
     },
     pageNumbers: function() {
       const pageArray = [];

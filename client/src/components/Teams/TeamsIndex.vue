@@ -12,7 +12,7 @@
           placeholder="Enter any text to filter teams..."
           autofocus
         />
-        <small class="text-muted">Showing: {{filteredCount}}/{{teams.length}}</small>
+        <small class="text-muted">Showing: {{ filteredCount }}/{{ teams.length }}</small>
       </div>
       <div v-if="isAdmin">
         <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
@@ -24,9 +24,9 @@
     <div class="row team-list">
       <div class="col-sm-12">
         <span v-if="currentTeams.length === 0 && isAdmin">No Teams Found</span>
-        <span
-          v-else-if="currentTeams.length === 0"
-        >No Teams Found - Contact your team manager to add you</span>
+        <span v-else-if="currentTeams.length === 0"
+          >No Teams Found - Contact your team manager to add you</span
+        >
         <div class="table-responsive" v-else>
           <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
             <tbody>
@@ -112,9 +112,7 @@ export default {
       return this.$store.getters.dataReady;
     },
     isAdmin: function() {
-      if (this.dataReady) {
-        return this.member.isAdmin;
-      }
+      return this.member.isAdmin;
     },
     member: function() {
       return this.$store.getters.loggedInMember;
@@ -123,18 +121,16 @@ export default {
       return this.$store.getters.teams;
     },
     filteredTeams: function() {
-      if (this.dataReady) {
-        return this.teams.filter(team => {
-          if (
-            team.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-            team.teamId.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-            team.adminId.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
-            team.managerId.name.toLowerCase().includes(this.teamSearchText.toLowerCase())
-          ) {
-            return team;
-          }
-        });
-      }
+      return this.teams.filter(team => {
+        if (
+          team.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.teamId.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.adminId.name.toLowerCase().includes(this.teamSearchText.toLowerCase()) ||
+          team.managerId.name.toLowerCase().includes(this.teamSearchText.toLowerCase())
+        ) {
+          return team;
+        }
+      });
     },
     filteredCount: function() {
       return this.filteredTeams.length;

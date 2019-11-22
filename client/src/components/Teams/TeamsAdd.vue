@@ -35,11 +35,9 @@
                 v-model="adminId"
                 ref="adminId"
               >
-                <option
-                  v-for="admin of adminsList"
-                  :key="admin._id"
-                  :value="admin._id"
-                >{{ admin.name }}</option>
+                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
+                  admin.name
+                }}</option>
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -68,10 +66,9 @@
                 ref="useManagerDetails"
                 :disabled="!managerId || chosenMember === null"
               />
-              <label
-                class="form-check-label text-white"
-                for="useManagerDetails"
-              >Use Manager's Contact Info</label>
+              <label class="form-check-label text-white" for="useManagerDetails"
+                >Use Manager's Contact Info</label
+              >
             </div>
           </div>
           <div class="row px-2">
@@ -224,7 +221,9 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails">Use Above Details</label>
+                <label class="form-check-label text-white" for="useAboveDetails"
+                  >Use Above Details</label
+                >
               </div>
               <div class="form-check form-check-inline mr-4">
                 <input
@@ -237,10 +236,9 @@
                   :disabled="!managerId || chosenMember === null"
                   @change="copytoBulk"
                 />
-                <label
-                  class="form-check-label text-white"
-                  for="useManagerDetails"
-                >Use Manager's Shipping Address</label>
+                <label class="form-check-label text-white" for="useManagerDetails"
+                  >Use Manager's Shipping Address</label
+                >
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -386,7 +384,9 @@
               <button class="btn btn-block btn-info" @click.prevent="addTeam">Add Team</button>
             </div>
             <div class="col-sm-6">
-              <router-link to="/dashboard/teams" class="btn btn-block btn-danger">Cancel</router-link>
+              <router-link to="/dashboard/teams" class="btn btn-block btn-danger"
+                >Cancel</router-link
+              >
             </div>
           </div>
         </form>

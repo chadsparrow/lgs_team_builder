@@ -133,10 +133,9 @@
               @change="copyMembertoBilling"
               ref="billingSame"
             />
-            <small
-              class="form-check-label text-white"
-              for="billingSame"
-            >Use Contact Information for Billing</small>
+            <small class="form-check-label text-white" for="billingSame"
+              >Use Contact Information for Billing</small
+            >
           </div>
         </div>
         <div class="row mb-3">
@@ -278,10 +277,9 @@
               @change="copyMemberToShipping"
               ref="shippingSame"
             />
-            <small
-              class="form-check-label text-white"
-              for="shippingSame"
-            >Use Contact Information for Shipping</small>
+            <small class="form-check-label text-white" for="shippingSame"
+              >Use Contact Information for Shipping</small
+            >
           </div>
         </div>
         <div class="row mb-3">
@@ -420,7 +418,9 @@
             </button>
           </div>
           <div class="col-sm-4">
-            <router-link to="/dashboard/members/" class="btn btn-block btn-danger">Cancel</router-link>
+            <router-link to="/dashboard/members/" class="btn btn-block btn-danger"
+              >Cancel</router-link
+            >
           </div>
         </div>
       </div>

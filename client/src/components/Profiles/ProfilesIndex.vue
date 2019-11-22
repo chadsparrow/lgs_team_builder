@@ -3,11 +3,9 @@
     <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="memberDetails.email" default-img="mp" :size="255" />
-        <a
-          href="https://gravatar.com"
-          target="_blank"
-          class="btn btn-sm btn-block btn-info mt-1"
-        >Update your Gravatar</a>
+        <a href="https://gravatar.com" target="_blank" class="btn btn-sm btn-block btn-info mt-1"
+          >Update your Gravatar</a
+        >
       </div>
       <div class="row p-1 mt-3">
         <small class="col-sm-12 text-info">My Timezone:</small>
@@ -17,8 +15,8 @@
         <small class="col-sm-12 text-info">Member Since:</small>
         <span class="col-sm-12">
           {{
-          memberDetails.createdAt
-          | moment('timezone', memberDetails.timezone, 'MMM Do YYYY - hh:mm a - z')
+            memberDetails.createdAt
+              | moment('timezone', memberDetails.timezone, 'MMM Do YYYY - hh:mm a - z')
           }}
         </span>
       </div>

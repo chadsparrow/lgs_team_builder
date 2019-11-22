@@ -16,14 +16,14 @@
       </div>
       <div class="row mt-2">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-info" :disabled="!chosenMember">Add Member</button>
+          <button type="submit" class="btn btn-block btn-info" :disabled="!chosenMember">
+            Add Member
+          </button>
         </div>
         <div class="col-sm-6">
-          <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
-            :to="`/dashboard/teams/${id}`"
-          >Cancel</router-link>
+          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+            >Cancel</router-link
+          >
         </div>
       </div>
     </form>

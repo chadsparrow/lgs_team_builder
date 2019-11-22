@@ -178,7 +178,9 @@
                   rows="12"
                   ref="storeMessage"
                 ></textarea>
-                <small id="storeMessageInfo" class="text-muted">{{ storeMessage.length }}/255</small>
+                <small id="storeMessageInfo" class="text-muted"
+                  >{{ storeMessage.length }}/255</small
+                >
               </div>
             </div>
             <div class="row mt-2">
@@ -186,10 +188,9 @@
                 <button class="btn btn-block btn-info" @click.prevent="addStore">Add Store</button>
               </div>
               <div class="col-sm-6">
-                <router-link
-                  :to="`/dashboard/teams/${team._id}`"
-                  class="btn btn-block btn-danger"
-                >Cancel</router-link>
+                <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
+                  >Cancel</router-link
+                >
               </div>
             </div>
           </div>
@@ -200,9 +201,7 @@
         <div class="section-header mt-4 mb-2 bg-secondary">
           <span>
             Bulk Shipping Details
-            <small
-              class="ml-2"
-            >(uses Team Bulk Shipping Details from Previous Page)</small>
+            <small class="ml-2">(uses Team Bulk Shipping Details from Previous Page)</small>
           </span>
         </div>
         <div class="row px-2">

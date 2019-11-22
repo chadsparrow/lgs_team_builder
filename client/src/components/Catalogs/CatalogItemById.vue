@@ -14,48 +14,63 @@
     <div class="info-section">
       <div class="row">
         <div class="col-sm-12">
-          <span class="text-muted mr-2">{{item.categories[0]}}</span>
-          <span class="text-muted mr-2">/ {{item.categories[1]}}</span>
-          <span class="text-muted mr-2" v-if="item.categories[2]">/ {{item.categories[2]}}</span>
-          <span class="text-muted mr-2" v-if="item.categories[3]">/ {{item.categories[3]}}</span>
+          <span class="text-muted mr-2">{{ item.categories[0] }}</span>
+          <span class="text-muted mr-2">/ {{ item.categories[1] }}</span>
+          <span class="text-muted mr-2" v-if="item.categories[2]">/ {{ item.categories[2] }}</span>
+          <span class="text-muted mr-2" v-if="item.categories[3]">/ {{ item.categories[3] }}</span>
         </div>
         <div class="col-sm-12">
-          <h3>{{item.nameEN}}</h3>
+          <h3>{{ item.nameEN }}</h3>
         </div>
         <div class="col-sm-12">
-          <span class="text-info">{{item.productCode}} / {{item.productCode}}</span>
+          <span class="text-info">{{ item.productCode }} / {{ item.productCode }}</span>
         </div>
         <div class="col-sm-12">
-          <p class="mt-3 text-muted">{{description[0]}}</p>
+          <p class="mt-3 text-muted">{{ description[0] }}</p>
           <ul class="bulletPoints">
             <li
               v-for="(bulletPoint, index) in bulletPoints"
               :key="index"
               class="text-muted bulletPoint"
-            >{{bulletPoint}}</li>
+            >
+              {{ bulletPoint }}
+            </li>
           </ul>
         </div>
         <div class="col-sm-12">
           <span class="text-info mr-2">Gender:</span>
-          <span>{{item.gender}} - {{item.gender==="U" ? '(Unisex)' : item.gender==="M" ? "(Men's)" : item.gender==="F" ? "(Women's)" : "(Junior)"}}</span>
+          <span
+            >{{ item.gender }} -
+            {{
+              item.gender === 'U'
+                ? '(Unisex)'
+                : item.gender === 'M'
+                ? "(Men's)"
+                : item.gender === 'F'
+                ? "(Women's)"
+                : '(Junior)'
+            }}</span
+          >
         </div>
         <div class="col-sm-12 mt-2">
           <span class="text-info mr-2">Sizes Offered:</span>
-          <span class="mr-2" v-for="size in item.sizes" :key="size">{{size}}</span>
+          <span class="mr-2" v-for="size in item.sizes" :key="size">{{ size }}</span>
         </div>
         <div class="col-sm-12 mt-2">
           <span class="text-info mr-2">Item Active:</span>
-          <span>{{item.isActive ? 'ACTIVE' : 'INACTIVE'}}</span>
+          <span>{{ item.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
         </div>
         <div class="col-sm-12 my-4">
-          <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">Price Breaks:</h4>
+          <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
+            Price Breaks:
+          </h4>
           <div class="row mt-2">
             <div class="col-sm-6">
               <span class="text-info">CAD</span>
               <ul class="list-group list-group-flush">
                 <li v-for="pb in item.priceBreaks.CAD" :key="pb.priceBreak" class="list-group-item">
-                  <span class="pricebreaks">{{pb.priceBreak}}</span>
-                  <span class="prices text-info">{{pb.price | currency}}</span>
+                  <span class="pricebreaks">{{ pb.priceBreak }}</span>
+                  <span class="prices text-info">{{ pb.price | currency }}</span>
                 </li>
                 <li class="list-group-item">
                   <span class="pricebreaks">250+</span>
@@ -67,8 +82,8 @@
               <span class="text-info">USD</span>
               <ul class="list-group list-group-flush">
                 <li v-for="pb in item.priceBreaks.USD" :key="pb.priceBreak" class="list-group-item">
-                  <span class="pricebreaks">{{pb.priceBreak}}</span>
-                  <span class="prices text-info">{{pb.price | currency}}</span>
+                  <span class="pricebreaks">{{ pb.priceBreak }}</span>
+                  <span class="prices text-info">{{ pb.price | currency }}</span>
                 </li>
                 <li class="list-group-item">
                   <span class="pricebreaks">250+</span>
@@ -284,4 +299,3 @@ export default {
   }
 }
 </style>
-

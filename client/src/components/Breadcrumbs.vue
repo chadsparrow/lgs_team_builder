@@ -4,9 +4,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item" v-for="breadcrumb of breadcrumbs" :key="breadcrumb.text">
           <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">
-            {{
-            breadcrumb.text
-            }}
+            {{ breadcrumb.text }}
           </router-link>
         </li>
       </ol>

@@ -3,9 +3,17 @@
     <div class="catalog-list">
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">
-          <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="store.brand === 'GARNEAU'" />
+          <img
+            src="@/assets/garneau_logo.png"
+            alt="Garneau Logo"
+            v-if="store.brand === 'GARNEAU'"
+          />
           <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="store.brand === 'SUGOI'" />
-          <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" v-if="store.brand === 'SOMBRIO'" />
+          <img
+            src="@/assets/sombrio_logo.png"
+            alt="Sombrio Logo"
+            v-if="store.brand === 'SOMBRIO'"
+          />
         </div>
         <small for="catalogSelection">Select your catalog</small>
         <select
@@ -14,11 +22,9 @@
           v-model="currentCatalog"
           @change="getCatalog"
         >
-          <option
-            v-for="catalog in catalogs"
-            :key="catalog._id"
-            :value="catalog"
-          >{{ catalog.brand }} - {{ catalog.season }} -{{ catalog.year }}</option>
+          <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog"
+            >{{ catalog.brand }} - {{ catalog.season }} -{{ catalog.year }}</option
+          >
         </select>
       </div>
       <div
@@ -65,13 +71,16 @@
               class="btn btn-block btn-success mt-2"
               @click="updateStoreList"
               :disabled="!listHasChanged"
-            >Commit Changes</button>
+            >
+              Commit Changes
+            </button>
           </div>
           <div class="col-sm-6">
             <router-link
               :to="`/dashboard/stores/${store._id}`"
               class="btn btn-block btn-danger mt-2"
-            >Cancel</router-link>
+              >Cancel</router-link
+            >
           </div>
         </div>
       </div>
@@ -93,23 +102,26 @@
               </div>
               {{ storeItem.nameEN }}
               <br />
-              <small class="text-muted">{{ storeItem.productCode }} / {{ storeItem.styleCode }}</small>
+              <small class="text-muted"
+                >{{ storeItem.productCode }} / {{ storeItem.styleCode }}</small
+              >
             </div>
             <div class="itemPricing">
-              <span class="text-info">{{ storeItem.price | currency}}</span>
+              <span class="text-info">{{ storeItem.price | currency }}</span>
               <br />
               <label for="pbGoal">
                 <small>Price Break Goal:</small>
               </label>
               <br />
-              <small id="pbGoal">{{storeItem.priceBreakGoal}} unit(s)</small>
+              <small id="pbGoal">{{ storeItem.priceBreakGoal }} unit(s)</small>
             </div>
             <div class="itemButtons">
-              <button
-                class="btn btn-block btn-sm btn-info"
-                @click="showEditWindow(storeItem)"
-              >Edit Item</button>
-              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">Remove</button>
+              <button class="btn btn-block btn-sm btn-info" @click="showEditWindow(storeItem)">
+                Edit Item
+              </button>
+              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">
+                Remove
+              </button>
             </div>
           </div>
           <div class="drag-spot mb-1">Drop New Item Here</div>
@@ -124,7 +136,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Edit: {{currentStoreItem.nameEN}}</h5>
+                  <h5 class="modal-title">Edit: {{ currentStoreItem.nameEN }}</h5>
                 </div>
                 <div class="modal-body text-center">
                   <div class="container-fluid">
@@ -139,7 +151,9 @@
                           />
                           <label class="form-check-label" for="mandatoryItem">Mandatory Item</label>
                           <p v-if="currentStoreItem.mandatoryItem">
-                            <small class="text-muted">This item will be added to all member orders</small>
+                            <small class="text-muted"
+                              >This item will be added to all member orders</small
+                            >
                           </p>
                         </div>
                       </div>
@@ -180,7 +194,7 @@
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="priceBreak">Price Break Goal ({{store.currency}})</label>
+                          <label for="priceBreak">Price Break Goal ({{ store.currency }})</label>
                           <select
                             class="form-control form-control-sm"
                             id="priceBreak"
@@ -191,7 +205,8 @@
                               v-for="pb in currentStoreItemPriceBreaks"
                               :value="parseInt(pb.priceBreak.split('-')[0])"
                               :key="pb.priceBreak"
-                            >{{pb.priceBreak}} unit(s) - {{pb.price | currency}}/unit</option>
+                              >{{ pb.priceBreak }} unit(s) - {{ pb.price | currency }}/unit</option
+                            >
                             <option :value="parseInt('250')">250+ units - Set Price Below</option>
                           </select>
                         </div>
@@ -199,7 +214,7 @@
                       <div class="col-md-6">
                         <div class="row form-group">
                           <div class="col-sm-12">
-                            <label>Team UpCharge: ({{store.currency}})</label>
+                            <label>Team UpCharge: ({{ store.currency }})</label>
                           </div>
                           <div class="col-sm-4">
                             <select
@@ -225,7 +240,7 @@
                       </div>
                       <div class="col-sm-12">
                         <div class="form-group">
-                          <label for="price">Final Price: ({{store.currency}})</label>
+                          <label for="price">Final Price: ({{ store.currency }})</label>
                           <input
                             type="number"
                             class="form-control text-center"

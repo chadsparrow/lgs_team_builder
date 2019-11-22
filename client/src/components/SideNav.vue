@@ -54,17 +54,13 @@
       <small class="col-sm-12">Current Date/Time:</small>
       <br />
       <small class="col-sm-12 currentTime text-warning" v-if="member && member.timezone">
-        {{
-        currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z')
-        }}
+        {{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z') }}
       </small>
     </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment-timezone';
-
 export default {
   name: 'SideNav',
   data() {
@@ -79,6 +75,7 @@ export default {
     },
     adminStatus: function() {
       if (this.member) return this.member.isAdmin;
+      return null;
     }
   },
   created: function() {

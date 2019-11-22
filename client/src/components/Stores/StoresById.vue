@@ -3,7 +3,11 @@
     <div class="sidebar-left">
       <div class="row p-1">
         <div class="col-sm-12">
-          <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="store.brand === 'GARNEAU'" />
+          <img
+            src="@/assets/garneau_logo.png"
+            alt="Garneau Logo"
+            v-if="store.brand === 'GARNEAU'"
+          />
           <img
             src="@/assets/sombrio_logo.png"
             alt="Sombrio Logo"
@@ -14,16 +18,16 @@
       </div>
       <div
         :class="
-            store.mode === 'OPEN'
-              ? 'row p-2 modeBox text-center bg-success text-white'
-              : store.mode === 'CLOSED'
-              ? 'row p-2 modeBox text-center bg-danger text-white'
-              : store.mode === 'HOLD'
-              ? 'row p-2 modeBox text-center bg-warning text-white'
-              : store.mode === 'SURVEY'
-              ? 'row p-2 modeBox text-center bg-secondary text-white'
-              : null
-          "
+          store.mode === 'OPEN'
+            ? 'row p-2 modeBox text-center bg-success text-white'
+            : store.mode === 'CLOSED'
+            ? 'row p-2 modeBox text-center bg-danger text-white'
+            : store.mode === 'HOLD'
+            ? 'row p-2 modeBox text-center bg-warning text-white'
+            : store.mode === 'SURVEY'
+            ? 'row p-2 modeBox text-center bg-secondary text-white'
+            : null
+        "
       >
         <small class="col-sm-12 text-white">
           <span>{{ store.mode }}</span>
@@ -35,8 +39,7 @@
           <br />
           <span v-if="store.openingDate">
             {{
-            store.openingDate
-            | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+              store.openingDate | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
             }}
           </span>
           <span v-else>No Opening Date</span>
@@ -46,8 +49,7 @@
           <br />
           <span v-if="store.closingDate">
             {{
-            store.closingDate
-            | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+              store.closingDate | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
             }}
           </span>
           <span v-else>No Closing Date</span>
@@ -55,17 +57,14 @@
       </div>
       <div class="row p-1 mt-1" v-if="currentDateTime">
         <small class="col-sm-12 text-info">Current Store Time:</small>
-        <span
-          class="col-sm-12"
-        >{{ currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')}}</span>
+        <span class="col-sm-12">{{
+          currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')
+        }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Store Created:</small>
         <span class="col-sm-12">
-          {{
-          store.createdAt
-          | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
-          }}
+          {{ store.createdAt | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z') }}
         </span>
       </div>
       <div class="row p-1" v-if="access">
@@ -99,28 +98,21 @@
       <div class="row p-1">
         <small class="col-sm-12 text-info">Shipping Type:</small>
         <span class="col-sm-12">
-          {{
-          store.shippingType == 'BULK' ? 'BULK SHIP' : 'DROP SHIP'
-          }}
+          {{ store.shippingType == 'BULK' ? 'BULK SHIP' : 'DROP SHIP' }}
         </span>
       </div>
       <div class="row p-1" v-if="(store.shippingType = 'BULK')">
         <small class="col-sm-12 text-info">Bulk Shipping Information:</small>
         <span class="col-sm-12">{{ store.bulkShipping.name }}</span>
         <span class="col-sm-12" v-if="store.bulkShipping.company">
-          {{
-          store.bulkShipping.company
-          }}
+          {{ store.bulkShipping.company }}
         </span>
         <span class="col-sm-12">{{ store.bulkShipping.address1 }}</span>
         <span class="col-sm-12" v-if="store.bulkShipping.address2">
-          {{
-          store.bulkShipping.address2
-          }}
+          {{ store.bulkShipping.address2 }}
         </span>
         <span class="col-sm-12">
-          {{ store.bulkShipping.city }},
-          {{ store.bulkShipping.stateProv }},
+          {{ store.bulkShipping.city }}, {{ store.bulkShipping.stateProv }},
           {{ store.bulkShipping.country }}
         </span>
         <span class="col-sm-12">{{ store.bulkShipping.zipPostal }}</span>
@@ -129,7 +121,7 @@
       </div>
     </div>
     <div class="middle-section">
-      <h4 class="message text-success" v-if="store.storeMessage">{{store.storeMessage}}</h4>
+      <h4 class="message text-success" v-if="store.storeMessage">{{ store.storeMessage }}</h4>
 
       <div class="header">
         <div class="form-group form-inline">
@@ -143,7 +135,7 @@
             placeholder="Enter any product info..."
             autofocus
           />
-          <small class="text-muted">Showing: {{filteredCount}}/{{storeItems.length}}</small>
+          <small class="text-muted">Showing: {{ filteredCount }}/{{ storeItems.length }}</small>
         </div>
 
         <div class="header-buttons" v-if="member.isAdmin">
@@ -169,13 +161,13 @@
           <div class="card-image">
             <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
             <div class="mandatoryItem bg-light text-dark" v-if="item.mandatoryItem">Mandatory</div>
-            <div class="price-box">{{item.price | currency}} {{store.currency}}</div>
+            <div class="price-box">{{ item.price | currency }} {{ store.currency }}</div>
           </div>
           <div class="card-body text-center">
-            <h6 class="card-title mb-2">{{item.nameEN}}</h6>
-            <span class="card-text text-muted">{{item.productCode}}</span>
+            <h6 class="card-title mb-2">{{ item.nameEN }}</h6>
+            <span class="card-text text-muted">{{ item.productCode }}</span>
             <br />
-            <span class="card-text text-muted">{{item.styleCode}}</span>
+            <span class="card-text text-muted">{{ item.styleCode }}</span>
           </div>
           <div class="card-footer">
             <div class="likes-section mb-3">
@@ -185,13 +177,15 @@
                 @click="removeLike(item._id)"
               ></i>
               <i class="far fa-heart fa-2x text-secondary" v-else @click="addLike(item._id)"></i>
-              <span class="badge badge-danger ml-1" v-if="access">{{item.surveyLikedBy.length}}</span>
+              <span class="badge badge-danger ml-1" v-if="access">{{
+                item.surveyLikedBy.length
+              }}</span>
             </div>
             <div class="cart-section mb-2" v-if="store.mode === 'OPEN' && !member.isAdmin">
               <div class="form-inline">
                 <label class="mr-1" for="size">Size:</label>
                 <select class="form-control form-control-sm mr-2" id="size" ref="size">
-                  <option v-for="size in item.sizes" :key="size">{{size}}</option>
+                  <option v-for="size in item.sizes" :key="size">{{ size }}</option>
                 </select>
                 <label class="mr-1" for="qty">Qty:</label>
                 <input
@@ -207,9 +201,11 @@
                 class="btn btn-block btn-info mt-2"
                 @click="addToCart(index)"
                 v-if="!item.mandatoryItem"
-              >Add to Cart</button>
+              >
+                Add to Cart
+              </button>
             </div>
-            <div class="progressBar text-center" v-if="access && store.mode ==='OPEN'">
+            <div class="progressBar text-center" v-if="access && store.mode === 'OPEN'">
               <label for="progress" class="mt-2">Price Break Goal</label>
               <div class="progress">
                 <div
@@ -220,7 +216,9 @@
                   aria-valuenow="4"
                   aria-valuemin="0"
                   :aria-valuemax="item.priceBreakGoal"
-                >4/{{item.priceBreakGoal}}</div>
+                >
+                  4/{{ item.priceBreakGoal }}
+                </div>
               </div>
             </div>
           </div>

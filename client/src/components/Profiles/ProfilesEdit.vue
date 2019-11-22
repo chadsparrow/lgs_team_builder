@@ -444,10 +444,14 @@
         </div>
         <div class="row my-3">
           <div class="col-sm-8">
-            <button class="btn btn-block btn-info" @click.prevent="updateProfile">Update Profile</button>
+            <button class="btn btn-block btn-info" @click.prevent="updateProfile">
+              Update Profile
+            </button>
           </div>
           <div class="col-sm-4">
-            <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
+            <router-link to="/dashboard/profile" class="btn btn-block btn-danger"
+              >Cancel</router-link
+            >
           </div>
         </div>
       </form>

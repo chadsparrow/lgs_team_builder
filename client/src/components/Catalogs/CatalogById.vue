@@ -2,10 +2,18 @@
   <div class="page" v-if="dataReady">
     <div class="header">
       <div>
-        <img src="@/assets/garneau_logo.png" alt="Garneau Logo" v-if="catalog.brand ==='GARNEAU'" />
-        <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="catalog.brand ==='SUGOI'" />
-        <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" v-if="catalog.brand ==='SOMBRIO'" />
-        {{catalog.season}} - {{catalog.year}}
+        <img
+          src="@/assets/garneau_logo.png"
+          alt="Garneau Logo"
+          v-if="catalog.brand === 'GARNEAU'"
+        />
+        <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="catalog.brand === 'SUGOI'" />
+        <img
+          src="@/assets/sombrio_logo.png"
+          alt="Sombrio Logo"
+          v-if="catalog.brand === 'SOMBRIO'"
+        />
+        {{ catalog.season }} - {{ catalog.year }}
       </div>
       <div class="form-group form-inline">
         <label for="catalogItemSearch" class="mr-2">Search:</label>
@@ -18,7 +26,7 @@
           placeholder="Enter any product info..."
           autofocus
         />
-        <small class="text-muted">Showing: {{filteredCount}}/{{catalogItems.length}}</small>
+        <small class="text-muted">Showing: {{ filteredCount }}/{{ catalogItems.length }}</small>
       </div>
       <div>
         <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">

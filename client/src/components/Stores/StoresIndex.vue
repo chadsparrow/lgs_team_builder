@@ -12,7 +12,7 @@
           placeholder="Enter any text to filter stores..."
           autofocus
         />
-        <small class="text-muted">Showing: {{filteredCount}}/{{stores.length}}</small>
+        <small class="text-muted">Showing: {{ filteredCount }}/{{ stores.length }}</small>
       </div>
     </div>
     <h5 class="text-center" v-if="currentStores.length === 0">No Stores Found</h5>
@@ -50,15 +50,13 @@
             <td v-if="access">{{ store.adminId.name }}</td>
             <td v-if="store.openingDate">
               {{
-              store.openingDate
-              | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+                store.openingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </td>
             <td v-else>No Opening Date</td>
             <td v-if="store.closingDate">
               {{
-              store.closingDate
-              | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+                store.closingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </td>
             <td v-else>No Closing Date</td>
@@ -74,10 +72,12 @@
                   ? 'text-center'
                   : null
               "
-            >{{ store.mode }}</td>
+            >
+              {{ store.mode }}
+            </td>
             <td class="text-center" v-if="access">{{ store.totalOrders }}</td>
             <td v-if="access">{{ store.currency }}</td>
-            <td class="text-center" v-if="access">{{ store.collectedAmount | currency}}</td>
+            <td class="text-center" v-if="access">{{ store.collectedAmount | currency }}</td>
           </tr>
         </tbody>
       </table>

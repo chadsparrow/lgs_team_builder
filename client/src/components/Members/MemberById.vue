@@ -1,3 +1,4 @@
+/* eslint-disable vue/return-in-computed-property */
 <template>
   <div class="page" v-if="dataReady">
     <div class="sidebar-left">
@@ -6,9 +7,9 @@
       </div>
       <div class="row p-1 mt-2">
         <small class="col-sm-12 text-info">Member Since:</small>
-        <span
-          class="col-sm-12"
-        >{{ member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z') }}</span>
+        <span class="col-sm-12">{{
+          member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+        }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Member Role:</small>
@@ -26,7 +27,9 @@
             v-for="team of teams"
             :key="team._id"
             @click.prevent="loadTeam(team._id)"
-          >{{ team.name }}</li>
+          >
+            {{ team.name }}
+          </li>
         </ul>
       </div>
     </div>
@@ -220,16 +223,16 @@ export default {
       return this.$store.getters.loggedInMember;
     },
     isAdmin: function() {
-      if (this.currentMember) return this.currentMember.isAdmin;
+      return this.currentMember.isAdmin;
     },
     memberDetails: function() {
       return this.$store.getters.getMember;
     },
     member: function() {
-      if (this.memberDetails) return this.memberDetails.member;
+      return this.memberDetails.member;
     },
     teams: function() {
-      if (this.memberDetails) return this.memberDetails.teams;
+      return this.memberDetails.teams;
     },
     dataReady: function() {
       return this.$store.getters.dataReady;
