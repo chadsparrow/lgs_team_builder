@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="image-section">
       <div class="grid">
         <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
@@ -14,16 +14,22 @@
     <div class="info-section">
       <div class="row">
         <div class="col-sm-12">
-          <span class="text-muted mr-2">{{ item.categories[0] }}</span>
-          <span class="text-muted mr-2">/ {{ item.categories[1] }}</span>
-          <span class="text-muted mr-2" v-if="item.categories[2]">/ {{ item.categories[2] }}</span>
-          <span class="text-muted mr-2" v-if="item.categories[3]">/ {{ item.categories[3] }}</span>
+          <span class="text-muted mr-2">{{ currentCatalogItem.categories[0] }}</span>
+          <span class="text-muted mr-2">/ {{ currentCatalogItem.categories[1] }}</span>
+          <span class="text-muted mr-2" v-if="currentCatalogItem.categories[2]"
+            >/ {{ currentCatalogItem.categories[2] }}</span
+          >
+          <span class="text-muted mr-2" v-if="currentCatalogItem.categories[3]"
+            >/ {{ currentCatalogItem.categories[3] }}</span
+          >
         </div>
         <div class="col-sm-12">
-          <h3>{{ item.nameEN }}</h3>
+          <h3>{{ currentCatalogItem.nameEN }}</h3>
         </div>
         <div class="col-sm-12">
-          <span class="text-info">{{ item.productCode }} / {{ item.productCode }}</span>
+          <span class="text-info"
+            >{{ currentCatalogItem.productCode }} / {{ currentCatalogItem.productCode }}</span
+          >
         </div>
         <div class="col-sm-12">
           <p class="mt-3 text-muted">{{ description[0] }}</p>
@@ -40,13 +46,13 @@
         <div class="col-sm-12">
           <span class="text-info mr-2">Gender:</span>
           <span
-            >{{ item.gender }} -
+            >{{ currentCatalogItem.gender }} -
             {{
-              item.gender === 'U'
+              currentCatalogItem.gender === 'U'
                 ? '(Unisex)'
-                : item.gender === 'M'
+                : currentCatalogItem.gender === 'M'
                 ? "(Men's)"
-                : item.gender === 'F'
+                : currentCatalogItem.gender === 'F'
                 ? "(Women's)"
                 : '(Junior)'
             }}</span
@@ -54,11 +60,11 @@
         </div>
         <div class="col-sm-12 mt-2">
           <span class="text-info mr-2">Sizes Offered:</span>
-          <span class="mr-2" v-for="size in item.sizes" :key="size">{{ size }}</span>
+          <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">{{ size }}</span>
         </div>
         <div class="col-sm-12 mt-2">
           <span class="text-info mr-2">Item Active:</span>
-          <span>{{ item.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
+          <span>{{ currentCatalogItem.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
         </div>
         <div class="col-sm-12 my-4">
           <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
@@ -68,7 +74,11 @@
             <div class="col-sm-6">
               <span class="text-info">CAD</span>
               <ul class="list-group list-group-flush">
-                <li v-for="pb in item.priceBreaks.CAD" :key="pb.priceBreak" class="list-group-item">
+                <li
+                  v-for="pb in currentCatalogItem.priceBreaks.CAD"
+                  :key="pb.priceBreak"
+                  class="list-group-item"
+                >
                   <span class="pricebreaks">{{ pb.priceBreak }}</span>
                   <span class="prices text-info">{{ pb.price | currency }}</span>
                 </li>
@@ -81,7 +91,11 @@
             <div class="col-sm-6">
               <span class="text-info">USD</span>
               <ul class="list-group list-group-flush">
-                <li v-for="pb in item.priceBreaks.USD" :key="pb.priceBreak" class="list-group-item">
+                <li
+                  v-for="pb in currentCatalogItem.priceBreaks.USD"
+                  :key="pb.priceBreak"
+                  class="list-group-item"
+                >
                   <span class="pricebreaks">{{ pb.priceBreak }}</span>
                   <span class="prices text-info">{{ pb.price | currency }}</span>
                 </li>
@@ -101,6 +115,7 @@
 
 <script>
 import Vue2Filters from 'vue2-filters';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CatalogItemById',
@@ -136,17 +151,9 @@ export default {
     };
   },
   computed: {
-    catalog: function() {
-      return this.$store.getters.currentCatalog;
-    },
-    item: function() {
-      return this.$store.getters.currentCatalogItem;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'currentCatalog', 'currentCatalogItem']),
     description: function() {
-      const desc = this.item.descriptionEN;
+      const desc = this.currentCatalogItem.descriptionEN;
       const descArray = desc.split('•');
       const bulletPoints = descArray.map(el => {
         el = el.replace('\n', '').trim();
@@ -163,13 +170,14 @@ export default {
   },
   methods: {
     getImgUrl(index, size) {
-      if (this.dataReady) {
-        if (this.item.images.length === 0) return require(`@/assets/missing_item_${size}.png`);
+      if (!this.isLoading) {
+        if (this.currentCatalogItem.images.length === 0)
+          return require(`@/assets/missing_item_${size}.png`);
 
-        if (!this.item.images[index]) return require(`@/assets/missing_item_${size}.png`);
-        const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
+        if (!this.currentCatalogItem.images[index])
+          return require(`@/assets/missing_item_${size}.png`);
 
-        return `/images/catalogs/${folderName}/${size}/${this.item.images[index]}_${size}.jpg`;
+        return `/images/catalogs/${this.currentCatalog._id}/${size}/${this.currentCatalogItem.images[index]}_${size}.jpg`;
       }
     },
     switchImage(id, ind) {
@@ -181,15 +189,16 @@ export default {
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getCatalogItem', this.$route.params.id);
-      const imagesLength = this.item.images.length;
+      const imagesLength = this.currentCatalogItem.images.length;
       if (imagesLength <= 2) {
         this.images = this.images.splice(0, 2);
       } else {
         this.images = this.images.splice(0, imagesLength);
       }
-      await this.$store.dispatch('getCatalog', this.item.catalogId._id);
+      await this.$store.dispatch('getCatalog', this.currentCatalogItem.catalogId._id);
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -197,23 +206,20 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
-          link: `/dashboard/catalogs/${this.catalog._id}`
+          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
-          text: `${this.item.nameEN} (${this.item.styleCode})`,
+          text: `${this.currentCatalogItem.nameEN} (${this.currentCatalogItem.styleCode})`,
           link: '#'
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   }
 };
 </script>

@@ -1,18 +1,18 @@
 <template>
-  <div v-if="dataReady" class="page">
+  <div v-if="!isLoading" class="page">
     <div class="header">
       <div class="form-group form-inline m-0">
         <label for="memberSearch" class="mr-2">Search:</label>
         <input
           type="text"
           id="memberSearch"
-          v-if="members.length > 0"
+          v-if="allMembers.length > 0"
           class="form-control form-control-sm mr-3"
           v-model="memberSearchText"
           placeholder="Enter name or email to find a member..."
           autofocus
         />
-        <small class="text-muted">Showing: {{ filteredCount }}/{{ members.length }}</small>
+        <small class="text-muted">Showing: {{ filteredCount }}/{{ allMembers.length }}</small>
       </div>
       <div>
         <router-link to="/dashboard/members/add" class="btn btn-sm btn-info">
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="member-list">
-      <span v-if="members.length === 0">No Members Found</span>
+      <span v-if="allMembers.length === 0">No Members Found</span>
       <div class="table-responsive" v-else>
         <table class="table table-hover table-striped">
           <tbody>
@@ -62,6 +62,7 @@
 <script>
 import Paginate from 'vuejs-paginate';
 import Gravatar from 'vue-gravatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MembersIndex',
@@ -77,6 +78,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getMembers');
       const breadcrumbs = [
@@ -88,18 +90,16 @@ export default {
       ];
       await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
   },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
-  },
   computed: {
+    ...mapGetters(['allMembers', 'isLoading']),
     filteredMembers: function() {
-      return this.members.filter(member => {
+      return this.allMembers.filter(member => {
         if (
           member.name.toLowerCase().includes(this.memberSearchText.toLowerCase()) ||
           member.email.toLowerCase().includes(this.memberSearchText.toLowerCase())
@@ -110,9 +110,6 @@ export default {
     },
     filteredCount: function() {
       return this.filteredMembers.length;
-    },
-    members: function() {
-      return this.$store.getters.allMembers;
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
@@ -125,15 +122,12 @@ export default {
     },
     pageNumbers: function() {
       const pageArray = [];
-      if (this.members) {
+      if (this.allMembers) {
         for (let i = 1; i <= Math.ceil(this.filteredMembers.length / this.itemsPerPage); i++) {
           pageArray.push(i);
         }
       }
       return pageArray.length;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
     }
   },
   methods: {

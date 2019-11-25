@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="member.email" default-img="mp" :size="255" />
@@ -460,6 +460,7 @@
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import Gravatar from 'vue-gravatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MemberByIdEdit',
@@ -476,23 +477,18 @@ export default {
     };
   },
   computed: {
-    memberDetails: function() {
-      return this.$store.getters.getMember;
-    },
+    ...mapGetters(['getMember', 'isLoading']),
     member: function() {
-      return this.memberDetails.member;
+      return this.getMember.member;
     },
     teams: function() {
-      return this.memberDetails.teams;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
+      return this.getMember.teams;
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
-      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -510,16 +506,15 @@ export default {
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     deleteMember: async function() {
+      this.$store.commit('LOADING_TRUE');
       try {
         if (confirm('Are you sure?')) {
           if (confirm('Are you absolutely sure?')) {
@@ -528,8 +523,10 @@ export default {
             this.$router.push({ name: 'members' });
           }
         }
+        this.$store.commit('LOADING_FALSE');
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$store.commit('LOADING_FALSE');
       }
     },
     copyDetails: function() {
@@ -708,15 +705,17 @@ export default {
         billingPhone: this.member.billing.phone,
         billingEmail: this.member.billing.email
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
           id: this.member._id
         });
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'membersById', params: { id: this.member._id } });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

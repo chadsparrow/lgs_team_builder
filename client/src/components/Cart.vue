@@ -10,20 +10,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'Cart',
-  data() {
-    return {
-      dataReady: false
-    };
-  },
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    currentCart: function() {
-      return this.$store.getters.currentCart;
-    }
+    ...mapGetters(['loggedInMember', 'currentCart'])
   },
   created: async function() {},
   methods: {}

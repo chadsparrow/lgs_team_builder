@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="row p-1">
         <div class="col-sm-12">
@@ -231,6 +231,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'StoresById',
   data() {
@@ -241,6 +242,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       this.polling = setInterval(this.getNow, 1000);
       await this.$store.dispatch('getStore', this.$route.params.id);
@@ -261,33 +263,34 @@ export default {
         await this.$store.dispatch('getMemberStoreCart', this.store._id);
         this.$store.commit('SHOW_CART');
       }
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
   },
   beforeDestroy: function() {
     clearInterval(this.polling);
     this.$store.commit('HIDE_CART');
     this.$store.commit('CLEAR_CURRENT_CART');
-    this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters([
+      'currentStore',
+      'currentCart',
+      'loggedInMember',
+      'isLoading',
+      'orders',
+      'currentStoreItems'
+    ]),
     store: function() {
-      return this.$store.getters.currentStore;
+      return this.currentStore;
     },
     member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    orders: function() {
-      return this.$store.getters.orders;
+      return this.loggedInMember;
     },
     storeItems: function() {
-      return this.$store.getters.currentStoreItems;
+      return this.currentStoreItems;
     },
     filteredItems: function() {
       return this.storeItems.filter(item => {
@@ -326,9 +329,6 @@ export default {
         return true;
 
       return false;
-    },
-    currentCart: function() {
-      return this.$store.getters.currentCart;
     }
   },
   methods: {
@@ -337,20 +337,25 @@ export default {
       const minutes = this.currentDateTime.getMinutes();
       const seconds = this.currentDateTime.getSeconds();
       if (minutes == 0 && seconds == 0) {
+        this.$store.commit('LOADING_TRUE');
         await this.$store.dispatch('getStore', this.store._id);
         if (this.store.mode === 'OPEN' || this.store.mode === 'CLOSED') {
           this.$store.commit('SHOW_CART');
         }
+        this.$store.commit('LOADING_FALSE');
       }
     },
     duplicateOrder: async function() {
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
         this.$router
           .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
           .catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        this.$store.commit('LOADING_FALSE');
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },

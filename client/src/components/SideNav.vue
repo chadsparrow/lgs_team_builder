@@ -11,12 +11,17 @@
         class="btn btn-block btn-dark"
         to="/dashboard/members"
         tag="a"
-        v-if="adminStatus"
+        v-if="loggedInMember.isAdmin"
       >
         <i class="fas fa-user"></i>
         <span>Members</span>
       </router-link>
-      <router-link class="btn btn-block btn-dark" to="/dashboard/teams" tag="a" v-if="adminStatus">
+      <router-link
+        class="btn btn-block btn-dark"
+        to="/dashboard/teams"
+        tag="a"
+        v-if="loggedInMember.isAdmin"
+      >
         <i class="fas fa-users"></i>
         <span>Teams</span>
       </router-link>
@@ -24,7 +29,12 @@
         <i class="fas fa-users"></i>
         <span>My Teams</span>
       </router-link>
-      <router-link class="btn btn-block btn-dark" to="/dashboard/stores" tag="a" v-if="adminStatus">
+      <router-link
+        class="btn btn-block btn-dark"
+        to="/dashboard/stores"
+        tag="a"
+        v-if="loggedInMember.isAdmin"
+      >
         <i class="fas fa-store"></i>
         <span>Stores</span>
       </router-link>
@@ -32,7 +42,12 @@
         <i class="fas fa-store"></i>
         <span>My Stores</span>
       </router-link>
-      <router-link class="btn btn-block btn-dark" to="/dashboard/orders" tag="a" v-if="adminStatus">
+      <router-link
+        class="btn btn-block btn-dark"
+        to="/dashboard/orders"
+        tag="a"
+        v-if="loggedInMember.isAdmin"
+      >
         <i class="fas fa-receipt"></i>
         <span>Orders</span>
       </router-link>
@@ -44,7 +59,7 @@
         class="btn btn-block btn-dark"
         to="/dashboard/catalogs"
         tag="a"
-        v-if="adminStatus"
+        v-if="loggedInMember.isAdmin"
       >
         <i class="fas fa-book"></i>
         <span>Catalogs</span>
@@ -53,14 +68,20 @@
     <div class="row text-center mt-4 timeDisplay" v-if="currentDateTime">
       <small class="col-sm-12">Current Date/Time:</small>
       <br />
-      <small class="col-sm-12 currentTime text-warning" v-if="member && member.timezone">
-        {{ currentDateTime | moment('timezone', member.timezone, 'MMM Do YYYY \n hh:mm:ss A z') }}
+      <small
+        class="col-sm-12 currentTime text-warning"
+        v-if="loggedInMember && loggedInMember.timezone"
+      >
+        {{
+          currentDateTime | moment('timezone', loggedInMember.timezone, 'MMM Do YYYY hh:mm:ss A z')
+        }}
       </small>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'SideNav',
   data() {
@@ -70,13 +91,7 @@ export default {
     };
   },
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    adminStatus: function() {
-      if (this.member) return this.member.isAdmin;
-      return null;
-    }
+    ...mapGetters(['loggedInMember'])
   },
   created: function() {
     this.polling = setInterval(this.getNow, 1000);
@@ -140,7 +155,7 @@ export default {
     display: none;
 
     .currentTime {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
     }
   }
 }

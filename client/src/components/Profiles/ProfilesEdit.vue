@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="row p-1">
         <small class="col-sm-12 text-info">Your Timezone:</small>
@@ -397,7 +397,6 @@
                   :country="memberDetails.shipping.country"
                   :region="memberDetails.shipping.stateProv"
                   class="form-control form-control-sm"
-                  @input="geoTimezone"
                   :readonly="shippingSame"
                   :regionName="true"
                   ref="shippingStateProv"
@@ -462,6 +461,7 @@
 <script>
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'ProfilesEdit',
@@ -478,14 +478,10 @@ export default {
     };
   },
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    }
+    ...mapGetters(['loggedInMember', 'isLoading'])
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -499,16 +495,13 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      const res = await this.$store.dispatch('getMemberDetails', this.member._id);
+      const res = await this.$store.dispatch('getMemberDetails', this.loggedInMember._id);
       this.memberDetails = res.data.member;
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     copyDetails: function() {
@@ -522,7 +515,6 @@ export default {
         this.memberDetails.shipping.country = this.memberDetails.country;
         this.memberDetails.shipping.zipPostal = this.memberDetails.zipPostal;
         this.memberDetails.shipping.email = this.memberDetails.email;
-        this.geoTimezone();
       }
       if (this.billingSame === true) {
         this.memberDetails.billing.name = this.memberDetails.name;
@@ -534,14 +526,10 @@ export default {
         this.memberDetails.billing.country = this.memberDetails.country;
         this.memberDetails.billing.zipPostal = this.memberDetails.zipPostal;
         this.memberDetails.billing.email = this.memberDetails.email;
-        this.geoTimezone();
       }
     },
     changeDetails: async function(event) {
       const target = event.target.id;
-      if (target === 'shippingCity') {
-        this.geoTimezone();
-      }
 
       if (this.shippingSame) {
         if (target === 'email') {
@@ -556,7 +544,6 @@ export default {
           this.memberDetails.shipping.address2 = this.memberDetails.address2;
         } else if (target === 'city') {
           this.memberDetails.shipping.city = this.memberDetails.city;
-          this.geoTimezone();
         } else if (target === 'zipPostal') {
           this.memberDetails.shipping.zipPostal = this.memberDetails.zipPostal;
         }
@@ -622,10 +609,8 @@ export default {
           zipPostal: this.memberDetails.zipPostal,
           phone: this.memberDetails.phone
         };
-        this.geoTimezone();
       } else {
         this.memberDetails.shipping = this.backupShipping;
-        this.geoTimezone();
       }
     },
     checkRegion: function() {
@@ -635,7 +620,6 @@ export default {
 
       if (this.shippingSame) {
         this.memberDetails.shipping.stateProv = this.memberDetails.stateProv;
-        this.geoTimezone();
       }
     },
     checkCountry: function() {
@@ -659,35 +643,6 @@ export default {
       this.$refs.shippingPhone.countryCode = this.memberDetails.shipping.country;
       this.memberDetails.shipping.stateProv = '';
     },
-    geoTimezone: async function() {
-      if (
-        this.memberDetails.shipping.stateProv &&
-        this.memberDetails.shipping.city &&
-        this.memberDetails.shipping.country
-      ) {
-        const location = await this.$http.get(
-          `https://www.mapquestapi.com/geocoding/v1/address?key=${process.env.VUE_APP_MAPQUEST_KEY}&inFormat=json&outFormat=json&json={"location":{"street":"${this.memberDetails.shipping.city} ${this.memberDetails.shipping.stateProv} ${this.memberDetails.shipping.country}"},"options":{"thumbMaps":false}}`
-        );
-        if (location) {
-          const lat = location.data.results[0].locations[0].latLng.lat;
-          const lng = location.data.results[0].locations[0].latLng.lng;
-          const response = await this.$http.get(
-            `http://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.VUE_APP_TIMEZONEDB_KEY}&format=json&by=position&lat=${lat}&lng=${lng}`
-          );
-          if (
-            response.data.zoneName &&
-            response.data.zoneName !== null &&
-            response.data.zoneName !== ''
-          ) {
-            this.memberDetails.timezone = response.data.zoneName;
-            this.memberDetails.timezoneAbbrev = response.data.abbreviation;
-          } else {
-            this.memberDetails.timezone = '';
-            this.memberDetails.timezoneAbbrev = '';
-          }
-        }
-      }
-    },
     updateProfile: async function() {
       const updatedMember = {
         name: this.memberDetails.name,
@@ -699,8 +654,6 @@ export default {
         stateProv: this.memberDetails.stateProv,
         country: this.memberDetails.country,
         zipPostal: this.memberDetails.zipPostal,
-        timezone: this.memberDetails.timezone,
-        timezoneAbbrev: this.memberDetails.timezoneAbbrev,
         shippingSame: this.shippingSame,
         shippingName: this.memberDetails.shipping.name,
         shippingCompany: this.memberDetails.shipping.company,
@@ -724,11 +677,10 @@ export default {
         billingPhone: this.memberDetails.billing.phone,
         billingEmail: this.memberDetails.billing.email
       };
-
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
-          id: this.member._id
+          id: this.loggedInMember._id
         });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'profile' });

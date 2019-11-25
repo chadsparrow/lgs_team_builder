@@ -45,12 +45,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'ProfilesPassword',
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    }
+    ...mapGetters(['loggedInMember'])
   },
   data() {
     return {
@@ -60,6 +60,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -73,7 +74,9 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
@@ -93,12 +96,17 @@ export default {
         newPassword: this.newPassword,
         confirmPassword: this.confirmPassword
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
-        await this.$store.dispatch('changePassword', { updatedPassword, id: this.member._id });
+        await this.$store.dispatch('changePassword', {
+          updatedPassword,
+          id: this.loggedInMember._id
+        });
+        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'profile' });
         this.$toasted.success('Password Updated', { icon: 'lock' });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

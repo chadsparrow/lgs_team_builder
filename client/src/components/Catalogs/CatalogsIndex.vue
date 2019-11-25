@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" v-if="dataReady">
+  <div class="container-fluid" v-if="!isLoading">
     <div class="row">
       <div class="col-sm-12 mb-2">
         <router-link to="/dashboard/catalogs/add" class="btn btn-info">
@@ -53,6 +53,7 @@
 
 <script>
 import Paginate from 'vuejs-paginate';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CatalogsIndex',
@@ -66,6 +67,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -76,20 +78,14 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogs');
-      await this.$store.commit('CLEAR_CURRENTS');
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
   },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
-  },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'catalogs']),
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
@@ -105,9 +101,6 @@ export default {
         pageArray.push(i);
       }
       return pageArray.length;
-    },
-    catalogs: function() {
-      return this.$store.getters.catalogs;
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div v-if="team.name">
         <avatar
@@ -272,34 +272,39 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'StoresByIdEdit',
   components: {
     Avatar
   },
+  data() {
+    return {
+      openingDate: null
+    };
+  },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'currentStore', 'loggedInMember', 'currentTeam']),
     store: function() {
-      return this.$store.getters.currentStore;
+      return this.currentStore;
     },
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
     team: function() {
-      return this.$store.getters.currentTeam;
+      return this.currentTeam;
     },
     minDateTime: function() {
-      if (this.openingDate) {
-        return this.openingDate;
+      if (this.store.openingDate) {
+        return this.store.openingDate;
       } else {
         return null;
       }
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getStore', this.$route.params.id);
       await this.$store.dispatch('getTeam', this.store.teamId._id);
@@ -320,14 +325,11 @@ export default {
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     setMode: function() {
@@ -344,8 +346,8 @@ export default {
       }
 
       if (this.store.mode === 'CLOSED') {
-        this.store.closingDate = new Date().toISOString();
         this.store.openingDate = null;
+        this.store.closingDate = new Date().toISOString();
       }
     },
     updateStore: async function() {
@@ -365,12 +367,14 @@ export default {
         storeMessage: this.store.storeMessage,
         shippingType: this.store.shippingType
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('updateStore', { id: this.store._id, updatedStore });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'storesById', params: { id: this.store._id } });
+        this.$store.commit('LOADING_FALSE');
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

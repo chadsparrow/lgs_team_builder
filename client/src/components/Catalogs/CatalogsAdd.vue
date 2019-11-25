@@ -68,6 +68,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -81,18 +82,17 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },
   methods: {
     addCatalog: async function() {
+      const catalog = { brand: this.brand, season: this.season, year: this.year };
       try {
-        await this.$store.dispatch('addCatalog', {
-          brand: this.brand,
-          season: this.season,
-          year: this.year
-        });
+        await this.$store.dispatch('addCatalog', catalog);
         this.$toasted.success('Catalog Added', { icon: 'check-circle' });
         this.$router.push({ name: 'catalogs' }).catch(() => {});
       } catch (err) {

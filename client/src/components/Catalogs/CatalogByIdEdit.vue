@@ -1,13 +1,13 @@
 <template>
-  <div class="mt-2" v-if="dataReady">
-    <form @submit.prevent="editCatalog" novalidate class="container">
+  <div class="mt-2" v-if="!isLoading">
+    <div class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
           <label for="brand">Brand</label>
           <select
             class="form-control form-control-sm"
             id="brand"
-            v-model="catalog.brand"
+            v-model="currentCatalog.brand"
             ref="brand"
             autofocus
           >
@@ -22,7 +22,7 @@
           <select
             class="form-control form-control-sm"
             id="season"
-            v-model="catalog.season"
+            v-model="currentCatalog.season"
             ref="season"
           >
             <option value="CUSTOM">CUSTOM</option>
@@ -43,42 +43,40 @@
             id="year"
             class="form-control form-control-sm"
             ref="year"
-            v-model="catalog.year"
+            v-model="currentCatalog.year"
           />
         </div>
       </div>
       <div class="row mt-4">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-info">Submit Changes</button>
+          <button class="btn btn-block btn-info" @click="editCatalog">
+            Submit Changes
+          </button>
         </div>
         <div class="col-sm-6">
           <router-link
             tag="a"
             class="btn btn-block btn-danger"
-            :to="`/dashboard/catalogs/${catalog._id}`"
+            :to="`/dashboard/catalogs/${currentCatalog._id}`"
             >Cancel</router-link
           >
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'CatalogByIdEdit',
   computed: {
-    catalog: function() {
-      return this.$store.getters.currentCatalog;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    }
+    ...mapGetters(['currentCatalog', 'isLoading'])
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -86,8 +84,8 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
-          link: `/dashboard/catalogs/${this.id}`
+          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
           text: 'Edit',
@@ -95,28 +93,31 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     editCatalog: async function() {
+      this.$store.commit('LOADING_TRUE');
       try {
-        await this.$store.dispatch('editCatalog', [
-          this.id,
-          {
-            brand: this.catalog.brand,
-            season: this.catalog.season,
-            year: this.catalog.year
+        await this.$store.dispatch('editCatalog', {
+          id: this.currentCatalog._id,
+          catalog: {
+            brand: this.currentCatalog.brand,
+            season: this.currentCatalog.season,
+            year: this.currentCatalog.year
           }
-        ]);
+        });
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.success('Catalog Updated', { icon: 'check-circle' });
-        this.$router.push({ name: 'catalogsById', params: this.catalog._id }).catch(() => {});
+        this.$router
+          .push({ name: 'catalogsById', params: this.currentCatalog._id })
+          .catch(() => {});
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

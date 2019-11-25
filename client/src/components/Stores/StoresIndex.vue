@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" v-if="dataReady">
+  <div class="container-fluid" v-if="!isLoading">
     <div class="header">
       <div class="form-group form-inline mb-2">
         <label for="storesSeachText" class="mr-2">Search:</label>
@@ -101,6 +101,7 @@
 <script>
 import Paginate from 'vuejs-paginate';
 import Vue2Filters from 'vue2-filters';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'StoreIndex',
@@ -116,6 +117,7 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -127,21 +129,16 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('getStores');
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
   },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
-  },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'loggedInMember', 'stores']),
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
@@ -177,9 +174,6 @@ export default {
     },
     filteredCount: function() {
       return this.filteredStores.length;
-    },
-    stores: function() {
-      return this.$store.getters.stores;
     },
     access: function() {
       if (this.member && this.member.isAdmin) return true;

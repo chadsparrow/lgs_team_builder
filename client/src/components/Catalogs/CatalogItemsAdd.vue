@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="dataReady">
+  <div class="container" v-if="!isLoading">
     <form @submit.prevent="addCatalogItem" novalidate>
       <div class="row">
         <div class="form-group col-sm-6">
@@ -223,7 +223,7 @@
           <router-link
             tag="a"
             class="btn btn-danger btn-block"
-            :to="`/dashboard/catalogs/${catalog._id}`"
+            :to="`/dashboard/catalogs/${currentCatalog._id}`"
             >Cancel</router-link
           >
         </div>
@@ -234,6 +234,7 @@
 
 <script>
 import VueTagsInput from '@johmun/vue-tags-input';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'CatalogItemsAdd',
@@ -321,17 +322,12 @@ export default {
     };
   },
   computed: {
-    catalog: function() {
-      return this.$store.getters.currentCatalog;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    }
+    ...mapGetters(['isLoading', 'currentCatalog'])
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -339,8 +335,8 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
-          link: `/dashboard/catalogs/${this.catalog._id}`
+          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
           text: 'Add Item',
@@ -348,13 +344,11 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     setSizes: function() {
@@ -388,7 +382,7 @@ export default {
       const mappedCategories = this.categories.map(cat => cat.text);
 
       const newCatalogItem = {
-        catalogId: this.catalog._id,
+        catalogId: this.currentCatalog._id,
         nameEN: this.nameEN,
         nameFR: this.nameFR,
         productCode: this.productCode,
@@ -400,13 +394,16 @@ export default {
         descriptionFR: this.descriptionFR,
         categories: mappedCategories
       };
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);
+        this.$store.commit('LOADING_FALSE');
         this.$router
-          .push({ name: 'catalogsById', params: { id: this.catalog._id } })
+          .push({ name: 'catalogsById', params: { id: this.currentCatalog._id } })
           .catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         if (err.response.data[0].message === 'Product already exists.') {
           this.$refs['productCode'].value = '';

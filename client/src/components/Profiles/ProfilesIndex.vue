@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="memberDetails.email" default-img="mp" :size="255" />
@@ -210,6 +210,7 @@
 
 <script>
 import Gravatar from 'vue-gravatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'ProfilesIndex',
@@ -217,12 +218,7 @@ export default {
     Gravatar
   },
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    }
+    ...mapGetters(['isLoading', 'loggedInMember'])
   },
   data() {
     return {
@@ -230,10 +226,10 @@ export default {
     };
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
-      const res = await this.$store.dispatch('getMemberDetails', this.member._id);
+      const res = await this.$store.dispatch('getMemberDetails', this.loggedInMember._id);
       this.memberDetails = res.data.member;
-      this.$store.dispatch('setDataReadyTrue');
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -242,13 +238,11 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   }
 };
 </script>

@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     logout: async function() {
-      this.$store.dispatch('setDataReadyFalse');
+      this.$store.commit('LOADING_FALSE');
       await this.$store.dispatch('logout');
       this.$router.push({ name: 'login' });
       this.$toasted.clear();

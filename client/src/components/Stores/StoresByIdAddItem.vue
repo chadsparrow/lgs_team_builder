@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="catalog-list">
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">
@@ -19,7 +19,7 @@
         <select
           class="form-control"
           id="catalogSelection"
-          v-model="currentCatalog"
+          v-model="catalogPicker"
           @change="getCatalog"
         >
           <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog"
@@ -268,6 +268,7 @@
 
 <script>
 import draggable from 'vuedraggable';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'StoresByIdAddItem',
@@ -276,7 +277,7 @@ export default {
   },
   data() {
     return {
-      currentCatalog: {},
+      catalogPicker: '',
       catalogItemSearch: '',
       storeItems: [],
       listHasChanged: false,
@@ -286,20 +287,21 @@ export default {
     };
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters([
+      'isLoading',
+      'currentStore',
+      'catalogs',
+      'currentCatalog',
+      'currentCatalogItems'
+    ]),
     store: function() {
-      return this.$store.getters.currentStore;
-    },
-    catalogs: function() {
-      return this.$store.getters.catalogs;
+      return this.currentStore;
     },
     catalog: function() {
-      return this.$store.getters.currentCatalog;
+      return this.currentCatalog;
     },
     catalogItems: function() {
-      return this.$store.getters.currentCatalogItems;
+      return this.currentCatalogItems;
     },
     filteredItems: function() {
       return this.catalogItems.filter(item => {
@@ -328,7 +330,7 @@ export default {
     }
   },
   created: async function() {
-    this.$store.dispatch('setDataReadyFalse');
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getStore', this.$route.params.id);
       const breadcrumbs = [
@@ -355,14 +357,11 @@ export default {
         await this.$store.dispatch('getCatalog', this.storeItems[0].catalogId);
       }
 
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     listChanged: function() {
@@ -371,14 +370,17 @@ export default {
     updateStoreList: async function() {
       try {
         if (confirm('Are you sure?')) {
+          this.$store.commit('LOADING_TRUE');
           const res = await this.$store.dispatch('updateStoreItems', {
             id: this.store._id,
             storeItems: this.storeItems
           });
+          this.$store.commit('LOADING_FALSE');
           this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
           this.$router.push({ name: 'storesById', params: { id: this.store._id } }).catch(() => {});
         }
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
@@ -402,15 +404,14 @@ export default {
       return item;
     },
     async getCatalog() {
-      this.$store.dispatch('setDataReadyFalse');
+      this.$store.commit('LOADING_TRUE');
       await this.$store.dispatch('getCatalog', this.currentCatalog._id);
       await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     },
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
-      return `/images/catalogs/${folderName}/800/${item.images[0]}_800.jpg`;
+      return `/images/catalogs/${this.catalog._id}/800/${item.images[0]}_800.jpg`;
     },
     async showEditWindow(storeItem) {
       this.currentStoreItem = storeItem;

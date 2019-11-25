@@ -1,38 +1,52 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="header">
       <div>
         <img
           src="@/assets/garneau_logo.png"
           alt="Garneau Logo"
-          v-if="catalog.brand === 'GARNEAU'"
+          v-if="currentCatalog.brand === 'GARNEAU'"
         />
-        <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="catalog.brand === 'SUGOI'" />
+        <img
+          src="@/assets/sugoi_logo.png"
+          alt="Sugoi Logo"
+          v-if="currentCatalog.brand === 'SUGOI'"
+        />
         <img
           src="@/assets/sombrio_logo.png"
           alt="Sombrio Logo"
-          v-if="catalog.brand === 'SOMBRIO'"
+          v-if="currentCatalog.brand === 'SOMBRIO'"
         />
-        {{ catalog.season }} - {{ catalog.year }}
+        {{ currentCatalog.season }} - {{ currentCatalog.year }}
       </div>
       <div class="form-group form-inline">
         <label for="catalogItemSearch" class="mr-2">Search:</label>
         <input
           type="text"
           id="catalogItemSearch"
-          v-if="catalogItems.length > 0"
+          v-if="currentCatalogItems.length > 0"
           class="form-control form-control-sm mr-3"
           v-model="catalogItemSearch"
           placeholder="Enter any product info..."
           autofocus
         />
-        <small class="text-muted">Showing: {{ filteredCount }}/{{ catalogItems.length }}</small>
+        <small class="text-muted"
+          >Showing: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
+        >
       </div>
       <div>
-        <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/add`" tag="a">
+        <router-link
+          class="btn btn-sm"
+          :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
+          tag="a"
+        >
           <i class="fas fa-plus fa-lg"></i>
         </router-link>
-        <router-link class="btn btn-sm" :to="`/dashboard/catalogs/${catalog._id}/edit`" tag="a">
+        <router-link
+          class="btn btn-sm"
+          :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
+          tag="a"
+        >
           <i class="fas fa-cog fa-lg"></i>
         </router-link>
         <button class="btn btn-sm" @click="setView(false)">
@@ -68,6 +82,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'CatalogById',
   data() {
@@ -77,14 +92,9 @@ export default {
     };
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
-    catalog: function() {
-      return this.$store.getters.currentCatalog;
-    },
+    ...mapGetters(['isLoading', 'currentCatalog', 'currentCatalogItems']),
     filteredItems: function() {
-      return this.catalogItems.filter(item => {
+      return this.currentCatalogItems.filter(item => {
         if (
           item.categories.includes(this.catalogItemSearch.toUpperCase()) ||
           item.nameEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
@@ -106,16 +116,13 @@ export default {
       });
     },
     filteredCount: function() {
-      return this.filteredItems.length || this.catalogItems.length;
-    },
-    catalogItems: function() {
-      return this.$store.getters.currentCatalogItems;
+      return this.filteredItems.length || this.currentCatalogItems.length;
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
-
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
@@ -123,26 +130,22 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.catalog.brand} - ${this.catalog.season} - ${this.catalog.year}`,
+          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
           link: '#'
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      await this.$store.dispatch('getCatalogItems', this.catalog._id);
-      this.$store.dispatch('setDataReadyTrue');
+      await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.dispatch('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      const folderName = `${this.catalog.brand}_${this.catalog.season}_${this.catalog.year}`;
-      return `/images/catalogs/${folderName}/800/${item.images[0]}_800.jpg`;
+      return `/images/catalogs/${this.currentCatalog._id}/800/${item.images[0]}_800.jpg`;
     },
     setView(bool) {
       if (bool) this.viewGrid = true;

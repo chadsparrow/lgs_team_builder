@@ -23,7 +23,8 @@
           <div>
             <small class="text-muted">
               {{
-                notification.date | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+                notification.date
+                  | moment('timezone', loggedInMember.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </small>
           </div>
@@ -38,6 +39,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: 'Notifications',
   data() {
@@ -47,19 +49,11 @@ export default {
     };
   },
   computed: {
-    notificationsReady: function() {
-      return this.$store.getters.notificationsReady;
-    },
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    notifications: function() {
-      return this.$store.getters.notifications;
-    }
+    ...mapGetters(['loggedInMember', 'notifications', 'notificationsReady'])
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getMe', this.member._id);
+      await this.$store.dispatch('getMe', this.loggedInMember._id);
       this.getNotifications();
       this.$store.dispatch('setNotificationsReadyTrue');
     } catch (err) {
@@ -75,7 +69,7 @@ export default {
     getNotifications: function() {
       this.polling = setInterval(async () => {
         try {
-          await this.$store.dispatch('getMe', this.member._id);
+          await this.$store.dispatch('getMe', this.loggedInMember._id);
         } catch (err) {
           this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         }
@@ -84,7 +78,7 @@ export default {
     deleteNotification: async function(nId) {
       try {
         const res = await this.$store.dispatch('removeNotification', { nId });
-        await this.$store.dispatch('getMe', this.member._id);
+        await this.$store.dispatch('getMe', this.loggedInMember._id);
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });

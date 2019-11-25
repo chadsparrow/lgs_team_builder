@@ -57,7 +57,6 @@ export default {
 
       try {
         const res = await this.$store.dispatch('login', { email, password });
-        this.$store.dispatch('setDataReadyFalse');
         this.$router.push({ name: 'dashboardIndex' }).catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {

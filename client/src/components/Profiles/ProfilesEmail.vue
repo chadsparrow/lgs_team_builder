@@ -8,7 +8,7 @@
           id="currentEmail"
           type="email"
           class="form-control form-control-sm"
-          v-model="member.email"
+          v-model="loggedInMember.email"
           ref="currentEmail"
           readonly
         />
@@ -47,12 +47,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'ProfilesEmail',
   computed: {
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    }
+    ...mapGetters(['loggedInMember'])
   },
   data() {
     return {
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     updateEmail: async function() {
-      if (this.newEmail === this.member.email) {
+      if (this.newEmail === this.loggedInMember.email) {
         this.$toasted.error('New Email should be different from current Email.', {
           icon: 'exclamation-triangle'
         });
@@ -90,7 +90,7 @@ export default {
         return;
       }
       const updatedEmail = {
-        currentEmail: this.member.email,
+        currentEmail: this.loggedInMember.email,
         newEmail: this.newEmail,
         confirmEmail: this.confirmEmail
       };
@@ -98,7 +98,7 @@ export default {
       try {
         const res = await this.$store.dispatch('updateEmail', {
           updatedEmail,
-          id: this.member._id
+          id: this.loggedInMember._id
         });
 
         this.$router.push({ name: 'profile' });

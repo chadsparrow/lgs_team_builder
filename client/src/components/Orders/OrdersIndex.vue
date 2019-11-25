@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dataReady">
+  <div v-if="!isLoading">
     <span v-if="currentOrders.length === 0">No Orders Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -41,6 +41,7 @@
 
 <script>
 import Paginate from 'vuejs-paginate';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'OrdersIndex',
@@ -54,15 +55,7 @@ export default {
     };
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
-    orders: function() {
-      return this.$store.getters.orders;
-    },
-    member: function() {
-      return this.$store.getters.loggedInMember;
-    },
+    ...mapGetters(['isLoading', 'orders', 'loggedInMember']),
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
@@ -81,6 +74,7 @@ export default {
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -91,14 +85,11 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getOrders');
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     loadOrder: function(id) {

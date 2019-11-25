@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dataReady">
+  <div v-if="!isLoading">
     <div class="bg-dark headerBlock mb-3">
       <div class="container">
         <div class="row text-white p-4">
@@ -7,7 +7,7 @@
             <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
           </div>
           <div class="col-sm-9 text-center">
-            <h1>{{ team.name }} Welcomes You!</h1>
+            <h1>{{ currentTeam.name }} Welcomes You!</h1>
             <small>Please fill in your information to join the team.</small>
           </div>
         </div>
@@ -449,6 +449,7 @@
 // import axios from 'axios';
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'JoinTeam',
@@ -494,23 +495,16 @@ export default {
   },
   created: async function() {
     try {
+      this.$store.commit('LOADING_TRUE');
       await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   computed: {
-    team: function() {
-      return this.$store.getters.currentTeam;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    }
+    ...mapGetters(['currentTeam', 'isLoading'])
   },
   methods: {
     register: async function() {
@@ -551,7 +545,7 @@ export default {
           billingEmail: this.billingEmail
         };
 
-        await this.$store.dispatch('joinTeam', { member, teamId: this.team._id });
+        await this.$store.dispatch('joinTeam', { member, teamId: this.currentTeam._id });
         this.$router.push({ name: 'login' });
         this.$toasted.success('You are now registered - go ahead and login!', {
           icon: 'check-circle'
