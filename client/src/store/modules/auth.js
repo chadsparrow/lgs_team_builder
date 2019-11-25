@@ -146,7 +146,7 @@ export default {
     LOGOUT(state) {
       state.status = '';
       state.token = '';
-      state.loggedInMember = null;
+      state.loggedInMember = { isAdmin: null };
     },
     CLEAR_CURRENTS(state) {
       state.currentMember = null;

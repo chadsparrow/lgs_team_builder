@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 container" v-if="dataReady">
+  <div class="mt-4 container" v-if="!isLoading">
     <div v-if="!access && id">
       <span>You do not have access to Remove Members</span>
       <br />
@@ -47,6 +47,7 @@
 <script>
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamsRemoveMembers',
@@ -63,14 +64,28 @@ export default {
     vSelect
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'loggedInMember']),
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
-    breadcrumbs: function() {
-      return [
+    access: function() {
+      if (!this.isLoading) {
+        if (this.member.isAdmin) return true;
+        if (this.manager._id === this.member._id) return true;
+      }
+      return false;
+    }
+  },
+  created: async function() {
+    this.$store.commit('LOADING_TRUE');
+    try {
+      let res = await this.$store.dispatch('getTeam', this.$route.params.id);
+      const { _id, name, managerId, members } = res.data;
+      this.id = _id;
+      this.name = name;
+      this.manager = managerId;
+      this.teamMembers = members;
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Teams',
@@ -85,49 +100,32 @@ export default {
           link: '#'
         }
       ];
-    },
-    access: function() {
-      if (this.dataReady) {
-        if (this.member.isAdmin) return true;
-        if (this.manager._id === this.member._id) return true;
-      }
-      return false;
-    }
-  },
-  created: async function() {
-    try {
-      let res = await this.$store.dispatch('getTeam', this.$route.params.id);
-      const { _id, name, managerId, members } = res.data;
-      this.id = _id;
-      this.name = name;
-      this.manager = managerId;
-      this.teamMembers = members;
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
 
       const filtered = members.filter(function(element) {
         return element._id !== managerId._id;
       });
 
       this.members = filtered;
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     removeMembers: async function() {
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('removeTeamMembers', {
           chosenMembers: this.chosenMembers,
           id: this.id
         });
+        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }

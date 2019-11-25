@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 container-fluid" v-if="dataReady">
+  <div class="mt-4 container-fluid" v-if="!isLoading">
     <div v-if="!member.isAdmin">
       <span>You do not have access to Add Members</span>
       <br />
@@ -33,6 +33,7 @@
 <script>
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamsAddMember',
@@ -50,14 +51,13 @@ export default {
     vSelect
   },
   computed: {
+    ...mapGetters(['isLoading', 'loggedInMember']),
     member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
+      return this.loggedInMember;
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       let res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const { _id, name, managerId, members } = res.data;
@@ -99,26 +99,25 @@ export default {
       });
 
       this.members = availMembers;
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     addTeamMember: async function() {
       const newTeamMember = {
         memberId: this.chosenMember._id
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
         await this.$store.dispatch('addTeamMember', { newTeamMember, id: this.id });
+        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
         this.$toasted.success('Member Added to Team', { icon: 'check-circle' });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     }

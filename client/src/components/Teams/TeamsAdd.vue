@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" v-if="dataReady">
+  <div class="container-fluid" v-if="!isLoading">
     <div class="row">
       <div class="col middle-section">
         <form novalidate>
@@ -400,6 +400,7 @@ import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamsAdd',
@@ -444,17 +445,16 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isLoading', 'loggedInMember', 'allMembers']),
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
     members: function() {
-      return this.$store.getters.allMembers;
-    },
-    dataReady: function() {
-      return this.$store.getters.dataReady;
+      return this.allMembers;
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const admins = await this.$store.dispatch('getAdmins');
       this.adminsList = admins.data;
@@ -474,14 +474,12 @@ export default {
         }
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_FALSE');
       this.$refs.teamId.focus();
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     addTeam: async function() {
@@ -512,13 +510,14 @@ export default {
         shippingPhone: this.shippingPhone,
         shippingEmail: this.shippingEmail
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addTeam', newTeam);
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teams' });
       } catch (err) {
-        console.log(err);
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
@@ -527,6 +526,7 @@ export default {
       }
     },
     getManagerDetails: async function() {
+      this.$store.commit('LOADING_TRUE');
       try {
         if (this.chosenMember !== null) {
           const res = await this.$store.dispatch('getMemberDetails', this.chosenMember._id);
@@ -571,7 +571,9 @@ export default {
           this.useManagerDetails = false;
           this.bulkUseDetails = 'other';
         }
+        this.$store.commit('LOADING_FALSE');
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },

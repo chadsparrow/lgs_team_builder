@@ -1,5 +1,5 @@
 <template>
-  <div class="teampage" v-if="dataReady">
+  <div class="teampage" v-if="!isLoading">
     <!-- TEAM INFO GRID SECTION -->
     <div class="team-info">
       <div v-if="team.name">
@@ -328,6 +328,7 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamById',
@@ -341,20 +342,18 @@ export default {
     };
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'loggedInMember', 'currentTeam', 'teamStores']),
     joinLink: function() {
       return `${window.location.origin}/join/${this.team._id}`;
     },
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
     team: function() {
-      return this.$store.getters.currentTeam;
+      return this.currentTeam;
     },
     stores: function() {
-      return this.$store.getters.teamStores;
+      return this.teamStores;
     },
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
@@ -379,6 +378,7 @@ export default {
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       const res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const teamName = res.data.name;
@@ -395,16 +395,12 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeamStores', this.$route.params.id);
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       if (err.response.data[0].message !== 'Team has no stores.')
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     onCopy: function() {
@@ -416,17 +412,24 @@ export default {
       this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
     },
     loadMember: function(id) {
-      if (this.dataReady && this.member._id === id) {
+      if (this.member._id === id) {
         return this.$router.push({ name: 'profile', params: { id } }).catch(() => {});
       } else if (this.access) {
         return this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
       }
     },
     removeMember: async function(id) {
-      await this.$store.dispatch('removeMember', {
-        teamId: this.team._id,
-        memberId: id
-      });
+      try {
+        this.$store.commit('LOADING_TRUE');
+        await this.$store.dispatch('removeMember', {
+          teamId: this.team._id,
+          memberId: id
+        });
+        this.$store.commit('LOADING_FALSE');
+      } catch (err) {
+        this.$store.commit('LOADING_FALSE');
+        this.$toasted.error('Cannot Remove Member', { icon: 'exclamation-triangle' });
+      }
     },
     loadStore: function(id) {
       this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});

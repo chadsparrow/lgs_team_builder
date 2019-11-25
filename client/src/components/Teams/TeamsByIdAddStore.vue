@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="dataReady">
+  <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div v-if="team.name">
         <avatar
@@ -120,7 +120,7 @@
                 type="datetime"
                 input-id="openingDate"
                 input-class="form-control form-control-sm"
-                v-model="opening"
+                v-model="openingDate"
                 :value-zone="team.timezone"
                 :zone="team.timezone"
                 :minute-step="60"
@@ -143,7 +143,7 @@
                 :minute-step="60"
                 :phrases="{ ok: 'Continue', cancel: 'Exit' }"
                 :week-start="7"
-                :min-datetime="opening"
+                :min-datetime="openingDate"
                 title="When do you want the store to close?"
               ></datetime>
             </div>
@@ -270,6 +270,7 @@
 
 <script>
 import Avatar from 'vue-avatar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamsAddStore',
@@ -284,31 +285,23 @@ export default {
       brand: '',
       orderReference: '',
       mode: 'HOLD',
-      opening: null,
-      closing: null,
+      openingDate: null,
+      closingClosing: null,
       storeMessage: '',
       shippingType: 'BULK'
     };
   },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
+    ...mapGetters(['isLoading', 'loggedInMember', 'currentTeam']),
     member: function() {
-      return this.$store.getters.loggedInMember;
+      return this.loggedInMember;
     },
     team: function() {
-      return this.$store.getters.currentTeam;
-    },
-    minDateTime: function() {
-      if (this.openingDate) {
-        return this.openingDate;
-      } else {
-        return null;
-      }
+      return this.currentTeam;
     }
   },
   created: async function() {
+    this.$store.commit('LOADING_TRUE');
     try {
       await this.$store.dispatch('getTeam', this.$route.params.id);
       const breadcrumbs = [
@@ -329,25 +322,22 @@ export default {
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.storeCountry = this.team.bulkShipping.country;
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
-  },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
   },
   methods: {
     setOpen: function() {
       if (this.mode === 'OPEN') {
-        this.opening = new Date().toISOString();
-        this.closing = null;
+        this.openingDate = new Date().toISOString();
+        this.closingDate = null;
       }
 
       if (this.mode === 'CLOSED') {
-        this.closing = new Date().toISOString();
-        this.opening = null;
+        this.closingDate = new Date().toISOString();
+        this.openingDate = null;
       }
     },
     addStore: async function() {
@@ -361,18 +351,20 @@ export default {
         adminId: this.team.adminId._id,
         managerId: this.team.managerId._id,
         mode: this.mode,
-        openingDate: this.opening,
-        closingDate: this.closing,
+        openingDate: this.openingDate,
+        closingDate: this.closingDate,
         timezone: this.team.timezone,
         storeMessage: this.storeMessage,
         shippingType: this.shippingType
       };
-
+      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addTeamStore', newStore);
+        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

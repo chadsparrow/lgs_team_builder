@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dataReady" class="page">
+  <div v-if="!isLoading" class="page">
     <div class="header">
       <div class="form-group form-inline m-0">
         <label for="memberSearch" class="mr-2">Search:</label>
@@ -14,7 +14,7 @@
         />
         <small class="text-muted">Showing: {{ filteredCount }}/{{ teams.length }}</small>
       </div>
-      <div v-if="isAdmin">
+      <div v-if="member && member.isAdmin">
         <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
           <i class="fas fa-plus mr-2"></i>Add Team
         </router-link>
@@ -23,7 +23,7 @@
 
     <div class="row team-list">
       <div class="col-sm-12">
-        <span v-if="currentTeams.length === 0 && isAdmin">No Teams Found</span>
+        <span v-if="currentTeams.length === 0 && member && member.isAdmin">No Teams Found</span>
         <span v-else-if="currentTeams.length === 0"
           >No Teams Found - Contact your team manager to add you</span
         >
@@ -31,20 +31,20 @@
           <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
             <tbody>
               <tr>
-                <th scope="col" v-if="isAdmin">Account #</th>
+                <th scope="col" v-if="member && member.isAdmin">Account #</th>
                 <th scope="col">Name</th>
                 <th scope="col">Admin</th>
                 <th scope="col">Manager</th>
                 <th scope="col">Members</th>
               </tr>
               <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
-                <td scope="row" v-if="isAdmin">{{ team.teamId }}</td>
+                <td scope="row" v-if="member && member.isAdmin">{{ team.teamId }}</td>
                 <td>{{ team.name }}</td>
                 <td>{{ team.adminId.name }}</td>
                 <td>
                   <i
                     class="fas fa-certificate text-warning mr-1"
-                    v-if="team.managerId._id === member._id"
+                    v-if="member && team.managerId._id === member._id"
                   ></i>
                   {{ team.managerId.name }}
                 </td>
@@ -73,6 +73,7 @@
 
 <script>
 import Paginate from 'vuejs-paginate';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'TeamsIndex',
@@ -83,42 +84,32 @@ export default {
     return {
       currentPage: 1,
       itemsPerPage: 12,
-      breadcrumbs: [
+      teamSearchText: ''
+    };
+  },
+  created: async function() {
+    this.$store.commit('LOADING_TRUE');
+    try {
+      const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Teams',
           link: '#'
         }
-      ],
-      teamSearchText: ''
-    };
-  },
-  created: async function() {
-    try {
-      await this.$store.dispatch('setBreadcrumbs', this.breadcrumbs);
+      ];
+      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getTeams');
       await this.$store.commit('CLEAR_CURRENTS');
-      this.$store.dispatch('setDataReadyTrue');
+      this.$store.commit('LOADING_FALSE');
     } catch (err) {
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
-      this.$store.dispatch('setDataReadyTrue');
     }
   },
-  beforeDestroy: function() {
-    this.$store.dispatch('setDataReadyFalse');
-  },
   computed: {
-    dataReady: function() {
-      return this.$store.getters.dataReady;
-    },
-    isAdmin: function() {
-      return this.member.isAdmin;
-    },
+    ...mapGetters(['isLoading', 'loggedInMember', 'teams']),
     member: function() {
-      return this.$store.getters.loggedInMember;
-    },
-    teams: function() {
-      return this.$store.getters.teams;
+      return this.loggedInMember;
     },
     filteredTeams: function() {
       return this.teams.filter(team => {
