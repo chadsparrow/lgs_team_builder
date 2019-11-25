@@ -88,7 +88,6 @@ export default {
           link: '#'
         }
       ];
-      await this.$store.commit('CLEAR_CURRENTS');
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {

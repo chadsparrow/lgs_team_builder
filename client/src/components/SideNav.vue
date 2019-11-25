@@ -94,6 +94,7 @@ export default {
     ...mapGetters(['loggedInMember'])
   },
   created: function() {
+    this.currentDateTime = new Date();
     this.polling = setInterval(this.getNow, 1000);
   },
   beforeDestroy: function() {

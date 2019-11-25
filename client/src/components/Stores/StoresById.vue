@@ -244,6 +244,7 @@ export default {
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
+      this.currentDateTime = new Date();
       this.polling = setInterval(this.getNow, 1000);
       await this.$store.dispatch('getStore', this.$route.params.id);
       const breadcrumbs = [

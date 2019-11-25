@@ -6,8 +6,7 @@ export default {
     token: localStorage.getItem('token') || '',
     loggedInMember: {},
     emails: [],
-    notifications: [],
-    currentMember: {}
+    notifications: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {

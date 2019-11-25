@@ -294,13 +294,6 @@ export default {
     },
     team: function() {
       return this.currentTeam;
-    },
-    minDateTime: function() {
-      if (this.store.openingDate) {
-        return this.store.openingDate;
-      } else {
-        return null;
-      }
     }
   },
   created: async function() {

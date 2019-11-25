@@ -1,7 +1,8 @@
 import axios from 'axios';
 export default {
   state: {
-    allMembers: []
+    allMembers: [],
+    currentMember: {}
   },
   actions: {
     getMember(context, id) {
