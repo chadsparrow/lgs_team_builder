@@ -32,7 +32,7 @@ router.get('/:id', [validateObjectId, auth, admin], async (req, res) => {
   const catalog = await Catalog.findById(req.params.id);
   if (!catalog) return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
 
-  return res.json(catalog);
+  return res.send(catalog);
 });
 
 // @desc    Add new catalog
