@@ -22,7 +22,7 @@
           v-model="catalogPicker"
           @change="getCatalog"
         >
-          <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog"
+          <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog._id"
             >{{ catalog.brand }} - {{ catalog.season }} -{{ catalog.year }}</option
           >
         </select>
@@ -47,10 +47,10 @@
         <draggable
           class="list-group"
           :list="filteredItems"
+          :clone="clone"
           :group="{ name: 'items', pull: 'clone', put: false }"
-          :clone="cloneItem"
         >
-          <div class="list-group-item" v-for="item in filteredItems" :key="item._id">
+          <div class="list-group-item" v-for="(item, index) in filteredItems" :key="index">
             <div class="itemImage">
               <img :src="getImgUrl(item)" :alt="item.nameEN" />
             </div>
@@ -64,32 +64,13 @@
       </div>
     </div>
     <div class="store-items">
-      <div class="store-items-header text-center">
-        <div class="row">
-          <div class="col-sm-6">
-            <button
-              class="btn btn-block btn-success mt-2"
-              @click="updateStoreList"
-              :disabled="!listHasChanged"
-            >
-              Commit Changes
-            </button>
-          </div>
-          <div class="col-sm-6">
-            <router-link
-              :to="`/dashboard/stores/${store._id}`"
-              class="btn btn-block btn-danger mt-2"
-              >Cancel</router-link
-            >
-          </div>
-        </div>
-      </div>
       <div class="store-items-list">
         <draggable
           class="dragArea list-group"
+          ghost-class="ghost"
           :list="storeItems"
           group="items"
-          @change="listChanged"
+          @change="updateStoreItems"
         >
           <div class="list-group-item mb-1" v-for="(storeItem, index) in storeItems" :key="index">
             <div class="itemImage">
@@ -107,7 +88,7 @@
               >
             </div>
             <div class="itemPricing">
-              <span class="text-info">{{ storeItem.price | currency }}</span>
+              <span class="text-info">{{ storeItem.storePrice | currency }}</span>
               <br />
               <label for="pbGoal">
                 <small>Price Break Goal:</small>
@@ -128,6 +109,7 @@
         </draggable>
       </div>
     </div>
+
     <!-- EDIT ITEM MODAL WINDOW -->
     <div v-if="showModal">
       <transition name="modal">
@@ -198,16 +180,17 @@
                           <select
                             class="form-control form-control-sm"
                             id="priceBreak"
-                            v-model="currentStoreItem.priceBreakGoal"
-                            @change="setPrice"
+                            v-model.number="currentStoreItem.priceBreakGoal"
+                            @change="setStorePrice"
+                            ref="priceBreak"
                           >
                             <option
-                              v-for="pb in currentStoreItemPriceBreaks"
+                              v-for="(pb, index) in currentItemPriceBreaks"
                               :value="parseInt(pb.priceBreak.split('-')[0])"
-                              :key="pb.priceBreak"
+                              :key="index"
                               >{{ pb.priceBreak }} unit(s) - {{ pb.price | currency }}/unit</option
                             >
-                            <option :value="parseInt('250')">250+ units - Set Price Below</option>
+                            <option :value="250">250+ units - Set Price Below</option>
                           </select>
                         </div>
                       </div>
@@ -220,34 +203,74 @@
                             <select
                               class="form-control form-control-sm"
                               v-model="currentStoreItem.upChargeType"
-                              @change="setPrice"
+                              ref="upChargeType"
+                              :readonly="currentStoreItem.overrideActualPrice"
+                              @change="setStorePrice"
                             >
                               <option>$</option>
                               <option>%</option>
                             </select>
                           </div>
                           <div class="col-sm-8">
-                            <input
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              class="form-control form-control-sm text-center"
+                            <currency-input
                               v-model="currentStoreItem.upChargeAmount"
-                              @input="setPrice"
+                              :currency="store.currency"
+                              class="form-control form-control-sm text-center"
+                              v-if="currentStoreItem.upChargeType === '$'"
+                              ref="upChargeAmount"
+                              :auto-decimal-mode="true"
+                              :precision="2"
+                              @change="setStorePrice"
+                              :readonly="currentStoreItem.overrideActualPrice"
+                            />
+                            <input
+                              class="form-control form-control-sm text-center"
+                              v-model.number="currentStoreItem.upChargeAmount"
+                              ref="upChargeAmount"
+                              @change="setStorePrice"
+                              :readonly="currentStoreItem.overrideActualPrice"
+                              v-else
                             />
                           </div>
                         </div>
                       </div>
+                      <div class="col-sm-12 bg-danger">
+                        <div class="form-group form-check">
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="overrideActualPrice"
+                            v-model="currentStoreItem.overrideActualPrice"
+                            @change="overrideActual"
+                          />
+                          <label class="form-check-label text-white" for="overrideActualPrice"
+                            >Override Actual Price -
+                            {{ currentStoreItem.actualPrice | currency }}</label
+                          >
+                        </div>
+                      </div>
                       <div class="col-sm-12">
                         <div class="form-group">
-                          <label for="price">Final Price: ({{ store.currency }})</label>
-                          <input
-                            type="number"
-                            class="form-control text-center"
-                            id="price"
-                            min="0"
-                            steps="0.01"
-                            v-model="currentStoreItem.price"
+                          <label for="storePrice"
+                            >Store Price: ({{ store.currency }})<br /><small
+                              class="text-muted"
+                              v-if="!currentStoreItem.overrideActualPrice"
+                              >Actual Price: {{ currentStoreItem.actualPrice | currency }} +
+                              Up-Charge Amount:
+                              {{ currentStoreItem.upChargeTotal | currency }}</small
+                            ><small class="text-muted" v-else
+                              >Please fill in desired store price</small
+                            ></label
+                          >
+                          <currency-input
+                            v-model="currentStoreItem.storePrice"
+                            :currency="store.currency"
+                            :auto-decimal-mode="true"
+                            :precision="2"
+                            class="form-control form-control-lg text-center"
+                            ref="storePrice"
+                            :readonly="!this.currentStoreItem.overrideActualPrice"
+                            id="storePrice"
                           />
                         </div>
                       </div>
@@ -255,7 +278,9 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-info" @click="saveItem">Exit</button>
+                  <button type="button" class="btn btn-info" @click="closeModal">
+                    Exit
+                  </button>
                 </div>
               </div>
             </div>
@@ -279,11 +304,8 @@ export default {
     return {
       catalogPicker: '',
       catalogItemSearch: '',
-      storeItems: [],
-      listHasChanged: false,
       showModal: false,
-      currentStoreItemPriceBreaks: {},
-      currentStoreItem: {}
+      currentItemPriceBreaks: null
     };
   },
   computed: {
@@ -292,10 +314,20 @@ export default {
       'currentStore',
       'catalogs',
       'currentCatalog',
-      'currentCatalogItems'
+      'currentCatalogItems',
+      'currentStoreItem',
+      'currentStoreItems'
     ]),
     store: function() {
       return this.currentStore;
+    },
+    storeItems: {
+      get() {
+        return this.currentStoreItems;
+      },
+      set(value) {
+        this.$store.commit('SET_CURRENT_STORE_ITEM', value);
+      }
     },
     catalog: function() {
       return this.currentCatalog;
@@ -350,12 +382,7 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogsQuery', this.store.brand);
-      const res = await this.$store.dispatch('getStoreItems', this.store._id);
-      this.storeItems = res.data;
-
-      if (this.storeItems.length > 0) {
-        await this.$store.dispatch('getCatalog', this.storeItems[0].catalogId);
-      }
+      await this.$store.dispatch('getStoreItems', this.store._id);
 
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
@@ -364,121 +391,124 @@ export default {
     }
   },
   methods: {
-    listChanged: function() {
-      this.listHasChanged = true;
+    async showEditWindow(storeItem) {
+      if (this.store.currency === 'CAD') {
+        this.currentItemPriceBreaks = storeItem.priceBreaks.CAD;
+      } else if (this.store.currency === 'USD') {
+        this.currentItemPriceBreaks = storeItem.priceBreaks.USD;
+      }
+      this.$store.commit('SET_CURRENT_STORE_ITEM', storeItem);
+      this.showModal = true;
     },
-    updateStoreList: async function() {
-      try {
-        if (confirm('Are you sure?')) {
-          this.$store.commit('LOADING_TRUE');
-          const res = await this.$store.dispatch('updateStoreItems', {
-            id: this.store._id,
-            storeItems: this.storeItems
-          });
-          this.$store.commit('LOADING_FALSE');
-          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-          this.$router.push({ name: 'storesById', params: { id: this.store._id } }).catch(() => {});
+    overrideActual() {
+      this.currentStoreItem.upChargeAmount = 0;
+      this.currentStoreItem.storePrice = 0;
+      this.setStorePrice();
+    },
+    setStorePrice() {
+      const index = this.$refs.priceBreak.selectedIndex;
+      this.currentStoreItem.priceBreakIndex = index;
+
+      if (!this.currentStoreItem.overrideActualPrice) {
+        if (index !== 6) {
+          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
+          this.currentStoreItem.storePrice = this.currentStoreItem.actualPrice;
+        } else {
+          this.currentStoreItem.actualPrice = 0;
+          this.currentStoreItem.storePrice = 0;
         }
+
+        this.addUpCharge();
+      } else {
+        if (index !== 6) {
+          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
+        } else {
+          this.currentStoreItem.actualPrice = 0;
+        }
+      }
+    },
+    addUpCharge() {
+      const upChargeType = this.$refs.upChargeType.value;
+      const upChargeAmount = parseFloat(this.$refs.upChargeAmount.value);
+
+      if (upChargeType === '$' && upChargeAmount && upChargeAmount > 0) {
+        this.currentStoreItem.upChargeTotal = upChargeAmount;
+        this.currentStoreItem.storePrice =
+          this.currentStoreItem.actualPrice + this.currentStoreItem.upChargeTotal;
+        return;
+      }
+
+      if (upChargeType === '%' && upChargeAmount && upChargeAmount > 0) {
+        this.currentStoreItem.upChargeTotal =
+          this.currentStoreItem.actualPrice * (upChargeAmount / 100);
+        this.currentStoreItem.storePrice =
+          this.currentStoreItem.actualPrice + this.currentStoreItem.upChargeTotal;
+        return;
+      }
+    },
+    closeModal() {
+      this.updateStoreItems();
+      this.showModal = false;
+      this.currentItemPriceBreaks = null;
+    },
+    removeStoreItem: async function(index) {
+      if (confirm('Are you sure?')) {
+        this.$store.commit('REMOVE_STORE_ITEM', index);
+        this.updateStoreItems();
+      }
+    },
+    async updateStoreItems() {
+      const items = this.currentStoreItems;
+      try {
+        await this.$store.dispatch('updateStoreItems', {
+          id: this.store._id,
+          items
+        });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
-    removeStoreItem: async function(index) {
-      this.storeItems = this.storeItems.filter((item, i) => index !== i);
-      this.listHasChanged = true;
-    },
-    cloneItem: function(item) {
-      item.itemId = item._id;
-      item.storeId = this.store._id;
-      item.brand = this.store.brand;
-      item.refNumber = '';
-      item.images = [];
+    clone: function(el) {
+      let price = 0.0;
       if (this.store.currency === 'CAD') {
-        item.price = item.priceBreaks.CAD[3].price;
-        item.priceBreakGoal = item.priceBreaks.CAD[3].priceBreak.split('-')[0];
+        price = el.priceBreaks.CAD[3].price;
       } else if (this.store.currency === 'USD') {
-        item.price = item.priceBreaks.USD[3].price;
-        item.priceBreakGoal = item.priceBreaks.USD[3].priceBreak.split('-')[0];
+        price = el.priceBreaks.USD[3].price;
       }
-      return item;
+      return {
+        catalogId: el.catalogId,
+        categories: el.categories,
+        descriptionEN: el.descriptionEN,
+        descriptionFR: el.descriptionFR,
+        gender: el.gender,
+        isActive: el.isActive,
+        itemId: el._id,
+        nameEN: el.nameEN,
+        nameFR: el.nameFR,
+        surveyLikedBy: [],
+        images: [],
+        upChargeType: '$',
+        upChargeAmount: 0.0,
+        upChargeTotal: 0.0,
+        priceBreakGoal: 12,
+        storePrice: price,
+        actualPrice: price,
+        productCode: el.productCode,
+        priceBreaks: el.priceBreaks,
+        priceBreakIndex: 3,
+        sizes: el.sizes,
+        styleCode: el.styleCode
+      };
     },
     async getCatalog() {
       this.$store.commit('LOADING_TRUE');
-      await this.$store.dispatch('getCatalog', this.currentCatalog._id);
-      await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
+      await this.$store.dispatch('getCatalog', this.catalogPicker);
+      await this.$store.dispatch('getCatalogItems', this.catalogPicker);
       this.$store.commit('LOADING_FALSE');
     },
     getImgUrl(item) {
       if (item.images.length === 0) return require('@/assets/missing_item_800.png');
       return `/images/catalogs/${this.catalog._id}/800/${item.images[0]}_800.jpg`;
-    },
-    async showEditWindow(storeItem) {
-      this.currentStoreItem = storeItem;
-      const res = await this.$store.dispatch('getCatalogItem', storeItem.itemId);
-      if (this.store.currency === 'CAD') {
-        this.currentStoreItemPriceBreaks = res.data.priceBreaks.CAD;
-      } else if (this.store.currency === 'USD') {
-        this.currentStoreItemPriceBreaks = res.data.priceBreaks.USD;
-      }
-      this.showModal = true;
-    },
-    closeModal() {
-      this.currentStoreItem = {};
-      this.showModal = false;
-    },
-    setPrice() {
-      const { priceBreakGoal, upChargeType, upChargeAmount } = this.currentStoreItem;
-
-      if (priceBreakGoal === 1) {
-        this.currentStoreItem.price = this.calculatePrice(0, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 2) {
-        this.currentStoreItem.price = this.calculatePrice(1, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 6) {
-        this.currentStoreItem.price = this.calculatePrice(2, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 12) {
-        this.currentStoreItem.price = this.calculatePrice(3, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 50) {
-        this.currentStoreItem.price = this.calculatePrice(4, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 100) {
-        this.currentStoreItem.price = this.calculatePrice(5, upChargeType, upChargeAmount);
-      }
-
-      if (priceBreakGoal === 250) {
-        this.currentStoreItem.price = 0;
-      }
-    },
-    calculatePrice(index, upChargeType, upChargeAmount) {
-      const upAmount = parseFloat(upChargeAmount);
-      let price = parseFloat(this.currentStoreItemPriceBreaks[index].price);
-      if (upAmount > 0) {
-        if (upChargeType === '%') {
-          return (price += price * (upAmount / 100)).toFixed(2);
-        }
-        return (price += upAmount).toFixed(2);
-      }
-
-      return price.toFixed(2);
-    },
-    saveItem() {
-      this.storeItems.forEach(item => {
-        if (item._id === this.currentStoreItem._id) {
-          item = this.currentStoreItem;
-          this.currentStoreItem = {};
-          this.showModal = false;
-          this.listHasChanged = true;
-        }
-      });
     }
   }
 };
@@ -493,6 +523,7 @@ export default {
   width: 100%;
   height: 100%;
   grid-template-areas: 'catalog-list store-items';
+  overflow: hidden;
 
   .catalog-list {
     grid-area: catalog-list;
@@ -528,7 +559,7 @@ export default {
       grid-area: catalogitem-list;
       overflow-x: none;
       overflow-y: auto;
-      max-height: 700px;
+      max-height: calc(100vh - 245px);
 
       .list-group-item {
         display: flex;
@@ -559,16 +590,15 @@ export default {
     grid-area: store-items;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 1fr;
     grid-gap: 0.5rem;
     width: 100%;
     height: 100%;
-    grid-template-areas:
-      'store-items-header'
-      'store-items-list';
+    grid-template-areas: 'store-items-list';
 
-    .store-items-header {
-      grid-area: store-items-header;
+    .ghost {
+      opacity: 0.4;
+      background: #c8ebfb;
     }
 
     .store-items-list {
@@ -578,7 +608,7 @@ export default {
       background-color: whitesmoke;
       overflow-x: hidden;
       overflow-y: auto;
-      max-height: 850px;
+      max-height: calc(100vh - 80px);
     }
 
     .drag-spot {
@@ -591,7 +621,7 @@ export default {
       color: grey;
       font-weight: 700;
       width: 100%;
-      height: 100px;
+      height: 50px;
       opacity: 0.4;
     }
 

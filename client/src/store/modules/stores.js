@@ -45,7 +45,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_STORE_ITEMS');
-          const res = await axios.get(`/api/v1/storeitems/store/${id}`);
+          const res = await axios.get(`/api/v1/stores/${id}/items`);
           commit('SET_CURRENT_STORE_ITEMS', res.data);
           resolve(res);
         } catch (err) {
@@ -53,11 +53,12 @@ export default {
         }
       });
     },
-    updateStoreItems({ commit }, { id, storeItems }) {
+    updateStoreItems({ commit }, { id, items }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_STORE_ITEMS');
-          const res = await axios.put(`/api/v1/storeitems/${id}`, { storeItems });
+          const res = await axios.put(`/api/v1/stores/${id}/items`, { items });
+          commit('SET_CURRENT_STORE_ITEMS', res.data[0].items);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -83,17 +84,6 @@ export default {
           reject(err);
         }
       });
-    },
-    removeStoreItem({ commit }, id) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          commit('CLEAR_STORE_ITEMS');
-          const res = await axios.delete(`/api/v1/storeitems/${id}`);
-          resolve(res);
-        } catch (err) {
-          reject(err);
-        }
-      });
     }
   },
   mutations: {
@@ -114,6 +104,13 @@ export default {
     },
     SET_CURRENT_STORE_ITEM(state, payload) {
       state.currentStoreItem = payload;
+    },
+    SET_CURRENT_STORE_ITEM_PRICE(state, payload) {
+      state.currentStoreItem.price = payload;
+    },
+    REMOVE_STORE_ITEM(state, payload) {
+      const index = payload;
+      state.currentStoreItems = state.currentStoreItems.filter((item, i) => index !== i);
     }
   },
   getters: {

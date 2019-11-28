@@ -13,6 +13,7 @@ import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
 import interceptorsSetup from './helpers/interceptors';
+import VueCurrencyInput from 'vue-currency-input';
 
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
@@ -29,6 +30,7 @@ Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);
 Vue.use(Vue2Filters);
+Vue.use(VueCurrencyInput);
 
 Vue.config.productionTip = false;
 

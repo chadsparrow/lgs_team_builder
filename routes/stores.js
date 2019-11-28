@@ -5,7 +5,6 @@ const swearjar = require('swearjar');
 const { Store, validateStore } = require('../models/Store');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
-const { StoreItem } = require('../models/StoreItem');
 
 const router = express.Router();
 const auth = require('../middleware/auth');
@@ -29,7 +28,7 @@ router.get('/', auth, async (req, res) => {
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'teamId', select: 'name teamId' })
-      .select('-updatedAt -__v ');
+      .select('-updatedAt -__v -items');
 
     if (stores && stores.length === 0)
       return res.status(404).send([{ message: 'There are no stores.' }]);
@@ -52,7 +51,7 @@ router.get('/', auth, async (req, res) => {
     .populate({ path: 'managerId', select: 'name email' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId' })
-    .select('-updatedAt -__v ');
+    .select('-updatedAt -__v -items');
 
   if (collectedStores && collectedStores.length === 0)
     return res.status(404).send([{ message: 'You have no open stores.' }]);
@@ -69,7 +68,7 @@ router.get('/:id', [validateObjectId, auth], async (req, res) => {
     .populate({ path: 'managerId', select: 'name email phone' })
     .populate({ path: 'adminId', select: 'name email' })
     .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
-    .select('-updatedAt -__v ');
+    .select('-updatedAt -__v -items');
   if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
 
   return res.send(store);
@@ -87,7 +86,7 @@ router.get('/team/:id', [validateObjectId, auth], async (req, res) => {
       .populate({ path: 'managerId', select: 'name email' })
       .populate({ path: 'adminId', select: 'name email' })
       .populate({ path: 'teamId', select: 'name teamId' })
-      .select('-updatedAt -__v ');
+      .select('-updatedAt -__v -items');
     if (stores && stores.length === 0)
       return res.status(404).send([{ message: 'Team has no stores.' }]);
 
@@ -221,6 +220,35 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
   let newStoreID = store._id.toString();
   newStoreID = newStoreID.substring(0, 7);
 
+  const dupStoreItems = store.items.map(el => {
+    return {
+      itemId: el.itemId,
+      catalogId: el.catalogId,
+      brand: el.brand,
+      surveyLikedBy: [],
+      isActive: el.isActive,
+      sizes: el.sizes,
+      gender: el.gender,
+      categories: el.categories,
+      nameEN: el.nameEN,
+      nameFR: el.nameFR,
+      descriptionEN: el.descriptionEN,
+      descriptionFR: el.descriptionFR,
+      productCode: el.productCode,
+      styleCode: el.styleCode,
+      refNumber: el.refNumber,
+      images: el.images,
+      mandatoryItem: el.mandatoryItem,
+      price: el.price,
+      netPrice: el.netPrice,
+      priceBreakGoal: el.priceBreakGoal,
+      priceBreaks: el.priceBreaks,
+      upChargeType: el.upChargeType,
+      upChargeAmount: el.upChargeAmount,
+      upChargeTotal: el.upChargeTotal
+    };
+  });
+
   const newStore = new Store({
     totalOrders: 0,
     totalItemsOrdered: 0,
@@ -241,65 +269,14 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
     shippingType: store.shippingType,
     extraCharges: store.extraCharges,
     collectedShippingCharges: [],
-    bulkShipping: store.bulkShipping
+    bulkShipping: store.bulkShipping,
+    items: dupStoreItems
   });
 
   await newStore.save();
 
   await Team.updateOne({ _id: newStore.teamId }, { $push: { stores: newStore._id } });
 
-  const storeItems = await StoreItem.find({ storeId: store._id });
-  if (storeItems.length > 0) {
-    storeItems.forEach(async storeItem => {
-      const {
-        itemId,
-        catalogId,
-        brand,
-        isActive,
-        sizes,
-        gender,
-        categories,
-        nameEN,
-        nameFR,
-        descriptionEN,
-        descriptionFR,
-        productCode,
-        styleCode,
-        refNumber,
-        images,
-        mandatoryItem,
-        price,
-        priceBreakGoal,
-        upChargeType,
-        upChargeAmount
-      } = storeItem;
-
-      await StoreItem.create({
-        storeId: newStore._id,
-        itemId,
-        catalogId,
-        brand,
-        surveyLikedBy: [],
-        isActive,
-        sizes,
-        gender,
-        categories,
-        nameEN,
-        nameFR,
-        descriptionEN,
-        descriptionFR,
-        productCode,
-        styleCode,
-        refNumber,
-        images,
-        mandatoryItem,
-        price,
-        priceBreakGoal,
-        upChargeType,
-        upChargeAmount
-      });
-    });
-  }
   return res.status(200).send([{ message: 'Team Store duplicated', store: newStore }]);
 });
 
@@ -369,6 +346,32 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
 
   await store.save();
   return res.send([{ message: 'Store updated' }]);
+});
+
+// @desc    gets items in specific store
+// @route   GET /api/v1/stores/:id/items
+// @access  Private - admin
+router.get('/:id/items', [validateObjectId, auth], async (req, res) => {
+  const store = await Store.findById(req.params.id).select('items');
+  if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
+
+  const { items } = store;
+  return res.status(200).send(items);
+});
+
+// @desc    update items in specific store
+// @route   PUT /api/v1/stores/:id/items
+// @access  Private - admin
+router.put('/:id/items', [validateObjectId, auth, admin], async (req, res) => {
+  const { items } = req.body;
+
+  const store = await Store.findByIdAndUpdate(
+    req.params.id,
+    { items },
+    { $upsert: true, new: true }
+  ).select('items');
+
+  return res.status(200).send([{ message: 'Items Updated', items: store.items }]);
 });
 
 module.exports = router;

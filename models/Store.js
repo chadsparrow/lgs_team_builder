@@ -159,6 +159,164 @@ const StoreSchema = new mongoose.Schema(
           default: 0.0
         }
       }
+    ],
+    items: [
+      {
+        itemId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'catalogitems'
+        },
+        catalogId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'catalogs'
+        },
+        brand: {
+          type: String,
+          required: true,
+          trim: true
+        },
+        surveyLikedBy: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'members'
+          }
+        ],
+        isActive: {
+          type: Boolean,
+          default: true
+        },
+        sizes: [
+          {
+            type: String,
+            trim: true,
+            required: true,
+            minlength: 1,
+            uppercase: true
+          }
+        ],
+        gender: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        categories: [
+          {
+            type: String,
+            trim: true,
+            uppercase: true
+          }
+        ],
+        nameEN: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        nameFR: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        descriptionEN: {
+          type: String,
+          trim: true
+        },
+        descriptionFR: {
+          type: String,
+          trim: true
+        },
+        productCode: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        styleCode: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        refNumber: {
+          type: String,
+          uppercase: true,
+          trim: true
+        },
+        images: [
+          {
+            type: String,
+            lowercase: true,
+            trim: true
+          }
+        ],
+        mandatoryItem: {
+          type: Boolean,
+          default: false
+        },
+        storePrice: {
+          type: Float,
+          default: 0.0,
+          required: true
+        },
+        actualPrice: {
+          type: Float,
+          default: 0.0,
+          required: true
+        },
+        overrideActualPrice: {
+          type: Boolean,
+          default: false
+        },
+        priceBreakGoal: {
+          type: Number
+        },
+        priceBreakIndex: {
+          type: Number
+        },
+        priceBreaks: {
+          CAD: [
+            {
+              price: {
+                type: Float,
+                default: 0.0
+              },
+              priceBreak: {
+                type: String,
+                trim: true
+              }
+            }
+          ],
+          USD: [
+            {
+              price: {
+                type: Float,
+                default: 0.0
+              },
+              priceBreak: {
+                type: String,
+                trim: true
+              }
+            }
+          ]
+        },
+        taxPercentage: {
+          type: Float,
+          default: 0.0
+        },
+        taxAmount: {
+          type: Float,
+          default: 0.0
+        },
+        upChargeType: {
+          type: String,
+          default: '$'
+        },
+        upChargeAmount: {
+          type: Float,
+          default: 0.0
+        },
+        upChargeTotal: {
+          type: Float,
+          default: 0.0
+        }
+      }
     ]
   },
   { timestamps: true }
@@ -200,7 +358,8 @@ function validateStore(store) {
     shippingType: Joi.string()
       .required()
       .trim()
-      .valid(['BULK', 'DROP'])
+      .valid(['BULK', 'DROP']),
+    items: Joi.array().items(Joi.objectId().allow(null))
   };
   return Joi.validate(store, schema, joiOptions);
 }

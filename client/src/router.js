@@ -6,6 +6,7 @@ const JoinTeam = () => import('./components/JoinTeam.vue');
 const Dashboard = () => import('./views/Dashboard.vue');
 // const DashboardIndex =()=>import ('./components/Dashboard/DashboardIndex.vue');
 const PageNotFound = () => import('./views/PageNotFound.vue');
+const ServerError = () => import('./views/ServerError.vue');
 const ProfilesIndex = () => import('./components/Profiles/ProfilesIndex.vue');
 const ProfilesEdit = () => import('./components/Profiles/ProfilesEdit.vue');
 const ProfilesPassword = () => import('./components/Profiles/ProfilesPassword.vue');
@@ -303,6 +304,11 @@ let router = new Router({
           }
         }
       ]
+    },
+    {
+      path: '*',
+      name: '500',
+      component: ServerError
     },
     {
       path: '*',
