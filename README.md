@@ -46,20 +46,25 @@ When that is complete, navigate back to the `root` folder and issue the command:
 
 This will download the official MongoDB docker image, as well as the latest development docker image for the backend.
 
-> Everytime you push commits to Gitlab, Gitlab reads the `.gitlab-ci.yml` file in the `root` directory and creates a CI/CD pipeline which automatically creates and replaces images in the project image repository found here: [Gitlab Container Registry](https://gitlab.com/garneau-dev/sugoi/team-builder/container_registry)
+> Everytime you push commits to Gitlab, Gitlab reads the `.gitlab-ci.yml` file in the `root` directory and runs a CI/CD pipeline to automatically create and replace images in the project image repository found here: [Gitlab Container Registry](https://gitlab.com/garneau-dev/sugoi/team-builder/container_registry)
 >
-> - commits pushed to the master branch using a tag _`(ie. git tag v1.0.0)`_ will create images with the `v1.0.0` and `latest` tags
-> - commits pushed to develop branch - image is created with `develop` tag
+> - commits pushed to the `master` branch using a tag _`(git tag v1.0.0)`_ will create an image with the version tag and overwrite the `latest` image.  You can then always use the `latest` image in production, and have means to roll back to a previous tagged image when needed.
+> - commits pushed to `develop` branch - image is created with `develop` tag
 
-Once the docker-compose is complete you will have two docker containers running on your machine, one being the Node.js backend on the port you specified using the `PORT` env variable, and the MongoDB Database on the port you specified using the `MONDODB_INIT_ROOT_PORT` env variable. A root user is created using the email/password combo you also specified in the env file above.
+Once the docker-compose is complete you will have two docker containers running on your machine, one being the Node.js backend on the port you specified using the `PORT` env variable, and the MongoDB Database on the port you specified using the `MONDODB_INIT_ROOT_PORT` env variable. 
+
+A root user is created on the MongoDB container using the email/password combo you also specified in the env file above.
+
 The Node.js backend container will automatically connect to the MongoDB container and be ready to transmit requested data.
 
-MongoDB data is persisted to a volume created on your system by the `docker-compose-dev.yml` file which you can view with:
+All development mongoDB data is persisted to a volume created on your system by `volumes:` in the `docker-compose-dev.yml` file which you can view with:
 
 ```bash
   docker volume ls
 ```
 
+##### ** DO NOT USE:  _`'docker volume prune'`_ unless you have the containers running or you will lose all your development data.
+---
 > I highly recommend downloading and installing `Kitematic` to be able to view each container and its logs live without having to constantly issue docker commands to see them.
 
 > Also download and install `MongoDB Compass` for a really great and easy to use UI application to work with MongoDB. You can use the username & password specified in the env file to login.
@@ -72,24 +77,22 @@ Next, navigate to the `client` folder in terminal and issue the command:
   npm run serve
 ```
 
-This will spin up the front-end SPA which is built using `Vue.js` and will be available on port `8080`.
-
-Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
-
+This will spin up a development front-end server which is built using `Vue.js`. Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
 ---
-
 > Any changes made in the folder `'client/src'` will trigger the frontend to be rebuilt and automatically update live.
 
 > Any changes made in the `root` folder will trigger Node.js to restart the server (using nodemon).
 
 ---
 
-When you are finished simply run the command in the `root` folder
+When you are finished and want to close down development, simply navigate to the `root` folder and run:
 
 ```bash
   docker-compose -f docker-compose-dev.yml down --rmi all
 ```
 
-This will shut down all the containers and delete all the images related to the app, so that you force to download the most up-to-date image from the repository.
+This will shut down all the containers and delete all the images related to the app, so that you force to download the most up-to-date image from the repository.  
+
+>Volumes *(persisted data)* are left behind and will stay until you prune or remove them.
 
 If you have any troubles or questions, feel free to contact Chad Sparrow (csparrow@sugoi.com)

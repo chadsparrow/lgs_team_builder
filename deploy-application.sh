@@ -116,17 +116,17 @@ printf "\nSTART DEPLOYMENT >>>\n"
         read -s host_password
     printf "<<< GATHERING INFORMATION\n"
 
-    printf "\nBUILDING IMAGE >>>\n"
-        sleep 1
-        docker login registry.gitlab.com -u ${GitLab_user} -p ${GitLab_password} && \
-        docker build -t ${LGS_DOCKER_IMAGE1} --pull .
-    printf "<<< BUILD DONE\n"
+    # printf "\nBUILDING IMAGE >>>\n"
+    #     sleep 1
+    #     docker login registry.gitlab.com -u ${GitLab_user} -p ${GitLab_password} && \
+    #     docker build -t ${LGS_DOCKER_IMAGE1} --pull .
+    # printf "<<< BUILD DONE\n"
 
 
-    printf "\nPUSHING IMAGE TO GITLAB >>>\n"
-        sleep 1
-        docker push ${LGS_DOCKER_IMAGE1}
-    printf "<<< PUSH DONE\n"
+    # printf "\nPUSHING IMAGE TO GITLAB >>>\n"
+    #     sleep 1
+    #     docker push ${LGS_DOCKER_IMAGE1}
+    # printf "<<< PUSH DONE\n"
 
     printf "\nCONFIGURING REMOTE HOST >>>\n"
         #Create Application Directory on Host
