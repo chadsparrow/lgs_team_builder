@@ -170,11 +170,6 @@ const StoreSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'catalogs'
         },
-        brand: {
-          type: String,
-          required: true,
-          trim: true
-        },
         surveyLikedBy: [
           {
             type: mongoose.Schema.Types.ObjectId,

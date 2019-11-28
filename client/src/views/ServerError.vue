@@ -5,7 +5,7 @@
         <img src="@/assets/404_error.svg" alt="404 Error Image" />
       </div>
       <div class="col-sm-12">
-        <h1>505 Server Error.</h1>
+        <h1>500 Server Error.</h1>
         <h5 class="text-muted">Please try again later.</h5>
       </div>
       <div class="col-sm-12 mt-4">

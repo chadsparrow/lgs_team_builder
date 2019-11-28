@@ -224,7 +224,6 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
     return {
       itemId: el.itemId,
       catalogId: el.catalogId,
-      brand: el.brand,
       surveyLikedBy: [],
       isActive: el.isActive,
       sizes: el.sizes,

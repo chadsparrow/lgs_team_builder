@@ -161,7 +161,7 @@
           <div class="card-image">
             <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
             <div class="mandatoryItem bg-light text-dark" v-if="item.mandatoryItem">Mandatory</div>
-            <div class="price-box">{{ item.price | currency }} {{ store.currency }}</div>
+            <div class="price-box">{{ item.storePrice | currency }}</div>
           </div>
           <div class="card-body text-center">
             <h6 class="card-title mb-2">{{ item.nameEN }}</h6>
@@ -488,6 +488,8 @@ export default {
     grid-gap: 1rem;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
 
     .card {
       .card-image {

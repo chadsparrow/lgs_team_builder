@@ -13,7 +13,6 @@ module.exports = function(app) {
   app.use('/api/v1/catalogs', require('../routes/catalogs'));
   app.use('/api/v1/catalogitems', require('../routes/catalogitems'));
   app.use('/api/v1/stores', require('../routes/stores'));
-  app.use('/api/v1/storeitems', require('../routes/storeitems'));
   app.use('/api/v1/orders', require('../routes/orders'));
   app.use('/api/v1/carts', require('../routes/carts'));
   app.use(error);
