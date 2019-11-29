@@ -2,7 +2,8 @@ import axios from 'axios';
 export default {
   state: {
     teams: [],
-    currentTeam: {}
+    currentTeam: {},
+    currentTeamStores: []
   },
   actions: {
     getTeams({ commit }) {
@@ -84,7 +85,6 @@ export default {
     getTeamStores({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          commit('CLEAR_TEAM_STORES');
           const res = await axios.get(`/api/v1/stores/team/${id}`);
           commit('SET_TEAM_STORES', res.data);
           resolve(res);

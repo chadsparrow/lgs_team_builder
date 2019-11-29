@@ -705,17 +705,14 @@ export default {
         billingPhone: this.member.billing.phone,
         billingEmail: this.member.billing.email
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
           id: this.member._id
         });
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'membersById', params: { id: this.member._id } });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

@@ -136,7 +136,7 @@ router.post('/', [auth, admin], async (req, res) => {
     currency,
     brand,
     mode,
-    orderReference,
+    refOrder,
     adminId,
     managerId,
     openingDate,
@@ -190,7 +190,7 @@ router.post('/', [auth, admin], async (req, res) => {
     storeCountry,
     currency,
     brand,
-    orderReference,
+    refOrder,
     adminId,
     managerId,
     mode,
@@ -256,7 +256,7 @@ router.post('/:id/dup', [validateObjectId, auth, admin], async (req, res) => {
     storeCountry: store.storeCountry,
     currency: store.currency,
     brand: store.brand,
-    orderReference: store.orderReference,
+    refOrder: store.refOrder,
     adminId: store.adminId,
     managerId: store.managerId,
     mode: 'HOLD',
@@ -292,7 +292,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     mode,
     brand,
     currency,
-    orderReference,
+    refOrder,
     adminId,
     managerId,
     openingDate,
@@ -327,7 +327,7 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
   store.brand = brand;
   store.storeCountry = storeCountry;
   store.currency = currency;
-  store.orderReference = orderReference;
+  store.refOrder = refOrder;
   store.adminId = adminId;
   store.managerId = managerId;
   store.mode = mode;

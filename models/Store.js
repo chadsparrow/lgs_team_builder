@@ -32,7 +32,7 @@ const StoreSchema = new mongoose.Schema(
       uppercase: true,
       trim: true
     },
-    orderReference: {
+    refOrder: {
       type: String,
       required: true,
       trim: true
@@ -323,16 +323,16 @@ function validateStore(store) {
     storeName: Joi.string()
       .required()
       .trim(),
-    brand: Joi.string()
-      .required()
-      .trim(),
     storeCountry: Joi.string()
       .required()
       .trim(),
     currency: Joi.string()
       .required()
       .trim(),
-    orderReference: Joi.string()
+    brand: Joi.string()
+      .required()
+      .trim(),
+    refOrder: Joi.string()
       .required()
       .trim(),
     adminId: Joi.objectId().required(),
@@ -353,8 +353,7 @@ function validateStore(store) {
     shippingType: Joi.string()
       .required()
       .trim()
-      .valid(['BULK', 'DROP']),
-    items: Joi.array().items(Joi.objectId().allow(null))
+      .valid(['BULK', 'DROP'])
   };
   return Joi.validate(store, schema, joiOptions);
 }

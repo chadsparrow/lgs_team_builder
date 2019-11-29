@@ -101,7 +101,6 @@ export default {
   },
   methods: {
     editCatalog: async function() {
-      this.$store.commit('LOADING_TRUE');
       try {
         await this.$store.dispatch('editCatalog', {
           id: this.currentCatalog._id,
@@ -111,13 +110,11 @@ export default {
             year: this.currentCatalog.year
           }
         });
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.success('Catalog Updated', { icon: 'check-circle' });
         this.$router
           .push({ name: 'catalogsById', params: this.currentCatalog._id })
           .catch(() => {});
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
@@ -130,7 +127,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
+.container {
   width: 500px;
 }
 </style>

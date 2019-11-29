@@ -360,14 +360,11 @@ export default {
         storeMessage: this.store.storeMessage,
         shippingType: this.store.shippingType
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('updateStore', { id: this.store._id, updatedStore });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'storesById', params: { id: this.store._id } });
-        this.$store.commit('LOADING_FALSE');
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

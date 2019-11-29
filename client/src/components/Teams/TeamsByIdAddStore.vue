@@ -90,13 +90,13 @@
               </select>
             </div>
             <div class="form-group col">
-              <label for="orderReference">ERP Order Reference #</label>
+              <label for="refOrder">ERP Order Reference #</label>
               <input
-                id="orderReference"
+                id="refOrder"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="orderReference"
-                ref="orderReference"
+                v-model="refOrder"
+                ref="refOrder"
               />
             </div>
             <div class="form-group col">
@@ -136,7 +136,7 @@
                 type="datetime"
                 input-id="closingDate"
                 input-class="form-control form-control-sm"
-                v-model="closing"
+                v-model="closingDate"
                 :value-zone="team.timezone"
                 :zone="team.timezone"
                 use12-hour
@@ -283,10 +283,10 @@ export default {
       storeCountry: '',
       currency: '',
       brand: '',
-      orderReference: '',
+      refOrder: '',
       mode: 'HOLD',
       openingDate: null,
-      closingClosing: null,
+      closingDate: null,
       storeMessage: '',
       shippingType: 'BULK'
     };
@@ -347,7 +347,7 @@ export default {
         storeCountry: this.storeCountry,
         currency: this.currency,
         brand: this.brand,
-        orderReference: this.orderReference,
+        refOrder: this.refOrder,
         adminId: this.team.adminId._id,
         managerId: this.team.managerId._id,
         mode: this.mode,
@@ -357,14 +357,11 @@ export default {
         storeMessage: this.storeMessage,
         shippingType: this.shippingType
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addTeamStore', newStore);
-        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

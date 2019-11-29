@@ -350,6 +350,7 @@ export default {
       this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
+        await this.$store.dispatch('getTeamStores', this.store.teamId._id);
         this.$router
           .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
           .catch(() => {});

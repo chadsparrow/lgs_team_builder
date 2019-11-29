@@ -508,17 +508,14 @@ export default {
         shippingPhone: this.team.bulkShipping.phone,
         shippingEmail: this.team.bulkShipping.email
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('updateTeam', {
           updatedTeam,
           id: this.team._id
         });
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();

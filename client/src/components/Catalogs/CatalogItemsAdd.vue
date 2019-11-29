@@ -394,16 +394,13 @@ export default {
         descriptionFR: this.descriptionFR,
         categories: mappedCategories
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);
-        this.$store.commit('LOADING_FALSE');
         this.$router
           .push({ name: 'catalogsById', params: { id: this.currentCatalog._id } })
           .catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         if (err.response.data[0].message === 'Product already exists.') {
           this.$refs['productCode'].value = '';

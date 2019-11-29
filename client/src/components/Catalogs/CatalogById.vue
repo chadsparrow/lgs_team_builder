@@ -138,7 +138,7 @@ export default {
       await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
-      this.$store.dispatch('LOADING_FALSE');
+      this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
     }
   },

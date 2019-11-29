@@ -536,14 +536,11 @@ export default {
         billingPhone: this.billingPhone,
         billingEmail: this.billingEmail
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         await this.$store.dispatch('addMember', member);
-        this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'members' });
         this.$toasted.success('Member Added', { icon: 'check-circle' });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
