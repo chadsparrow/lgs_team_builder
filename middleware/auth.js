@@ -1,6 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
-/* eslint-disable func-names */
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { Member } = require('../models/Member');

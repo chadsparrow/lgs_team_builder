@@ -17,8 +17,7 @@ export default {
   components: {
     SideNav,
     TopNav
-  },
-  methods: {}
+  }
 };
 </script>
 

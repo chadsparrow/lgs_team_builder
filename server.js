@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const path = require('path');
 const express = require('express');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks

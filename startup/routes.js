@@ -1,5 +1,3 @@
-/* eslint-disable func-names */
-/* eslint-disable global-require */
 const error = require('../middleware/error');
 
 // all routes used by the front end - points to single route file in 'routes" folder which houses full endpoints
@@ -7,7 +5,6 @@ module.exports = function(app) {
   app.use('/api/v1/members', require('../routes/members'));
   app.use('/api/v1/auth', require('../routes/auth'));
   app.use('/api/v1/notifications', require('../routes/notifications'));
-  app.use('/api/v1/emails', require('../routes/emails'));
   app.use('/api/v1/teams', require('../routes/teams'));
   app.use('/api/v1/coupons', require('../routes/coupons'));
   app.use('/api/v1/catalogs', require('../routes/catalogs'));

@@ -1,13 +1,10 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
-const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const config = require('config');
-// eslint-disable-next-line prefer-destructuring
 const Tzdb = require('timezonedb').Tzdb;
 
 const tzdb = new Tzdb({
@@ -16,7 +13,6 @@ const tzdb = new Tzdb({
 
 const geocoder = require('../utils/geocoder');
 const { Member, validateNewRegister } = require('../models/Member');
-const { Email } = require('../models/Email');
 const { Team } = require('../models/Team');
 
 const validateObjectId = require('../middleware/validateObjectId');
@@ -62,24 +58,11 @@ router.post('/login', async (req, res) => {
   // generates an JSONWebToken once authenticated
   const token = member.generateAuthToken();
 
-  // gathers emails for current member - currently not being used on front-end, may delete
-  const emails = await Email.find({
-    $or: [
-      { recipients: { $elemMatch: { memberId: mongoose.Types.ObjectId(member._id) } } },
-      { messages: { $elemMatch: { senderId: mongoose.Types.ObjectId(member._id) } } }
-    ]
-  })
-    .populate({ path: 'senderId', select: 'name email' })
-    .populate({ path: 'recipients.memberId', select: 'name email' })
-    .populate({ path: 'messages.senderId', select: 'name email' })
-    .sort('-messages.date');
-
   return res.send([
     {
       token,
       member: _.pick(member, ['_id', 'email', 'name', 'isAdmin', 'timezone', 'createdAt']),
-      message: 'Welcome Back!',
-      emails
+      message: 'Welcome Back!'
     }
   ]);
 });

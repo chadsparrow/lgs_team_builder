@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const { Member, validateNotification } = require('../models/Member');
 

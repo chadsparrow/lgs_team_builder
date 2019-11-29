@@ -1,11 +1,9 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const generator = require('generate-password');
 
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require('config');
-// eslint-disable-next-line prefer-destructuring
 const Tzdb = require('timezonedb').Tzdb;
 
 const tzdb = new Tzdb({
@@ -499,7 +497,6 @@ router.delete('/:id/notification/:nId', auth, async (req, res) => {
   if (!member)
     return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
-  // eslint-disable-next-line eqeqeq
   const filteredNotifications = member.notifications.filter(notify => notify._id != req.params.nId);
   member.notifications = filteredNotifications;
   await member.save();

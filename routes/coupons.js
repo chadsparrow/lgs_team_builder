@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 
 const router = express.Router();
@@ -17,7 +16,6 @@ const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
 function populateCoupon(couponId) {
-  // eslint-disable-next-line no-unused-vars
   return new Promise(async (resolve, reject) => {
     const populatedCoupon = await Coupon.findById(couponId)
       .populate({ path: 'recipients.memberId', select: 'name email' })
@@ -158,7 +156,6 @@ router.post('/verify/', auth, async (req, res) => {
     if (coupon.couponsRemaining === 0)
       return res.status(400).send([{ message: 'Coupon expired.' }]);
   } else if (coupon.couponType === 'member') {
-    // eslint-disable-next-line consistent-return
     coupon.recipients.forEach(recipient => {
       if (req.member._id === recipient.memberId) {
         if (recipient.expired === true) {

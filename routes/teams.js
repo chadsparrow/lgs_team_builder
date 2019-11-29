@@ -1,9 +1,7 @@
-/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const mongoose = require('mongoose');
 const swearjar = require('swearjar');
 const config = require('config');
-// eslint-disable-next-line prefer-destructuring
 const Tzdb = require('timezonedb').Tzdb;
 
 const tzdb = new Tzdb({

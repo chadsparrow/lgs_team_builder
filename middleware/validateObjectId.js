@@ -1,5 +1,3 @@
-/* eslint-disable func-names */
-/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 
 module.exports = function(req, res, next) {
