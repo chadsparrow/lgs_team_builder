@@ -46,7 +46,7 @@
             </td>
             <td>{{ store.teamId.name }}</td>
             <td v-if="access">{{ store.teamId.teamId }}</td>
-            <td v-if="access">{{ store.orderReference }}</td>
+            <td v-if="access">{{ store.refOrder }}</td>
             <td v-if="access">{{ store.adminId.name }}</td>
             <td v-if="store.openingDate">
               {{
@@ -163,7 +163,7 @@ export default {
           store.storeName.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.teamId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.teamId.teamId.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.orderReference.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.refOrder.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.adminId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.managerId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
           store.mode.toLowerCase().includes(this.storesSearchText.toLowerCase())

@@ -10,7 +10,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+
 // const cors = require('cors');  // un-comment if calls will come from another domain on front-end
+// app.use(cors()); // un-comment if calls will come from another domain on front-end
 
 // cron module
 const cron = require('node-cron');
@@ -35,7 +37,6 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
-// app.use(cors()); // un-comment if calls will come from another domain on front-end
 
 // rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({

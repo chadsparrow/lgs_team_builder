@@ -81,7 +81,7 @@
         <div class="col-sm-12">
           <small class="text-info">Order Reference:</small>
           <br />
-          <span>{{ store.orderReference }}</span>
+          <span>{{ store.refOrder }}</span>
         </div>
       </div>
       <div class="row p-1" v-if="access">

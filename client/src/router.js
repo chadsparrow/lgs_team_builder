@@ -306,7 +306,7 @@ let router = new Router({
       ]
     },
     {
-      path: '*',
+      path: '/500',
       name: '500',
       component: ServerError
     },

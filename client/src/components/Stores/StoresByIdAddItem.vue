@@ -242,6 +242,7 @@
                             id="overrideActualPrice"
                             v-model="currentStoreItem.overrideActualPrice"
                             @change="overrideActual"
+                            ref="overrideActualPrice"
                           />
                           <label class="form-check-label text-white" for="overrideActualPrice"
                             >Override Actual Price -
@@ -411,9 +412,12 @@ export default {
 
       if (!this.currentStoreItem.overrideActualPrice) {
         if (index !== 6) {
+          this.$refs.overrideActualPrice.disabled = false;
           this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
           this.currentStoreItem.storePrice = this.currentStoreItem.actualPrice;
         } else {
+          this.currentStoreItem.overrideActualPrice = true;
+          this.$refs.overrideActualPrice.disabled = true;
           this.currentStoreItem.actualPrice = 0;
           this.currentStoreItem.storePrice = 0;
         }
@@ -421,8 +425,12 @@ export default {
         this.addUpCharge();
       } else {
         if (index !== 6) {
+          this.$refs.overrideActualPrice.disabled = false;
           this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
         } else {
+          this.currentStoreItem.overrideActualPrice = true;
+          this.$refs.overrideActualPrice.disabled = true;
+          this.currentStoreItem.storePrice = 0;
           this.currentStoreItem.actualPrice = 0;
         }
       }

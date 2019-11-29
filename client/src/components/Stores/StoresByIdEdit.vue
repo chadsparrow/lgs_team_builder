@@ -90,13 +90,13 @@
               </select>
             </div>
             <div class="form-group col">
-              <label for="orderReference">ERP Order Reference #</label>
+              <label for="refOrder">ERP Order Reference #</label>
               <input
-                id="orderReference"
+                id="refOrder"
                 type="text"
                 class="form-control form-control-sm"
-                v-model="store.orderReference"
-                ref="orderReference"
+                v-model="store.refOrder"
+                ref="refOrder"
               />
             </div>
             <div class="form-group col">
@@ -350,7 +350,7 @@ export default {
         storeCountry: this.store.storeCountry,
         currency: this.store.currency,
         brand: this.store.brand,
-        orderReference: this.store.orderReference,
+        refOrder: this.store.refOrder,
         adminId: this.team.adminId._id,
         managerId: this.team.managerId._id,
         mode: this.store.mode,

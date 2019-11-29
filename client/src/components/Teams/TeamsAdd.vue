@@ -460,7 +460,6 @@ export default {
       this.adminsList = admins.data;
 
       await this.$store.dispatch('getMembers');
-      this.$store.dispatch('setDataReadyTrue');
       this.adminId = this.member._id;
       const breadcrumbs = [
         { text: 'Dashboard', link: '/dashboard/index' },
@@ -475,7 +474,6 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
-      this.$refs.teamId.focus();
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -510,14 +508,11 @@ export default {
         shippingPhone: this.shippingPhone,
         shippingEmail: this.shippingEmail
       };
-      this.$store.commit('LOADING_TRUE');
       try {
         const res = await this.$store.dispatch('addTeam', newTeam);
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teams' });
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
@@ -526,7 +521,6 @@ export default {
       }
     },
     getManagerDetails: async function() {
-      this.$store.commit('LOADING_TRUE');
       try {
         if (this.chosenMember !== null) {
           const res = await this.$store.dispatch('getMemberDetails', this.chosenMember._id);
@@ -571,9 +565,7 @@ export default {
           this.useManagerDetails = false;
           this.bulkUseDetails = 'other';
         }
-        this.$store.commit('LOADING_FALSE');
       } catch (err) {
-        this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
     },
