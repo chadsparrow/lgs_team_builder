@@ -405,10 +405,30 @@ export default {
         return this.$refs.quantity[index].focus();
       }
 
+      const {
+        _id,
+        images,
+        nameEN,
+        nameFR,
+        styleCode,
+        productCode,
+        categories,
+        sizes,
+        mandatoryItem
+      } = this.storeItems[index];
+
       const item = {
-        storeItemId: this.storeItems[index]._id,
+        storeItemId: _id,
         quantity: parseInt(this.$refs.quantity[index].value),
-        size: this.$refs.size[index].value
+        size: this.$refs.size[index].value,
+        images,
+        nameEN,
+        nameFR,
+        styleCode,
+        productCode,
+        categories,
+        sizes,
+        mandatoryItem
       };
 
       try {

@@ -45,43 +45,42 @@ const CartSchema = new mongoose.Schema(
     },
     items: [
       {
+        storeItemId: {
+          type: mongoose.Schema.Types.ObjectId
+        },
+        quantity: {
+          type: Number,
+          default: 0
+        },
+        size: {
+          type: String,
+          trim: true
+        },
+        images: [String],
         nameEN: {
           type: String,
-          trim: true,
-          required: true
+          trim: true
         },
         nameFR: {
           type: String,
           trim: true
         },
-        images: [{ type: String, trim: true }],
-        categories: [
-          {
-            type: String,
-            trim: true
-          }
-        ],
-        price: {
-          type: Float
-        },
-        quantity: {
-          type: Number,
-          default: 0,
-          min: 1
-        },
-        finalItemPrice: {
-          type: Float,
-          min: 0.0,
-          default: 0.0
-        },
-        size: {
+        styleCode: {
           type: String,
-          minlength: 1,
           trim: true
         },
-        discount: {
-          type: Float,
-          default: 0.0
+        productCode: {
+          type: String,
+          trim: true
+        },
+        categories: [String],
+        sizes: [String],
+        mandatoryItem: {
+          type: Boolean,
+          default: true
+        },
+        storePrice: {
+          type: Float
         }
       }
     ]
@@ -89,28 +88,4 @@ const CartSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-function validateCart(cart) {
-  const schema = {
-    memberId: Joi.objectId().required(),
-    storeId: Joi.objectId().required(),
-    couponId: Joi.object().allow(null),
-    items: Joi.array()
-      .required()
-      .items({
-        storeItemId: Joi.objectId().required(),
-        quantity: Joi.number().min(1),
-        size: Joi.string()
-          .min(1)
-          .trim(),
-        images: Joi.array().items(
-          Joi.string()
-            .trim()
-            .allow('', null)
-        )
-      })
-  };
-  return Joi.validate(cart, schema, joiOptions);
-}
-
 exports.Cart = mongoose.model('carts', CartSchema);
-exports.validateCart = validateCart;

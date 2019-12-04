@@ -11,6 +11,7 @@ const ProfilesIndex = () => import('./components/Profiles/ProfilesIndex.vue');
 const ProfilesEdit = () => import('./components/Profiles/ProfilesEdit.vue');
 const ProfilesPassword = () => import('./components/Profiles/ProfilesPassword.vue');
 const ProfilesEmail = () => import('./components/Profiles/ProfilesEmail.vue');
+const CartPage = () => import('./components/CartPage.vue');
 const CatalogsIndex = () => import('./components/Catalogs/CatalogsIndex.vue');
 const CatalogsAdd = () => import('./components/Catalogs/CatalogsAdd.vue');
 const CatalogById = () => import('./components/Catalogs/CatalogById.vue');
@@ -107,6 +108,14 @@ let router = new Router({
           path: 'profile/email',
           name: 'profileemail',
           component: ProfilesEmail,
+          meta: {
+            requiresAuth: true
+          }
+        },
+        {
+          path: 'cart/:id',
+          name: 'cart',
+          component: CartPage,
           meta: {
             requiresAuth: true
           }
@@ -321,7 +330,7 @@ let router = new Router({
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!store.getters.isLoggedIn) {
-      Vue.toasted.error('Access Denied');
+      Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
@@ -341,7 +350,7 @@ router.beforeEach(async (to, from, next) => {
       if (member && member.isAdmin) {
         next();
       } else {
-        Vue.toasted.error('Access Denied');
+        Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
         next({ name: from.name });
       }
     } else {

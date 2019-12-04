@@ -27,6 +27,30 @@ export default {
           reject(err);
         }
       });
+    },
+    removeCartItem({ commit }, { id, itemId }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('CLEAR_CURRENT_CART');
+          const res = await axios.delete(`/api/v1/carts/${id}?itemId=${itemId}`);
+          commit('SET_CURRENT_CART', res.data[0].updatedCart);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+    updateCart({ commit }, { id, items }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          commit('CLEAR_CURRENT_CART');
+          const res = await axios.put(`/api/v1/carts/${id}`, { items });
+          commit('SET_CURRENT_CART', res.data[0].updatedCart);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
   },
   mutations: {

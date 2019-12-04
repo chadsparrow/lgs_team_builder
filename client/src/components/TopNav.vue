@@ -3,7 +3,7 @@
     <Breadcrumbs class="breadCrumbs" />
     <div class="navBar">
       <Notifications />
-      <Cart class="ml-2" v-if="member && !member.isAdmin && showCart" />
+      <CartButton class="ml-2" v-if="member && !member.isAdmin && showCart" />
       <div class="navItem ml-2">
         <router-link to="/dashboard/profile" tag="a" v-if="member">
           <Gravatar :email="member.email" default-img="mp" :size="37.29" />
@@ -22,7 +22,7 @@
 <script>
 import Breadcrumbs from '../components/Breadcrumbs.vue';
 import Notifications from '../components/Notifications.vue';
-import Cart from '../components/Cart.vue';
+import CartButton from '../components/CartButton.vue';
 import Gravatar from 'vue-gravatar';
 
 export default {
@@ -31,7 +31,7 @@ export default {
     Gravatar,
     Breadcrumbs,
     Notifications,
-    Cart
+    CartButton
   },
   computed: {
     member: function() {
