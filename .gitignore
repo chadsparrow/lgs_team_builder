@@ -5,3 +5,9 @@ coverage
 .env.development
 seeder.js
 .VSCodeCounter
+static/images/catalogs
+static/images/catalogs/*
+static/images/storeitems
+static/images/storeitems/*
+static/images/avatars
+static/images/avatars/*
