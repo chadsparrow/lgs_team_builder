@@ -3,17 +3,17 @@
     <div class="header">
       <div>
         <img
-          src="@/assets/garneau_logo.png"
+          src="/images/assets/garneau_logo.png"
           alt="Garneau Logo"
           v-if="currentCatalog.brand === 'GARNEAU'"
         />
         <img
-          src="@/assets/sugoi_logo.png"
+          src="/images/assets/sugoi_logo.png"
           alt="Sugoi Logo"
           v-if="currentCatalog.brand === 'SUGOI'"
         />
         <img
-          src="@/assets/sombrio_logo.png"
+          src="/images/assets/sombrio_logo.png"
           alt="Sombrio Logo"
           v-if="currentCatalog.brand === 'SOMBRIO'"
         />
@@ -144,8 +144,8 @@ export default {
   },
   methods: {
     getImgUrl(item) {
-      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      return `/images/catalogs/${this.currentCatalog._id}/800/${item.images[0]}_800.jpg`;
+      if (item.images.length === 0) return '/images/assets/missing_item_300.png';
+      return `/images/catalogs/${this.currentCatalog._id}/300/${item.images[0]}_300.jpg`;
     },
     setView(bool) {
       if (bool) this.viewGrid = true;

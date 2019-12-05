@@ -172,10 +172,10 @@ export default {
     getImgUrl(index, size) {
       if (!this.isLoading) {
         if (this.currentCatalogItem.images.length === 0)
-          return require(`@/assets/missing_item_${size}.png`);
+          return `/images/assets/missing_item_${size}.png`;
 
         if (!this.currentCatalogItem.images[index])
-          return require(`@/assets/missing_item_${size}.png`);
+          return `/images/assets/missing_item_${size}.png`;
 
         return `/images/catalogs/${this.currentCatalog._id}/${size}/${this.currentCatalogItem.images[index]}_${size}.jpg`;
       }

@@ -162,8 +162,8 @@ export default {
   },
   methods: {
     getImgUrl: function(item) {
-      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      return `/images/stores/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
+      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
+      return `/images/storesitems/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
     },
     removeItem: async function(itemId) {
       this.$store.commit('LOADING_TRUE');

@@ -4,16 +4,20 @@
       <div class="row p-1">
         <div class="col-sm-12">
           <img
-            src="@/assets/garneau_logo.png"
+            src="/images/assets/garneau_logo.png"
             alt="Garneau Logo"
             v-if="store.brand === 'GARNEAU'"
           />
           <img
-            src="@/assets/sombrio_logo.png"
+            src="/images/assets/sombrio_logo.png"
             alt="Sombrio Logo"
             v-else-if="store.brand === 'SOMBRIO'"
           />
-          <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-else-if="store.brand === 'SUGOI'" />
+          <img
+            src="/images/assets/sugoi_logo.png"
+            alt="Sugoi Logo"
+            v-else-if="store.brand === 'SUGOI'"
+          />
         </div>
       </div>
       <div
@@ -378,8 +382,8 @@ export default {
       // CODE
     },
     getImgUrl: function(item) {
-      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
-      return `/images/stores/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
+      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
+      return `/images/storeitems/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
     },
     removeLike: async function(id) {
       try {

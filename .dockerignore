@@ -1,3 +1,6 @@
 node_modules
 logs/
 client/
+static/avatars/
+static/catalogs/
+static/storeitems/

@@ -4,7 +4,7 @@
       <div class="container">
         <div class="row text-white p-4">
           <div class="col-sm-3 text-center">
-            <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+            <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
           </div>
           <div class="col-sm-9 text-center">
             <h1>{{ currentTeam.name }} Welcomes You!</h1>

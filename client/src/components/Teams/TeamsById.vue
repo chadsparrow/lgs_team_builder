@@ -153,13 +153,13 @@
             >
               <td>{{ store.storeName }}</td>
               <td v-if="store.brand === 'GARNEAU'">
-                <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
+                <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
               </td>
               <td v-if="store.brand === 'SUGOI'">
-                <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" />
+                <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
               </td>
               <td v-if="store.brand === 'SOMBRIO'">
-                <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
+                <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
               </td>
               <td v-if="store.openingDate">
                 {{

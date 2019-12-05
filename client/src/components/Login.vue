@@ -3,7 +3,7 @@
     <div class="row">
       <form @submit.prevent="login" novalidate class="col-sm-12">
         <div class="text-center mb-4 mt-2">
-          <img id="tbLogo" src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+          <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
         </div>
         <div class="form-group">
           <label for="email">Email address</label>

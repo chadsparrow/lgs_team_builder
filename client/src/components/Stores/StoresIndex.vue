@@ -36,13 +36,13 @@
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
             <td scope="row">{{ store.storeName }}</td>
             <td v-if="store.brand === 'GARNEAU'">
-              <img src="@/assets/garneau_logo.png" alt="Garneau Logo" />
+              <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
             </td>
             <td v-if="store.brand === 'SUGOI'">
-              <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" />
+              <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
             </td>
             <td v-if="store.brand === 'SOMBRIO'">
-              <img src="@/assets/sombrio_logo.png" alt="Sombrio Logo" />
+              <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
             </td>
             <td>{{ store.teamId.name }}</td>
             <td v-if="access">{{ store.teamId.teamId }}</td>

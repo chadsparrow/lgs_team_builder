@@ -4,13 +4,17 @@
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">
           <img
-            src="@/assets/garneau_logo.png"
+            src="/images/assets/garneau_logo.png"
             alt="Garneau Logo"
             v-if="store.brand === 'GARNEAU'"
           />
-          <img src="@/assets/sugoi_logo.png" alt="Sugoi Logo" v-if="store.brand === 'SUGOI'" />
           <img
-            src="@/assets/sombrio_logo.png"
+            src="/images/assets/sugoi_logo.png"
+            alt="Sugoi Logo"
+            v-if="store.brand === 'SUGOI'"
+          />
+          <img
+            src="/images/assets/sombrio_logo.png"
             alt="Sombrio Logo"
             v-if="store.brand === 'SOMBRIO'"
           />
@@ -519,7 +523,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     },
     getImgUrl(item) {
-      if (item.images.length === 0) return require('@/assets/missing_item_800.png');
+      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
       return `/images/catalogs/${this.catalog._id}/800/${item.images[0]}_800.jpg`;
     }
   }

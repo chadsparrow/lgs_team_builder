@@ -1,7 +1,7 @@
 <template>
   <div class="sidenav">
     <div class="logo m-auto">
-      <img src="@/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+      <img src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
     </div>
     <div class="copyright text-center">
       <small>&copy; 2019 Garneau.com</small>
