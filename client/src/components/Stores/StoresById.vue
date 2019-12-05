@@ -437,6 +437,7 @@ export default {
           item
         });
         this.$toasted.success(res.data[0].message, { icon: 'shopping-cart' });
+        this.$refs.quantity[index].value = null;
       } catch (err) {
         return this.$toasted.error(err.response.data[0].message, {
           icon: 'exclamation-triangle'

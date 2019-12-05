@@ -1,76 +1,92 @@
 <template>
-  <div v-if="!isLoading" class="text-center container">
-    <div class="row mt-2">
-      <div class="col">
-        <router-link :to="`/dashboard/stores/${store._id}`" class="btn btn-lg btn-danger btn-block"
+  <div v-if="!isLoading" class="mt-2">
+    <div class="row">
+      <div class="col-md-12 mb-2">
+        <router-link :to="`/dashboard/stores/${store._id}`" class="btn btn-danger mb-2"
           ><i class="fas fa-arrow-left mr-2"></i>Go back to Store</router-link
         >
       </div>
-    </div>
-    <div class="cart-item mt-3" v-for="item in cart.items" :key="item._id">
-      <div class="row">
-        <div class="col-lg-3 cart-item-image">
-          <img :src="getImgUrl(item)" :alt="item.nameEN" />
-        </div>
-        <div class="col-lg-8 cart-item-info">
-          <div>
-            <h3 class="text-info">{{ item.nameEN }}</h3>
-            <small class="text-muted"
-              >Product Code: {{ item.productCode }} / Style Code: {{ item.styleCode }}</small
-            >
-            <h2 class="text-muted mt-3">Price: {{ item.storePrice | currency }}</h2>
-          </div>
-          <div class="row mt-3">
-            <div class="col">
-              <label for="size">Size:</label>
-              <select
-                class="form-control"
-                id="size"
-                ref="itemSize"
-                v-model="item.size"
-                @change="dataChanged = true"
-              >
-                <option v-for="(size, index) in item.sizes" :key="index">{{ size }}</option>
-              </select>
+      <div class="col-md-12 col-lg-8 cart-items">
+        <h4 class="text-info">Items</h4>
+        <div class="cart-item-box">
+          <div class="cart-item mb-2" v-for="item in cart.items" :key="item._id">
+            <div class="row">
+              <div class="col-md-12 col-lg-3 cart-item-image">
+                <img :src="getImgUrl(item)" :alt="item.nameEN" />
+              </div>
+              <div class="col-md-12 col-lg-7 cart-item-info">
+                <div>
+                  <h4 class="text-info">{{ item.nameEN }}</h4>
+                  <small class="text-muted"
+                    >Product Code: {{ item.productCode }} / Style Code: {{ item.styleCode }}</small
+                  >
+                  <h4 class="text-muted mt-3">Price: {{ item.storePrice | currency }}</h4>
+                </div>
+                <div class="row mt-2">
+                  <div class="col">
+                    <label for="size">Size:</label>
+                    <select
+                      class="form-control"
+                      id="size"
+                      ref="itemSize"
+                      v-model="item.size"
+                      @change="dataChanged = true"
+                    >
+                      <option v-for="(size, index) in item.sizes" :key="index">{{ size }}</option>
+                    </select>
+                  </div>
+                  <div class="col">
+                    <label for="quantity">Quantity:</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      min="1"
+                      step="1"
+                      id="quantity"
+                      v-model.number="item.quantity"
+                      @change="dataChanged = true"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-lg-2">
+                <div class="row m-0 mb-3">
+                  <button class="btn btn-block btn-danger" @click="removeItem(item._id)">
+                    <i class="fas fa-lg fa-trash mr-2"></i>Remove
+                  </button>
+                </div>
+                <div class="row mx-0">
+                  <span class="text-info"
+                    >Item Total:
+                    <h4>{{ (item.storePrice * item.quantity) | currency }}</h4></span
+                  >
+                </div>
+              </div>
             </div>
-            <div class="col">
-              <label for="quantity">Quantity:</label>
-              <input
-                type="number"
-                class="form-control"
-                min="1"
-                step="1"
-                id="quantity"
-                v-model.number="item.quantity"
-                @change="dataChanged = true"
-              />
-            </div>
           </div>
-        </div>
-        <div class="col-lg-1 cart-item-removebtn">
-          <button class="btn btn-block btn-danger" @click="removeItem(item._id)">
-            <i class="fas fa-lg fa-trash"></i>
-          </button>
         </div>
       </div>
-    </div>
-    <div class="cart-buttons mt-4">
-      <div class="row">
-        <div class="col">
-          <button class="btn btn-sm btn-block btn-danger" @click="removeAllItems">
+      <div class="col-md-12 col-lg-4 cart-info">
+        <h4 class="text-info">Actions</h4>
+        <div class="row m-0">
+          <button class="btn btn-block btn-danger" @click="removeAllItems">
             <i class="fas fa-trash mr-2"></i>Remove All Items
           </button>
         </div>
-        <div class="col" v-if="dataChanged">
-          <button class="btn btn-sm btn-block btn-success" @click="updateCart">
+        <div class="row m-0 mt-2" v-if="dataChanged">
+          <button class="btn btn-block btn-success" @click="updateCart">
             <i class="fas fa-pen mr-2"></i>Update Cart
           </button>
         </div>
-      </div>
-      <hr />
-      <div class="row">
-        <div class="col-lg-12">
-          <button class="btn btn-lg btn-block btn-warning">Checkout</button>
+        <hr />
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <h5 class="text-info m-0">Sub-Total: {{ cartSubTotal | currency }}</h5>
+            <small class="text-muted">* before taxes and discounts</small>
+          </div>
+          <div class="col-md-12 mt-3">
+            <button class="btn btn-lg btn-block btn-warning">Checkout</button>
+          </div>
         </div>
       </div>
     </div>
@@ -96,6 +112,11 @@ export default {
     },
     cart: function() {
       return this.currentCart;
+    },
+    cartSubTotal: function() {
+      return this.cart.items.reduce((acc, obj) => {
+        return acc + obj.storePrice * obj.quantity;
+      }, 0);
     }
   },
   created: async function() {
@@ -200,25 +221,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.cart-item {
-  background-color: whitesmoke;
-  padding: 1rem;
-  border-radius: 5px;
-  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+.cart-items {
+  .cart-item-box {
+    max-height: calc(100vh - 175px);
+    overflow-x: hidden;
+    overflow-y: auto;
 
-  .cart-item-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    .form-control {
-      text-align: center;
-    }
-  }
+    .cart-item {
+      background-color: whitesmoke;
+      padding: 1rem;
+      border: 1px solid lightgray;
+      border-radius: 5px;
 
-  .cart-item-image {
-    img {
-      width: 100%;
+      .cart-item-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        .form-control {
+          text-align: center;
+        }
+      }
+
+      .cart-item-image {
+        img {
+          width: 100%;
+        }
+      }
     }
   }
 }
