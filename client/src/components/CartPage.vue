@@ -43,6 +43,7 @@
                       class="form-control"
                       min="1"
                       step="1"
+                      ref="quantity"
                       id="quantity"
                       v-model.number="item.quantity"
                       @change="dataChanged = true"
@@ -85,8 +86,17 @@
             <h5 class="text-info m-0">Sub-Total: {{ cartSubTotal | currency }}</h5>
             <small class="text-muted">* before taxes, discounts, shipping &amp; fees</small>
           </div>
-          <div class="col-md-12 mt-3">
-            <button class="btn btn-lg btn-block btn-warning">Checkout</button>
+          <div class="col-md-12 mt-3 text-center">
+            <button
+              class="btn btn-lg btn-block btn-warning"
+              :disabled="dataChanged"
+              @click="checkout"
+            >
+              Checkout
+            </button>
+            <small class="text-muted" v-if="dataChanged"
+              >You must update the cart before Checkout</small
+            >
           </div>
         </div>
       </div>
@@ -204,6 +214,25 @@ export default {
         this.$store.commit('LOADING_FALSE');
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
       }
+    },
+    checkout: function() {
+      this.cart.items.forEach((el, index) => {
+        if (!el.size) {
+          this.$refs.itemSize[index].focus();
+          return this.$toasted.error('There are items without a chosen size', {
+            icon: 'exclamation-triangle'
+          });
+        }
+      });
+
+      this.cart.items.forEach((el, index) => {
+        if (el.quantity === 0 || !el.quantity) {
+          this.$refs.quantity[index].focus();
+          return this.$toasted.error('There are items without a chosen size', {
+            icon: 'exclamation-triangle'
+          });
+        }
+      });
     }
   },
   beforeRouteLeave(to, from, next) {
