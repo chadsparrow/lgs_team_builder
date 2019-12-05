@@ -212,7 +212,7 @@
             </div>
             <div class="mb-2 text-center" v-if="item.mandatoryItem && !member.isAdmin">
               <span class="text-danger"
-                >Item is in your cart.<br />You can adjust size and quantity there.</span
+                >Item is already in your cart.<br />You can adjust size and quantity there.</span
               >
             </div>
             <div class="progressBar text-center" v-if="access && store.mode === 'OPEN'">
