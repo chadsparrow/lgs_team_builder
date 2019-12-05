@@ -109,8 +109,7 @@ export default {
       state.currentStoreItem.price = payload;
     },
     REMOVE_STORE_ITEM(state, payload) {
-      const index = payload;
-      state.currentStoreItems = state.currentStoreItems.filter((item, i) => index !== i);
+      state.currentStoreItems = state.currentStoreItems.filter(item => item._id !== payload);
     }
   },
   getters: {

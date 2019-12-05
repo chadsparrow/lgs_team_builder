@@ -160,14 +160,16 @@
         <div class="card" v-for="(item, index) in filteredItems" :key="item._id">
           <div class="card-image">
             <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
-            <div class="mandatoryItem bg-light text-dark" v-if="item.mandatoryItem">Mandatory</div>
+            <div class="mandatoryItem bg-danger text-white" v-if="item.mandatoryItem">
+              Mandatory
+            </div>
             <div class="price-box">{{ item.storePrice | currency }}</div>
           </div>
           <div class="card-body text-center">
             <h6 class="card-title mb-2">{{ item.nameEN }}</h6>
             <span class="card-text text-muted">{{ item.productCode }}</span>
             <br />
-            <span class="card-text text-muted">{{ item.styleCode }}</span>
+            <span class="card-text text-muted" v-if="member.isAdmin">{{ item.styleCode }}</span>
           </div>
           <div class="card-footer">
             <div class="likes-section mb-3" v-if="(store.mode === 'SURVEY' && !access) || access">
@@ -181,7 +183,10 @@
                 item.surveyLikedBy.length
               }}</span>
             </div>
-            <div class="cart-section mb-2" v-if="store.mode === 'OPEN' && !member.isAdmin">
+            <div
+              class="cart-section mb-2"
+              v-if="store.mode === 'OPEN' && !member.isAdmin && !item.mandatoryItem"
+            >
               <div class="form-inline">
                 <label class="mr-1" for="size">Size:</label>
                 <select class="form-control form-control-sm mr-2" id="size" ref="size">
@@ -204,6 +209,11 @@
               >
                 Add to Cart
               </button>
+            </div>
+            <div class="mb-2 text-center" v-if="item.mandatoryItem && !member.isAdmin">
+              <span class="text-danger"
+                >Item is in your cart.<br />You can adjust size and quantity there.</span
+              >
             </div>
             <div class="progressBar text-center" v-if="access && store.mode === 'OPEN'">
               <label for="progress" class="mt-2">Price Break Goal</label>
@@ -265,6 +275,7 @@ export default {
         this.$store.commit('SHOW_CART');
       }
       this.$store.commit('LOADING_FALSE');
+      this.addMandatoryItemsToCart();
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
@@ -347,18 +358,20 @@ export default {
       }
     },
     duplicateOrder: async function() {
-      this.$store.commit('LOADING_TRUE');
-      try {
-        const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
-        await this.$store.dispatch('getTeamStores', this.store.teamId._id);
-        this.$router
-          .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
-          .catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-        this.$store.commit('LOADING_FALSE');
-      } catch (err) {
-        this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      if (confirm('Are you sure?')) {
+        this.$store.commit('LOADING_TRUE');
+        try {
+          const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
+          await this.$store.dispatch('getTeamStores', this.store.teamId._id);
+          this.$router
+            .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
+            .catch(() => {});
+          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+          this.$store.commit('LOADING_FALSE');
+        } catch (err) {
+          this.$store.commit('LOADING_FALSE');
+          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        }
       }
     },
     addStoreExtra: function() {
@@ -441,6 +454,46 @@ export default {
       } catch (err) {
         return this.$toasted.error(err.response.data[0].message, {
           icon: 'exclamation-triangle'
+        });
+      }
+    },
+    addMandatoryItemsToCart: async function() {
+      const mandatories = this.storeItems.filter(
+        mandatoryItem => mandatoryItem.mandatoryItem === true
+      );
+
+      if (mandatories && mandatories.length > 0) {
+        mandatories.forEach(async el => {
+          try {
+            if (
+              this.currentCart.items &&
+              this.currentCart.items.filter(e => e.storeItemId === el._id).length === 0
+            ) {
+              const { _id, images, nameEN, nameFR, styleCode, productCode, categories, sizes } = el;
+              const item = {
+                storeItemId: _id,
+                quantity: 1,
+                size: '',
+                images,
+                nameEN,
+                nameFR,
+                styleCode,
+                productCode,
+                categories,
+                sizes,
+                mandatoryItem: true
+              };
+
+              await this.$store.dispatch('addItemToCart', {
+                storeId: this.store._id,
+                item
+              });
+            }
+          } catch (err) {
+            return this.$toasted.error(err.response.data[0].message, {
+              icon: 'exclamation-triangle'
+            });
+          }
         });
       }
     }

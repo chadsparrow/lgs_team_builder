@@ -77,7 +77,7 @@
               <img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
             </div>
             <div class="itemInfo">
-              <div v-if="storeItem.mandatoryItem" class="text-info mandatoryStar">
+              <div v-if="storeItem.mandatoryItem" class="text-danger mandatoryStar">
                 <span>Mandatory Item</span>
                 <br />
               </div>
@@ -100,7 +100,10 @@
               <button class="btn btn-block btn-sm btn-info" @click="showEditWindow(storeItem)">
                 Edit Item
               </button>
-              <button class="btn btn-block btn-sm btn-danger" @click="removeStoreItem(index)">
+              <button
+                class="btn btn-block btn-sm btn-danger"
+                @click="removeStoreItem(storeItem._id)"
+              >
                 Remove
               </button>
             </div>
@@ -459,10 +462,11 @@ export default {
       this.showModal = false;
       this.currentItemPriceBreaks = null;
     },
-    removeStoreItem: async function(index) {
+    removeStoreItem: async function(id) {
       if (confirm('Are you sure?')) {
-        this.$store.commit('REMOVE_STORE_ITEM', index);
+        this.$store.commit('REMOVE_STORE_ITEM', id);
         this.updateStoreItems();
+        this.$store.dispatch('removeStoreItemFromCart', id);
       }
     },
     async updateStoreItems() {

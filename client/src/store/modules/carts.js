@@ -51,6 +51,16 @@ export default {
           reject(err);
         }
       });
+    },
+    removeStoreItemFromCart(context, id) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.delete(`/api/v1/carts/removeitems/${id}`);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
   },
   mutations: {

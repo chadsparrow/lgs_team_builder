@@ -7,7 +7,7 @@
         >
       </div>
       <div class="col-md-12 col-lg-8 cart-items">
-        <h4 class="text-info">Items</h4>
+        <h4 class="text-info text-center">Items</h4>
         <div class="cart-item-box">
           <div class="cart-item mb-2" v-for="item in cart.items" :key="item._id">
             <div class="row">
@@ -16,6 +16,7 @@
               </div>
               <div class="col-md-12 col-lg-7 cart-item-info">
                 <div>
+                  <span class="text-danger" v-if="item.mandatoryItem">Mandatory Item</span>
                   <h4 class="text-info">{{ item.nameEN }}</h4>
                   <small class="text-muted"
                     >Product Code: {{ item.productCode }} / Style Code: {{ item.styleCode }}</small
@@ -50,7 +51,7 @@
                 </div>
               </div>
               <div class="col-md-12 col-lg-2">
-                <div class="row m-0 mb-3">
+                <div class="row m-0 mb-3" v-if="!item.mandatoryItem">
                   <button class="btn btn-block btn-danger" @click="removeItem(item._id)">
                     <i class="fas fa-lg fa-trash mr-2"></i>Remove
                   </button>
@@ -67,7 +68,7 @@
         </div>
       </div>
       <div class="col-md-12 col-lg-4 cart-info">
-        <h4 class="text-info">Actions</h4>
+        <h4 class="text-info text-center">Actions</h4>
         <div class="row m-0">
           <button class="btn btn-block btn-danger" @click="removeAllItems">
             <i class="fas fa-trash mr-2"></i>Remove All Items
@@ -82,7 +83,7 @@
         <div class="row">
           <div class="col-md-12 text-center">
             <h5 class="text-info m-0">Sub-Total: {{ cartSubTotal | currency }}</h5>
-            <small class="text-muted">* before taxes and discounts</small>
+            <small class="text-muted">* before taxes, discounts, shipping &amp; fees</small>
           </div>
           <div class="col-md-12 mt-3">
             <button class="btn btn-lg btn-block btn-warning">Checkout</button>
@@ -187,14 +188,17 @@ export default {
       try {
         if (confirm('Are you sure?')) {
           this.$store.commit('LOADING_TRUE');
+          const mandatoryItems = this.cart.items.filter(el => el.mandatoryItem);
           const res = await this.$store.dispatch('updateCart', {
             id: this.cart._id,
-            items: []
+            items: [...mandatoryItems]
           });
           this.$store.commit('LOADING_FALSE');
           this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
           this.dataChanged = false;
-          this.$router.push({ path: `/dashboard/stores/${this.store._id}` });
+          if (this.cart.items.length === 0) {
+            this.$router.push({ path: `/dashboard/stores/${this.store._id}` });
+          }
         }
       } catch (err) {
         this.$store.commit('LOADING_FALSE');

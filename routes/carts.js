@@ -3,8 +3,10 @@ const express = require('express');
 const router = express.Router();
 const { Cart } = require('../models/Cart');
 const { Store } = require('../models/Store');
+const { Member } = require('../models/Member');
 
 const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
 
 // @desc    Get current members cart for specific store
@@ -90,6 +92,18 @@ router.delete('/:id', auth, async (req, res) => {
   if (!updatedCart) return res.status(400).send([{ message: 'Cart with the given ID not found' }]);
 
   return res.status(200).send([{ message: 'Cart Item Removed', updatedCart }]);
+});
+
+// @desc    Removes store item from all carts
+// @route   DELETE /api/v1/carts/removeitems/:id
+// @access  Private - admin
+router.delete('/removeitems/:id', [validateObjectId, auth, admin], async (req, res) => {
+  await Cart.updateMany(
+    { 'items.storeItemId': req.params.id },
+    { $pull: { items: { storeItemId: req.params.id } } }
+  );
+
+  return res.status(200).send([{ message: 'Item removed from all carts' }]);
 });
 
 module.exports = router;
