@@ -6,6 +6,7 @@ const { Catalog, validateCatalog, validateCoverImage } = require('../models/Cata
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
+const mkdirp = require('mkdirp');
 
 // @desc    Collects all catalogs
 // @route   GET /api/v1/catalogs
@@ -60,6 +61,11 @@ router.post('/', [auth, admin], async (req, res) => {
   });
 
   await catalog.save();
+
+  mkdirp(`../static/images/catalogs/${catalog._id}`, err => {
+    if (err) console.error(err);
+    else console.log('pow!');
+  });
 
   return res.send(catalog);
 });
