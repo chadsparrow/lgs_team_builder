@@ -157,11 +157,12 @@
               >
                 <option value="BULK">
                   BULK
-                  <small>(default)</small>
                 </option>
                 <option value="DROP">
-                  DROP SHIP
-                  <small>(member's shipping)</small>
+                  DROP-SHIP / MULTI-SHIP
+                </option>
+                <option value="PREPACK">
+                  PRE-PACK
                 </option>
               </select>
             </div>
@@ -197,70 +198,39 @@
         </div>
       </form>
       <!-- BULK SHIPPING -->
-      <div class="bulkShipping" v-if="shippingType === 'BULK'">
+      <div v-if="shippingType === 'BULK'">
         <div class="section-header mt-4 mb-2 bg-secondary">
-          <span>
-            Bulk Shipping Details
-            <small class="ml-2">(uses Team Bulk Shipping Details from Previous Page)</small>
-          </span>
+          <span>Bulk Shipping Details</span>
         </div>
         <div class="row px-2">
-          <div class="col-sm-6">
-            <label>Name</label>
-            <br />
-            <span>{{ team.bulkShipping.name }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>Email</label>
-            <br />
-            <span>{{ team.bulkShipping.email }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>Address1</label>
-            <br />
-            <span>{{ team.bulkShipping.address1 }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>Address2</label>
-            <br />
-            <span>{{ team.bulkShipping.address2 || '--' }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>City</label>
-            <br />
-            <span>{{ team.bulkShipping.city }}</span>
-          </div>
-          <div class="col-sm-4">
-            <label>State/Province</label>
-            <br />
-            <span>{{ team.bulkShipping.stateProv }}</span>
-          </div>
-          <div class="col-sm-2">
-            <label>Country</label>
-            <br />
-            <span>{{ team.bulkShipping.country }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>Zip/Postal Code</label>
-            <br />
-            <span>{{ team.bulkShipping.zipPostal }}</span>
-          </div>
-          <div class="col-sm-6">
-            <label>Phone</label>
-            <br />
-            <span>{{ team.bulkShipping.phone }}</span>
-          </div>
+          <span class="col">
+            All orders from this store will ship to the
+            <strong>Team's Bulk Shipping Address</strong>.
+          </span>
         </div>
       </div>
       <!-- DROP SHIPPING -->
-      <div class="dropShipping" v-else>
+      <div v-else-if="shippingType === 'DROP'">
         <div class="section-header mt-4 mb-2 bg-secondary">
-          <span>Drop Shipping Details</span>
+          <span>Drop Shipping / Multi-Shipping Details</span>
         </div>
         <div class="row px-2">
           <span class="col">
             All orders from this store will ship to the
             <strong>Team Member's Shipping Address</strong> specified in their own profile.
+          </span>
+        </div>
+      </div>
+      <!-- PRE-PACK SHIPPING -->
+      <div v-else-if="shippingType === 'PREPACK'">
+        <div class="section-header mt-4 mb-2 bg-secondary">
+          <span>Pre-Pack Shipping Details</span>
+        </div>
+        <div class="row px-2">
+          <span class="col">
+            All orders from this store will ship to the
+            <strong>Team's Bulk Shipping Address</strong> but will be individually packaged for each
+            member.
           </span>
         </div>
       </div>
@@ -397,12 +367,5 @@ $blue-color: #17a2b8;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
-}
-
-.bulkShipping .row span {
-  background-color: rgba(255, 255, 255, 0.5);
-  padding: 0.4rem;
-  border-radius: 5px;
-  display: block;
 }
 </style>

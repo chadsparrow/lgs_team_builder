@@ -144,18 +144,22 @@
 
         <div class="header-buttons" v-if="member.isAdmin">
           <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/edit`">
-            <i class="fas fa-cog mr-2"></i>
-            Store Settings
+            <i class="fas fa-cog mr-2"></i>Settings
           </router-link>
           <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/add`">
-            <i class="fas fa-plus mr-2"></i>
-            Edit Store Items
+            <i class="fas fa-pen mr-2"></i>Items
+            <span class="badge badge-light ml-2" v-if="storeItems && storeItems.length > 0">
+              {{ storeItems.length }}
+            </span>
           </router-link>
-          <button @click="addStoreExtra" class="btn btn-sm btn-info mr-2">
-            <i class="fas fa-plus mr-2"></i> Add Store Extra
+          <button @click="displayModal" class="btn btn-sm btn-info mr-2">
+            <i class="fas fa-plus mr-2"></i>Extras
+            <span class="badge badge-light ml-2" v-if="extraCharges && extraCharges.length > 0">
+              {{ extraCharges.length }}
+            </span>
           </button>
           <button @click="duplicateOrder" class="btn btn-sm btn-info">
-            <i class="fas fa-clone mr-2"></i> Duplicate Store
+            <i class="fas fa-clone mr-2"></i>Duplicate
           </button>
         </div>
       </div>
@@ -215,9 +219,10 @@
               </button>
             </div>
             <div class="mb-2 text-center" v-if="item.mandatoryItem && !member.isAdmin">
-              <span class="text-danger"
-                >Item is already in your cart.<br />You can adjust size and quantity there.</span
-              >
+              <span class="text-danger">
+                Item is already in your cart.
+                <br />You can adjust size and quantity there.
+              </span>
             </div>
             <div class="progressBar text-center" v-if="access && store.mode === 'OPEN'">
               <label for="progress" class="mt-2">Price Break Goal</label>
@@ -241,6 +246,120 @@
 
       <h6 v-else>No Store Items found</h6>
     </div>
+    <!-- EDIT ITEM MODAL WINDOW -->
+    <div v-if="showExtrasModal">
+      <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div class="modal-header">
+                <h5 class="modal-title">Add Extra Charges</h5>
+              </div>
+              <div class="modal-body">
+                <div
+                  class="extras-list mb-3 list-group"
+                  v-if="extraCharges && extraCharges.length > 0"
+                >
+                  <div
+                    class="row charge-row list-group-item"
+                    v-for="(extra, index) in extraCharges"
+                    :key="index"
+                  >
+                    <div class="col-md-6">
+                      <label>Name</label>
+                      <br />
+                      <span>{{ extra.name }}</span>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Price {{ store.currency }}</label>
+                      <br />
+                      <span>{{ extra.amount | currency }}</span>
+                    </div>
+                    <div class="col-md-1">
+                      <button class="btn btn-block btn-danger" @click="removeExtraCharge(index)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3 text-center text-info" v-else>
+                  No Extra Charges
+                  <hr />
+                </div>
+                <div v-if="showNewCharge">
+                  <div class="row charge-row m-0">
+                    <div class="col-md-4">
+                      <label for="extraSelectNew">Preset</label>
+                      <select
+                        class="form-control"
+                        id="extraSelectNew"
+                        v-model="newChargePreset"
+                        @change="setPresetName"
+                      >
+                        <option value="Shipping Charge">Shipping Charge</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="extraNameNew">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="extraNameNew"
+                        v-model="newChargeName"
+                        ref="newChargeName"
+                      />
+                    </div>
+                    <div class="col-md-2">
+                      <label for="extraPriceNew">Price {{ store.currency }}</label>
+                      <currency-input
+                        :currency="store.currency"
+                        :auto-decimal-mode="true"
+                        :precision="2"
+                        class="form-control text-center"
+                        v-model.number="newChargePrice"
+                        ref="newChargePrice"
+                        id="extraPriceNew"
+                      />
+                    </div>
+                    <div class="col-md-2">
+                      <button
+                        class="btn btn-block btn-success"
+                        :disabled="!newChargeName || newChargePrice === 0 || !newChargePrice"
+                        @click="addNewCharge"
+                      >
+                        <i class="fas fa-check mr-2"></i>Add
+                      </button>
+                      <button class="btn btn-block btn-danger" @click="cancelNewCharge">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="btn btn-block btn-info mt-3"
+                  @click="showNewCharge = true"
+                  v-if="!showNewCharge"
+                >
+                  <i class="fas fa-plus mr-2"></i>
+                  Add Extra Charge
+                </button>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  @click="closeModal"
+                  :disabled="showNewCharge"
+                >
+                  Save Charges
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -252,7 +371,12 @@ export default {
     return {
       storeItemsSearchText: '',
       currentDateTime: null,
-      polling: null
+      polling: null,
+      showExtrasModal: false,
+      showNewCharge: false,
+      newChargePreset: '',
+      newChargeName: '',
+      newChargePrice: 0.0
     };
   },
   created: async function() {
@@ -345,6 +469,9 @@ export default {
         return true;
 
       return false;
+    },
+    extraCharges: function() {
+      return this.store.extraCharges;
     }
   },
   methods: {
@@ -378,8 +505,62 @@ export default {
         }
       }
     },
-    addStoreExtra: function() {
-      // CODE
+    displayModal: function() {
+      this.showExtrasModal = true;
+    },
+    closeModal: async function() {
+      try {
+        await this.$store.dispatch('updateStoreCharges', {
+          id: this.store._id,
+          extraCharges: this.extraCharges
+        });
+        this.showExtrasModal = false;
+        this.showNewCharge = false;
+      } catch (err) {
+        this.showNewCharge = false;
+        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      }
+    },
+    addNewCharge: function() {
+      this.showNewCharge = false;
+      this.extraCharges.push({
+        name: this.newChargeName,
+        amount: this.newChargePrice
+      });
+      this.newChargeName = '';
+      this.newChargePreset = '';
+      this.newChargePrice = 0.0;
+    },
+    cancelNewCharge: function() {
+      this.showNewCharge = false;
+      this.newChargeName = '';
+      this.newChargePreset = '';
+      this.newChargePrice = 0.0;
+    },
+    removeExtraCharge: async function(index) {
+      if (confirm('Are you sure?')) {
+        this.extraCharges.splice(index, 1);
+        try {
+          await this.$store.dispatch('updateStoreCharges', {
+            id: this.store._id,
+            extraCharges: this.extraCharges
+          });
+          this.$toasted.success('Extra Charge removed', { icon: 'check-circle' });
+        } catch (err) {
+          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        }
+      }
+    },
+    setPresetName: function() {
+      if (this.newChargePreset === 'Other') {
+        this.newChargeName = '';
+        this.newChargePrice = 0.0;
+        this.$refs.newChargeName.focus();
+      } else {
+        this.newChargeName = this.newChargePreset;
+        this.newChargePrice = 0.0;
+        this.$refs.newChargePrice.$el.focus();
+      }
     },
     getImgUrl: function(item) {
       if (item.images.length === 0) return '/images/assets/missing_item_800.png';
@@ -514,6 +695,54 @@ export default {
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
+
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: table;
+    transition: opacity 0.3s ease;
+
+    .modal-wrapper {
+      display: table-cell;
+      vertical-align: middle;
+
+      .modal-container {
+        width: 100%;
+        max-width: 850px;
+        margin: 0px auto;
+        padding: 1rem;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+        transition: all 0.5s ease;
+        font-size: 0.9rem;
+
+        .modal-body {
+          .charge-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .form-control {
+            font-size: 0.8rem;
+          }
+
+          .extras-list {
+            max-height: 500px;
+            overflow-x: hidden;
+            overflow-y: auto;
+          }
+        }
+      }
+    }
+  }
 }
 
 .sidebar-left {

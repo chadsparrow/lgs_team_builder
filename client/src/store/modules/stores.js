@@ -65,6 +65,17 @@ export default {
         }
       });
     },
+    updateStoreCharges({ commit }, { id, extraCharges }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.put(`/api/v1/stores/${id}/extras`, { extraCharges });
+          commit('SET_CURRENT_STORE', res.data[0].store);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
     removeLike(context, id) {
       return new Promise(async (resolve, reject) => {
         try {

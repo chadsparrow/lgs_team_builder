@@ -84,7 +84,7 @@
         <div class="row">
           <div class="col-md-12 text-center">
             <h5 class="text-info m-0">Sub-Total: {{ cartSubTotal | currency }}</h5>
-            <small class="text-muted">* before taxes, discounts, shipping &amp; fees</small>
+            <small class="text-muted">* before taxes, discounts, shipping &amp; extra fees</small>
           </div>
           <div class="col-md-12 mt-3 text-center">
             <button

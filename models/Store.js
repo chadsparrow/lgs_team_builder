@@ -87,7 +87,7 @@ const StoreSchema = new mongoose.Schema(
       type: String,
       required: true,
       uppercase: true,
-      enum: ['BULK', 'DROP']
+      enum: ['BULK', 'DROP', 'PREPACK']
     },
     bulkShipping: {
       name: {
@@ -139,6 +139,7 @@ const StoreSchema = new mongoose.Schema(
     },
     extraCharges: [
       {
+        _id: false,
         name: {
           type: String
         },
@@ -148,8 +149,9 @@ const StoreSchema = new mongoose.Schema(
         }
       }
     ],
-    collectedShippingCharges: [
+    paidShipping: [
       {
+        _id: false,
         memberId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'members'
@@ -353,7 +355,7 @@ function validateStore(store) {
     shippingType: Joi.string()
       .required()
       .trim()
-      .valid(['BULK', 'DROP'])
+      .valid(['BULK', 'DROP', 'PREPACK'])
   };
   return Joi.validate(store, schema, joiOptions);
 }

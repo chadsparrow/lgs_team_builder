@@ -372,4 +372,23 @@ router.put('/:id/items', [validateObjectId, auth, admin], async (req, res) => {
   return res.status(200).send([{ message: 'Items Updated', items: store.items }]);
 });
 
+// @desc    update extraCharges in specific store
+// @route   PUT /api/v1/stores/:id/extras
+// @access  Private - admin
+router.put('/:id/extras', [validateObjectId, auth, admin], async (req, res) => {
+  const { extraCharges } = req.body;
+  const store = await Store.findByIdAndUpdate(
+    req.params.id,
+    { extraCharges },
+    { $upsert: true, new: true }
+  )
+    .sort({ createdAt: -1 })
+    .populate({ path: 'managerId', select: 'name email phone' })
+    .populate({ path: 'adminId', select: 'name email' })
+    .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
+    .select('-updatedAt -__v -items');
+
+  return res.status(200).send([{ message: 'Extra Charges updated', store }]);
+});
+
 module.exports = router;
