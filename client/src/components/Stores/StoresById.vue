@@ -125,9 +125,7 @@
       </div>
     </div>
     <div class="middle-section">
-      <h4 class="message text-success" v-if="store.storeMessage">{{ store.storeMessage }}</h4>
-
-      <div class="header">
+      <div class="header mb-3">
         <div class="form-group form-inline">
           <label for="storeItemsSearchText" class="mr-2">Search:</label>
           <input
@@ -141,29 +139,29 @@
           />
           <small class="text-muted">Showing: {{ filteredCount }}/{{ storeItems.length }}</small>
         </div>
-
         <div class="header-buttons" v-if="member.isAdmin">
-          <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/edit`">
-            <i class="fas fa-cog mr-2"></i>Settings
-          </router-link>
-          <router-link class="btn btn-sm btn-info mr-2" :to="`/dashboard/stores/${store._id}/add`">
-            <i class="fas fa-pen mr-2"></i>Items
-            <span class="badge badge-light ml-2" v-if="storeItems && storeItems.length > 0">
-              {{ storeItems.length }}
-            </span>
-          </router-link>
-          <button @click="displayModal" class="btn btn-sm btn-info mr-2">
-            <i class="fas fa-plus mr-2"></i>Extras
+          <router-link
+            class="btn btn-sm btn-outline-info mr-2"
+            :to="`/dashboard/stores/${store._id}/edit`"
+            >Store Settings</router-link
+          >
+          <router-link
+            class="btn btn-sm btn-outline-info mr-2"
+            :to="`/dashboard/stores/${store._id}/add`"
+            >Edit Items</router-link
+          >
+          <button @click="displayExtrasModal" class="btn btn-sm btn-outline-info mr-2">
+            Edit Extras
             <span class="badge badge-light ml-2" v-if="extraCharges && extraCharges.length > 0">
               {{ extraCharges.length }}
             </span>
           </button>
-          <button @click="duplicateOrder" class="btn btn-sm btn-info">
-            <i class="fas fa-clone mr-2"></i>Duplicate
+          <button class="btn btn-sm btn-outline-info mr-2">Edit Coupons</button>
+          <button @click="duplicateOrder" class="btn btn-sm btn-outline-info">
+            Duplicate Store
           </button>
         </div>
       </div>
-
       <div class="gallery-list" v-if="filteredItems.length > 0">
         <div class="card" v-for="(item, index) in filteredItems" :key="item._id">
           <div class="card-image">
@@ -246,7 +244,7 @@
 
       <h6 v-else>No Store Items found</h6>
     </div>
-    <!-- EDIT ITEM MODAL WINDOW -->
+    <!-- EXTRA CHARGE MODAL WINDOW -->
     <div v-if="showExtrasModal">
       <transition name="modal">
         <div class="modal-mask">
@@ -265,18 +263,24 @@
                     v-for="(extra, index) in extraCharges"
                     :key="index"
                   >
+                    <div class="col-md-1">
+                      <span class="text-muted">{{ index + 1 }}</span>
+                    </div>
                     <div class="col-md-6">
                       <label>Name</label>
                       <br />
                       <span>{{ extra.name }}</span>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                       <label>Price {{ store.currency }}</label>
                       <br />
                       <span>{{ extra.amount | currency }}</span>
                     </div>
                     <div class="col-md-1">
-                      <button class="btn btn-block btn-danger" @click="removeExtraCharge(index)">
+                      <button
+                        class="btn btn-block btn-danger removeCharge"
+                        @click="removeExtraCharge(index)"
+                      >
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -349,10 +353,10 @@
                 <button
                   type="button"
                   class="btn btn-success"
-                  @click="closeModal"
+                  @click="closeExtrasModal"
                   :disabled="showNewCharge"
                 >
-                  Save Charges
+                  Save Changes / Exit
                 </button>
               </div>
             </div>
@@ -505,10 +509,10 @@ export default {
         }
       }
     },
-    displayModal: function() {
+    displayExtrasModal: function() {
       this.showExtrasModal = true;
     },
-    closeModal: async function() {
+    closeExtrasModal: async function() {
       try {
         await this.$store.dispatch('updateStoreCharges', {
           id: this.store._id,
@@ -735,9 +739,19 @@ export default {
           }
 
           .extras-list {
-            max-height: 500px;
+            max-height: 400px;
             overflow-x: hidden;
             overflow-y: auto;
+
+            .removeCharge {
+              width: 40px;
+              height: 40px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding: 0;
+              margin: 0;
+            }
           }
         }
       }
@@ -756,47 +770,29 @@ export default {
 
 .middle-section {
   grid-area: middle-section;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 40px 40px 1fr;
-  grid-gap: 0.5rem;
   width: 100%;
   height: 100;
-  grid-template-areas:
-    'message'
-    'header'
-    'store-grid';
 
   .header {
-    grid-area: header;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    background-color: whitesmoke;
-    border-radius: 5px;
     font-weight: 700;
-    height: 40px;
-    padding: 0.25rem;
-
-    img {
-      height: 35px;
-      margin-right: 1.5rem;
-    }
 
     .form-control {
-      width: 400px;
+      width: 250px;
+      max-width: 400px;
     }
   }
 
   .gallery-list {
-    grid-area: store-grid;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-auto-rows: min-content;
     grid-gap: 1rem;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 0.5rem;
     margin-bottom: 0.5rem;
 
     .card {
@@ -875,10 +871,6 @@ export default {
         }
       }
     }
-  }
-
-  .message {
-    grid-area: message;
   }
 }
 
