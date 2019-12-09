@@ -3,7 +3,7 @@ node_modules
 coverage
 .env
 .env.development
-seeder.js
+startup/seeder
 .VSCodeCounter
 static/images/catalogs
 static/images/catalogs/*

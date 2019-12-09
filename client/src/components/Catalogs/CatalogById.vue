@@ -72,8 +72,10 @@
             <span>{{ item.nameEN }}</span>
             <br />
             <small class="text-muted">PRODUCT - {{ item.productCode }}</small>
-            <br />
-            <small class="text-muted">STYLE - {{ item.styleCode }}</small>
+            <br v-if="item.productCode !== item.styleCode" />
+            <small class="text-muted" v-if="item.productCode !== item.styleCode"
+              >STYLE - {{ item.styleCode }}</small
+            >
           </div>
         </div>
       </router-link>

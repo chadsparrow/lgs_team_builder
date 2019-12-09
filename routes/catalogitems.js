@@ -25,7 +25,10 @@ function populateCatalogItem(catalogItem) {
 // @route   GET /api/v1/catalogitems/
 // @access  Private
 router.get('/', auth, async (req, res) => {
-  const items = await CatalogItem.find().populate(populateOptions);
+  const items = await CatalogItem.find().populate({
+    path: 'catalogId',
+    select: 'brand season year'
+  });
   if (items && items.length === 0)
     return res.status(404).send([{ message: 'There are no catalog items.' }]);
 

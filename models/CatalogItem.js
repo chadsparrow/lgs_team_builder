@@ -82,13 +82,8 @@ const CatalogItemSchema = new mongoose.Schema(
       type: String,
       trim: true
     },
-    categories: [
-      {
-        type: String,
-        uppercase: true,
-        trim: true
-      }
-    ],
+    categories: [{ type: String, uppercase: true, trim: true }],
+    categoriesFR: [{ type: String, uppercase: true, trim: true }],
     images: [{ type: String, trim: true }],
     isActive: {
       type: Boolean,

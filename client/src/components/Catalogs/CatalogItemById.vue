@@ -23,17 +23,18 @@
             >/ {{ currentCatalogItem.categories[3] }}</span
           >
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 mt-1">
           <h3>{{ currentCatalogItem.nameEN }}</h3>
         </div>
         <div class="col-sm-12">
-          <span class="text-info"
-            >{{ currentCatalogItem.productCode }} / {{ currentCatalogItem.productCode }}</span
+          <span class="text-info">{{ currentCatalogItem.productCode }}</span
+          ><span v-if="currentCatalogItem.productCode !== currentCatalogItem.styleCode"
+            >/ {{ currentCatalogItem.styleCode }}</span
           >
         </div>
         <div class="col-sm-12">
-          <p class="mt-3 text-muted">{{ description[0] }}</p>
-          <ul class="bulletPoints">
+          <p class="mt-3 text-muted" v-if="description[0] !== 'NA'">{{ description[0] }}</p>
+          <ul class="bulletPoints" v-if="bulletPoints">
             <li
               v-for="(bulletPoint, index) in bulletPoints"
               :key="index"
