@@ -233,6 +233,7 @@ export default {
 
       &:hover {
         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+        background-color: whitesmoke;
       }
     }
   }
@@ -241,6 +242,7 @@ export default {
     grid-area: gallery;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 0.25rem;
 
     .thumbnail {
       border-radius: 5px;
@@ -286,6 +288,7 @@ export default {
 
       &:hover {
         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+        background-color: whitesmoke;
       }
     }
   }

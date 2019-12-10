@@ -18,6 +18,7 @@ const CatalogById = () => import('./components/Catalogs/CatalogById.vue');
 const CatalogByIdEdit = () => import('./components/Catalogs/CatalogByIdEdit.vue');
 const CatalogItemsAdd = () => import('./components/Catalogs/CatalogItemsAdd.vue');
 const CatalogItemById = () => import('./components/Catalogs/CatalogItemById.vue');
+const CatalogItemByIdEdit = () => import('./components/Catalogs/CatalogItemByIdEdit.vue');
 const OrdersIndex = () => import('./components/Orders/OrdersIndex.vue');
 const MembersIndex = () => import('./components/Members/MembersIndex.vue');
 const MembersAdd = () => import('./components/Members/MembersAdd.vue');
@@ -169,6 +170,15 @@ let router = new Router({
           path: 'catalogitems/:id',
           name: 'catalogItemById',
           component: CatalogItemById,
+          meta: {
+            requiresAuth: true,
+            isAdmin: true
+          }
+        },
+        {
+          path: 'catalogitems/edit/:id',
+          name: 'catalogItemByIdEdit',
+          component: CatalogItemByIdEdit,
           meta: {
             requiresAuth: true,
             isAdmin: true

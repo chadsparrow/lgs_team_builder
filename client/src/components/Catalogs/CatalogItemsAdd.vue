@@ -317,7 +317,6 @@ export default {
       descriptionFR: '',
       category: '',
       categories: [],
-      images: [],
       isActive: true
     };
   },

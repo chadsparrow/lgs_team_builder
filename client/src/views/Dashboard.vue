@@ -42,7 +42,7 @@ export default {
   overflow-y: auto;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
   .dashboard {
     grid-template-columns: 200px 1fr;
   }

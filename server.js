@@ -41,7 +41,7 @@ app.use(hpp());
 // rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 250
+  max: 1000
 });
 app.use(limiter);
 

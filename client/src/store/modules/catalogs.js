@@ -94,6 +94,16 @@ export default {
           reject(err);
         }
       });
+    },
+    updateCatalogItem(context, { id, updatedCatalogItem }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.put(`/api/v1/catalogitems/${id}`, updatedCatalogItem);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
   },
   mutations: {

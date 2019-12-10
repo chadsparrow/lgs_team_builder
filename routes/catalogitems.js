@@ -1,12 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const {
-  CatalogItem,
-  validateCatalogItem,
-  validateCatalogItemEdit,
-  validateCatalogImg
-} = require('../models/CatalogItem');
+const { CatalogItem, validateCatalogItem, validateCatalogImg } = require('../models/CatalogItem');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
@@ -110,23 +105,7 @@ router.post('/', [auth, admin], async (req, res) => {
 // @route   PUT /api/v1/catalogitems/:id
 // @access  Private - admin
 router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
-  const { error } = validateCatalogItemEdit(req.body);
-  if (error) return res.status(400).send(error.details);
-
-  const {
-    nameEN,
-    nameFR,
-    productCode,
-    styleCode,
-    sizes,
-    priceBreaks,
-    gender,
-    descriptionEN,
-    descriptionFR,
-    categories,
-    images,
-    isActive
-  } = req.body;
+  const { productCode, styleCode } = req.body;
 
   // checks if item exists
   const item = await CatalogItem.findById(req.params.id);
@@ -139,23 +118,18 @@ router.put('/:id', [validateObjectId, auth, admin], async (req, res) => {
     productCode: productCode.toUpperCase(),
     styleCode: styleCode.toUpperCase()
   });
-  if (duplicateItem) return res.status(400).send([{ message: 'Item already exists.' }]);
+  if (duplicateItem) return res.status(400).send([{ message: 'Product already exists.' }]);
 
-  item.nameEN = nameEN;
-  item.nameFR = nameFR;
-  item.productCode = productCode;
-  item.styleCode = styleCode;
-  item.sizes = sizes;
-  item.priceBreaks = priceBreaks;
-  item.gender = gender;
-  item.descriptionEN = descriptionEN;
-  item.descriptionFR = descriptionFR;
-  item.categories = categories;
-  item.images = images;
-  item.isActive = isActive;
+  const updatedCatalogItem = await CatalogItem.updateOne({ _id: req.params.id }, req.body, {
+    new: true
+  });
 
-  await item.save();
-  return res.send(populateCatalogItem(item._id));
+  return res
+    .status(200)
+    .send([
+      { message: 'Catalog item updated' },
+      { updatedItem: populateCatalogItem(updatedCatalogItem._id) }
+    ]);
 });
 
 // @desc    Adds an image file name to the item's image array

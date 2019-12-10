@@ -161,7 +161,7 @@ export default {
   }
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
   .sidenav {
     padding: 1rem;
     .logo {

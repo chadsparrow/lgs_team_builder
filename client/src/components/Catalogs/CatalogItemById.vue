@@ -1,151 +1,155 @@
 <template>
   <div class="page" v-if="!isLoading">
-    <div class="image-section">
-      <div class="grid">
-        <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
-          <img
-            :src="getImgUrl(image.index, image.size)"
-            :alt="image.alt"
-            @click="switchImage(image.id, image.index)"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="info-section">
-      <div class="row">
-        <div class="col-sm-12">
-          <span class="text-muted mr-2">{{ currentCatalogItem.categories[0] }}</span>
-          <span class="text-muted mr-2">/ {{ currentCatalogItem.categories[1] }}</span>
-          <span class="text-muted mr-2" v-if="currentCatalogItem.categories[2]"
-            >/ {{ currentCatalogItem.categories[2] }}</span
-          >
-          <span class="text-muted mr-2" v-if="currentCatalogItem.categories[3]"
-            >/ {{ currentCatalogItem.categories[3] }}</span
-          >
-        </div>
-        <div class="col-sm-12 mt-1">
-          <h3>{{ currentCatalogItem.nameEN }}</h3>
-        </div>
-        <div class="col-sm-12">
-          <span class="text-info">{{ currentCatalogItem.productCode }}</span
-          ><span v-if="currentCatalogItem.productCode !== currentCatalogItem.styleCode"
-            >/ {{ currentCatalogItem.styleCode }}</span
-          >
-        </div>
-        <div class="col-sm-12">
-          <p class="mt-3 text-muted" v-if="description[0] !== 'NA'">{{ description[0] }}</p>
-          <ul class="bulletPoints" v-if="bulletPoints">
-            <li
-              v-for="(bulletPoint, index) in bulletPoints"
-              :key="index"
-              class="text-muted bulletPoint"
-            >
-              {{ bulletPoint }}
-            </li>
-          </ul>
-        </div>
-        <div class="col-sm-12">
-          <span class="text-info mr-2">Gender:</span>
-          <span
-            >{{ currentCatalogItem.gender }} -
-            {{
-              currentCatalogItem.gender === 'U'
-                ? '(Unisex)'
-                : currentCatalogItem.gender === 'M'
-                ? "(Men's)"
-                : currentCatalogItem.gender === 'F'
-                ? "(Women's)"
-                : '(Junior)'
-            }}</span
-          >
-        </div>
-        <div class="col-sm-12 mt-2">
-          <span class="text-info mr-2">Sizes Offered:</span>
-          <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">{{ size }}</span>
-        </div>
-        <div class="col-sm-12 mt-2">
-          <span class="text-info mr-2">Item Active:</span>
-          <span>{{ currentCatalogItem.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
-        </div>
-        <div class="col-sm-12 my-4">
-          <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
-            Price Breaks:
-          </h4>
-          <div class="row mt-2">
-            <div class="col-sm-6">
-              <span class="text-info">CAD</span>
-              <ul class="list-group list-group-flush">
-                <li
-                  v-for="pb in currentCatalogItem.priceBreaks.CAD"
-                  :key="pb.priceBreak"
-                  class="list-group-item"
-                >
-                  <span class="pricebreaks">{{ pb.priceBreak }}</span>
-                  <span class="prices text-info">{{ pb.price | currency }}</span>
-                </li>
-                <li class="list-group-item">
-                  <span class="pricebreaks">250+</span>
-                  <span class="prices text-info">Negotiable</span>
-                </li>
-              </ul>
-            </div>
-            <div class="col-sm-6">
-              <span class="text-info">USD</span>
-              <ul class="list-group list-group-flush">
-                <li
-                  v-for="pb in currentCatalogItem.priceBreaks.USD"
-                  :key="pb.priceBreak"
-                  class="list-group-item"
-                >
-                  <span class="pricebreaks">{{ pb.priceBreak }}</span>
-                  <span class="prices text-info">{{ pb.price | currency }}</span>
-                </li>
-                <li class="list-group-item">
-                  <span class="pricebreaks">250+</span>
-                  <span class="prices text-info">Negotiable</span>
-                </li>
-              </ul>
-            </div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-6 col-xl-5 image-section">
+        <div class="image-box">
+          <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
+            <img
+              :src="getImgUrl(image.index)"
+              :alt="image.alt"
+              @click="switchImage(image.id, image.index)"
+            />
           </div>
         </div>
-        <div class="col-sm-12">Buttons</div>
+      </div>
+      <div class="col-md-12 col-lg-6 col-xl-7 info-section">
+        <div class="row">
+          <div class="col-sm-12">
+            <span class="text-muted mr-2">{{ currentCatalogItem.categories[0] }}</span>
+            <span class="text-muted mr-2">/ {{ currentCatalogItem.categories[1] }}</span>
+            <span class="text-muted mr-2" v-if="currentCatalogItem.categories[2]"
+              >/ {{ currentCatalogItem.categories[2] }}</span
+            >
+            <span class="text-muted mr-2" v-if="currentCatalogItem.categories[3]"
+              >/ {{ currentCatalogItem.categories[3] }}</span
+            >
+          </div>
+          <div class="col-sm-12 mt-1">
+            <h1>{{ currentCatalogItem.nameEN }}</h1>
+          </div>
+          <div class="col-sm-12 text-info">
+            <span>{{ currentCatalogItem.productCode }}</span
+            ><span v-if="currentCatalogItem.productCode !== currentCatalogItem.styleCode">
+              / {{ currentCatalogItem.styleCode }}</span
+            >
+          </div>
+          <div class="col-sm-12">
+            <p class="mt-3 text-muted" v-if="description[0] !== 'NA'">{{ description[0] }}</p>
+            <ul class="bulletPoints" v-if="bulletPoints">
+              <li
+                v-for="(bulletPoint, index) in bulletPoints"
+                :key="index"
+                class="text-muted bulletPoint"
+              >
+                {{ bulletPoint }}
+              </li>
+            </ul>
+          </div>
+          <div class="col-sm-12">
+            <span class="text-info mr-2">Gender:</span>
+            <span
+              >{{ currentCatalogItem.gender }} -
+              {{
+                currentCatalogItem.gender === 'U'
+                  ? '(Unisex)'
+                  : currentCatalogItem.gender === 'M'
+                  ? "(Men's)"
+                  : currentCatalogItem.gender === 'F'
+                  ? "(Women's)"
+                  : '(Junior)'
+              }}</span
+            >
+          </div>
+          <div class="col-sm-12 mt-2">
+            <span class="text-info mr-2">Sizes Offered:</span>
+            <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">{{
+              size
+            }}</span>
+          </div>
+          <div class="col-sm-12 mt-2">
+            <span class="text-info mr-2">Item Active:</span>
+            <span>{{ currentCatalogItem.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
+          </div>
+          <div class="col-sm-12 my-4">
+            <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
+              Price Breaks:
+            </h4>
+            <div class="row mt-2">
+              <div class="col-sm-12 col-md-6">
+                <span class="text-info">CAD</span>
+                <ul class="list-group list-group-flush">
+                  <li
+                    v-for="pb in currentCatalogItem.priceBreaks.CAD"
+                    :key="pb.priceBreak"
+                    class="list-group-item"
+                  >
+                    <span class="pricebreaks">{{ pb.priceBreak }}</span>
+                    <span class="prices text-info">{{ pb.price | currency }}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="pricebreaks">250+</span>
+                    <span class="prices text-info">Negotiable</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <span class="text-info">USD</span>
+                <ul class="list-group list-group-flush">
+                  <li
+                    v-for="pb in currentCatalogItem.priceBreaks.USD"
+                    :key="pb.priceBreak"
+                    class="list-group-item"
+                  >
+                    <span class="pricebreaks">{{ pb.priceBreak }}</span>
+                    <span class="prices text-info">{{ pb.price | currency }}</span>
+                  </li>
+                  <li class="list-group-item">
+                    <span class="pricebreaks">250+</span>
+                    <span class="prices text-info">Negotiable</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 mb-4">
+            <router-link
+              :to="`/dashboard/catalogitems/edit/${currentCatalogItem._id}`"
+              class="btn btn-block btn-lg btn-info"
+              >Edit Item</router-link
+            >
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Vue2Filters from 'vue2-filters';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'CatalogItemById',
-  mixins: [Vue2Filters.mixin],
   data() {
     return {
       images: [
         {
           id: 1,
           index: 0,
-          size: 800,
           alt: 'Product Image 1'
         },
         {
           id: 2,
           index: 1,
-          size: 300,
           alt: 'Product Image 2'
         },
         {
           id: 3,
           index: 2,
-          size: 300,
           alt: 'Product Image 3'
         },
         {
           id: 4,
           index: 3,
-          size: 300,
           alt: 'Product Image 4'
         }
       ]
@@ -170,15 +174,14 @@ export default {
     }
   },
   methods: {
-    getImgUrl(index, size) {
+    getImgUrl(index) {
       if (!this.isLoading) {
         if (this.currentCatalogItem.images.length === 0)
-          return `/images/assets/missing_item_${size}.png`;
+          return `/images/assets/missing_item_800.png`;
 
-        if (!this.currentCatalogItem.images[index])
-          return `/images/assets/missing_item_${size}.png`;
+        if (!this.currentCatalogItem.images[index]) return `/images/assets/missing_item_800.png`;
 
-        return `/images/catalogs/${this.currentCatalog._id}/${size}/${this.currentCatalogItem.images[index]}_${size}.jpg`;
+        return `/images/catalogs/${this.currentCatalog._id}/800/${this.currentCatalogItem.images[index]}_800.jpg`;
       }
     },
     switchImage(id, ind) {
@@ -227,81 +230,68 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  display: grid;
-  grid-template-columns: 1000px 1fr;
-  grid-template-rows: 1fr;
-  grid-gap: 2rem;
-  width: 100%;
-  height: 100%;
-  grid-template-areas: 'image-section info-section';
-}
+  padding: 0 1rem;
 
-.image-section {
-  grid-area: image-section;
+  .image-section {
+    .image-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 3fr 1fr;
+      grid-gap: 1rem;
+      grid-template-areas:
+        'image1 image1 image1'
+        'image2 image3 image4';
 
-  .grid {
-    display: grid;
-    grid-template-columns: 800px 200px;
-    grid-template-rows: 200px 200px 200px;
-    grid-template-areas:
-      'image1 image2'
-      'image1 image3'
-      'image1 image4';
+      margin-bottom: 1rem;
 
-    #image1 {
-      grid-area: image1;
-      width: 100%;
-      height: 100%;
-      padding: 0.5rem;
-    }
-    #image2 {
-      grid-area: image2;
-      width: 100%;
-      height: 100%;
-      padding: 0.5rem 0.5rem 0.5rem 0;
-      cursor: pointer;
-    }
-    #image3 {
-      grid-area: image3;
-      width: 100%;
-      height: 100%;
-      padding: 0.5rem 0.5rem 0 0;
-      cursor: pointer;
-    }
-    #image4 {
-      grid-area: image4;
-      width: 100%;
-      height: 100%;
-      padding: 0.5rem 0.5rem 0 0;
-      cursor: pointer;
-    }
+      #image1 {
+        grid-area: image1;
+        width: 100%;
+        height: 100%;
+      }
+      #image2 {
+        grid-area: image2;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      #image3 {
+        grid-area: image3;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      #image4 {
+        grid-area: image4;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
 
-    img {
-      width: 100%;
-    }
-  }
-}
-
-.info-section {
-  grid-area: info-section;
-  padding-right: 50px;
-
-  .bulletPoints {
-    padding-left: 1rem;
-    .bulletPoint {
-      font-size: 0.9rem;
+      img {
+        width: 100%;
+      }
     }
   }
 
-  .list-group-item {
-    height: 2rem;
-    padding: 0.25rem 1rem;
-
-    .pricebreaks {
-      font-weight: 700;
+  .info-section {
+    .bulletPoints {
+      padding-left: 1rem;
+      .bulletPoint {
+        font-size: 0.9rem;
+      }
     }
-    .prices {
-      float: right;
+
+    .list-group-item {
+      height: 2rem;
+      padding: 0.25rem 1rem;
+
+      .pricebreaks {
+        font-weight: 700;
+      }
+      .prices {
+        float: right;
+      }
     }
   }
 }

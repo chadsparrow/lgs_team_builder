@@ -125,6 +125,11 @@ function validateCatalogItem(catalogItem) {
         .allow('', null)
         .trim()
     ),
+    categoriesFR: Joi.array().items(
+      Joi.string()
+        .allow('', null)
+        .trim()
+    ),
     priceBreaks: Joi.object({
       CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
       USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
