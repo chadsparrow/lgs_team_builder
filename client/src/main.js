@@ -14,6 +14,7 @@ import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
 import interceptorsSetup from './helpers/interceptors';
 import VueCurrencyInput from 'vue-currency-input';
+import VueLazyload from 'vue-lazyload';
 
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
@@ -31,6 +32,13 @@ Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);
 Vue.use(Vue2Filters);
 Vue.use(VueCurrencyInput);
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  loading: 'https://media.giphy.com/media/hTrXs1jw6ABY9dDyxS/giphy.gif',
+  error: '/images/assets/missing_item_300.png',
+  observer: true,
+  attempt: 1
+});
 
 Vue.config.productionTip = false;
 

@@ -23,6 +23,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_CATALOGS');
+          commit('CLEAR_CURRENT_CATALOG');
           const res = await axios.get(`/api/v1/catalogs?brand=${brand}`);
           commit('SET_CATALOGS', res.data);
           resolve(res);
@@ -115,6 +116,9 @@ export default {
     },
     SET_CURRENT_CATALOG(state, payload) {
       state.currentCatalog = payload;
+    },
+    CLEAR_CURRENT_CATALOG(state) {
+      state.currentCatalog = {};
     },
     CLEAR_CATALOG_ITEMS(state) {
       state.currentCatalogItems = [];

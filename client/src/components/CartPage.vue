@@ -11,8 +11,11 @@
         <div class="cart-item-box">
           <div class="cart-item mb-2" v-for="item in cart.items" :key="item._id">
             <div class="row">
-              <div class="col-md-12 col-lg-3 cart-item-image">
-                <img :src="getImgUrl(item)" :alt="item.nameEN" />
+              <div
+                class="col-md-12 col-lg-3 cart-item-image"
+                v-lazy-container="{ selector: 'img' }"
+              >
+                <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
               </div>
               <div class="col-md-12 col-lg-7 cart-item-info">
                 <div>
@@ -162,8 +165,8 @@ export default {
   },
   methods: {
     getImgUrl: function(item) {
-      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
-      return `/images/storesitems/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
+      // if (item.images.length === 0) return '/images/assets/missing_item_800.png';
+      return `/images/storesitems/${this.store._id}/800/${item.images[0]}_800.jpg`;
     },
     removeItem: async function(itemId) {
       this.$store.commit('LOADING_TRUE');

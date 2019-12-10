@@ -55,8 +55,8 @@
           :group="{ name: 'items', pull: 'clone', put: false }"
         >
           <div class="list-group-item" v-for="(item, index) in filteredItems" :key="index">
-            <div class="itemImage">
-              <img :src="getImgUrl(item)" :alt="item.nameEN" />
+            <div class="itemImage" v-lazy-container="{ selector: 'img' }">
+              <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
             </div>
             <div class="itemInfo">
               {{ item.nameEN }}
@@ -77,8 +77,8 @@
           @change="updateStoreItems"
         >
           <div class="list-group-item mb-1" v-for="(storeItem, index) in storeItems" :key="index">
-            <div class="itemImage">
-              <img :src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
+            <div class="itemImage" v-lazy-container="{ selector: 'img' }">
+              <img :data-src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
             </div>
             <div class="itemInfo">
               <div v-if="storeItem.mandatoryItem" class="text-danger mandatoryStar">

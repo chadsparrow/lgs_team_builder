@@ -164,8 +164,8 @@
       </div>
       <div class="gallery-list" v-if="filteredItems.length > 0">
         <div class="card" v-for="(item, index) in filteredItems" :key="item._id">
-          <div class="card-image">
-            <img :src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
+          <div class="card-image" v-lazy-container="{ selector: 'img' }">
+            <img :data-src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
             <div class="mandatoryItem bg-danger text-white" v-if="item.mandatoryItem">
               Mandatory
             </div>
@@ -567,8 +567,8 @@ export default {
       }
     },
     getImgUrl: function(item) {
-      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
-      return `/images/storeitems/${this.store._id}/800/${item.images[0].toUpperCase()}_800.jpg`;
+      // if (item.images.length === 0) return '/images/assets/missing_item_800.png';
+      return `/images/storeitems/${this.store._id}/800/${item.images[0]}_800.jpg`;
     },
     removeLike: async function(id) {
       try {

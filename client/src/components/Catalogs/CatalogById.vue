@@ -65,8 +65,8 @@
         :to="`/dashboard/catalogItems/${item._id}`"
       >
         <div class="info-container">
-          <div class="thumbnail-img">
-            <img :src="getImgUrl(item)" :alt="item.nameEN" />
+          <div class="thumbnail-img" v-lazy-container="{ selector: 'img' }">
+            <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
           </div>
           <div class="thumbnail-body">
             <span>{{ item.nameEN }}</span>
@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     getImgUrl(item) {
-      if (item.images.length === 0) return '/images/assets/missing_item_300.png';
+      // if (item.images.length === 0) return '/images/assets/missing_item_300.png';
       return `/images/catalogs/${this.currentCatalog._id}/300/${item.images[0]}_300.jpg`;
     },
     setView(bool) {
