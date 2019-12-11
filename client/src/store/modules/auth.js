@@ -6,7 +6,8 @@ export default {
     token: localStorage.getItem('token') || '',
     loggedInMember: {},
     emails: [],
-    notifications: []
+    notifications: [],
+    menu: []
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -20,6 +21,7 @@ export default {
           localStorage.setItem('token', token);
           localStorage.setItem('member', member._id);
           commit('AUTH_SUCCESS', { token, member, emails });
+          commit('SET_MENU', member.isAdmin);
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
@@ -171,6 +173,89 @@ export default {
     },
     SET_NOTIFICATIONS_READY_FALSE(state) {
       state.notificationsReady = false;
+    },
+    SET_MENU(state, isAdmin) {
+      if (isAdmin) {
+        state.menu = [
+          {
+            header: true,
+            title: 'Team Builder',
+            hiddenOnCollapse: true,
+            class: 'text-center'
+          },
+          {
+            href: { path: '/dashboard/members' },
+            title: 'Members',
+            icon: 'fas fa-user'
+          },
+          {
+            href: { path: '/dashboard/teams' },
+            title: 'Teams',
+            icon: 'fas fa-users'
+          },
+          {
+            href: { path: '/dashboard/stores' },
+            title: 'Stores',
+            icon: 'fas fa-store'
+          },
+          {
+            href: { path: '/dashboard/orders' },
+            title: 'Orders',
+            icon: 'fas fa-receipt'
+          },
+          {
+            href: { path: '/dashboard/catalogs' },
+            title: 'Catalogs',
+            icon: 'fas fa-book'
+          },
+          {
+            header: true,
+            title: 'Account',
+            hiddenOnCollapse: true,
+            class: 'text-center'
+          },
+          {
+            href: { path: '/dashboard/profile' },
+            title: 'Profile',
+            icon: 'fas fa-id-card'
+          }
+        ];
+      } else {
+        state.menu = [
+          {
+            header: true,
+            title: 'Team Builder',
+            hiddenOnCollapse: true,
+            class: 'text-center'
+          },
+          {
+            href: { path: '/dashboard/teams' },
+            title: 'My Teams',
+            icon: 'fas fa-users'
+          },
+          {
+            href: { path: '/dashboard/stores' },
+            title: 'My Stores',
+            icon: 'fas fa-store'
+          },
+          {
+            href: { path: '/dashboard/orders' },
+            title: 'My Orders',
+            icon: 'fas fa-receipt'
+          },
+          {
+            header: true,
+            title: 'Account',
+            hiddenOnCollapse: true,
+            class: 'text-center'
+          },
+          {
+            href: { path: '/dashboard/profile' },
+            title: 'Profile',
+            icon: 'fas fa-id-card'
+          }
+        ];
+      }
     }
   },
   getters: {
@@ -179,6 +264,7 @@ export default {
     authStatus: state => state.status,
     loggedInMember: state => state.loggedInMember,
     emails: state => state.emails,
-    notifications: state => state.notifications
+    notifications: state => state.notifications,
+    menu: state => state.menu
   }
 };

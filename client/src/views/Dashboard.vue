@@ -1,7 +1,22 @@
 <template>
   <div :class="sideCollapsed ? 'dashboard-collapsed' : 'dashboard'">
     <!-- <SideNav /> -->
-    <sidebar-menu @toggle-collapse="onToggleCollapse" :menu="menu" :width="'150px'"></sidebar-menu>
+    <sidebar-menu
+      @toggle-collapse="onToggleCollapse"
+      :menu="menu"
+      :width="'150px'"
+      :collapsed="sideCollapsed"
+    >
+      <span slot="toggle-icon">
+        <i class="fas fa-angle-right" v-if="sideCollapsed"></i>
+        <i class="fas fa-angle-left" v-else></i>
+      </span>
+      <div slot="footer">
+        <button class="btn btn-block btn-danger logoutBtn" @click="logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </sidebar-menu>
     <TopNav class="topNavBar" />
     <transition name="fade" mode="out-in">
       <router-view class="mainContent"></router-view>
@@ -22,78 +37,41 @@ export default {
   },
   data() {
     return {
-      sideCollapsed: false
+      sideCollapsed: false,
+      screenWidth: 0
     };
   },
-  computed: {
-    ...mapGetters(['loggedInMember']),
-    menu: function() {
-      if (this.loggedInMember && this.loggedInMember.isAdmin) {
-        return [
-          {
-            header: true,
-            title: 'Team Builder',
-            hiddenOnCollapse: true,
-            class: 'text-center'
-          },
-          {
-            href: { path: '/dashboard/members' },
-            title: 'Members',
-            icon: 'fas fa-user'
-          },
-          {
-            href: { path: '/dashboard/teams' },
-            title: 'Teams',
-            icon: 'fas fa-users'
-          },
-          {
-            href: { path: '/dashboard/stores' },
-            title: 'Stores',
-            icon: 'fas fa-store'
-          },
-          {
-            href: { path: '/dashboard/orders' },
-            title: 'Orders',
-            icon: 'fas fa-receipt'
-          },
-          {
-            href: { path: '/dashboard/catalogs' },
-            title: 'Catalogs',
-            icon: 'fas fa-book'
-          }
-        ];
-      }
-
-      return [
-        {
-          header: true,
-          title: 'Team Builder',
-          hiddenOnCollapse: true,
-          class: 'text-center'
-        },
-        {
-          href: { path: '/dashboard/teams' },
-          title: 'My Teams',
-          icon: 'fas fa-users'
-        },
-        {
-          href: { path: '/dashboard/stores' },
-          title: 'My Stores',
-          icon: 'fas fa-store'
-        },
-        {
-          href: { path: '/dashboard/orders' },
-          title: 'My Orders',
-          icon: 'fas fa-receipt'
-        }
-      ];
-    }
+  created() {
+    this.setScreenWidth();
+    window.addEventListener('resize', this.setScreenWidth);
+    this.$store.commit('SET_MENU', this.loggedInMember.isAdmin);
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.setScreenWidth);
   },
   methods: {
     onToggleCollapse(collapsed) {
       if (collapsed) this.sideCollapsed = true;
       else this.sideCollapsed = false;
+    },
+    setScreenWidth() {
+      this.screenWidth = window.innerWidth;
+      if (this.screenWidth < 768) {
+        this.sideCollapsed = true;
+      } else {
+        this.sideCollapsed = false;
+      }
+    },
+    logout: async function() {
+      this.$store.commit('LOADING_FALSE');
+      await this.$store.dispatch('logout');
+      this.$router.push({ name: 'login' });
+      this.$toasted.clear();
+      this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
     }
+  },
+  computed: {
+    ...mapGetters(['loggedInMember', 'menu'])
   }
 };
 </script>
@@ -112,6 +90,18 @@ export default {
     'content';
 
   background-image: linear-gradient(to bottom right, white, #d6d6d6);
+
+  .logoutBtn {
+    display: inline-block;
+    white-space: nowrap;
+    i {
+      margin-left: 0.5rem;
+    }
+
+    &::before {
+      content: 'Logout';
+    }
+  }
 }
 
 .dashboard-collapsed {
@@ -126,6 +116,18 @@ export default {
     'content';
 
   background-image: linear-gradient(to bottom right, white, #d6d6d6);
+
+  .logoutBtn {
+    display: inline-block;
+    white-space: nowrap;
+    i {
+      margin-left: 0;
+    }
+
+    &::before {
+      content: none;
+    }
+  }
 }
 
 .mainContent {
