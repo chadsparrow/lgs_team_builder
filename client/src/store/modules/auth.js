@@ -178,12 +178,6 @@ export default {
       if (isAdmin) {
         state.menu = [
           {
-            header: true,
-            title: 'Team Builder',
-            hiddenOnCollapse: true,
-            class: 'text-center'
-          },
-          {
             href: { path: '/dashboard/members' },
             title: 'Members',
             icon: 'fas fa-user'
@@ -222,12 +216,6 @@ export default {
         ];
       } else {
         state.menu = [
-          {
-            header: true,
-            title: 'Team Builder',
-            hiddenOnCollapse: true,
-            class: 'text-center'
-          },
           {
             href: { path: '/dashboard/teams' },
             title: 'My Teams',

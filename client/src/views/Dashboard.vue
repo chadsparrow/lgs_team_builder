@@ -7,6 +7,9 @@
       :width="'150px'"
       :collapsed="sideCollapsed"
     >
+      <div slot="header" class="tbLogo">
+        <img src="/images/assets/tb_logo_white.svg" alt="Team Builder logo" />
+      </div>
       <span slot="toggle-icon">
         <i class="fas fa-angle-right" v-if="sideCollapsed"></i>
         <i class="fas fa-angle-left" v-else></i>
@@ -25,14 +28,12 @@
 </template>
 
 <script>
-// import SideNav from '../components/SideNav';
 import TopNav from '../components/TopNav';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'Dashboard',
   components: {
-    // SideNav,
     TopNav
   },
   data() {
@@ -102,6 +103,14 @@ export default {
       content: 'Logout';
     }
   }
+
+  .tbLogo {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin: 0 auto;
+    text-align: center;
+  }
 }
 
 .dashboard-collapsed {
@@ -127,6 +136,15 @@ export default {
     &::before {
       content: none;
     }
+  }
+
+  .tbLogo {
+    width: 100%;
+    padding: 0.25rem;
+    margin: 0 auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
   }
 }
 
