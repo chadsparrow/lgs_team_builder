@@ -12,6 +12,7 @@
 <script>
 // import SideNav from '../components/SideNav';
 import TopNav from '../components/TopNav';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Dashboard',
@@ -21,8 +22,49 @@ export default {
   },
   data() {
     return {
-      sideCollapsed: false,
-      menu: [
+      sideCollapsed: false
+    };
+  },
+  computed: {
+    ...mapGetters(['loggedInMember']),
+    menu: function() {
+      if (this.loggedInMember && this.loggedInMember.isAdmin) {
+        return [
+          {
+            header: true,
+            title: 'Team Builder',
+            hiddenOnCollapse: true,
+            class: 'text-center'
+          },
+          {
+            href: { path: '/dashboard/members' },
+            title: 'Members',
+            icon: 'fas fa-user'
+          },
+          {
+            href: { path: '/dashboard/teams' },
+            title: 'Teams',
+            icon: 'fas fa-users'
+          },
+          {
+            href: { path: '/dashboard/stores' },
+            title: 'Stores',
+            icon: 'fas fa-store'
+          },
+          {
+            href: { path: '/dashboard/orders' },
+            title: 'Orders',
+            icon: 'fas fa-receipt'
+          },
+          {
+            href: { path: '/dashboard/catalogs' },
+            title: 'Catalogs',
+            icon: 'fas fa-book'
+          }
+        ];
+      }
+
+      return [
         {
           header: true,
           title: 'Team Builder',
@@ -30,32 +72,22 @@ export default {
           class: 'text-center'
         },
         {
-          href: { path: '/dashboard/members' },
-          title: 'Members',
-          icon: 'fas fa-user'
-        },
-        {
           href: { path: '/dashboard/teams' },
-          title: 'Teams',
+          title: 'My Teams',
           icon: 'fas fa-users'
         },
         {
           href: { path: '/dashboard/stores' },
-          title: 'Stores',
+          title: 'My Stores',
           icon: 'fas fa-store'
         },
         {
           href: { path: '/dashboard/orders' },
-          title: 'Orders',
+          title: 'My Orders',
           icon: 'fas fa-receipt'
-        },
-        {
-          href: { path: '/dashboard/catalogs' },
-          title: 'Catalogs',
-          icon: 'fas fa-book'
         }
-      ]
-    };
+      ];
+    }
   },
   methods: {
     onToggleCollapse(collapsed) {
