@@ -65,18 +65,6 @@
         <span>Catalogs</span>
       </router-link>
     </div>
-    <div class="row text-center mt-4 timeDisplay" v-if="currentDateTime">
-      <small class="col-sm-12">Current Date/Time:</small>
-      <br />
-      <small
-        class="col-sm-12 currentTime text-warning"
-        v-if="loggedInMember && loggedInMember.timezone"
-      >
-        {{
-          currentDateTime | moment('timezone', loggedInMember.timezone, 'MMM Do YYYY hh:mm:ss A z')
-        }}
-      </small>
-    </div>
   </div>
 </template>
 
@@ -92,18 +80,6 @@ export default {
   },
   computed: {
     ...mapGetters(['loggedInMember'])
-  },
-  created: function() {
-    this.currentDateTime = new Date();
-    this.polling = setInterval(this.getNow, 1000);
-  },
-  beforeDestroy: function() {
-    clearInterval(this.polling);
-  },
-  methods: {
-    getNow: function() {
-      this.currentDateTime = new Date();
-    }
   }
 };
 </script>
@@ -151,14 +127,6 @@ export default {
       }
     }
   }
-
-  .timeDisplay {
-    display: none;
-
-    .currentTime {
-      font-size: 0.65rem;
-    }
-  }
 }
 
 @media (min-width: 768px) {
@@ -183,10 +151,6 @@ export default {
           display: inline-block;
         }
       }
-    }
-
-    .timeDisplay {
-      display: block;
     }
   }
 }
