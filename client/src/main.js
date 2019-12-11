@@ -15,6 +15,8 @@ import Vue2Filters from 'vue2-filters';
 import interceptorsSetup from './helpers/interceptors';
 import VueCurrencyInput from 'vue-currency-input';
 import VueLazyload from 'vue-lazyload';
+import VueSidebarMenu from 'vue-sidebar-menu';
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
@@ -39,6 +41,7 @@ Vue.use(VueLazyload, {
   observer: true,
   attempt: 1
 });
+Vue.use(VueSidebarMenu);
 
 Vue.config.productionTip = false;
 
