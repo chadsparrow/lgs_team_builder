@@ -29,7 +29,7 @@ export default {
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
-      this.$router.push({ name: 'login' }).catch(() => {});
+      this.$router.push({ name: 'home' }).catch(() => {});
     }
   }
 };

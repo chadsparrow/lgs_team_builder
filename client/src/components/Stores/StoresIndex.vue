@@ -1,18 +1,17 @@
 <template>
   <div class="container-fluid" v-if="!isLoading">
-    <div class="header">
-      <div class="form-group form-inline mb-2">
-        <label for="storesSeachText" class="mr-2">Search:</label>
+    <div class="header mb-2">
+      <div class="form-group has-search">
+        <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
           id="storesSearchText"
           v-if="stores.length > 0"
-          class="form-control form-control-sm mr-3"
+          class="form-control form-control-sm"
           v-model="storesSearchText"
-          placeholder="Enter any text to filter stores..."
+          placeholder="Search..."
           autofocus
         />
-        <small class="text-muted">Showing: {{ filteredCount }}/{{ stores.length }}</small>
       </div>
     </div>
     <h5 class="text-center" v-if="currentStores.length === 0">No Stores Found</h5>
@@ -191,8 +190,21 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  .form-control {
-    width: 500px;
+  .has-search .form-control {
+    padding-left: 2rem;
+    max-width: 250px;
+  }
+
+  .has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
   }
 }
 

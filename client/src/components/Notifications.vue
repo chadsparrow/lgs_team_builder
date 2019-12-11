@@ -104,8 +104,8 @@ export default {
     position: absolute;
     top: 100%;
     margin-top: 10px;
-    left: -120px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+    right: 0;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
     font-size: 0.85rem;
 
     small {

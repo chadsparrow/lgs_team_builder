@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import store from './store';
+
+Vue.use(Router);
 
 const Login = () => import('./components/Login.vue');
 const JoinTeam = () => import('./components/JoinTeam.vue');
 const Dashboard = () => import('./views/Dashboard.vue');
-// const DashboardIndex =()=>import ('./components/Dashboard/DashboardIndex.vue');
+const DashboardIndex = () => import('./components/Dashboard/DashboardIndex.vue');
 const PageNotFound = () => import('./views/PageNotFound.vue');
 const ServerError = () => import('./views/ServerError.vue');
 const ProfilesIndex = () => import('./components/Profiles/ProfilesIndex.vue');
@@ -36,10 +39,6 @@ const TeamsById = () => import('./components/Teams/TeamsById.vue');
 const TeamsByIdEdit = () => import('./components/Teams/TeamsByIdEdit.vue');
 const TeamsByIdAddStore = () => import('./components/Teams/TeamsByIdAddStore.vue');
 
-import store from './store';
-
-Vue.use(Router);
-
 let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -47,14 +46,6 @@ let router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Login,
-      meta: {
-        guest: true
-      }
-    },
-    {
-      path: '/login',
-      name: 'login',
       component: Login,
       meta: {
         guest: true
@@ -76,7 +67,7 @@ let router = new Router({
         {
           path: 'index',
           name: 'dashboardIndex',
-          component: ProfilesIndex,
+          component: store.getters.loggedInMember.isAdmin ? DashboardIndex : ProfilesIndex,
           meta: {
             requiresAuth: true
           }
@@ -342,7 +333,7 @@ router.beforeEach(async (to, from, next) => {
     if (!store.getters.isLoggedIn) {
       Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
       next({
-        path: '/login',
+        path: '/home',
         params: { nextUrl: to.fullPath }
       });
       return;

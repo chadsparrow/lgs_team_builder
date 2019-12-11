@@ -1,18 +1,17 @@
 <template>
   <div v-if="!isLoading" class="page">
     <div class="header">
-      <div class="form-group form-inline m-0">
-        <label for="memberSearch" class="mr-2">Search:</label>
+      <div class="form-group has-search">
+        <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
-          id="memberSearch"
+          id="teamSearch"
           v-if="teams.length > 0"
-          class="form-control form-control-sm mr-3"
+          class="form-control form-control-sm"
           v-model="teamSearchText"
-          placeholder="Enter any text to filter teams..."
+          placeholder="Search..."
           autofocus
         />
-        <small class="text-muted">Showing: {{ filteredCount }}/{{ teams.length }}</small>
       </div>
       <div v-if="member && member.isAdmin">
         <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
@@ -158,8 +157,8 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px auto;
-  grid-gap: 1rem;
+  grid-template-rows: max-content auto;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas:
@@ -171,12 +170,21 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: whitesmoke;
-    border-radius: 5px;
-    padding: 1.5rem 0.5rem;
+    .has-search .form-control {
+      padding-left: 2rem;
+      max-width: 250px;
+    }
 
-    .form-control {
-      width: 500px;
+    .has-search .form-control-feedback {
+      position: absolute;
+      z-index: 2;
+      display: block;
+      width: 2rem;
+      height: 2rem;
+      line-height: 2rem;
+      text-align: center;
+      pointer-events: none;
+      color: #aaa;
     }
   }
 

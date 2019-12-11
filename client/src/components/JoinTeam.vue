@@ -546,7 +546,7 @@ export default {
         };
 
         await this.$store.dispatch('joinTeam', { member, teamId: this.currentTeam._id });
-        this.$router.push({ name: 'login' });
+        this.$router.push({ name: 'home' });
         this.$toasted.success('You are now registered - go ahead and login!', {
           icon: 'check-circle'
         });

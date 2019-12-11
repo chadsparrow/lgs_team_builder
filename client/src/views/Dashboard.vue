@@ -66,7 +66,7 @@ export default {
     logout: async function() {
       this.$store.commit('LOADING_FALSE');
       await this.$store.dispatch('logout');
-      this.$router.push({ name: 'login' });
+      this.$router.push({ name: 'home' });
       this.$toasted.clear();
       this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
     }
@@ -105,11 +105,13 @@ export default {
   }
 
   .tbLogo {
-    display: block;
-    width: 100%;
-    padding: 1rem;
+    width: 65%;
+    padding: 0.25rem;
     margin: 0 auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     text-align: center;
+    transition: width 0.25s;
   }
 }
 
@@ -139,12 +141,12 @@ export default {
   }
 
   .tbLogo {
-    width: 100%;
-    padding: 0.25rem;
+    width: 85%;
     margin: 0 auto;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     text-align: center;
+    transition: width 0.25s;
   }
 }
 
@@ -156,6 +158,11 @@ export default {
 }
 
 .v-sidebar-menu {
+  .vsm--link,
+  .vsm--header {
+    font-size: 0.85rem;
+  }
+
   .vsm--link.vsm--link_exact-active {
     box-shadow: 3px 0px 0px 0px #18a2b8 inset;
   }

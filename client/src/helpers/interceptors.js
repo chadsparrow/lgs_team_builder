@@ -15,7 +15,7 @@ export default function setup() {
       }
       if (error.response.status === 401) {
         store.dispatch('logout');
-        router.push({ name: 'login' });
+        router.push({ name: 'home' });
       }
 
       if (error.response.status === 500) {
