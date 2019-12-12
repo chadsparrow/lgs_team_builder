@@ -6,7 +6,7 @@
           <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
         </div>
         <div class="form-group">
-          <label for="email">Email address</label>
+          <label for="email">{{ $t('login.emailAddress') }}</label>
           <input
             type="email"
             class="form-control"
@@ -17,7 +17,7 @@
           />
         </div>
         <div class="form-group mb-4">
-          <label for="password">Password</label>
+          <label for="password">{{ $t('login.password') }}</label>
           <input
             type="password"
             class="form-control"
@@ -26,12 +26,14 @@
             v-model="password"
           />
         </div>
-        <button type="submit" class="btn btn-lg btn-dark btn-block">Log In</button>
+        <button type="submit" class="btn btn-lg btn-dark btn-block">
+          {{ $t('login.loginButton') }}
+        </button>
         <div class="text-center mt-5 mb-0">
-          <small>Need to register or forgot your password?</small>
+          <small>{{ $t('login.resetPassTitle') }}</small>
         </div>
         <div class="underForm text-center">
-          <router-link tag="a" class="text-info" to="#">Reset Password</router-link>
+          <router-link tag="a" class="text-info" to="#">{{ $t('login.resetPass') }}</router-link>
         </div>
         <div class="col-sm-12 mt-5 text-center">
           <small>&copy; 2019 Garneau.com - LGS Team Builder</small>

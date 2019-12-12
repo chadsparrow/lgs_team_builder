@@ -46,33 +46,33 @@
             </ul>
           </div>
           <div class="col-sm-12">
-            <span class="text-info mr-2">Gender:</span>
+            <span class="text-info mr-2">{{ $t('formLabels.gender') }}:</span>
             <span
               >{{ currentCatalogItem.gender }} -
               {{
                 currentCatalogItem.gender === 'U'
-                  ? '(Unisex)'
+                  ? `(${$t('formLabels.unisex')})`
                   : currentCatalogItem.gender === 'M'
-                  ? "(Men's)"
+                  ? `(${$t('formLabels.mens')})`
                   : currentCatalogItem.gender === 'F'
-                  ? "(Women's)"
-                  : '(Junior)'
+                  ? `(${$t('formLabels.womens')})`
+                  : `(${$t('formLabels.junior')})`
               }}</span
             >
           </div>
           <div class="col-sm-12 mt-2">
-            <span class="text-info mr-2">Sizes Offered:</span>
+            <span class="text-info mr-2">{{ $t('formLabels.availableSizes') }}:</span>
             <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">{{
               size
             }}</span>
           </div>
           <div class="col-sm-12 mt-2">
-            <span class="text-info mr-2">Item Active:</span>
-            <span>{{ currentCatalogItem.isActive ? 'ACTIVE' : 'INACTIVE' }}</span>
+            <span class="text-info mr-2">{{ $t('formLabels.itemActive') }}:</span>
+            <span>{{ currentCatalogItem.isActive ? `${$t('yes')}` : `${$t('no')}` }}</span>
           </div>
           <div class="col-sm-12 my-4">
             <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
-              Price Breaks:
+              {{ $t('formLabels.priceBreaks') }}:
             </h4>
             <div class="row mt-2">
               <div class="col-sm-12 col-md-6">
@@ -105,7 +105,7 @@
                   </li>
                   <li class="list-group-item">
                     <span class="pricebreaks">250+</span>
-                    <span class="prices text-info">Negotiable</span>
+                    <span class="prices text-info">{{ $t('formLabels.negotiable') }}</span>
                   </li>
                 </ul>
               </div>
@@ -115,7 +115,7 @@
             <router-link
               :to="`/dashboard/catalogitems/edit/${currentCatalogItem._id}`"
               class="btn btn-block btn-lg btn-info"
-              >Edit Item</router-link
+              >{{ $t('editItem') }}</router-link
             >
           </div>
         </div>
@@ -126,6 +126,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'CatalogItemById',
@@ -135,22 +136,22 @@ export default {
         {
           id: 1,
           index: 0,
-          alt: 'Product Image 1'
+          alt: i18n.t('catalogs.page.productImage1')
         },
         {
           id: 2,
           index: 1,
-          alt: 'Product Image 2'
+          alt: i18n.t('catalogs.page.productImage2')
         },
         {
           id: 3,
           index: 2,
-          alt: 'Product Image 3'
+          alt: i18n.t('catalogs.page.productImage3')
         },
         {
           id: 4,
           index: 3,
-          alt: 'Product Image 4'
+          alt: i18n.t('catalogs.page.productImage4')
         }
       ]
     };
@@ -204,9 +205,9 @@ export default {
       }
       await this.$store.dispatch('getCatalog', this.currentCatalogItem.catalogId._id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'
         },
         {

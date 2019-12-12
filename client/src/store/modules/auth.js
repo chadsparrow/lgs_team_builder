@@ -1,4 +1,6 @@
 import axios from 'axios';
+import i18n from '../../i18n';
+
 export default {
   state: {
     notificationsReady: false,
@@ -179,38 +181,38 @@ export default {
         state.menu = [
           {
             href: { path: '/dashboard/members' },
-            title: 'Members',
+            title: i18n.t('menu.adminOnly.members'),
             icon: 'fas fa-user'
           },
           {
             href: { path: '/dashboard/teams' },
-            title: 'Teams',
+            title: i18n.t('menu.adminOnly.teams'),
             icon: 'fas fa-users'
           },
           {
             href: { path: '/dashboard/stores' },
-            title: 'Stores',
+            title: i18n.t('menu.adminOnly.stores'),
             icon: 'fas fa-store'
           },
           {
             href: { path: '/dashboard/orders' },
-            title: 'Orders',
+            title: i18n.t('menu.adminOnly.orders'),
             icon: 'fas fa-receipt'
           },
           {
             href: { path: '/dashboard/catalogs' },
-            title: 'Catalogs',
+            title: i18n.t('menu.adminOnly.catalogs'),
             icon: 'fas fa-book'
           },
           {
             header: true,
-            title: 'Account',
+            title: i18n.t('menu.accountHeader'),
             hiddenOnCollapse: true,
             class: 'text-center'
           },
           {
             href: { path: '/dashboard/profile' },
-            title: 'Profile',
+            title: i18n.t('menu.profile'),
             icon: 'fas fa-id-card'
           }
         ];
@@ -218,28 +220,28 @@ export default {
         state.menu = [
           {
             href: { path: '/dashboard/teams' },
-            title: 'My Teams',
+            title: i18n.t('menu.regular.teams'),
             icon: 'fas fa-users'
           },
           {
             href: { path: '/dashboard/stores' },
-            title: 'My Stores',
+            title: i18n.t('menu.regular.stores'),
             icon: 'fas fa-store'
           },
           {
             href: { path: '/dashboard/orders' },
-            title: 'My Orders',
+            title: i18n.t('menu.regular.orders'),
             icon: 'fas fa-receipt'
           },
           {
             header: true,
-            title: 'Account',
+            title: i18n.t('menu.accountHeader'),
             hiddenOnCollapse: true,
             class: 'text-center'
           },
           {
             href: { path: '/dashboard/profile' },
-            title: 'Profile',
+            title: i18n.t('menu.profile'),
             icon: 'fas fa-id-card'
           }
         ];

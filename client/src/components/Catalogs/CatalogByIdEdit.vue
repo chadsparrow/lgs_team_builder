@@ -3,7 +3,7 @@
     <div class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
-          <label for="brand">Brand</label>
+          <label for="brand">{{ $t('catalogs.add.brand') }}</label>
           <select
             class="form-control form-control-sm"
             id="brand"
@@ -18,26 +18,26 @@
           </select>
         </div>
         <div class="col-sm-12 mb-2">
-          <label for="season">Season</label>
+          <label for="season">{{ $t('catalogs.add.season.season') }}</label>
           <select
             class="form-control form-control-sm"
             id="season"
             v-model="currentCatalog.season"
             ref="season"
           >
-            <option value="CUSTOM">CUSTOM</option>
+            <option value="CUSTOM">{{ $t('catalogs.add.season.custom') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING/SUMMER">SPRING/SUMMER</option>
-            <option value="FALL/WINTER">FALL/WINTER</option>
+            <option value="SPRING/SUMMER">{{ $t('catalogs.add.season.springSummer') }}</option>
+            <option value="FALL/WINTER">{{ $t('catalogs.add.season.fallWinter') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING">SPRING</option>
-            <option value="SUMMER">SUMMER</option>
-            <option value="FALL">FALL</option>
-            <option value="WINTER">WINTER</option>
+            <option value="SPRING">{{ $t('catalogs.add.season.spring') }}</option>
+            <option value="SUMMER">{{ $t('catalogs.add.season.summer') }}</option>
+            <option value="FALL">{{ $t('catalogs.add.season.fall') }}</option>
+            <option value="WINTER">{{ $t('catalogs.add.season.winter') }}</option>
           </select>
         </div>
         <div class="col-sm-12">
-          <label for="year">Year</label>
+          <label for="year">{{ $t('catalogs.add.year') }}</label>
           <input
             type="text"
             id="year"
@@ -50,7 +50,7 @@
       <div class="row mt-4">
         <div class="col-sm-6">
           <button class="btn btn-block btn-info" @click="editCatalog">
-            Submit Changes
+            {{ $t('submit') }}
           </button>
         </div>
         <div class="col-sm-6">
@@ -58,7 +58,7 @@
             tag="a"
             class="btn btn-block btn-danger"
             :to="`/dashboard/catalogs/${currentCatalog._id}`"
-            >Cancel</router-link
+            >{{ $t('cancel') }}</router-link
           >
         </div>
       </div>
@@ -68,6 +68,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 export default {
   name: 'CatalogByIdEdit',
   computed: {
@@ -78,9 +79,9 @@ export default {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'
         },
         {
@@ -88,7 +89,7 @@ export default {
           link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
-          text: 'Edit',
+          text: i18n.t('edit'),
           link: '#'
         }
       ];
@@ -110,7 +111,7 @@ export default {
             year: this.currentCatalog.year
           }
         });
-        this.$toasted.success('Catalog Updated', { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('catalogs.add.updated'), { icon: 'check-circle' });
         this.$router
           .push({ name: 'catalogsById', params: this.currentCatalog._id })
           .catch(() => {});

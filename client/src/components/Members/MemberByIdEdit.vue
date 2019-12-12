@@ -105,6 +105,7 @@
                   class="form-control form-control-sm"
                   @input="checkCountry"
                   ref="country"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -118,6 +119,7 @@
                   @input="checkRegion"
                   :regionName="true"
                   ref="stateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -136,12 +138,12 @@
                 <VuePhoneNumberInput
                   v-model="member.phone"
                   id="phone"
-                  :dark="false"
+                  size="sm"
                   :default-country-code="member.country || null"
                   :preferred-countries="['US', 'CA']"
                   ref="phone"
                   :clearable="true"
-                  :no-use-browser-locale="false"
+                  :no-use-browser-locale="true"
                   @update="copyPhone"
                 />
               </div>
@@ -239,6 +241,7 @@
                   :readonly="billingSame"
                   @input="checkBillingCountry"
                   ref="billingCountry"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -252,6 +255,7 @@
                   :readonly="billingSame"
                   :regionName="true"
                   ref="billingStateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -280,13 +284,13 @@
                 <label for="billingPhone">Phone</label>
                 <VuePhoneNumberInput
                   v-model="member.billing.phone"
+                  size="sm"
                   id="billingPhone"
-                  :dark="false"
                   :default-country-code="member.billing.country || null"
                   :preferred-countries="['US', 'CA']"
                   ref="billingPhone"
+                  :no-use-browser-locale="true"
                   :clearable="true"
-                  :no-use-browser-locale="false"
                 />
               </div>
             </div>
@@ -384,6 +388,7 @@
                   @input="checkShippingCountry"
                   :readonly="shippingSame"
                   ref="shippingCountry"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -397,6 +402,7 @@
                   :readonly="shippingSame"
                   :regionName="true"
                   ref="shippingStateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -426,12 +432,12 @@
                 <VuePhoneNumberInput
                   v-model="member.shipping.phone"
                   id="shippingPhone"
-                  :dark="false"
+                  size="sm"
                   :default-country-code="member.shipping.country || null"
                   :preferred-countries="['US', 'CA']"
                   ref="shippingPhone"
+                  :no-use-browser-locale="true"
                   :clearable="true"
-                  :no-use-browser-locale="false"
                 />
               </div>
             </div>

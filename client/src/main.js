@@ -17,6 +17,7 @@ import VueCurrencyInput from 'vue-currency-input';
 import VueLazyload from 'vue-lazyload';
 import VueSidebarMenu from 'vue-sidebar-menu';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
+import i18n from './i18n';
 
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
@@ -48,5 +49,6 @@ Vue.config.productionTip = false;
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app');

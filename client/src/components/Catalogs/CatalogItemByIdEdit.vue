@@ -4,11 +4,7 @@
       <div class="col-md-12 col-lg-6 col-xl-5 image-section">
         <div class="image-box">
           <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
-            <img
-              :src="getImgUrl(image.index)"
-              :alt="image.alt"
-              @click="switchImage(image.id, image.index)"
-            />
+            <img :src="getImgUrl(image.index)" :alt="image.alt" />
           </div>
         </div>
       </div>
@@ -16,9 +12,11 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="form-group">
-              <label for="categories">Categories (EN)</label>
+              <label for="categories">{{ $t('formLabels.categories') }} (EN)</label>
               <vue-tags-input
                 style="width: 100%;"
+                :placeholder="$t('addTags')"
+                :max-tags="5"
                 v-model="category"
                 :tags="categories"
                 id="categories"
@@ -28,22 +26,28 @@
           </div>
           <div class="col-sm-12">
             <div class="form-group">
-              <label for="categoriesFR">Categories (FR)</label>
+              <label for="categoriesFR">{{ $t('formLabels.categories') }} (FR)</label>
               <vue-tags-input
                 style="width: 100%;"
                 v-model="categorie"
                 :tags="categoriesFR"
+                :placeholder="$t('addTags')"
+                :max-tags="5"
                 id="categoriesFR"
                 @tags-changed="newCategoriesFR => (categoriesFR = newCategoriesFR)"
               />
             </div>
           </div>
           <div class="form-group col-sm-12">
-            <label for="nameEN">Name (EN)</label>
+            <label for="nameEN">{{ $t('formLabels.name') }} (EN)</label>
             <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
           </div>
+          <div class="form-group col-sm-12">
+            <label for="nameFR">{{ $t('formLabels.name') }} (FR)</label>
+            <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
+          </div>
           <div class="form-group col-md-12 col-lg-6">
-            <label for="productCode">Product Code</label>
+            <label for="productCode">{{ $t('formLabels.productCode') }}</label>
             <input
               id="productCode"
               type="text"
@@ -53,7 +57,7 @@
             />
           </div>
           <div class="form-group col-md-12 col-lg-6">
-            <label for="styleCode">Style Code</label>
+            <label for="styleCode">{{ $t('formLabels.styleCode') }}</label>
             <input
               id="styleCode"
               type="text"
@@ -64,7 +68,7 @@
           </div>
           <div class="form-group col-sm-12 text-center my-3">
             <div class="mb-2">
-              <span>Available Sizes</span>
+              <span>{{ $t('formLabels.availableSizes') }}</span>
             </div>
             <div class="form-check form-check-inline">
               <input
@@ -74,7 +78,7 @@
                 id="sizeONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeONE">ONE SIZE</label>
+              <label class="form-check-label" for="sizeONE">{{ $t('formLabels.one') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -85,7 +89,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size2XS">2XS</label>
+              <label class="form-check-label" for="size2XS">{{ $t('formLabels.xxs') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -96,7 +100,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeXS">XS</label>
+              <label class="form-check-label" for="sizeXS">{{ $t('formLabels.xs') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -107,7 +111,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeS">S</label>
+              <label class="form-check-label" for="sizeS">{{ $t('formLabels.s') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -118,7 +122,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeM">M</label>
+              <label class="form-check-label" for="sizeM">{{ $t('formLabels.m') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -129,7 +133,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeL">L</label>
+              <label class="form-check-label" for="sizeL">{{ $t('formLabels.l') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -140,7 +144,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeXL">XL</label>
+              <label class="form-check-label" for="sizeXL">{{ $t('formLabels.xl') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -151,7 +155,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size2XL">2XL</label>
+              <label class="form-check-label" for="size2XL">{{ $t('formLabels.xxl') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -162,7 +166,7 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size3XL">3XL</label>
+              <label class="form-check-label" for="size3XL">{{ $t('formLabels.xxxl') }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -173,20 +177,20 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size4XL">4XL</label>
+              <label class="form-check-label" for="size4XL">{{ $t('formLabels.xxxxl') }}</label>
             </div>
           </div>
           <div class="form-group col-sm-12">
-            <label for="gender">Gender</label>
+            <label for="gender">{{ $t('formLabels.gender') }}</label>
             <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
-              <option value="M">Mens</option>
-              <option value="W">Womens</option>
-              <option value="J">Junior</option>
-              <option value="U">Unisex</option>
+              <option value="M">{{ $t('formLabels.mens') }}</option>
+              <option value="W">{{ $t('formLabels.womens') }}</option>
+              <option value="J">{{ $t('formLabels.junior') }}</option>
+              <option value="U">{{ $t('formLabels.unisex') }}</option>
             </select>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="descriptionEN">Description (EN)</label>
+            <label for="descriptionEN">{{ $t('formLabels.description') }} (EN)</label>
             <textarea
               id="descriptionEN"
               ref="descriptionEN"
@@ -196,7 +200,7 @@
             ></textarea>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="descriptionFR">Description (FR)</label>
+            <label for="descriptionFR">{{ $t('formLabels.description') }} (FR)</label>
             <textarea
               id="descriptionFR"
               ref="descriptionFR"
@@ -206,7 +210,7 @@
             ></textarea>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="priceBreaksCAD">Price Breaks (CAD)</label>
+            <label for="priceBreaksCAD">{{ $t('formLabels.priceBreaks') }} (CAD)</label>
             <ul class="list-group" id="priceBreaksCAD">
               <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
                 <div>{{ pb.priceBreak }}</div>
@@ -218,11 +222,11 @@
                   v-model="pb.price"
                 />
               </li>
-              <li class="list-group-item py-1">250+ Contact Us</li>
+              <li class="list-group-item py-1">{{ $t('formLabels.contactUs') }}</li>
             </ul>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="priceBreaksUSD">Price Breaks (USD)</label>
+            <label for="priceBreaksUSD">{{ $t('formLabels.priceBreaks') }} (USD)</label>
             <ul class="list-group" id="priceBreaksUSD">
               <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
                 <div>{{ pb.priceBreak }}</div>
@@ -234,17 +238,17 @@
                   v-model="pb.price"
                 />
               </li>
-              <li class="list-group-item py-1">250+ Contact Us</li>
+              <li class="list-group-item py-1">{{ $t('formLabels.contactUs') }}</li>
             </ul>
           </div>
           <div class="col-sm-12 my-4 text-right">
             <router-link
               :to="`/dashboard/catalogitems/${currentCatalogItem._id}`"
-              class="btn btn-lg btn-danger mr-2"
-              >Cancel</router-link
+              class="btn btn-danger mr-2"
+              >{{ $t('cancel') }}</router-link
             >
-            <button class="btn btn-lg btn-success" @click.prevent="updateCatalogItem">
-              Save Changes
+            <button class="btn btn-success" @click.prevent="updateCatalogItem">
+              {{ $t('saveChanges') }}
             </button>
           </div>
         </div>
@@ -256,6 +260,7 @@
 <script>
 import VueTagsInput from '@johmun/vue-tags-input';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'CatalogItemByIdEdit',
@@ -432,9 +437,9 @@ export default {
 
       await this.$store.dispatch('getCatalog', this.currentCatalogItem.catalogId._id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'
         },
         {
@@ -446,7 +451,7 @@ export default {
           link: `/dashboard/catalogitems/${this.currentCatalogItem._id}`
         },
         {
-          text: 'Edit',
+          text: i18n.t('edit'),
           link: '#'
         }
       ];
@@ -477,21 +482,24 @@ export default {
       };
 
       try {
-        const res = await this.$store.dispatch('updateCatalogItem', {
+        await this.$store.dispatch('updateCatalogItem', {
           id: this.currentCatalogItem._id,
           updatedCatalogItem
         });
         this.$router
           .push({ name: 'catalogItemById', params: { id: this.currentCatalogItem._id } })
           .catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('catalogs.itemUpdated'), { icon: 'check-circle' });
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         if (err.response.data[0].message === 'Product already exists.') {
+          this.$toasted.error(i18n.t('catalogs.productExists'), {
+            icon: 'exclamation-triangle'
+          });
           this.$refs['productCode'].value = '';
           this.$refs['styleCode'].value = '';
           this.$refs['productCode'].focus();
         } else {
+          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
           if (err.response.data[0].context.key !== 'sizes') {
             const key = err.response.data[0].context.key;
             this.$refs[key].focus();

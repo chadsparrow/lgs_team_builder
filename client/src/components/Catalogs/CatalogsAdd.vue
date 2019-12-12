@@ -3,7 +3,7 @@
     <form @submit.prevent="addCatalog" novalidate class="container">
       <div class="form-group row">
         <div class="col-sm-12 mb-2">
-          <label for="brand">Brand</label>
+          <label for="brand">{{ $t('catalogs.add.brand') }}</label>
           <select
             class="form-control form-control-sm"
             id="brand"
@@ -18,21 +18,21 @@
           </select>
         </div>
         <div class="col-sm-12 mb-2">
-          <label for="season">Season</label>
+          <label for="season">{{ $t('catalogs.add.season.season') }}</label>
           <select class="form-control form-control-sm" id="season" v-model="season" ref="season">
-            <option value="CUSTOM">CUSTOM</option>
+            <option value="CUSTOM">{{ $t('catalogs.add.season.custom') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING/SUMMER">SPRING/SUMMER</option>
-            <option value="FALL/WINTER">FALL/WINTER</option>
+            <option value="SPRING/SUMMER">{{ $t('catalogs.add.season.springSummer') }}</option>
+            <option value="FALL/WINTER">{{ $t('catalogs.add.season.fallWinter') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING">SPRING</option>
-            <option value="SUMMER">SUMMER</option>
-            <option value="FALL">FALL</option>
-            <option value="WINTER">WINTER</option>
+            <option value="SPRING">{{ $t('catalogs.add.season.spring') }}</option>
+            <option value="SUMMER">{{ $t('catalogs.add.season.summer') }}</option>
+            <option value="FALL">{{ $t('catalogs.add.season.fall') }}</option>
+            <option value="WINTER">{{ $t('catalogs.add.season.winter') }}</option>
           </select>
         </div>
         <div class="col-sm-12">
-          <label for="year">Year</label>
+          <label for="year">{{ $t('catalogs.add.year') }}</label>
           <input
             type="text"
             id="year"
@@ -44,12 +44,14 @@
       </div>
       <div class="row mt-4">
         <div class="col-sm-8">
-          <button type="submit" class="btn btn-block btn-info">Add Catalog</button>
+          <button type="submit" class="btn btn-block btn-info">
+            {{ $t('catalogs.add.addCatalog') }}
+          </button>
         </div>
         <div class="col-sm-4">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs"
-            >Cancel</router-link
-          >
+          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">{{
+            $t('cancel')
+          }}</router-link>
         </div>
       </div>
     </form>
@@ -57,6 +59,7 @@
 </template>
 
 <script>
+import i18n from '../../i18n';
 export default {
   name: 'CatalogsAdd',
   data() {
@@ -71,13 +74,13 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'
         },
         {
-          text: 'Add Catalog',
+          text: i18n.t('catalogs.add.addCatalog'),
           link: '#'
         }
       ];
@@ -93,7 +96,7 @@ export default {
       const catalog = { brand: this.brand, season: this.season, year: this.year };
       try {
         await this.$store.dispatch('addCatalog', catalog);
-        this.$toasted.success('Catalog Added', { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('catalogs.add.success'), { icon: 'check-circle' });
         this.$router.push({ name: 'catalogs' }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {

@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-sm-12 mb-2">
         <router-link to="/dashboard/catalogs/add" class="btn btn-info">
-          <i class="fas fa-plus mr-2"></i> Add Catalog
+          <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
         </router-link>
       </div>
       <div class="col-sm-12 mb-2" v-if="currentCatalogs.length === 0">
@@ -44,6 +44,8 @@
           :next-class="'page-item'"
           :next-link-class="'page-link'"
           :hide-prev-next="true"
+          :prev-text="previous"
+          :next-text="next"
           v-if="pageNumbers > 1"
         ></paginate>
       </div>
@@ -54,6 +56,7 @@
 <script>
 import Paginate from 'vuejs-paginate';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'CatalogsIndex',
@@ -63,16 +66,18 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 15
+      itemsPerPage: 15,
+      next: i18n.t('next'),
+      previous: i18n.t('previous')
     };
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '#'
         }
       ];

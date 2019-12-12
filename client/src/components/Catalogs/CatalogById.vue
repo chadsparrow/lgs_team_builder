@@ -29,11 +29,11 @@
               v-if="currentCatalogItems.length > 0"
               class="form-control form-control-sm mx-auto text-center"
               v-model="catalogItemSearch"
-              placeholder="search"
+              :placeholder="`${$t('search')}...`"
               autofocus
             />
             <small class="text-muted"
-              >Showing: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
+              >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
             >
           </div>
         </div>
@@ -81,6 +81,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 export default {
   name: 'CatalogById',
   data() {
@@ -121,9 +122,9 @@ export default {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Catalogs',
+          text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'
         },
         {
@@ -141,12 +142,7 @@ export default {
   },
   methods: {
     getImgUrl(item) {
-      // if (item.images.length === 0) return '/images/assets/missing_item_300.png';
       return `/images/catalogs/${this.currentCatalog._id}/300/${item.images[0]}_300.jpg`;
-    },
-    setView(bool) {
-      if (bool) this.viewGrid = true;
-      if (!bool) this.viewGrid = false;
     }
   }
 };

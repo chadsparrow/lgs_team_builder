@@ -154,6 +154,7 @@
                 @input="checkCountry"
                 :readonly="useManagerDetails"
                 ref="contactCountry"
+                :usei18n="false"
               />
             </div>
             <div class="form-group col-sm-3">
@@ -168,6 +169,7 @@
                 :readonly="useManagerDetails"
                 :regionName="true"
                 ref="contactStateProv"
+                :usei18n="false"
               />
             </div>
 
@@ -198,11 +200,11 @@
               <VuePhoneNumberInput
                 v-model="contactPhone"
                 id="contactPhone"
-                :dark="false"
+                size="sm"
                 :preferred-countries="['US', 'CA']"
                 ref="contactPhone"
                 :clearable="true"
-                :no-use-browser-locale="false"
+                :no-use-browser-locale="true"
                 @update="copyPhone"
               />
             </div>
@@ -331,6 +333,7 @@
                 class="form-control form-control-sm"
                 @input="checkShippingCountry"
                 :readonly="bulkUseDetails !== 'other'"
+                :usei18n="false"
               />
             </div>
             <div class="form-group col-sm-3">
@@ -343,6 +346,7 @@
                 class="form-control form-control-sm"
                 :regionName="true"
                 :readonly="bulkUseDetails !== 'other'"
+                :usei18n="false"
               />
             </div>
 
@@ -372,10 +376,10 @@
               <VuePhoneNumberInput
                 v-model="shippingPhone"
                 id="shippingPhone"
-                :dark="false"
+                size="sm"
                 ref="shippingPhone"
                 :clearable="true"
-                :no-use-browser-locale="false"
+                :no-use-browser-locale="true"
               />
             </div>
           </div>

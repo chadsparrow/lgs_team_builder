@@ -16,7 +16,8 @@
       </span>
       <div slot="footer">
         <button class="btn btn-block btn-danger logoutBtn" @click="logout">
-          <i class="fas fa-sign-out-alt"></i>
+          <span class="logoutSpan">{{ $t('menu.logout') }}</span
+          ><i class="fas fa-sign-out-alt"></i>
         </button>
       </div>
     </sidebar-menu>
@@ -99,8 +100,8 @@ export default {
       margin-left: 0.5rem;
     }
 
-    &::before {
-      content: 'Logout';
+    .logoutSpan {
+      display: inline-block;
     }
   }
 
@@ -135,8 +136,8 @@ export default {
       margin-left: 0;
     }
 
-    &::before {
-      content: none;
+    .logoutSpan {
+      display: none;
     }
   }
 

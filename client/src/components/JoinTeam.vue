@@ -106,6 +106,7 @@
                   class="form-control form-control-sm"
                   @input="checkCountry"
                   ref="country"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -119,6 +120,7 @@
                   @input="checkRegion"
                   :regionName="true"
                   ref="stateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -137,7 +139,7 @@
                 <VuePhoneNumberInput
                   v-model="phone"
                   id="phone"
-                  :dark="false"
+                  size="sm"
                   :preferred-countries="['US', 'CA']"
                   ref="phone"
                   :clearable="true"
@@ -239,6 +241,7 @@
                   :readonly="billingSame"
                   @input="checkBillingCountry"
                   ref="billingCountry"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -252,6 +255,7 @@
                   :readonly="billingSame"
                   :regionName="true"
                   ref="billingStateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -279,7 +283,7 @@
                 <VuePhoneNumberInput
                   v-model="billingPhone"
                   id="billingPhone"
-                  :dark="false"
+                  size="sm"
                   :preferred-countries="['US', 'CA']"
                   ref="billingPhone"
                   :clearable="true"
@@ -381,6 +385,7 @@
                   @input="checkShippingCountry"
                   :readonly="shippingSame"
                   ref="shippingCountry"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-6">
@@ -394,6 +399,7 @@
                   :readonly="shippingSame"
                   :regionName="true"
                   ref="shippingStateProv"
+                  :usei18n="false"
                 />
               </div>
               <div class="form-group col-sm-12">
@@ -421,7 +427,7 @@
                 <VuePhoneNumberInput
                   v-model="shippingPhone"
                   id="shippingPhone"
-                  :dark="false"
+                  size="sm"
                   :preferred-countries="['US', 'CA']"
                   ref="shippingPhone"
                   :clearable="true"
