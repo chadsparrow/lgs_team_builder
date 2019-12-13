@@ -2,7 +2,7 @@
   <div class="page" v-if="!isLoading">
     <div class="header">
       <div class="row text-center">
-        <div class="col-md-12 col-lg-3 my-auto">
+        <div class="col-md-12 col-lg-3">
           <img
             src="/images/assets/garneau_logo.png"
             alt="Garneau Logo"
@@ -21,8 +21,8 @@
           <br />
           {{ currentCatalog.season }} - {{ currentCatalog.year }}
         </div>
-        <div class="col-md-12 col-lg-9 text-center my-auto">
-          <div class="form-group mt-4">
+        <div class="col-md-12 col-lg-9 text-center my-2">
+          <div class="input-group">
             <input
               type="text"
               id="catalogItemSearch"
@@ -30,16 +30,24 @@
               class="form-control form-control-sm mx-auto text-center"
               v-model="catalogItemSearch"
               :placeholder="`${$t('search')}...`"
+              ref="searchBar"
               autofocus
             />
-            <small class="text-muted"
-              >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
+            <button
+              class="btn btn-sm bg-transparent"
+              style="margin-left: -30px; z-index: 100;"
+              @click.prevent="resetSearchBar"
             >
+              <i class="fas fa-times"></i>
+            </button>
           </div>
+          <small class="text-muted"
+            >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
+          >
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 col-lg-6 col-xl-4">
           <div class="row">
-            <div class="col-sm-12 col-lg-6 mt-2">
+            <div class="col-sm-12 col-md-6 mt-2">
               <router-link
                 class="btn btn-sm btn-block btn-info"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
@@ -48,7 +56,7 @@
                 <i class="fas fa-plus fa-lg mr-2"></i>Add Item
               </router-link>
             </div>
-            <div class="col-sm-12 col-lg-6 mt-2">
+            <div class="col-sm-12 col-md-6 mt-2">
               <router-link
                 class="btn btn-sm btn-block btn-info"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
@@ -73,11 +81,19 @@
         </div>
 
         <div class="thumbnail-body">
-          <p>{{ item.nameEN }}</p>
-          <small class="text-muted">PRODUCT : {{ item.productCode }}</small>
-          <small class="text-muted" v-if="item.productCode !== item.styleCode">
-            / STYLE : {{ item.styleCode }}</small
-          >
+          <div class="row">
+            <div class="col-sm-12">
+              <p>{{ item.nameEN }}</p>
+            </div>
+            <div class="col-sm-12 col-lg-6 col-xl-4">
+              <small class="text-muted mr-4">PRODUCT : {{ item.productCode }}</small>
+            </div>
+            <div class="col-sm-12 col-lg-6 col-xl-4">
+              <small class="text-muted" v-if="item.productCode !== item.styleCode"
+                >STYLE : {{ item.styleCode }}</small
+              >
+            </div>
+          </div>
         </div>
       </router-link>
     </div>
@@ -148,6 +164,10 @@ export default {
   methods: {
     getImgUrl(item) {
       return `/images/catalogs/${this.currentCatalog._id}/300/${item.images[0]}_300.jpg`;
+    },
+    resetSearchBar() {
+      this.catalogItemSearch = '';
+      this.$refs.searchBar.focus();
     }
   }
 };
@@ -174,11 +194,6 @@ export default {
     img {
       height: 35px;
     }
-
-    .form-control {
-      min-width: 250px;
-      max-width: 500px;
-    }
   }
 
   a {
@@ -199,7 +214,7 @@ export default {
       background-color: white;
       border-radius: 5px;
       color: black;
-      margin-bottom: 0.5rem;
+      margin: 0 0 0.5rem 0;
       width: 100%;
 
       .thumbnail-img {
@@ -213,6 +228,7 @@ export default {
       }
 
       .thumbnail-body {
+        width: 100%;
         p {
           font-size: 1.25rem;
           font-weight: 700;
