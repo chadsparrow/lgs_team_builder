@@ -1,45 +1,59 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <form @submit.prevent="login" novalidate class="col-sm-12">
-        <div class="text-center mb-4 mt-2">
-          <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
-        </div>
-        <div class="form-group">
-          <label for="email">{{ $t('login.emailAddress') }}</label>
+  <div class="page">
+    <form @submit.prevent="login" novalidate>
+      <div class="text-center">
+        <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+      </div>
+      <div class="form-group">
+        <label for="email">{{ $t('login.emailAddress') }}</label>
+        <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
+      </div>
+      <div class="form-group">
+        <label for="password">{{ $t('login.password') }}</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          ref="password"
+          v-model="password"
+        />
+      </div>
+      <button type="submit" class="btn btn-lg btn-info btn-block">
+        {{ $t('login.loginButton') }}
+      </button>
+      <div class="text-center">
+        <small>{{ $t('login.resetPassTitle') }}</small
+        ><br />
+        <router-link tag="a" class="text-info" to="#">{{ $t('login.resetPass') }}</router-link>
+      </div>
+      <div class="text-center mt-4">
+        <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
+      </div>
+      <div class="langChooser">
+        <div class="form-check form-check-inline">
           <input
-            type="email"
-            class="form-control"
-            id="email"
-            ref="email"
-            v-model="email"
-            autofocus
+            class="form-check-input"
+            type="radio"
+            name="lang"
+            id="english"
+            value="en"
+            v-model="$root.$i18n.locale"
           />
+          <label class="form-check-label" for="english">EN</label>
         </div>
-        <div class="form-group mb-4">
-          <label for="password">{{ $t('login.password') }}</label>
+        <div class="form-check form-check-inline">
           <input
-            type="password"
-            class="form-control"
-            id="password"
-            ref="password"
-            v-model="password"
+            class="form-check-input"
+            type="radio"
+            name="lang"
+            id="french"
+            value="fr"
+            v-model="$root.$i18n.locale"
           />
+          <label class="form-check-label" for="french">FR</label>
         </div>
-        <button type="submit" class="btn btn-lg btn-dark btn-block">
-          {{ $t('login.loginButton') }}
-        </button>
-        <div class="text-center mt-5 mb-0">
-          <small>{{ $t('login.resetPassTitle') }}</small>
-        </div>
-        <div class="underForm text-center">
-          <router-link tag="a" class="text-info" to="#">{{ $t('login.resetPass') }}</router-link>
-        </div>
-        <div class="col-sm-12 mt-5 text-center">
-          <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -74,37 +88,66 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  margin-bottom: 100px;
-  width: 400px;
-  background-color: black;
-  color: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  position: relative;
-  font-weight: 200;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-}
+$dark-color: #111111;
+$blue-color: #17a2b8;
+$label-color: #999999;
+$white-text: #ffffff;
+$black-text: #000000;
 
-.container {
+.page {
   display: flex;
-  align-items: center;
   height: 100vh;
-  overflow: hidden;
   justify-content: center;
-}
-
-.underForm {
-  display: flex;
   align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  color: white;
+  padding: 1rem;
 
-  a {
-    font-weight: 700;
+  form {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 8rem;
+
+    input {
+      text-align: center;
+    }
+
+    #tbLogo {
+      width: 150px;
+      margin-bottom: 2.5rem;
+    }
+
+    label {
+      margin-left: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    a {
+      font-weight: 700;
+    }
+
+    button {
+      margin: 2rem 0;
+    }
+
+    .langChooser {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      text-align: center;
+
+      input {
+        display: none;
+      }
+
+      label {
+        cursor: pointer;
+
+        &:hover {
+          font-weight: 700;
+          text-decoration: underline;
+        }
+      }
+    }
   }
-}
-
-#tbLogo {
-  width: 150px;
 }
 </style>

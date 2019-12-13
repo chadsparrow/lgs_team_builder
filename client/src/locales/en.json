@@ -16,7 +16,8 @@
     "emailAddress": "Email Address",
     "password": "Password",
     "loginButton": "Login",
-    "resetPassTitle": "Need to register or forgot your password?",
+    "language": "Language",
+    "resetPassTitle": "Forgot your username or password?",
     "resetPass": "Reset Password" 
   },
   "menu":{

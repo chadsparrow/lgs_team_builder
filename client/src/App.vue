@@ -50,6 +50,7 @@ html {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
+  background: black;
   font-size: 16px;
   scroll-behavior: smooth;
   a {

@@ -65,21 +65,14 @@ export default {
       });
     },
     logout({ commit }) {
-      return new Promise((resolve, reject) => {
-        try {
-          commit('LOGOUT');
-          localStorage.removeItem('token');
-          localStorage.removeItem('member');
-          commit('CLEAR_CURRENTS');
-          commit('CLEAR_TEAMS');
-          commit('CLEAR_STORES');
-          commit('CLEAR_ORDERS');
-          commit('CLEAR_ALL_NOTIFICATIONS');
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
+      localStorage.removeItem('token');
+      localStorage.removeItem('member');
+      commit('LOGOUT');
+      commit('CLEAR_CURRENTS');
+      commit('CLEAR_TEAMS');
+      commit('CLEAR_STORES');
+      commit('CLEAR_ORDERS');
+      commit('CLEAR_ALL_NOTIFICATIONS');
     },
     changePassword(context, { updatedPassword, id }) {
       return new Promise(async (resolve, reject) => {

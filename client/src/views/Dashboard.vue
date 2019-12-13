@@ -64,9 +64,9 @@ export default {
         this.sideCollapsed = false;
       }
     },
-    logout: async function() {
+    logout: function() {
       this.$store.commit('LOADING_FALSE');
-      await this.$store.dispatch('logout');
+      this.$store.dispatch('logout');
       this.$router.push({ name: 'home' });
       this.$toasted.clear();
       this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
@@ -81,12 +81,12 @@ export default {
 <style lang="scss">
 .dashboard {
   display: grid;
-  // grid-template-columns: 50px 1fr;
   grid-template-rows: 60px 1fr;
   margin-left: 150px;
   width: calc(100% - 150px);
   transition: width 1s;
   height: 100vh;
+
   grid-template-areas:
     'topnav'
     'content';

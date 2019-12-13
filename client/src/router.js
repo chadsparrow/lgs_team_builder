@@ -67,7 +67,7 @@ let router = new Router({
         {
           path: 'index',
           name: 'dashboardIndex',
-          component: store.getters.loggedInMember.isAdmin ? DashboardIndex : ProfilesIndex,
+          component: DashboardIndex,
           meta: {
             requiresAuth: true
           }
