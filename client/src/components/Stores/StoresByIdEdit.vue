@@ -73,6 +73,7 @@
                 :country="store.storeCountry"
                 class="form-control"
                 ref="storeCountry"
+                :usei18n="false"
               />
             </div>
           </div>

@@ -2,7 +2,7 @@
   <div class="page" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
-        <Gravatar :email="member.email" default-img="mp" :size="255" />
+        <Gravatar :email="member.email" default-img="mp" :size="200" />
       </div>
       <div class="row p-1 mt-2">
         <small class="col-sm-12 text-info">Member Since:</small>
@@ -33,166 +33,173 @@
       </div>
     </div>
     <div class="middle-section">
-      <div class="section-header bg-secondary">
-        <span class="text-white">Contact</span>
+      <h3 class="text-info text-center">Information</h3>
+      <div class="row m-0">
+        <div class="section-header bg-secondary col-sm-12">
+          <span class="text-white">Contact</span>
+        </div>
       </div>
       <div class="row px-1 info-spans">
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Name</label>
           <br />
           <span>{{ member.name }}</span>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Company</label>
           <br />
           <span>{{ member.company || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-xl-6">
           <label class="text-info">Email</label>
           <br />
           <span>{{ member.email }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Address1</label>
           <br />
           <span>{{ member.address1 }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Address 2</label>
           <br />
           <span>{{ member.address2 || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">City</label>
           <br />
           <span>{{ member.city }}</span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12 col-md-4">
           <label class="text-info">State/Province</label>
           <br />
           <span>{{ member.stateProv }}</span>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-12 col-md-2">
           <label class="text-info">Country</label>
           <br />
           <span>{{ member.country }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Zip/Postal Code</label>
           <br />
           <span>{{ member.zipPostal }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Phone</label>
           <br />
           <span>{{ member.phone }}</span>
         </div>
       </div>
-      <div class="section-header mt-2 bg-secondary">
-        <span class="text-white">Billing</span>
+      <div class="row m-0">
+        <div class="section-header mt-2 bg-secondary">
+          <span class="text-white">Billing</span>
+        </div>
       </div>
       <div class="row px-1 info-spans">
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Name</label>
           <br />
           <span>{{ member.billing.name }}</span>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Company</label>
           <br />
           <span>{{ member.billing.company || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-xl-6">
           <label class="text-info">Email</label>
           <br />
           <span>{{ member.billing.email }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Address1</label>
           <br />
           <span>{{ member.billing.address1 }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Address 2</label>
           <br />
           <span>{{ member.billing.address2 || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">City</label>
           <br />
           <span>{{ member.billing.city }}</span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12 col-md-4">
           <label class="text-info">State/Province</label>
           <br />
           <span>{{ member.billing.stateProv }}</span>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-12 col-md-2">
           <label class="text-info">Country</label>
           <br />
           <span>{{ member.billing.country }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Zip/Postal Code</label>
           <br />
           <span>{{ member.billing.zipPostal }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-md-6">
           <label class="text-info">Phone</label>
           <br />
           <span>{{ member.billing.phone }}</span>
         </div>
       </div>
-      <div class="section-header mt-2 bg-secondary">
-        <span class="text-white">Shipping Details</span>
+      <div class="row m-0">
+        <div class="section-header mt-2 bg-secondary">
+          <span class="text-white">Shipping Details</span>
+        </div>
       </div>
       <div class="row mb-4 px-1 info-spans">
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Name</label>
           <br />
           <span>{{ member.shipping.name }}</span>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-12 col-lg-6 col-xl-3">
           <label class="text-info">Company</label>
           <br />
           <span>{{ member.shipping.company || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-xl-6">
           <label class="text-info">Email</label>
           <br />
           <span>{{ member.shipping.email }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Address1</label>
           <br />
           <span>{{ member.shipping.address1 }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Address 2</label>
           <br />
           <span>{{ member.shipping.address2 || '--' }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">City</label>
           <br />
           <span>{{ member.shipping.city }}</span>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12 col-lg-4">
           <label class="text-info">State/Province</label>
           <br />
           <span>{{ member.shipping.stateProv }}</span>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-12 col-lg-2">
           <label class="text-info">Country</label>
           <br />
           <span>{{ member.shipping.country }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Zip/Postal Code</label>
           <br />
           <span>{{ member.shipping.zipPostal }}</span>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6">
           <label class="text-info">Phone</label>
           <br />
           <span>{{ member.shipping.phone }}</span>
@@ -203,7 +210,7 @@
         class="btn btn-info"
         v-if="isAdmin"
       >
-        <i class="fas fa-cog mr-3"></i>Edit Member Details
+        <i class="fas fa-cog mr-3"></i>Edit Member
       </router-link>
     </div>
   </div>
@@ -263,11 +270,51 @@ export default {
 <style lang="scss" scoped>
 .page {
   display: grid;
-  grid-template-columns: 255px 1fr;
+  grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
   grid-gap: 1rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
+
+  .middle-section {
+    h3 {
+      display: none;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 768px) {
+  .page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .sidebar-left {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .middle-section {
+      h3 {
+        display: block;
+      }
+
+      .btn {
+        display: block;
+      }
+    }
+  }
 }
 </style>

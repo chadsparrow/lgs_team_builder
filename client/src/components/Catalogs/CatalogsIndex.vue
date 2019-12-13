@@ -10,7 +10,7 @@
         <span>No Catalogs Found</span>
       </div>
       <div class="col-sm-12" v-else>
-        <div class="table-responsive">
+        <div class="table-responsive-sm">
           <table class="table table-hover table-striped">
             <tbody>
               <tr

@@ -1,16 +1,16 @@
 <template>
-  <div class="container" v-if="!isLoading">
+  <div class="page" v-if="!isLoading">
     <form @submit.prevent="addCatalogItem" novalidate>
       <div class="row">
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-12 col-lg-6">
           <label for="nameEN">Name (EN)</label>
           <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
         </div>
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-12 col-lg-6">
           <label for="nameFR">Name (FR)</label>
           <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
         </div>
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-12 col-lg-6">
           <label for="productCode">ERP Product Code</label>
           <input
             id="productCode"
@@ -20,7 +20,7 @@
             ref="productCode"
           />
         </div>
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-12 col-lg-6">
           <label for="styleCode">Production Style Code</label>
           <input
             id="styleCode"
@@ -30,7 +30,7 @@
             ref="styleCode"
           />
         </div>
-        <div class="form-group col-sm-12 text-center my-3 sizesBox">
+        <div class="form-group col-sm-12 text-center sizesBox">
           <div class="mb-3">
             <label>Available Sizes</label>
           </div>
@@ -144,7 +144,7 @@
             <label class="form-check-label" for="size4XL">4XL</label>
           </div>
         </div>
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-12 col-lg-6">
           <label for="gender">Gender</label>
           <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
             <option value="M">Mens</option>
@@ -153,16 +153,29 @@
             <option value="U">Unisex</option>
           </select>
         </div>
-        <div class="form-group col-sm-6">
-          <label for="categories">Categories</label>
-          <vue-tags-input
-            style="width: 100%;"
-            v-model="category"
-            :tags="categories"
-            @tags-changed="newCategories => (categories = newCategories)"
-          />
+        <div class="col-sm-12 col-lg-6">
+          <div class="row m-0">
+            <div class="form-group col-sm-12 col-xl-6">
+              <label for="categories">Categories (EN)</label>
+              <vue-tags-input
+                style="width: 100%;"
+                v-model="category"
+                :tags="categories"
+                @tags-changed="newCategories => (categories = newCategories)"
+              />
+            </div>
+            <div class="form-group col-sm-12 col-xl-6">
+              <label for="categories">Categories (FR)</label>
+              <vue-tags-input
+                style="width: 100%;"
+                v-model="categorie"
+                :tags="categoriesFR"
+                @tags-changed="newCategoriesFR => (categoriesFR = newCategoriesFR)"
+              />
+            </div>
+          </div>
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="descriptionEN">Description (EN)</label>
           <textarea
             id="descriptionEN"
@@ -172,7 +185,7 @@
             v-model="descriptionEN"
           ></textarea>
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="descriptionFR">Description (FR)</label>
           <textarea
             id="descriptionFR"
@@ -182,7 +195,7 @@
             v-model="descriptionFR"
           ></textarea>
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="priceBreaksCAD">Price Breaks (CAD)</label>
           <ul class="list-group" id="priceBreaksCAD">
             <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
@@ -198,7 +211,7 @@
             <li class="list-group-item py-1">250+ Contact Us</li>
           </ul>
         </div>
-        <div class="form-group col-sm-3">
+        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="priceBreaksUSD">Price Breaks (USD)</label>
           <ul class="list-group" id="priceBreaksUSD">
             <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
@@ -215,11 +228,11 @@
           </ul>
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col-sm-6">
+      <div class="row mt-2">
+        <div class="col-sm-12 col-lg-6 mt-2">
           <button type="submit" class="btn btn-block btn-info">Add Catalog Item</button>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-6 mt-2">
           <router-link
             tag="a"
             class="btn btn-danger btn-block"
@@ -317,6 +330,8 @@ export default {
       descriptionFR: '',
       category: '',
       categories: [],
+      categorie: '',
+      categoriesFR: [],
       isActive: true
     };
   },
@@ -379,6 +394,7 @@ export default {
     },
     addCatalogItem: async function() {
       const mappedCategories = this.categories.map(cat => cat.text);
+      const mappedCategoriesFR = this.categoriesFR.map(catFR => catFR.text);
 
       const newCatalogItem = {
         catalogId: this.currentCatalog._id,
@@ -391,7 +407,8 @@ export default {
         gender: this.gender,
         descriptionEN: this.descriptionEN,
         descriptionFR: this.descriptionFR,
-        categories: mappedCategories
+        categories: mappedCategories,
+        categoriesFR: mappedCategoriesFR
       };
       try {
         const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);
@@ -418,16 +435,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.list-group-item {
-  font-size: 0.9rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+.page {
+  padding: 1rem;
+  margin: 0;
 
-  input {
-    width: 80px;
-    height: 30px;
+  .list-group-item {
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    input {
+      width: 80px;
+      height: 30px;
+    }
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="page" v-if="!isLoading">
     <div class="header">
       <div class="row text-center">
-        <div class="col-md-12 col-lg-2 my-auto">
+        <div class="col-md-12 col-lg-3 my-auto">
           <img
             src="/images/assets/garneau_logo.png"
             alt="Garneau Logo"
@@ -21,8 +21,8 @@
           <br />
           {{ currentCatalog.season }} - {{ currentCatalog.year }}
         </div>
-        <div class="col-md-12 col-lg-10 text-center my-auto">
-          <div class="form-group">
+        <div class="col-md-12 col-lg-9 text-center my-auto">
+          <div class="form-group mt-4">
             <input
               type="text"
               id="catalogItemSearch"
@@ -37,23 +37,28 @@
             >
           </div>
         </div>
-      </div>
-
-      <div class="header-buttons">
-        <router-link
-          class="btn btn-sm"
-          :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
-          tag="a"
-        >
-          <i class="fas fa-plus fa-lg"></i>
-        </router-link>
-        <router-link
-          class="btn btn-sm"
-          :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
-          tag="a"
-        >
-          <i class="fas fa-cog fa-lg"></i>
-        </router-link>
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-12 col-lg-6 mt-2">
+              <router-link
+                class="btn btn-sm btn-block btn-info"
+                :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
+                tag="a"
+              >
+                <i class="fas fa-plus fa-lg mr-2"></i>Add Item
+              </router-link>
+            </div>
+            <div class="col-sm-12 col-lg-6 mt-2">
+              <router-link
+                class="btn btn-sm btn-block btn-info"
+                :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
+                tag="a"
+              >
+                <i class="fas fa-cog fa-lg mr-2"></i>Settings
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="galleryList" v-if="filteredItems.length > 0">
@@ -153,7 +158,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: minmax(40px 1fr) auto;
-  grid-gap: 1rem;
   width: 100%;
   height: 100%;
   grid-template-areas:
@@ -163,26 +167,17 @@ export default {
   .header {
     position: relative;
     grid-area: header;
-    background-color: whitesmoke;
-    border-radius: 5px;
     font-weight: 700;
+    padding: 0.5rem;
     margin: 0;
-    padding: 0.25rem;
 
     img {
       height: 35px;
-      margin-right: 1.5rem;
     }
 
     .form-control {
       min-width: 250px;
       max-width: 500px;
-    }
-
-    .header-buttons {
-      position: absolute;
-      top: 0.25rem;
-      right: 0.25rem;
     }
   }
 
@@ -209,6 +204,7 @@ export default {
 
       .thumbnail-img {
         margin-right: 1rem;
+        min-width: 125px;
         width: 125px;
         img {
           width: 100%;

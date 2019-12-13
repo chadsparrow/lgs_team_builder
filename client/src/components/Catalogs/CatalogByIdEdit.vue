@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-2" v-if="!isLoading">
-    <div class="container">
-      <div class="form-group row">
-        <div class="col-sm-12 mb-2">
+  <div class="page" v-if="!isLoading">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-12">
           <label for="brand">{{ $t('catalogs.add.brand') }}</label>
           <select
             class="form-control form-control-sm"
@@ -17,7 +17,7 @@
             <option value="CONNEC" disabled>CONNEC</option>
           </select>
         </div>
-        <div class="col-sm-12 mb-2">
+        <div class="col-sm-12 mt-2">
           <label for="season">{{ $t('catalogs.add.season.season') }}</label>
           <select
             class="form-control form-control-sm"
@@ -36,7 +36,7 @@
             <option value="WINTER">{{ $t('catalogs.add.season.winter') }}</option>
           </select>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12 mt-2">
           <label for="year">{{ $t('catalogs.add.year') }}</label>
           <input
             type="text"
@@ -47,13 +47,13 @@
           />
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col-sm-6">
+      <div class="row mt-2">
+        <div class="col-sm-12 col-lg-8 mt-2">
           <button class="btn btn-block btn-info" @click="editCatalog">
             {{ $t('submit') }}
           </button>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12 col-lg-4 mt-2">
           <router-link
             tag="a"
             class="btn btn-block btn-danger"
@@ -128,7 +128,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  width: 500px;
+.page {
+  .form-group {
+    max-width: 500px;
+    margin: 0 auto;
+  }
 }
 </style>

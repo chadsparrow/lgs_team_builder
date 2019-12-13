@@ -1,8 +1,8 @@
 <template>
-  <div class="mt-2">
-    <form @submit.prevent="addCatalog" novalidate class="container">
-      <div class="form-group row">
-        <div class="col-sm-12 mb-2">
+  <div class="page">
+    <form @submit.prevent="addCatalog" novalidate>
+      <div class="row mb-3">
+        <div class="form-group col-sm-12 mb-2">
           <label for="brand">{{ $t('catalogs.add.brand') }}</label>
           <select
             class="form-control form-control-sm"
@@ -17,7 +17,7 @@
             <option value="connec" disabled>CONNEC</option>
           </select>
         </div>
-        <div class="col-sm-12 mb-2">
+        <div class="form-group col-sm-12 mb-2">
           <label for="season">{{ $t('catalogs.add.season.season') }}</label>
           <select class="form-control form-control-sm" id="season" v-model="season" ref="season">
             <option value="CUSTOM">{{ $t('catalogs.add.season.custom') }}</option>
@@ -42,13 +42,13 @@
           />
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col-sm-8">
+      <div class="row">
+        <div class="col-sm-12 col-lg-8 mt-2">
           <button type="submit" class="btn btn-block btn-info">
             {{ $t('catalogs.add.addCatalog') }}
           </button>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-12 col-lg-4 mt-2">
           <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">{{
             $t('cancel')
           }}</router-link>
@@ -111,7 +111,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  width: 500px;
+.page {
+  padding: 1rem;
+
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
 }
 </style>

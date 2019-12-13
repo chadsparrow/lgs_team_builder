@@ -19,42 +19,40 @@
         </router-link>
       </div>
     </div>
-    <div class="member-list">
-      <span v-if="allMembers.length === 0">No Members Found</span>
-      <div class="table-responsive" v-else>
-        <table class="table table-hover table-striped">
-          <tbody>
-            <tr
-              v-for="member of currentMembers"
-              :key="member._id"
-              @click.prevent="loadMember(member._id)"
-            >
-              <td>
-                <Gravatar :email="member.email" default-img="mp" :size="24" />
-              </td>
-              <td>{{ member.name }}</td>
-              <td>{{ member.email }}</td>
-              <td>
-                <span>{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <paginate
-        v-model="currentPage"
-        :page-count="pageNumbers"
-        :container-class="'pagination pagination-sm'"
-        :page-class="'page-item'"
-        :page-link-class="'page-link'"
-        :prev-class="'page-item'"
-        :prev-link-class="'page-link'"
-        :next-class="'page-item'"
-        :next-link-class="'page-link'"
-        :hide-prev-next="true"
-        v-if="pageNumbers > 1"
-      ></paginate>
+    <span v-if="allMembers.length === 0">No Members Found</span>
+    <div class="table-responsive-sm" v-else>
+      <table class="table table-hover table-striped">
+        <tbody>
+          <tr
+            v-for="member of currentMembers"
+            :key="member._id"
+            @click.prevent="loadMember(member._id)"
+          >
+            <td>
+              <Gravatar :email="member.email" default-img="mp" :size="24" />
+            </td>
+            <td>{{ member.name }}</td>
+            <td>{{ member.email }}</td>
+            <td>
+              <span>{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    <paginate
+      v-model="currentPage"
+      :page-count="pageNumbers"
+      :container-class="'pagination pagination-sm'"
+      :page-class="'page-item'"
+      :page-link-class="'page-link'"
+      :prev-class="'page-item'"
+      :prev-link-class="'page-link'"
+      :next-class="'page-item'"
+      :next-link-class="'page-link'"
+      :hide-prev-next="true"
+      v-if="pageNumbers > 1"
+    ></paginate>
   </div>
 </template>
 
@@ -138,19 +136,11 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: max-content 1fr;
-  grid-gap: 0.5rem;
   width: 100%;
-  height: 100%;
-  grid-template-areas:
-    'header'
-    'member-list';
 
   .header {
-    grid-area: header;
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
     padding: 0.25rem;
@@ -171,10 +161,6 @@ export default {
       pointer-events: none;
       color: #aaa;
     }
-  }
-
-  .member-list {
-    grid-area: member-list;
   }
 }
 </style>

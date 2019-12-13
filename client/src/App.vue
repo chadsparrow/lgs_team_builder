@@ -74,6 +74,10 @@ label {
   opacity: 0;
 }
 
+.table {
+  font-size: 0.85rem;
+}
+
 .table > tbody > tr > td,
 .table > tbody > tr > th {
   vertical-align: middle;
@@ -128,13 +132,6 @@ textarea {
     font-size: 0.85em;
   }
 
-  .placeholderImg {
-    border-radius: 1rem;
-    background-color: $white-text;
-    width: 225px;
-    height: 225px;
-  }
-
   .list-group {
     width: 100%;
     overflow-x: hidden;
@@ -161,23 +158,39 @@ textarea {
   }
 }
 
-.form-group {
-  margin: 0 0 6px 0;
-}
-
 .middle-section {
   grid-area: middle-section;
   overflow-x: hidden;
   overflow-y: auto;
-  font-size: 0.9rem;
-}
+  font-size: 0.85rem;
 
-.info-spans {
-  span {
-    background-color: rgba(255, 255, 255, 0.6);
-    padding: 0.1rem 0.2rem;
+  .section-header {
+    padding: 0.5rem;
+    width: 100%;
     border-radius: 5px;
-    display: block;
+    color: $white-text;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem 0;
+  }
+
+  .info-spans {
+    span {
+      background-color: rgba(255, 255, 255, 0.6);
+      padding: 0.1rem 0.25rem;
+      border-radius: 5px;
+      display: block;
+    }
+
+    label {
+      margin-left: 4px;
+      margin-top: 0.3rem;
+    }
+  }
+
+  .form-group {
+    margin: 0;
   }
 }
 
@@ -192,19 +205,10 @@ textarea {
   font-size: 0.85rem;
 }
 
-.section-header {
-  padding: 0.25rem 0.5rem;
-  margin-bottom: 6px;
-  border-radius: 5px;
-  color: $white-text;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .sizesBox {
   background-color: $blue-color;
-  border-radius: 1rem;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
   padding: 1rem;
   label {
     color: white;

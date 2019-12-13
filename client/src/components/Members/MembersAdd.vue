@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid middle-section">
-    <form class="row">
-      <div class="form-group col-sm-6 mb-3">
+    <div class="row">
+      <div class="form-group col-sm-12">
         <label for="email">Email Address/Login</label>
         <input
           id="email"
@@ -12,11 +12,12 @@
           @change="changeDetails"
         />
       </div>
-      <div class="col-sm-6 mb-3"></div>
-      <div class="col-sm-4 contactSection">
-        <div class="section-header bg-secondary mb-2">Contact</div>
+
+      <!-- CONTACT SECTION -->
+      <div class="col-sm-12 contactSection">
+        <div class="section-header bg-secondary">Contact</div>
         <div class="row">
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="name">Name</label>
             <input
               id="name"
@@ -27,7 +28,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="address1">Company</label>
             <input
               id="company"
@@ -38,7 +39,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="address1">Address 1</label>
             <input
               id="address1"
@@ -49,7 +50,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="address2">Address 2</label>
             <input
               id="address2"
@@ -60,7 +61,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="city">City</label>
             <input
               id="city"
@@ -71,7 +72,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="country">Country</label>
             <country-select
               id="country"
@@ -83,7 +84,7 @@
               :usei18n="false"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="stateProv">State/Province</label>
             <region-select
               id="stateProv"
@@ -97,7 +98,7 @@
               :usei18n="false"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="zipPostal">Zip/Postal Code</label>
             <input
               id="zipPostal"
@@ -108,7 +109,7 @@
               @change="changeDetails"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="phone">Phone</label>
             <VuePhoneNumberInput
               v-model="phone"
@@ -123,13 +124,15 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4 billingSection">
-        <div class="section-header mb-2 bg-secondary">
+
+      <!-- BILLING SECTION -->
+      <div class="col-sm-12 billingSection">
+        <div class="section-header bg-secondary">
           <span class="text-white">Billing</span>
           <div class="form-check float-right">
             <input
               type="checkbox"
-              class="form-check-input mt-2"
+              class="form-check-input"
               id="billingSame"
               v-model="billingSame"
               @change="copyMembertoBilling"
@@ -140,8 +143,8 @@
             >
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="form-group col-sm-12">
+        <div class="row">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingName">Billing Name</label>
             <input
               id="billingName"
@@ -152,7 +155,7 @@
               ref="billingName"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingCompany">Billing Company</label>
             <input
               id="billingCompany"
@@ -174,7 +177,7 @@
               ref="billingEmail"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingAddress1">Billing Address 1</label>
             <input
               id="billingAddress1"
@@ -185,7 +188,7 @@
               ref="billingAddress1"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingAddress2">Billing Address 2</label>
             <input
               id="billingAddress2"
@@ -196,7 +199,7 @@
               ref="billingAddress2"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingCity">Billing City</label>
             <input
               id="billingCity"
@@ -207,7 +210,7 @@
               ref="billingCity"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="billingCountry">Billing Country</label>
             <country-select
               id="billingCountry"
@@ -220,7 +223,7 @@
               :usei18n="false"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="billingStateProv">Billing State/Province</label>
             <region-select
               id="billingStateProv"
@@ -234,7 +237,7 @@
               :usei18n="false"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingZipPostal">Billing Zip/Postal Code</label>
             <input
               id="billingZipPostal"
@@ -245,7 +248,7 @@
               ref="billingZipPostal"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="billingPhone">Billing Phone</label>
             <input
               type="text"
@@ -269,13 +272,15 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4 shippingSection">
-        <div class="section-header mb-2 bg-secondary">
+
+      <!-- SHIPPING SECTION -->
+      <div class="col-sm-12 shippingSection">
+        <div class="section-header bg-secondary">
           <span class="text-white">Shipping</span>
           <div class="form-check float-right">
             <input
               type="checkbox"
-              class="form-check-input mt-2"
+              class="form-check-input"
               id="shippingSame"
               v-model="shippingSame"
               @change="copyMemberToShipping"
@@ -286,8 +291,8 @@
             >
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="form-group col-sm-12">
+        <div class="row">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingName">Shipping Name</label>
             <input
               id="shippingName"
@@ -298,7 +303,7 @@
               ref="shippingName"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingCompany">Shipping Company</label>
             <input
               id="shippingCompany"
@@ -320,7 +325,7 @@
               ref="shippingEmail"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingAddress1">Shipping Address 1</label>
             <input
               id="shippingAddress1"
@@ -331,7 +336,7 @@
               ref="shippingAddress1"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingAddress2">Shipping Address 2</label>
             <input
               id="shippingAddress2"
@@ -342,7 +347,7 @@
               ref="shippingAddress2"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingCity">Shipping City</label>
             <input
               id="shippingCity"
@@ -353,7 +358,7 @@
               ref="shippingCity"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="shippingCountry">Shipping Country</label>
             <country-select
               id="shippingCountry"
@@ -366,7 +371,7 @@
               :usei18n="false"
             />
           </div>
-          <div class="form-group col-sm-6">
+          <div class="form-group col-sm-12 col-lg-3">
             <label for="shippingStateProv">Shipping State/Province</label>
             <region-select
               id="shippingStateProv"
@@ -381,7 +386,7 @@
             />
           </div>
 
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingZipPostal">Shipping Zip/Postal Code</label>
             <input
               id="shippingZipPostal"
@@ -392,7 +397,7 @@
               ref="shippingZipPostal"
             />
           </div>
-          <div class="form-group col-sm-12">
+          <div class="form-group col-sm-12 col-lg-6">
             <label for="shippingPhone">Shipping Phone</label>
             <input
               type="text"
@@ -416,25 +421,19 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-12 buttonsSection mt-4">
+      <div class="col-sm-12 buttonsSection mt-3">
         <div class="row">
-          <div class="col-sm-8">
+          <div class="col-sm-12 col-lg-8">
             <button class="btn btn-block btn-info mb-2" @click.prevent="addMember">
               <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i>Add Member
             </button>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-12 col-lg-4">
             <router-link to="/dashboard/members/" class="btn btn-block btn-danger"
               >Cancel</router-link
             >
           </div>
         </div>
-      </div>
-    </form>
-
-    <div class="row">
-      <div class="col middle-section">
-        <form class="mb-4"></form>
       </div>
     </div>
   </div>
@@ -706,3 +705,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.form-group {
+  label {
+    margin-top: 0.3rem !important;
+  }
+}
+</style>
