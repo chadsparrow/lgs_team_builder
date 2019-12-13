@@ -4,7 +4,6 @@ coverage
 .env
 .env.development
 startup/seeder
-.VSCodeCounter
 static/images/catalogs
 static/images/catalogs/*
 static/images/storeitems

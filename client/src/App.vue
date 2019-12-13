@@ -173,10 +173,11 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 1rem 0;
+    margin: 0 0 0.5rem 0;
   }
 
   .info-spans {
+    margin-bottom: 1rem;
     span {
       background-color: rgba(255, 255, 255, 0.6);
       padding: 0.1rem 0.25rem;
