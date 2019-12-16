@@ -108,6 +108,7 @@
             @input="checkCountry"
             ref="country"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectCountry')"
           />
         </div>
         <div class="form-group col-sm-6 col-xl-3">
@@ -122,6 +123,7 @@
             :regionName="true"
             ref="stateProv"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectRegion')"
           />
         </div>
         <div class="form-group col-lg-6">
@@ -147,6 +149,7 @@
             :clearable="true"
             :no-use-browser-locale="true"
             @update="copyPhone"
+            :translations="translations"
           />
         </div>
       </div>
@@ -249,6 +252,7 @@
             @input="checkBillingCountry"
             ref="billingCountry"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectCountry')"
           />
         </div>
         <div class="form-group col-sm-6 col-xl-3">
@@ -263,6 +267,7 @@
             :regionName="true"
             ref="billingStateProv"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectRegion')"
           />
         </div>
         <div class="form-group col-lg-6">
@@ -298,6 +303,7 @@
             ref="billingPhone"
             :no-use-browser-locale="true"
             :clearable="true"
+            :translations="translations"
           />
         </div>
       </div>
@@ -400,6 +406,7 @@
             :readonly="shippingSame"
             ref="shippingCountry"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectCountry')"
           />
         </div>
         <div class="form-group col-sm-6 col-xl-3">
@@ -414,6 +421,7 @@
             :regionName="true"
             ref="shippingStateProv"
             :usei18n="false"
+            :placeholder="$t('formLabels.selectRegion')"
           />
         </div>
         <div class="form-group col-lg-6">
@@ -449,6 +457,7 @@
             ref="shippingPhone"
             :no-use-browser-locale="true"
             :clearable="true"
+            :translations="translations"
           />
         </div>
       </div>
@@ -498,6 +507,9 @@ export default {
     },
     teams: function() {
       return this.getMember.teams;
+    },
+    translations: function() {
+      return this.$store.getters.phoneTranslations;
     }
   },
   created: async function() {

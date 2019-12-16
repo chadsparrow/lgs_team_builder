@@ -538,13 +538,7 @@ export default {
       billingCountry: '',
       billingZipPostal: '',
       billingPhone: '',
-      billingEmail: '',
-      translations: {
-        countrySelectorLabel: i18n.t('formLabels.countrySelectorLabel'),
-        countrySelectorError: i18n.t('formLabels.countrySelectorError'),
-        phoneNumberLabel: i18n.t('formLabels.phoneNumberLabel'),
-        example: i18n.t('formLabels.example')
-      }
+      billingEmail: ''
     };
   },
   created: async function() {
@@ -566,6 +560,11 @@ export default {
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
       this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+    }
+  },
+  computed: {
+    translations: function() {
+      return this.$store.getters.phoneTranslations;
     }
   },
   methods: {

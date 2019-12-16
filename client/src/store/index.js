@@ -7,6 +7,7 @@ import teams from './modules/teams';
 import stores from './modules/stores';
 import carts from './modules/carts';
 import orders from './modules/orders';
+import i18n from '../i18n';
 
 Vue.use(Vuex);
 
@@ -22,7 +23,13 @@ export default new Vuex.Store({
   },
   state: {
     isLoading: false,
-    breadcrumbs: []
+    breadcrumbs: [],
+    translations: {
+      countrySelectorLabel: i18n.t('formLabels.countrySelectorLabel'),
+      countrySelectorError: i18n.t('formLabels.countrySelectorError'),
+      phoneNumberLabel: i18n.t('formLabels.phoneNumberLabel'),
+      example: i18n.t('formLabels.example')
+    }
   },
   actions: {
     setBreadcrumbs({ commit }, breadcrumbs) {
@@ -49,6 +56,7 @@ export default new Vuex.Store({
   },
   getters: {
     isLoading: state => state.isLoading,
-    breadcrumbs: state => state.breadcrumbs
+    breadcrumbs: state => state.breadcrumbs,
+    phoneTranslations: state => state.translations
   }
 });
