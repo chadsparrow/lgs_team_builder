@@ -344,7 +344,7 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-lg-6">
+        <div class="form-group col-xl-6">
           <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
           <input
             id="shippingEmail"

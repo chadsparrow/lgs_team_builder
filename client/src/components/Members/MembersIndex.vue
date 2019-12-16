@@ -1,13 +1,13 @@
 <template>
   <div v-if="!isLoading" class="page">
-    <div class="header">
-      <div class="form-group has-search">
+    <div class="header mb-2">
+      <div class="form-group has-search m-0">
         <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
           id="memberSearch"
           v-if="allMembers.length > 0"
-          class="form-control form-control-sm"
+          class="form-control form-control-sm m-0"
           v-model="memberSearchText"
           placeholder="Search..."
           autofocus
