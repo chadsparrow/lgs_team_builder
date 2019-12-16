@@ -5,35 +5,35 @@
         <Gravatar :email="member.email" default-img="mp" :size="200" />
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Member Timezone:</small>
+        <small class="col-sm-12 text-info">{{ $t('members.memberTZ') }}:</small>
         <span class="col-sm-12">{{ member.timezone }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Member Role:</small>
+        <small class="col-sm-12 text-info">{{ $t('members.memberRole') }}:</small>
         <span class="col-sm-12">{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
       </div>
       <hr />
-      <small class="text-info">Actions</small>
+      <small class="text-info">{{ $t('actions') }}</small>
       <button
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
       >
-        Deactivate Member
+        {{ $t('members.deactivate') }}
       </button>
     </div>
 
     <!-- CONTACT SECTION -->
     <div class="middle-section">
-      <h3 class="text-info text-center">Information</h3>
+      <h3 class="text-info text-center">{{ $t('formLabels.information') }}</h3>
       <div class="row m-0">
         <div class="section-header bg-secondary">
-          <span class="text-white">Contact</span>
+          <span class="text-white">{{ $t('formLabels.contact') }}</span>
         </div>
       </div>
-      <div class="row">
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="name">Name</label>
+      <div class="row mb-2">
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="name">{{ $t('formLabels.name') }}</label>
           <input
             id="name"
             type="text"
@@ -43,8 +43,8 @@
             ref="name"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="company">Company</label>
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="company">{{ $t('formLabels.company') }}</label>
           <input
             id="company"
             type="text"
@@ -54,8 +54,8 @@
             ref="company"
           />
         </div>
-        <div class="form-group col-sm-12 col-xl-6">
-          <label for="email">Email</label>
+        <div class="form-group col-xl-6">
+          <label for="email">{{ $t('formLabels.email') }}</label>
           <input
             id="email"
             type="email"
@@ -65,8 +65,8 @@
             readonly
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="address1">Address 1</label>
+        <div class="form-group col-lg-6">
+          <label for="address1">{{ $t('formLabels.address1') }}</label>
           <input
             id="address1"
             type="text"
@@ -76,8 +76,8 @@
             ref="address1"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="address2">Address 2</label>
+        <div class="form-group col-lg-6">
+          <label for="address2">{{ $t('formLabels.address2') }}</label>
           <input
             id="address2"
             type="text"
@@ -87,8 +87,8 @@
             @change="changeDetails"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="city">City</label>
+        <div class="form-group col-xl-6">
+          <label for="city">{{ $t('formLabels.city') }}</label>
           <input
             id="city"
             type="text"
@@ -98,8 +98,8 @@
             ref="city"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="country">Country</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="country">{{ $t('formLabels.country') }}</label>
           <country-select
             id="country"
             v-model="member.country"
@@ -110,8 +110,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="stateProv">State/Province</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="stateProv">{{ $t('formLabels.stateProv') }}</label>
           <region-select
             id="stateProv"
             v-model="member.stateProv"
@@ -124,8 +124,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="zipPostal">Zip/Postal Code</label>
+        <div class="form-group col-lg-6">
+          <label for="zipPostal">{{ $t('formLabels.zipPostal') }}</label>
           <input
             id="zipPostal"
             type="text"
@@ -135,8 +135,8 @@
             @change="changeDetails"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="phone">Phone</label>
+        <div class="form-group col-lg-6">
+          <label for="phone">{{ $t('formLabels.phone') }}</label>
           <VuePhoneNumberInput
             v-model="member.phone"
             id="phone"
@@ -154,7 +154,7 @@
       <!-- BILLING SECTION -->
       <div class="row m-0">
         <div class="section-header bg-secondary">
-          <span class="text-white">Billing</span>
+          <span class="text-white">{{ $t('formLabels.billing') }}</span>
           <div class="form-check">
             <input
               type="checkbox"
@@ -164,14 +164,16 @@
               ref="billingSame"
               @change="copyContacttoBilling"
             />
-            <small class="form-check-label text-white" for="billingSame">Use Contact Info</small>
+            <small class="form-check-label text-white" for="billingSame">{{
+              $t('formLabels.useContact')
+            }}</small>
           </div>
         </div>
       </div>
 
-      <div class="row mb-3">
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="billingName">Name</label>
+      <div class="row mb-2">
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="billingName">{{ $t('formLabels.name') }}</label>
           <input
             id="billingName"
             type="text"
@@ -181,8 +183,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="billingCompany">Company</label>
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="billingCompany">{{ $t('formLabels.company') }}</label>
           <input
             id="billingCompany"
             type="text"
@@ -192,8 +194,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-xl-6">
-          <label for="billingName">Email</label>
+        <div class="form-group col-xl-6">
+          <label for="billingName">{{ $t('formLabels.email') }}</label>
           <input
             id="billingEmail"
             type="text"
@@ -203,8 +205,8 @@
             readonly
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="billingAddress1">Address 1</label>
+        <div class="form-group col-lg-6">
+          <label for="billingAddress1">{{ $t('formLabels.address1') }}</label>
           <input
             id="billingAddress1"
             type="text"
@@ -214,8 +216,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="billingAddress2">Address 2</label>
+        <div class="form-group col-lg-6">
+          <label for="billingAddress2">{{ $t('formLabels.address2') }}</label>
           <input
             id="billingAddress2"
             type="text"
@@ -225,8 +227,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="billingCity">City</label>
+        <div class="form-group col-xl-6">
+          <label for="billingCity">{{ $t('formLabels.city') }}</label>
           <input
             id="billingCity"
             type="text"
@@ -236,8 +238,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="billingCountry">Country</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="billingCountry">{{ $t('formLabels.country') }}</label>
           <country-select
             id="billingCountry"
             v-model="member.billing.country"
@@ -249,8 +251,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="billingStateProv">State/Province</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="billingStateProv">{{ $t('formLabels.stateProv') }}</label>
           <region-select
             id="billingStateProv"
             v-model="member.billing.stateProv"
@@ -263,8 +265,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="billingZipPostal">Zip/Postal Code</label>
+        <div class="form-group col-lg-6">
+          <label for="billingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
           <input
             id="billingZipPostal"
             type="text"
@@ -274,8 +276,8 @@
             :readonly="billingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6" v-if="billingSame">
-          <label for="billingPhone">Phone</label>
+        <div class="form-group col-lg-6" v-if="billingSame">
+          <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
           <input
             id="billingPhone"
             type="text"
@@ -286,7 +288,7 @@
           />
         </div>
         <div class="form-group col-sm-12 col-lg-6" v-else>
-          <label for="billingPhone">Phone</label>
+          <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
           <VuePhoneNumberInput
             v-model="member.billing.phone"
             size="sm"
@@ -303,7 +305,7 @@
       <!-- SHIPPING SECTION -->
       <div class="row m-0">
         <div class="section-header bg-secondary">
-          <span class="text-white">Shipping</span>
+          <span class="text-white">{{ $t('formLabels.shipping') }}</span>
           <div class="form-check">
             <input
               type="checkbox"
@@ -313,13 +315,15 @@
               ref="shippingSame"
               @change="copyContacttoShipping"
             />
-            <small class="form-check-small text-white" for="shippingSame">Use Contact Info</small>
+            <small class="form-check-small text-white" for="shippingSame">{{
+              $t('formLabels.useContact')
+            }}</small>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="shippingName">Name</label>
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="shippingName">{{ $t('formLabels.name') }}</label>
           <input
             id="shippingName"
             type="text"
@@ -329,8 +333,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-          <label for="shippingCompany">Company</label>
+        <div class="form-group col-lg-6 col-xl-3">
+          <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
           <input
             id="shippingCompany"
             type="text"
@@ -340,8 +344,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="shippingEmail">Email</label>
+        <div class="form-group col-lg-6">
+          <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
           <input
             id="shippingEmail"
             type="text"
@@ -351,8 +355,8 @@
             readonly
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="shippingAddress1">Address 1</label>
+        <div class="form-group col-lg-6">
+          <label for="shippingAddress1">{{ $t('formLabels.address1') }}</label>
           <input
             id="shippingAddress1"
             type="text"
@@ -362,8 +366,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="shippingAddress2">Address 2</label>
+        <div class="form-group col-lg-6">
+          <label for="shippingAddress2">{{ $t('formLabels.address2') }}</label>
           <input
             id="shippingAddress2"
             type="text"
@@ -373,8 +377,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="shippingCity">City</label>
+        <div class="form-group col-xl-6">
+          <label for="shippingCity">{{ $t('formLabels.city') }}</label>
           <input
             id="shippingCity"
             type="text"
@@ -385,8 +389,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="shippingCountry">Country</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
           <country-select
             id="shippingCountry"
             v-model="member.shipping.country"
@@ -398,8 +402,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-6 col-lg-3">
-          <label for="shippingStateProv">State/Province</label>
+        <div class="form-group col-sm-6 col-xl-3">
+          <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
           <region-select
             id="shippingStateProv"
             v-model="member.shipping.stateProv"
@@ -412,8 +416,8 @@
             :usei18n="false"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6">
-          <label for="shippingZipPostal">Zip/Postal Code</label>
+        <div class="form-group col-lg-6">
+          <label for="shippingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
           <input
             id="shippingZipPostal"
             type="text"
@@ -423,8 +427,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6" v-if="shippingSame">
-          <label for="shippingPhone">Phone</label>
+        <div class="form-group col-lg-6" v-if="shippingSame">
+          <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
           <input
             id="shippingPhone"
             type="text"
@@ -434,8 +438,8 @@
             :readonly="shippingSame"
           />
         </div>
-        <div class="form-group col-sm-12 col-lg-6" v-else>
-          <label for="shippingPhone">Phone</label>
+        <div class="form-group col-lg-6" v-else>
+          <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
           <VuePhoneNumberInput
             v-model="member.shipping.phone"
             id="shippingPhone"
@@ -449,16 +453,16 @@
         </div>
       </div>
       <div class="row mt-4">
-        <div class="col-sm-12 col-lg-6">
+        <div class="col-lg-6">
           <button class="btn btn-block btn-info" @click.prevent="updateMember">
-            Update Member
+            {{ $t('members.updateMember') }}
           </button>
         </div>
-        <div class="col-sm-12 col-lg-6">
+        <div class="col-lg-6">
           <router-link
             :to="`/dashboard/members/${this.member._id}`"
             class="btn btn-block btn-danger"
-            >Cancel</router-link
+            >{{ $t('cancel') }}</router-link
           >
         </div>
       </div>
@@ -471,6 +475,7 @@ import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'MemberByIdEdit',
@@ -500,9 +505,9 @@ export default {
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Members',
+          text: i18n.t('menu.adminOnly.members'),
           link: '/dashboard/members'
         },
         {
@@ -510,7 +515,7 @@ export default {
           link: `/dashboard/members/${this.member._id}`
         },
         {
-          text: 'Edit',
+          text: i18n.t('edit'),
           link: '#'
         }
       ];
@@ -526,10 +531,10 @@ export default {
     deleteMember: async function() {
       this.$store.commit('LOADING_TRUE');
       try {
-        if (confirm('Are you sure?')) {
-          if (confirm('Are you absolutely sure?')) {
-            const res = await this.$store.dispatch('deleteMember', this.member._id);
-            this.$toasted.success(res.data[0].message);
+        if (confirm(i18n.t('confirm1'))) {
+          if (confirm(i18n.t('confirm2'))) {
+            await this.$store.dispatch('deleteMember', this.member._id);
+            this.$toasted.success(i18n.t('members.successDelete'));
             this.$router.push({ name: 'members' });
           }
         }
@@ -716,11 +721,11 @@ export default {
         billingEmail: this.member.billing.email
       };
       try {
-        const res = await this.$store.dispatch('updateMember', {
+        await this.$store.dispatch('updateMember', {
           updatedMember,
           id: this.member._id
         });
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('members.successUpdate'), { icon: 'check-circle' });
         this.$router.push({ name: 'membersById', params: { id: this.member._id } });
       } catch (err) {
         if (err.response.data[0].context) {

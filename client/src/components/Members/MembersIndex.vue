@@ -15,7 +15,7 @@
       </div>
       <div>
         <router-link to="/dashboard/members/add" class="btn btn-sm btn-info">
-          <i class="fas fa-plus mr-2"></i>Add Member
+          <i class="fas fa-plus mr-2"></i>{{ $t('members.addMember') }}
         </router-link>
       </div>
     </div>
@@ -34,7 +34,7 @@
             <td>{{ member.name }}</td>
             <td>{{ member.email }}</td>
             <td>
-              <span>{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
+              <span>{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
             </td>
           </tr>
         </tbody>
@@ -51,6 +51,8 @@
       :next-class="'page-item'"
       :next-link-class="'page-link'"
       :hide-prev-next="true"
+      :prev-text="$t('previous')"
+      :next-text="$t('next')"
       v-if="pageNumbers > 1"
     ></paginate>
   </div>
@@ -60,6 +62,7 @@
 import Paginate from 'vuejs-paginate';
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'MembersIndex',
@@ -79,9 +82,9 @@ export default {
     try {
       await this.$store.dispatch('getMembers');
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Members',
+          text: i18n.t('menu.adminOnly.members'),
           link: '#'
         }
       ];
