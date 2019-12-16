@@ -3,9 +3,9 @@
     <div class="row">
       <div class="col middle-section">
         <form novalidate>
-          <div class="row">
-            <div class="form-group col-sm-12">
-              <label for="name">Team Name</label>
+          <div class="row mb-3">
+            <div class="form-group col-12 mb-2">
+              <label for="name">{{ $t('teams.teamName') }}</label>
               <input
                 id="name"
                 type="text"
@@ -17,8 +17,8 @@
             </div>
 
             <!-- ADMIN SELECTOR -->
-            <div class="form-group col-sm-2">
-              <label for="teamId">Team ID# (ERP)</label>
+            <div class="form-group col-md-2">
+              <label for="teamId">{{ $t('teams.erpId') }}</label>
               <input
                 id="teamId"
                 type="text"
@@ -27,8 +27,8 @@
                 ref="teamId"
               />
             </div>
-            <div class="form-group col-sm-4">
-              <label for="adminId">Team Admin (ISR)</label>
+            <div class="form-group col-md-4">
+              <label for="adminId">{{ $t('teams.teamAdmin') }}</label>
               <select
                 class="form-control form-control-sm"
                 id="adminId"
@@ -41,8 +41,8 @@
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
-            <div class="form-group col-sm-6" v-if="members.length > 0">
-              <label for="managerId">Team Manager</label>
+            <div class="form-group col-md-6" v-if="members.length > 0">
+              <label for="managerId">{{ $t('teams.teamManager') }}</label>
               <vSelect
                 id="managerId"
                 v-model="chosenMember"
@@ -54,8 +54,8 @@
             </div>
           </div>
           <!-- MAIN CONTACT -->
-          <div class="section-header my-2 bg-secondary">
-            <span>Main Contact</span>
+          <div class="section-header bg-secondary">
+            <span>{{ $t('formLabels.mainContact') }}</span>
             <div class="form-check text-center">
               <input
                 type="checkbox"
@@ -66,14 +66,14 @@
                 ref="useManagerDetails"
                 :disabled="!managerId || chosenMember === null"
               />
-              <label class="form-check-label text-white" for="useManagerDetails"
-                >Use Manager's Contact Info</label
-              >
+              <small class="form-check-label text-white" for="useManagerDetails">{{
+                $t('formLabels.useManager')
+              }}</small>
             </div>
           </div>
-          <div class="row px-2">
-            <div class="form-group col-sm-3">
-              <label for="contactName">Name</label>
+          <div class="row px-2 mb-3">
+            <div class="form-group col-sm-6 col-xl-3">
+              <label for="contactName">{{ $t('formLabels.name') }}</label>
               <input
                 id="contactName"
                 type="text"
@@ -84,8 +84,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="contactCompany">Company</label>
+            <div class="form-group col-sm-6 col-xl-3">
+              <label for="contactCompany">{{ $t('formLabels.company') }}</label>
               <input
                 id="contactCompany"
                 type="text"
@@ -96,8 +96,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactEmail">Email</label>
+            <div class="form-group col-xl-6">
+              <label for="contactEmail">{{ $t('formLabels.email') }}</label>
               <input
                 id="contactEmail"
                 type="email"
@@ -108,8 +108,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress1">Address 1</label>
+            <div class="form-group col-lg-6">
+              <label for="contactAddress1">{{ $t('formLabels.address1') }}</label>
               <input
                 id="contactAddress1"
                 type="text"
@@ -120,8 +120,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactAddress2">Address 2</label>
+            <div class="form-group col-lg-6">
+              <label for="contactAddress2">{{ $t('formLabels.address2') }}</label>
               <input
                 id="contactAddress2"
                 type="text"
@@ -132,8 +132,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="contactCity">City</label>
+            <div class="form-group col-lg-6">
+              <label for="contactCity">{{ $t('formLabels.city') }}</label>
               <input
                 id="contactCity"
                 type="text"
@@ -144,8 +144,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="contactCountry">Country</label>
+            <div class="form-group col-sm-6 col-lg-3">
+              <label for="contactCountry">{{ $t('formLabels.country') }}</label>
               <country-select
                 id="contactCountry"
                 v-model="contactCountry"
@@ -155,10 +155,11 @@
                 :readonly="useManagerDetails"
                 ref="contactCountry"
                 :usei18n="false"
+                :placeholder="$t('formLabels.selectCountry')"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="contactStateProv">State/Province</label>
+            <div class="form-group col-sm-6 col-lg-3">
+              <label for="contactStateProv">{{ $t('formLabels.stateProv') }}</label>
               <region-select
                 id="contactStateProv"
                 v-model="contactStateProv"
@@ -170,11 +171,12 @@
                 :regionName="true"
                 ref="contactStateProv"
                 :usei18n="false"
+                :placeholder="$t('formLabels.selectRegion')"
               />
             </div>
 
-            <div class="form-group col-sm-6">
-              <label for="contactZipPostal">Zip/Postal Code</label>
+            <div class="form-group col-md-6">
+              <label for="contactZipPostal">{{ $t('formLabels.zipPostal') }}</label>
               <input
                 id="contactZipPostal"
                 type="text"
@@ -185,8 +187,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6" v-if="useManagerDetails">
-              <label for="contactPhone">Phone</label>
+            <div class="form-group col-md-6" v-if="useManagerDetails">
+              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
               <input
                 id="contactPhone"
                 type="text"
@@ -195,8 +197,8 @@
                 :readonly="useManagerDetails"
               />
             </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="contactPhone">Phone</label>
+            <div class="form-group col-md-6" v-else>
+              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
               <VuePhoneNumberInput
                 v-model="contactPhone"
                 id="contactPhone"
@@ -206,14 +208,15 @@
                 :clearable="true"
                 :no-use-browser-locale="true"
                 @update="copyPhone"
+                :translations="phoneTranslations"
               />
             </div>
           </div>
           <!-- BULK SHIPPING -->
-          <div class="section-header my-2 bg-secondary">
-            <span>Bulk Shipping Details</span>
-            <div class="radios">
-              <div class="form-check form-check-inline mr-4">
+          <div class="section-header bg-secondary">
+            <span class="mr-4">{{ $t('formLabels.bulkShipping') }}</span>
+            <div class="radios m-0">
+              <div class="form-check form-check-inline">
                 <input
                   class="form-check-input"
                   type="radio"
@@ -223,24 +226,24 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useAboveDetails"
-                  >Use Above Details</label
-                >
+                <small class="form-check-label text-white" for="useAboveDetails">{{
+                  $t('formLabels.useAbove')
+                }}</small>
               </div>
-              <div class="form-check form-check-inline mr-4">
+              <div class="form-check form-check-inline">
                 <input
                   class="form-check-input"
                   type="radio"
                   name="bulkUseDetails"
-                  id="useManagerDetails"
+                  id="useManagerDetails2"
                   value="manager"
                   v-model="bulkUseDetails"
                   :disabled="!managerId || chosenMember === null"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useManagerDetails"
-                  >Use Manager's Shipping Address</label
-                >
+                <small class="form-check-label text-white" for="useManagerDetails2">{{
+                  $t('formLabels.useManagerShipping')
+                }}</small>
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -252,13 +255,15 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <label class="form-check-label text-white" for="useNewDetails">Use Other</label>
+                <small class="form-check-label text-white" for="useNewDetails">{{
+                  $t('formLabels.useOther')
+                }}</small>
               </div>
             </div>
           </div>
           <div class="row px-2">
-            <div class="form-group col-sm-3">
-              <label for="shippingName">Name</label>
+            <div class="form-group col-sm-6 col-xl-3">
+              <label for="shippingName">{{ $t('formLabels.name') }}</label>
               <input
                 id="shippingName"
                 type="text"
@@ -268,8 +273,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingCompany">Company</label>
+            <div class="form-group col-sm-6 col-xl-3">
+              <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
               <input
                 id="shippingCompany"
                 type="text"
@@ -279,8 +284,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingEmail">Email</label>
+            <div class="form-group col-xl-6">
+              <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
               <input
                 id="shippingEmail"
                 type="text"
@@ -290,8 +295,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress1">Address 1</label>
+            <div class="form-group col-lg-6">
+              <label for="shippingAddress1">{{ $t('formLabels.address1') }}</label>
               <input
                 id="shippingAddress1"
                 type="text"
@@ -301,8 +306,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingAddress2">Address 2</label>
+            <div class="form-group col-lg-6">
+              <label for="shippingAddress2">{{ $t('formLabels.address2') }}</label>
               <input
                 id="shippingAddress2"
                 type="text"
@@ -312,8 +317,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6">
-              <label for="shippingCity">City</label>
+            <div class="form-group col-lg-6">
+              <label for="shippingCity">{{ $t('formLabels.city') }}</label>
               <input
                 id="shippingCity"
                 type="text"
@@ -324,8 +329,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingCountry">Country</label>
+            <div class="form-group col-sm-6 col-lg-3">
+              <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
               <country-select
                 id="shippingCountry"
                 v-model="shippingCountry"
@@ -334,10 +339,11 @@
                 @input="checkShippingCountry"
                 :readonly="bulkUseDetails !== 'other'"
                 :usei18n="false"
+                :placeholder="$t('formLabels.selectCountry')"
               />
             </div>
-            <div class="form-group col-sm-3">
-              <label for="shippingStateProv">State/Province</label>
+            <div class="form-group col-sm-6 col-lg-3">
+              <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
               <region-select
                 id="shippingStateProv"
                 v-model="shippingStateProv"
@@ -347,11 +353,12 @@
                 :regionName="true"
                 :readonly="bulkUseDetails !== 'other'"
                 :usei18n="false"
+                :placeholder="$t('formLabels.selectRegion')"
               />
             </div>
 
-            <div class="form-group col-sm-6">
-              <label for="shippingZipPostal">Zip/Postal Code</label>
+            <div class="form-group col-md-6">
+              <label for="shippingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
               <input
                 id="shippingZipPostal"
                 type="text"
@@ -361,8 +368,8 @@
                 :readonly="bulkUseDetails !== 'other'"
               />
             </div>
-            <div class="form-group col-sm-6" v-if="bulkUseDetails !== 'other'">
-              <label for="shippingPhone">Shipping Phone</label>
+            <div class="form-group col-md-6" v-if="bulkUseDetails !== 'other'">
+              <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
               <input
                 id="shippingPhone"
                 type="text"
@@ -371,8 +378,8 @@
                 readonly
               />
             </div>
-            <div class="form-group col-sm-6" v-else>
-              <label for="contactPhone">Phone</label>
+            <div class="form-group col-md-6" v-else>
+              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
               <VuePhoneNumberInput
                 v-model="shippingPhone"
                 id="shippingPhone"
@@ -380,17 +387,20 @@
                 ref="shippingPhone"
                 :clearable="true"
                 :no-use-browser-locale="true"
+                :translations="phoneTranslations"
               />
             </div>
           </div>
           <div class="row mt-4 mb-5">
             <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="addTeam">Add Team</button>
+              <button class="btn btn-block btn-info" @click.prevent="addTeam">
+                {{ $t('teams.addTeam') }}
+              </button>
             </div>
             <div class="col-sm-6">
-              <router-link to="/dashboard/teams" class="btn btn-block btn-danger"
-                >Cancel</router-link
-              >
+              <router-link to="/dashboard/teams" class="btn btn-block btn-danger">{{
+                $t('cancel')
+              }}</router-link>
             </div>
           </div>
         </form>
@@ -405,6 +415,7 @@ import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'TeamsAdd',
@@ -449,7 +460,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isLoading', 'loggedInMember', 'allMembers']),
+    ...mapGetters(['isLoading', 'loggedInMember', 'allMembers', 'phoneTranslations']),
     member: function() {
       return this.loggedInMember;
     },
@@ -466,13 +477,13 @@ export default {
       await this.$store.dispatch('getMembers');
       this.adminId = this.member._id;
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Teams',
+          text: i18n.t('menu.adminOnly.teams'),
           link: '/dashboard/teams'
         },
         {
-          text: `Add`,
+          text: i18n.t('teams.addTeam'),
           link: `#`
         }
       ];
@@ -786,8 +797,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  max-width: 900px;
-  margin: 0 auto;
+.form-group {
+  margin-top: 0.3rem;
 }
 </style>

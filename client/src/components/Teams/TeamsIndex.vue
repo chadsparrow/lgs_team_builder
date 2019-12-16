@@ -9,13 +9,13 @@
           v-if="teams.length > 0"
           class="form-control form-control-sm"
           v-model="teamSearchText"
-          placeholder="Search..."
+          :placeholder="$t('search')"
           autofocus
         />
       </div>
       <div v-if="member && member.isAdmin">
         <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
-          <i class="fas fa-plus mr-2"></i>Add Team
+          <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
         </router-link>
       </div>
     </div>
@@ -29,11 +29,11 @@
         <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
           <tbody>
             <tr>
-              <th scope="col" v-if="member && member.isAdmin">Acct#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Admin</th>
-              <th scope="col">Manager</th>
-              <th scope="col">Members</th>
+              <th scope="col" v-if="member && member.isAdmin">{{ $t('teams.account') }}</th>
+              <th scope="col">{{ $t('formLabels.name') }}</th>
+              <th scope="col">{{ $t('admin') }}</th>
+              <th scope="col">{{ $t('manager') }}</th>
+              <th scope="col">{{ $t('memberPlural') }}</th>
             </tr>
             <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
               <td scope="row" v-if="member && member.isAdmin">{{ team.teamId }}</td>
@@ -71,7 +71,7 @@
 <script>
 import Paginate from 'vuejs-paginate';
 import { mapGetters } from 'vuex';
-
+import i18n from '../../i18n';
 export default {
   name: 'TeamsIndex',
   components: {
@@ -88,9 +88,9 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Teams',
+          text: i18n.t('menu.adminOnly.teams'),
           link: '#'
         }
       ];

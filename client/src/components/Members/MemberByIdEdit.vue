@@ -501,7 +501,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getMember', 'isLoading']),
+    ...mapGetters(['getMember', 'isLoading', 'phoneTranslations']),
     member: function() {
       return this.getMember.member;
     },
@@ -509,7 +509,7 @@ export default {
       return this.getMember.teams;
     },
     translations: function() {
-      return this.$store.getters.phoneTranslations;
+      return this.phoneTranslations;
     }
   },
   created: async function() {

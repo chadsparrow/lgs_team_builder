@@ -1,5 +1,5 @@
 <template>
-  <div class="teampage" v-if="!isLoading">
+  <div class="page" v-if="!isLoading">
     <!-- TEAM INFO GRID SECTION -->
     <div class="team-info">
       <div v-if="team.name">
@@ -12,30 +12,23 @@
           :src="team.logo"
         ></avatar>
 
-        <div class="row p-1 mt-3">
-          <small class="col-sm-12 text-info">Team Name:</small>
+        <div class="row p-1 mt-2">
+          <small class="col-sm-12 text-info">{{ $t('teams.teamName') }}:</small>
           <span class="col-sm-12">{{ team.name }}</span>
         </div>
 
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Account #:</small>
+          <small class="col-sm-12 text-info">{{ $t('teams.account') }}:</small>
           <span class="col-sm-12">{{ team.teamId }}</span>
         </div>
 
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Timezone:</small>
+          <small class="col-sm-12 text-info">{{ $t('teams.teamTimezone') }}:</small>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
 
-        <div class="row p-1" v-if="team.createdAt && team.timezone">
-          <small class="col-sm-12 text-info">Team Since:</small>
-          <span class="col-sm-12">
-            {{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}
-          </span>
-        </div>
-
         <div class="row p-1" v-if="access">
-          <small class="col-sm-12 text-info">Team Admin:</small>
+          <small class="col-sm-12 text-info">{{ $t('teams.teamAdmin') }}:</small>
           <span class="col-sm-12">
             {{ team.adminId.name }}
             <br />
@@ -44,7 +37,7 @@
         </div>
 
         <div class="row p-1" v-if="team.managerId.name">
-          <small class="col-sm-12 text-info">Team Manager:</small>
+          <small class="col-sm-12 text-info">{{ $t('teams.teamManager') }}:</small>
           <span class="col-sm-12">
             {{ team.managerId.name }}
             <br />
@@ -61,45 +54,45 @@
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
         >
-          Copy Join Link
+          {{ $t('teams.copyJoinLink') }}
         </button>
       </div>
       <div v-else>
         <div class="placeholderImg"></div>
       </div>
-    </div>
 
-    <!-- MEMBER LIST SECTION -->
-    <div class="member-list">
-      <div class="row p-1" v-if="team.members.length > 0">
-        <small class="text-info col-sm-12 mb-1">
-          Member List:
-          <span class="ml-3">{{ team.members.length }}</span>
-        </small>
-        <div class="memberlist col-sm-12">
-          <ul class="list-group">
-            <li
-              class="list-group-item list-group-item-action"
-              v-for="teammember of team.members"
-              :key="teammember._id"
-              @click.prevent="loadMember(teammember._id)"
-            >
-              <div class="memberIcons">
-                <i
-                  class="fas fa-certificate text-warning mr-2"
-                  v-if="team.managerId._id === teammember._id"
-                ></i>
-                <span>{{ teammember.name }}</span>
-              </div>
-            </li>
-          </ul>
+      <!-- MEMBER LIST SECTION -->
+      <div class="member-list">
+        <div class="row p-1" v-if="team.members.length > 0">
+          <small class="text-info col-sm-12 mb-1">
+            {{ $t('teams.membersList') }}:
+            <span class="ml-3">{{ team.members.length }}</span>
+          </small>
+          <div class="memberlist col-sm-12">
+            <ul class="list-group">
+              <li
+                class="list-group-item list-group-item-action"
+                v-for="teammember of team.members"
+                :key="teammember._id"
+                @click.prevent="loadMember(teammember._id)"
+              >
+                <div class="memberIcons">
+                  <i
+                    class="fas fa-certificate text-warning mr-2"
+                    v-if="team.managerId._id === teammember._id"
+                  ></i>
+                  <span>{{ teammember.name }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="row p-1" v-else>
-        <div class="col-sm-12">
-          <small class="text-info">Member List:</small>
-          <br />
-          <span>No Members</span>
+        <div class="row p-1" v-else>
+          <div class="col-sm-12">
+            <small class="text-info">{{ $t('teams.membersList') }}:</small>
+            <br />
+            <span>{{ $t('teams.noMembers') }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -111,7 +104,7 @@
           <router-link
             :to="`/dashboard/teams/${team._id}/addmember`"
             class="btn btn-sm btn-block btn-info"
-            >Add Members</router-link
+            >{{ $t('members.addMember') }}</router-link
           >
         </div>
         <div class="col-sm-12 mt-2">
@@ -125,203 +118,217 @@
     </div>
 
     <!-- STORES SECTION -->
-    <div class="stores-section">
-      <div class="header">
-        <div>
-          <h5>Team Stores</h5>
+    <div class="main-section">
+      <div class="stores">
+        <div class="header">
+          <div>
+            <h5>{{ $t('menu.adminOnly.stores') }}</h5>
+          </div>
+          <div v-if="access">
+            <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-sm btn-info">
+              <i class="fas fa-plus mr-2"></i>{{ $t('stores.addStore') }}
+            </router-link>
+          </div>
         </div>
-        <div v-if="access">
-          <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-sm btn-info">
-            <i class="fas fa-plus mr-2"></i>Add Store
-          </router-link>
-        </div>
-      </div>
-      <div class="stores-table table-responsive" v-if="stores.length > 0">
-        <table class="table table-hover table-striped">
-          <tbody>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Brand</th>
-              <th scope="col">Opening Date</th>
-              <th scope="col">Closing Date</th>
-              <th scope="col">Mode</th>
-            </tr>
-            <tr
-              v-for="store of currentStores"
-              :key="store._id"
-              @click.prevent="loadStore(store._id)"
-            >
-              <td>{{ store.storeName }}</td>
-              <td v-if="store.brand === 'GARNEAU'">
-                <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
-              </td>
-              <td v-if="store.brand === 'SUGOI'">
-                <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
-              </td>
-              <td v-if="store.brand === 'SOMBRIO'">
-                <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
-              </td>
-              <td v-if="store.openingDate">
-                {{
-                  store.openingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
-                }}
-              </td>
-              <td v-else>No Opening Date</td>
-              <td v-if="store.closingDate">
-                {{
-                  store.closingDate | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
-                }}
-              </td>
-              <td v-else>No Closing Date</td>
-              <td
-                :class="
-                  store.mode === 'OPEN'
-                    ? 'bg-success text-white'
-                    : store.mode === 'CLOSED'
-                    ? 'bg-danger text-white'
-                    : store.mode === 'HOLD'
-                    ? 'bg-warning text-white'
-                    : null
-                "
+        <div class="table-responsive-xl" v-if="stores.length > 0">
+          <table class="table table-hover table-striped">
+            <tbody>
+              <tr>
+                <th scope="col">{{ $t('formLabels.name') }}</th>
+                <th scope="col">{{ $t('catalogs.add.brand') }}</th>
+                <th scope="col">{{ $t('stores.opening') }}</th>
+                <th scope="col">{{ $t('stores.closing') }}</th>
+                <th scope="col">{{ $t('stores.mode') }}</th>
+              </tr>
+              <tr
+                v-for="store of currentStores"
+                :key="store._id"
+                @click.prevent="loadStore(store._id)"
               >
-                {{ store.mode }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <paginate
-          v-model="currentPage"
-          :page-count="pageNumbers"
-          :container-class="'pagination pagination-sm'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-class="'page-item'"
-          :next-link-class="'page-link'"
-          :hide-prev-next="true"
-          v-if="pageNumbers > 1"
-        ></paginate>
+                <td>{{ store.storeName }}</td>
+                <td v-if="store.brand === 'GARNEAU'">
+                  <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
+                </td>
+                <td v-if="store.brand === 'SUGOI'">
+                  <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
+                </td>
+                <td v-if="store.brand === 'SOMBRIO'">
+                  <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
+                </td>
+                <td v-if="store.openingDate">
+                  {{
+                    store.openingDate
+                      | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  }}
+                </td>
+                <td v-else>{{ $t('stores.noOpening') }}</td>
+                <td v-if="store.closingDate">
+                  {{
+                    store.closingDate
+                      | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  }}
+                </td>
+                <td v-else>{{ $t('stores.noClosing') }}</td>
+                <td
+                  :class="
+                    store.mode === 'OPEN'
+                      ? 'bg-success text-white'
+                      : store.mode === 'CLOSED'
+                      ? 'bg-danger text-white'
+                      : store.mode === 'HOLD'
+                      ? 'bg-warning text-white'
+                      : null
+                  "
+                >
+                  {{ $t(`stores.${store.mode}`) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <paginate
+            v-model="currentPage"
+            :page-count="pageNumbers"
+            :container-class="'pagination pagination-sm'"
+            :page-class="'page-item'"
+            :page-link-class="'page-link'"
+            :prev-class="'page-item'"
+            :prev-link-class="'page-link'"
+            :next-class="'page-item'"
+            :next-link-class="'page-link'"
+            :hide-prev-next="true"
+            :prev-text="$t('previous')"
+            :next-text="$t('next')"
+            v-if="pageNumbers > 1"
+          ></paginate>
+        </div>
+
+        <h5 v-else>{{ $t('stores.noStores') }}</h5>
       </div>
 
-      <h5 v-else>No Stores Found</h5>
-    </div>
-
-    <!-- CONTACT BAR SECTION -->
-    <div class="contact-bar">
-      <div class="section-header bg-secondary">Main Contact</div>
-      <div class="row info-spans">
-        <div class="col-sm-12">
-          <small>Name</small>
-          <br />
-          <span>{{ team.mainContact.name }}</span>
-        </div>
-        <div class="col-sm-12" v-if="team.mainContact.company">
-          <small>Company</small>
-          <br />
-          <span>{{ team.mainContact.company }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>Email</small>
-          <br />
-          <span>{{ team.mainContact.email }}</span>
-        </div>
-        <div class="col-sm-12" v-if="member.isAdmin">
-          <small>Address 1</small>
-          <br />
-          <span>{{ team.mainContact.address1 }}</span>
-        </div>
-        <div class="col-sm-12" v-if="member.isAdmin && team.mainContact.address2">
-          <small>Address 2</small>
-          <br />
-          <span>{{ team.mainContact.address2 }}</span>
-        </div>
-        <div class="col-sm-12" v-if="member.isAdmin">
-          <small>City</small>
-          <br />
-          <span>{{ team.mainContact.city }}</span>
-        </div>
-        <div class="col-sm-12" v-if="member.isAdmin">
-          <small>State/Province</small>
-          <br />
-          <span>{{ team.mainContact.stateProv }}</span>
-        </div>
-        <div class="col-sm-6" v-if="member.isAdmin">
-          <small>Country</small>
-          <br />
-          <span>{{ team.mainContact.country }}</span>
-        </div>
-        <div class="col-sm-6" v-if="member.isAdmin">
-          <small>Zip/Postal</small>
-          <br />
-          <span>{{ team.mainContact.zipPostal }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>Phone</small>
-          <br />
-          <span>{{ team.mainContact.phone }}</span>
+      <!-- CONTACT BAR SECTION -->
+      <div class="contact-bar">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="section-header bg-secondary">{{ $t('formLabels.mainContact') }}</div>
+            <div class="row info-spans">
+              <div class="col-xl-6">
+                <small>{{ $t('formLabels.name') }}</small>
+                <br />
+                <span>{{ team.mainContact.name }}</span>
+              </div>
+              <div class="col-xl-6" v-if="team.mainContact.company">
+                <small>{{ $t('formLabels.company') }}</small>
+                <br />
+                <span>{{ team.mainContact.company }}</span>
+              </div>
+              <div class="col-12 col-xl-6">
+                <small>{{ $t('formLabels.email') }}</small>
+                <br />
+                <span>{{ team.mainContact.email }}</span>
+              </div>
+              <div class="col-12 col-xl-6" v-if="member.isAdmin">
+                <small>{{ $t('formLabels.address1') }}</small>
+                <br />
+                <span>{{ team.mainContact.address1 }}</span>
+              </div>
+              <div class="col-12 col-xl-6" v-if="member.isAdmin && team.mainContact.address2">
+                <small>{{ $t('formLabels.address2') }}</small>
+                <br />
+                <span>{{ team.mainContact.address2 }}</span>
+              </div>
+              <div class="col-lg-6" v-if="member.isAdmin">
+                <small>{{ $t('formLabels.city') }}</small>
+                <br />
+                <span>{{ team.mainContact.city }}</span>
+              </div>
+              <div class="col-lg-6" v-if="member.isAdmin">
+                <small>{{ $t('formLabels.stateProv') }}</small>
+                <br />
+                <span>{{ team.mainContact.stateProv }}</span>
+              </div>
+              <div class="col-lg-6" v-if="member.isAdmin">
+                <small>{{ $t('formLabels.country') }}</small>
+                <br />
+                <span>{{ team.mainContact.country }}</span>
+              </div>
+              <div class="col-lg-6" v-if="member.isAdmin">
+                <small>{{ $t('formLabels.zipPostal') }}</small>
+                <br />
+                <span>{{ team.mainContact.zipPostal }}</span>
+              </div>
+              <div class="col-12 col-xl-6">
+                <small>{{ $t('formLabels.phone') }}</small>
+                <br />
+                <span>{{ team.mainContact.phone }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="section-header bg-secondary">{{ $t('formLabels.bulkShipping') }}</div>
+            <div class="row info-spans">
+              <div class="col-xl-6">
+                <small>{{ $t('formLabels.name') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.name }}</span>
+              </div>
+              <div class="col-xl-6" v-if="team.bulkShipping.company">
+                <small>{{ $t('formLabels.company') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.company }}</span>
+              </div>
+              <div class="col-xl-6">
+                <small>{{ $t('formLabels.email') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.email }}</span>
+              </div>
+              <div class="col-xl-6">
+                <small>{{ $t('formLabels.address1') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.address1 }}</span>
+              </div>
+              <div class="col-xl-6" v-if="team.bulkShipping.address2">
+                <small>{{ $t('formLabels.address2') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.address2 }}</span>
+              </div>
+              <div class="col-lg-6">
+                <small>{{ $t('formLabels.city') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.city }}</span>
+              </div>
+              <div class="col-lg-6">
+                <small>{{ $t('formLabels.stateProv') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.stateProv }}</span>
+              </div>
+              <div class="col-lg-6">
+                <small>{{ $t('formLabels.country') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.country }}</span>
+              </div>
+              <div class="col-lg-6">
+                <small>{{ $t('formLabels.zipPostal') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.zipPostal }}</span>
+              </div>
+              <div class="col-xl-6">
+                <small>{{ $t('formLabels.phone') }}</small>
+                <br />
+                <span>{{ team.bulkShipping.phone }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <router-link
+              :to="`/dashboard/teams/${team._id}/edit`"
+              class="btn btn-block btn-info mt-3"
+              v-if="member.isAdmin"
+            >
+              <i class="fas fa-cog mr-3"></i>{{ $t('teams.editTeam') }}
+            </router-link>
+          </div>
         </div>
       </div>
-      <div class="section-header bg-secondary mt-2">Bulk Shipping</div>
-      <div class="row info-spans">
-        <div class="col-sm-12">
-          <small>Name</small>
-          <br />
-          <span>{{ team.bulkShipping.name }}</span>
-        </div>
-        <div class="col-sm-12" v-if="team.bulkShipping.company">
-          <small>Company</small>
-          <br />
-          <span>{{ team.bulkShipping.company }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>Email</small>
-          <br />
-          <span>{{ team.bulkShipping.email }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>Address 1</small>
-          <br />
-          <span>{{ team.bulkShipping.address1 }}</span>
-        </div>
-        <div class="col-sm-12" v-if="team.bulkShipping.address2">
-          <small>Address 2</small>
-          <br />
-          <span>{{ team.bulkShipping.address2 }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>City</small>
-          <br />
-          <span>{{ team.bulkShipping.city }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>State/Province</small>
-          <br />
-          <span>{{ team.bulkShipping.stateProv }}</span>
-        </div>
-        <div class="col-sm-6">
-          <small>Country</small>
-          <br />
-          <span>{{ team.bulkShipping.country }}</span>
-        </div>
-        <div class="col-sm-6">
-          <small>Zip/Postal</small>
-          <br />
-          <span>{{ team.bulkShipping.zipPostal }}</span>
-        </div>
-        <div class="col-sm-12">
-          <small>Phone</small>
-          <br />
-          <span>{{ team.bulkShipping.phone }}</span>
-        </div>
-      </div>
-      <router-link
-        :to="`/dashboard/teams/${team._id}/edit`"
-        class="btn btn-block btn-info mt-3"
-        v-if="member.isAdmin"
-      >
-        <i class="fas fa-cog mr-3"></i>Edit Team Details
-      </router-link>
     </div>
   </div>
 </template>
@@ -329,6 +336,7 @@
 <script>
 import Avatar from 'vue-avatar';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'TeamById',
@@ -338,7 +346,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 10
+      itemsPerPage: 5
     };
   },
   computed: {
@@ -383,9 +391,9 @@ export default {
       const res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const teamName = res.data.name;
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Teams',
+          text: i18n.t('menu.adminOnly.teams'),
           link: '/dashboard/teams'
         },
         {
@@ -404,12 +412,12 @@ export default {
   },
   methods: {
     onCopy: function() {
-      this.$toasted.success(`Join link copied to clipboard`, {
+      this.$toasted.success(i18n.t('teams.joinLink'), {
         icon: 'clipboard'
       });
     },
     onError: function() {
-      this.$toasted.error('Error copying Join link - Try Again!', { icon: 'exclamation-triangle' });
+      this.$toasted.error(i18n.t('teams.joinLinkError'), { icon: 'exclamation-triangle' });
     },
     loadMember: function(id) {
       if (this.member._id === id) {
@@ -426,9 +434,10 @@ export default {
           memberId: id
         });
         this.$store.commit('LOADING_FALSE');
+        this.$toasted.success(i18n.t('teams.removeMemberSuccess'), { icon: 'circle-check' });
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error('Cannot Remove Member', { icon: 'exclamation-triangle' });
+        this.$toasted.error(i18n.t('teams.removeMemberError'), { icon: 'exclamation-triangle' });
       }
     },
     loadStore: function(id) {
@@ -445,17 +454,17 @@ $label-color: #999999;
 $white-text: #ffffff;
 $black-text: #000000;
 
-.teampage {
+.page {
   display: grid;
-  grid-template-columns: 255px 1fr 200px;
-  grid-template-rows: 1fr 1fr 76px;
+  grid-template-columns: 200px auto;
+  grid-template-rows: auto 76px;
   width: 100%;
   height: 100%;
   grid-gap: 1rem;
+  font-size: 0.9rem;
   grid-template-areas:
-    'left-bar stores right-bar'
-    'members stores right-bar'
-    'buttons stores right-bar';
+    'left-bar main '
+    'buttons main';
 }
 
 .team-info {
@@ -469,33 +478,32 @@ $black-text: #000000;
     width: 225px;
     height: 225px;
   }
-}
 
-.member-list {
-  grid-area: members;
-  .memberlist {
-    overflow-y: auto;
-    overflow-x: hidden;
+  .member-list {
+    .memberlist {
+      overflow-y: auto;
+      overflow-x: hidden;
 
-    .list-group {
-      width: 100%;
+      .list-group {
+        width: 100%;
 
-      .list-group-item {
-        font-size: 0.9rem;
-        padding: 0.3rem 0.7rem;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        &:hover {
-          background-color: $blue-color;
-          color: $white-text;
-        }
-
-        .memberIcons {
+        .list-group-item {
+          font-size: 0.9rem;
+          padding: 0.3rem 0.7rem;
           display: flex;
-          justify-content: flex-start;
           align-items: center;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $blue-color;
+            color: $white-text;
+          }
+
+          .memberIcons {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+          }
         }
       }
     }
@@ -506,47 +514,56 @@ $black-text: #000000;
   grid-area: buttons;
 }
 
-.stores-section {
-  grid-area: stores;
+.main-section {
+  grid-area: main;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 40px 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    'stores-section'
+    'contact-bar';
+
   width: 100%;
   height: 100%;
-  grid-gap: 1rem;
-  grid-template-areas:
-    'header'
-    'stores-list';
+  overflow-y: auto;
+  overflow-x: hidden;
 
-  .header {
-    grid-area: header;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: whitesmoke;
-    border-radius: 5px;
-    padding: 0.5rem;
-    height: 40px;
-  }
-  .stores-table {
-    grid-area: stores-list;
-    overflow-y: auto;
-    overflow-x: hidden;
+  .stores {
+    grid-area: stores-section;
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 40px;
+      margin-bottom: 0.3rem;
+    }
     img {
       height: 30px;
     }
   }
-}
 
-.contact-bar {
-  grid-area: right-bar;
-  overflow-y: auto;
-  overflow-x: hidden;
+  .contact-bar {
+    grid-area: contact-bar;
+    .section-header {
+      padding: 0.5rem;
+      width: 100%;
+      border-radius: 5px;
+      color: $white-text;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 0.5rem 0;
+    }
 
-  small {
-    font-size: 0.9em;
-    color: $blue-color;
+    .info-spans {
+      span {
+        background-color: rgba(255, 255, 255, 0.6);
+        padding: 0.1rem 0.25rem;
+        border-radius: 5px;
+        display: block;
+      }
+    }
   }
-  font-size: 0.9rem;
 }
 </style>
