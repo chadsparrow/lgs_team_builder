@@ -5,12 +5,12 @@
         <Gravatar :email="member.email" default-img="mp" :size="200" />
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">{{ $t('members.memberTZ') }}:</small>
-        <span class="col-sm-12">{{ member.timezone }}</span>
+        <small class="col-12 text-info">{{ $t('members.memberTZ') }}:</small>
+        <span class="col-12">{{ member.timezone }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">{{ $t('members.memberRole') }}:</small>
-        <span class="col-sm-12">{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
+        <small class="col-12 text-info">{{ $t('members.memberRole') }}:</small>
+        <span class="col-12">{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
       </div>
       <hr />
       <small class="text-info">{{ $t('actions') }}</small>

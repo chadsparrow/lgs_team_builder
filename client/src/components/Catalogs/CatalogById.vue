@@ -2,7 +2,7 @@
   <div class="page" v-if="!isLoading">
     <div class="header">
       <div class="row text-center">
-        <div class="col-md-12 col-lg-3">
+        <div class="col-lg-3">
           <img
             src="/images/assets/garneau_logo.png"
             alt="Garneau Logo"
@@ -21,7 +21,7 @@
           <br />
           {{ currentCatalog.season }} - {{ currentCatalog.year }}
         </div>
-        <div class="col-md-12 col-lg-9 text-center my-2">
+        <div class="col-lg-9 text-center my-2">
           <div class="input-group">
             <input
               type="text"
@@ -45,9 +45,9 @@
             >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
           >
         </div>
-        <div class="col-sm-12 col-lg-6 col-xl-4">
+        <div class="col-lg-6 col-xl-4">
           <div class="row">
-            <div class="col-sm-12 col-md-6 mt-2">
+            <div class="col-md-6 mt-2">
               <router-link
                 class="btn btn-sm btn-block btn-info"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
@@ -56,7 +56,7 @@
                 <i class="fas fa-plus fa-lg mr-2"></i>Add Item
               </router-link>
             </div>
-            <div class="col-sm-12 col-md-6 mt-2">
+            <div class="col-md-6 mt-2">
               <router-link
                 class="btn btn-sm btn-block btn-info"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
@@ -77,20 +77,25 @@
         :to="`/dashboard/catalogItems/${item._id}`"
       >
         <div class="thumbnail-img" v-lazy-container="{ selector: 'img' }">
-          <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
+          <img
+            :data-src="getImgUrl(item)"
+            :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
+          />
         </div>
 
-        <div class="thumbnail-body">
+        <div class="thumbnail-body px-3">
           <div class="row">
-            <div class="col-sm-12">
-              <p>{{ item.nameEN }}</p>
+            <div class="col-12">
+              <p>{{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}</p>
             </div>
-            <div class="col-sm-12 col-lg-6 col-xl-4">
-              <small class="text-muted mr-4">PRODUCT : {{ item.productCode }}</small>
+            <div class="col-lg-6 col-xl-4">
+              <small class="text-muted mr-4"
+                >{{ $t('catalogs.product') }} : {{ item.productCode }}</small
+              >
             </div>
-            <div class="col-sm-12 col-lg-6 col-xl-4">
+            <div class="col-lg-6 col-xl-4">
               <small class="text-muted" v-if="item.productCode !== item.styleCode"
-                >STYLE : {{ item.styleCode }}</small
+                >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small
               >
             </div>
           </div>
@@ -149,7 +154,9 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          text: `${this.currentCatalog.brand} - ${i18n
+            .t(`catalogs.add.season.${this.currentCatalog.season}`)
+            .toUpperCase()} - ${this.currentCatalog.year}`,
           link: '#'
         }
       ];
@@ -177,7 +184,8 @@ export default {
 .page {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(40px 1fr) auto;
+  grid-template-rows: auto 1fr;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas:
@@ -218,7 +226,6 @@ export default {
       width: 100%;
 
       .thumbnail-img {
-        margin-right: 1rem;
         min-width: 125px;
         width: 125px;
         img {

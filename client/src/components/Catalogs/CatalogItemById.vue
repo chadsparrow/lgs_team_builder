@@ -1,7 +1,7 @@
 <template>
   <div class="page" v-if="!isLoading">
     <div class="row">
-      <div class="col-sm-12 col-lg-6 col-xl-5 image-section">
+      <div class="col-lg-6 col-xl-5 image-section my-4">
         <div class="image-box">
           <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
             <img
@@ -12,29 +12,60 @@
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-lg-6 col-xl-7 info-section">
+      <div class="col-lg-6 col-xl-7 info-section px-4">
         <div class="row">
-          <div class="col-sm-12">
-            <span class="text-muted mr-2">{{ currentCatalogItem.categories[0] }}</span>
-            <span class="text-muted mr-2">/ {{ currentCatalogItem.categories[1] }}</span>
-            <span class="text-muted mr-2" v-if="currentCatalogItem.categories[2]"
-              >/ {{ currentCatalogItem.categories[2] }}</span
+          <div class="col-12">
+            <span class="text-muted mr-2">{{
+              $i18n.locale === 'en'
+                ? currentCatalogItem.categories[0]
+                : currentCatalogItem.categoriesFR[0]
+            }}</span>
+            <span class="text-muted mr-2"
+              >/
+              {{
+                $i18n.locale === 'en'
+                  ? currentCatalogItem.categories[1]
+                  : currentCatalogItem.categoriesFR[1]
+              }}</span
             >
-            <span class="text-muted mr-2" v-if="currentCatalogItem.categories[3]"
-              >/ {{ currentCatalogItem.categories[3] }}</span
+            <span
+              class="text-muted mr-2"
+              v-if="currentCatalogItem.categories[2] || currentCatalogItem.categoriesFR[2]"
+              >/
+              {{
+                $i18n.locale === 'en'
+                  ? currentCatalogItem.categories[2]
+                  : currentCatalogItem.categoriesFR[2]
+              }}
+              }}</span
+            >
+            <span
+              class="text-muted mr-2"
+              v-if="currentCatalogItem.categories[3] || currentCatalogItem.categoriesFR[3]"
+              >/
+              {{
+                $i18n.locale === 'en'
+                  ? currentCatalogItem.categories[3]
+                  : currentCatalogItem.categoriesFR[3]
+              }}
+              }}</span
             >
           </div>
-          <div class="col-sm-12 mt-1">
-            <h1>{{ currentCatalogItem.nameEN }}</h1>
+          <div class="col-12 mt-1">
+            <h1>
+              {{ $i18n.locale === 'en' ? currentCatalogItem.nameEN : currentCatalogItem.nameFR }}
+            </h1>
           </div>
-          <div class="col-sm-12 text-info">
-            <span>{{ currentCatalogItem.productCode }}</span
+          <div class="col-12 text-info">
+            <span>{{ $t('catalogs.product') }}: {{ currentCatalogItem.productCode }}</span
             ><span v-if="currentCatalogItem.productCode !== currentCatalogItem.styleCode">
-              / {{ currentCatalogItem.styleCode }}</span
+              / {{ $t('catalogs.style') }}: {{ currentCatalogItem.styleCode }}</span
             >
           </div>
-          <div class="col-sm-12">
-            <p class="mt-3 text-muted" v-if="description[0] !== 'NA'">{{ description[0] }}</p>
+          <div class="col-12">
+            <p class="mt-3 text-muted text-justify" v-if="description[0] !== 'NA'">
+              {{ description[0] }}
+            </p>
             <ul class="bulletPoints" v-if="bulletPoints">
               <li
                 v-for="(bulletPoint, index) in bulletPoints"
@@ -45,37 +76,37 @@
               </li>
             </ul>
           </div>
-          <div class="col-sm-12">
+          <div class="col-12">
             <span class="text-info mr-2">{{ $t('formLabels.gender') }}:</span>
             <span
-              >{{ currentCatalogItem.gender }} -
+              >{{ $t(`catalogs.gender.${currentCatalogItem.gender}`) }} -
               {{
                 currentCatalogItem.gender === 'U'
                   ? `(${$t('formLabels.unisex')})`
                   : currentCatalogItem.gender === 'M'
                   ? `(${$t('formLabels.mens')})`
-                  : currentCatalogItem.gender === 'F'
+                  : currentCatalogItem.gender === 'W'
                   ? `(${$t('formLabels.womens')})`
                   : `(${$t('formLabels.junior')})`
               }}</span
             >
           </div>
-          <div class="col-sm-12 mt-2">
+          <div class="col-12 mt-2">
             <span class="text-info mr-2">{{ $t('formLabels.availableSizes') }}:</span>
             <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">{{
               size
             }}</span>
           </div>
-          <div class="col-sm-12 mt-2">
+          <div class="col-12 mt-2">
             <span class="text-info mr-2">{{ $t('formLabels.itemActive') }}:</span>
             <span>{{ currentCatalogItem.isActive ? `${$t('yes')}` : `${$t('no')}` }}</span>
           </div>
-          <div class="col-sm-12 my-4">
+          <div class="col-12 my-4">
             <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
               {{ $t('formLabels.priceBreaks') }}:
             </h4>
             <div class="row mt-2">
-              <div class="col-sm-12 col-md-6">
+              <div class="col-md-6">
                 <span class="text-info">CAD</span>
                 <ul class="list-group list-group-flush">
                   <li
@@ -159,7 +190,13 @@ export default {
   computed: {
     ...mapGetters(['isLoading', 'currentCatalog', 'currentCatalogItem']),
     description: function() {
-      const desc = this.currentCatalogItem.descriptionEN;
+      let desc = '';
+      if (i18n.locale === 'fr') {
+        desc = this.currentCatalogItem.descriptionFR;
+      } else {
+        desc = this.currentCatalogItem.descriptionEN;
+      }
+
       const descArray = desc.split('•');
       const bulletPoints = descArray.map(el => {
         el = el.replace('\n', '').trim();
@@ -211,7 +248,9 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          text: `${this.currentCatalog.brand} - ${i18n
+            .t(`catalogs.add.season.${this.currentCatalog.season}`)
+            .toUpperCase()} - ${this.currentCatalog.year}`,
           link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
@@ -234,6 +273,9 @@ export default {
   padding: 0 1rem;
 
   .image-section {
+    max-width: 500px;
+    margin: 0 auto;
+
     .image-box {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;

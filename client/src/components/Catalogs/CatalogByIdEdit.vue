@@ -1,8 +1,8 @@
 <template>
   <div class="page" v-if="!isLoading">
-    <div class="form-group">
+    <div class="form-group mt-4">
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-12">
           <label for="brand">{{ $t('catalogs.add.brand') }}</label>
           <select
             class="form-control form-control-sm"
@@ -17,7 +17,7 @@
             <option value="CONNEC" disabled>CONNEC</option>
           </select>
         </div>
-        <div class="col-sm-12 mt-2">
+        <div class="col-12 mt-2">
           <label for="season">{{ $t('catalogs.add.season.season') }}</label>
           <select
             class="form-control form-control-sm"
@@ -25,18 +25,18 @@
             v-model="currentCatalog.season"
             ref="season"
           >
-            <option value="CUSTOM">{{ $t('catalogs.add.season.custom') }}</option>
+            <option value="CUSTOM">{{ $t('catalogs.add.season.CUSTOM') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING/SUMMER">{{ $t('catalogs.add.season.springSummer') }}</option>
-            <option value="FALL/WINTER">{{ $t('catalogs.add.season.fallWinter') }}</option>
+            <option value="SPRING/SUMMER">{{ $t('catalogs.add.season.SPRING/SUMMER') }}</option>
+            <option value="FALL/WINTER">{{ $t('catalogs.add.season.FALL/WINTER') }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING">{{ $t('catalogs.add.season.spring') }}</option>
-            <option value="SUMMER">{{ $t('catalogs.add.season.summer') }}</option>
-            <option value="FALL">{{ $t('catalogs.add.season.fall') }}</option>
-            <option value="WINTER">{{ $t('catalogs.add.season.winter') }}</option>
+            <option value="SPRING">{{ $t('catalogs.add.season.SPRING') }}</option>
+            <option value="SUMMER">{{ $t('catalogs.add.season.SUMMER') }}</option>
+            <option value="FALL">{{ $t('catalogs.add.season.FALL') }}</option>
+            <option value="WINTER">{{ $t('catalogs.add.season.WINTER') }}</option>
           </select>
         </div>
-        <div class="col-sm-12 mt-2">
+        <div class="col-12 mt-2">
           <label for="year">{{ $t('catalogs.add.year') }}</label>
           <input
             type="text"
@@ -48,12 +48,12 @@
         </div>
       </div>
       <div class="row mt-2">
-        <div class="col-sm-12 col-lg-8 mt-2">
+        <div class="col-lg-8 mt-2">
           <button class="btn btn-block btn-info" @click="editCatalog">
             {{ $t('submit') }}
           </button>
         </div>
-        <div class="col-sm-12 col-lg-4 mt-2">
+        <div class="col-lg-4 mt-2">
           <router-link
             tag="a"
             class="btn btn-block btn-danger"
@@ -85,7 +85,9 @@ export default {
           link: '/dashboard/catalogs'
         },
         {
-          text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
+          text: `${this.currentCatalog.brand} - ${i18n
+            .t(`catalogs.add.season.${this.currentCatalog.season}`)
+            .toUpperCase()} - ${this.currentCatalog.year}`,
           link: `/dashboard/catalogs/${this.currentCatalog._id}`
         },
         {
