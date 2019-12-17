@@ -38,19 +38,13 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Overpass:200,300,400,700,900&display=swap');
 
-$dark-color: #111111;
-$blue-color: #17a2b8;
-$label-color: #999999;
-$white-text: #ffffff;
-$black-text: #000000;
-
 body,
 html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
-  background: black;
+  background: $black-text;
   font-size: 16px;
   scroll-behavior: smooth;
   a {
@@ -105,7 +99,7 @@ textarea {
     a {
       background-color: $blue-color !important;
       color: $white-text;
-      border: 0px solid grey;
+      border: 0px solid $label-color;
     }
   }
   .page-item {
@@ -213,7 +207,7 @@ textarea {
   margin: 0.5rem 0;
   padding: 1rem;
   label {
-    color: white;
+    color: $white-text;
   }
 }
 

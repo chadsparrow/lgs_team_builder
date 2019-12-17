@@ -211,9 +211,9 @@ export default {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      background-color: white;
+      background-color: $white-text;
       border-radius: 5px;
-      color: black;
+      color: $black-text;
       margin: 0 0 0.5rem 0;
       width: 100%;
 
@@ -237,7 +237,7 @@ export default {
 
       &:hover {
         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
-        background: whitesmoke;
+        background: $white-smoke;
       }
     }
   }

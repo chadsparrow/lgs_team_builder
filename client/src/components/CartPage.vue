@@ -264,7 +264,7 @@ export default {
     overflow-y: auto;
 
     .cart-item {
-      background-color: whitesmoke;
+      background-color: $white-smoke;
       padding: 1rem;
       border: 1px solid lightgray;
       border-radius: 5px;

@@ -101,7 +101,9 @@
     "joinLinkError": "Error copying Join Link - Try Again!",
     "removeMemberError": "Cannot remove member",
     "removeMemberSuccess" : "Member removed",
-    "editTeam": "Edit Team Details"
+    "editTeam": "Edit Team Details",
+    "showTeamInfo": "Show Team Information",
+    "hideTeamInfo": "Hide Team Information"
   },
   "stores":{
     "noStores": "No Stores found",

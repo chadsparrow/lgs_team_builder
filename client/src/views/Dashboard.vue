@@ -91,7 +91,7 @@ export default {
     'topnav'
     'content';
 
-  background-image: linear-gradient(to bottom right, white, #d6d6d6);
+  background-image: linear-gradient(to bottom right, $white-text, $background-grey);
 
   .logoutBtn {
     display: inline-block;
@@ -127,7 +127,7 @@ export default {
     'topnav'
     'content';
 
-  background-image: linear-gradient(to bottom right, white, #d6d6d6);
+  background-image: linear-gradient(to bottom right, $white-text, $background-grey);
 
   .logoutBtn {
     display: inline-block;
@@ -165,25 +165,25 @@ export default {
   }
 
   .vsm--link.vsm--link_exact-active {
-    box-shadow: 3px 0px 0px 0px #18a2b8 inset;
+    box-shadow: 3px 0px 0px 0px $blue-color inset;
   }
 
   .vsm--mobile-bg {
-    background-color: #18a2b8;
+    background-color: $blue-color;
   }
 
   .vsm--link_hover,
   .vsm--link:hover {
-    background-color: #18a2b8;
+    background-color: $blue-color;
 
     .vsm--icon {
-      background-color: #18a2b8;
+      background-color: $blue-color;
     }
   }
 }
 
 .v-sidebar-menu.vsm_collapsed .vsm--link_level-1.vsm--link_hover .vsm--icon,
 .v-sidebar-menu.vsm_collapsed .vsm--link_level-1:hover .vsm--icon {
-  background-color: #18a2b8;
+  background-color: $blue-color;
 }
 </style>

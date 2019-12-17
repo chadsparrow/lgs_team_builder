@@ -12,44 +12,9 @@
           :src="team.logo"
         ></avatar>
 
-        <div class="row p-1 mt-2">
-          <small class="col-sm-12 text-info">{{ $t('teams.teamName') }}:</small>
-          <span class="col-sm-12">{{ team.name }}</span>
-        </div>
-
-        <div class="row p-1">
-          <small class="col-sm-12 text-info">{{ $t('teams.account') }}:</small>
-          <span class="col-sm-12">{{ team.teamId }}</span>
-        </div>
-
-        <div class="row p-1">
-          <small class="col-sm-12 text-info">{{ $t('teams.teamTimezone') }}:</small>
-          <span class="col-sm-12">{{ team.timezone }}</span>
-        </div>
-
-        <div class="row p-1" v-if="access">
-          <small class="col-sm-12 text-info">{{ $t('teams.teamAdmin') }}:</small>
-          <span class="col-sm-12">
-            {{ team.adminId.name }}
-            <br />
-            {{ team.adminId.email }}
-          </span>
-        </div>
-
-        <div class="row p-1" v-if="team.managerId.name">
-          <small class="col-sm-12 text-info">{{ $t('teams.teamManager') }}:</small>
-          <span class="col-sm-12">
-            {{ team.managerId.name }}
-            <br />
-            {{ team.managerId.email }}
-            <br />
-            {{ team.managerId.phone }}
-          </span>
-        </div>
-
         <button
           type="button"
-          class="btn btn-sm btn-block btn-info mt-2"
+          class="btn btn-sm btn-block btn-info mt-3"
           v-clipboard:copy="joinLink"
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
@@ -62,7 +27,7 @@
       </div>
 
       <!-- MEMBER LIST SECTION -->
-      <div class="member-list">
+      <div class="member-list mt-3">
         <div class="row p-1" v-if="team.members.length > 0">
           <small class="text-info col-sm-12 mb-1">
             {{ $t('teams.membersList') }}:
@@ -207,7 +172,17 @@
 
       <!-- CONTACT BAR SECTION -->
       <div class="contact-bar">
-        <div class="row">
+        <div class="team-info">
+          <button
+            class="btn btn-sm btn-outline-info mb-1"
+            @click="showTeamInfo = true"
+            v-if="!showTeamInfo"
+          >
+            {{ $t('teams.showTeamInfo') }}
+          </button>
+        </div>
+
+        <div class="row" v-if="showTeamInfo">
           <div class="col-lg-6">
             <div class="section-header bg-secondary">{{ $t('formLabels.mainContact') }}</div>
             <div class="row info-spans">
@@ -318,14 +293,27 @@
               </div>
             </div>
           </div>
-          <div class="col-12">
-            <router-link
-              :to="`/dashboard/teams/${team._id}/edit`"
-              class="btn btn-block btn-info mt-3"
-              v-if="member.isAdmin"
-            >
-              <i class="fas fa-cog mr-3"></i>{{ $t('teams.editTeam') }}
-            </router-link>
+          <div class="col-12 mt-3">
+            <div class="row">
+              <div class="col-sm-6">
+                <router-link
+                  :to="`/dashboard/teams/${team._id}/edit`"
+                  class="btn btn-sm btn-block btn-info"
+                  v-if="member.isAdmin"
+                >
+                  <i class="fas fa-cog mr-3"></i>{{ $t('teams.editTeam') }}
+                </router-link>
+              </div>
+              <div class="col-sm-6">
+                <button
+                  class="btn btn-sm btn-block btn-outline-info"
+                  @click="showTeamInfo = false"
+                  v-if="showTeamInfo"
+                >
+                  {{ $t('teams.hideTeamInfo') }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -346,7 +334,8 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 5
+      itemsPerPage: 5,
+      showTeamInfo: false
     };
   },
   computed: {
@@ -448,12 +437,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dark-color: #111111;
-$blue-color: #17a2b8;
-$label-color: #999999;
-$white-text: #ffffff;
-$black-text: #000000;
-
 .page {
   display: grid;
   grid-template-columns: 200px auto;
@@ -481,11 +464,11 @@ $black-text: #000000;
 
   .member-list {
     .memberlist {
-      overflow-y: auto;
-      overflow-x: hidden;
-
       .list-group {
         width: 100%;
+        max-height: 400px;
+        overflow-x: hidden;
+        overflow-y: auto;
 
         .list-group-item {
           font-size: 0.9rem;
@@ -545,6 +528,13 @@ $black-text: #000000;
 
   .contact-bar {
     grid-area: contact-bar;
+    font-size: 0.9rem;
+
+    .team-info {
+      justify-content: space-around;
+      text-align: center;
+    }
+
     .section-header {
       padding: 0.5rem;
       width: 100%;

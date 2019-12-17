@@ -720,7 +720,7 @@ export default {
         max-width: 850px;
         margin: 0px auto;
         padding: 1rem;
-        background-color: #fff;
+        background-color: $white-text;
         border-radius: 2px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
         transition: all 0.5s ease;
@@ -803,7 +803,7 @@ export default {
           position: absolute;
           z-index: 2;
           padding: 0.5rem;
-          color: white;
+          color: $white-text;
           top: 0.5rem;
           left: 0.5rem;
           border-radius: 5px;
@@ -816,8 +816,8 @@ export default {
           right: 1rem;
           font-size: 1.75rem;
           font-weight: 200;
-          color: white;
-          text-shadow: 2px 2px 6px rgba($color: #000000, $alpha: 0.65);
+          color: $white-text;
+          text-shadow: 2px 2px 6px rgba($color: $black-text, $alpha: 0.65);
         }
       }
 

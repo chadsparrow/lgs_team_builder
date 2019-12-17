@@ -88,12 +88,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dark-color: #111111;
-$blue-color: #17a2b8;
-$label-color: #999999;
-$white-text: #ffffff;
-$black-text: #000000;
-
 .page {
   display: flex;
   height: 100vh;

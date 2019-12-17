@@ -10,7 +10,6 @@
           class="form-control form-control-sm m-0"
           v-model="memberSearchText"
           placeholder="Search..."
-          autofocus
         />
       </div>
       <div>

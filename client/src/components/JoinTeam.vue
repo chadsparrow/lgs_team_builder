@@ -725,7 +725,7 @@ export default {
 }
 
 .section-header {
-  color: white;
+  color: $white-text;
   padding: 0.5rem;
   border-radius: 4px;
 }

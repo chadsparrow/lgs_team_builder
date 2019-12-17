@@ -22,5 +22,12 @@ module.exports = {
       localeDir: 'locales',
       enableInSFC: false
     }
+  },
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: `@import "@/styles/_variables.scss";`
+      }
+    }
   }
 };

@@ -378,8 +378,6 @@ export default {
 </script>
 
 <style lang="scss">
-$blue-color: #17a2b8;
-
 .vdatetime-popup__header,
 .vdatetime-calendar__month__day--selected > span > span,
 .vdatetime-calendar__month__day--selected:hover > span > span {
