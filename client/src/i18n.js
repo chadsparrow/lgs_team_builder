@@ -24,8 +24,11 @@ function loadLocaleMessages() {
   return messages;
 }
 
+const silentTranslationWarn = process.env.NODE_ENV === 'production' ? true : false;
+
 export default new VueI18n({
   locale: localization || 'en',
   fallbackLocale: 'en',
-  messages: loadLocaleMessages()
+  messages: loadLocaleMessages(),
+  silentTranslationWarn
 });

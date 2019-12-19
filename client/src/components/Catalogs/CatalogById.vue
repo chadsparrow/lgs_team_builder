@@ -41,9 +41,9 @@
               <i class="fas fa-times"></i>
             </button>
           </div>
-          <small class="text-muted"
-            >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small
-          >
+          <small
+            class="text-muted"
+          >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small>
         </div>
         <div class="col-lg-6 col-xl-4">
           <div class="row">
@@ -77,10 +77,7 @@
         :to="`/dashboard/catalogItems/${item._id}`"
       >
         <div class="thumbnail-img" v-lazy-container="{ selector: 'img' }">
-          <img
-            :data-src="getImgUrl(item)"
-            :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
-          />
+          <img :data-src="getImgUrl(item)" :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR" />
         </div>
 
         <div class="thumbnail-body px-3">
@@ -89,14 +86,13 @@
               <p>{{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}</p>
             </div>
             <div class="col-lg-6 col-xl-4">
-              <small class="text-muted mr-4"
-                >{{ $t('catalogs.product') }} : {{ item.productCode }}</small
-              >
+              <small class="text-muted mr-4">{{ $t('catalogs.product') }} : {{ item.productCode }}</small>
             </div>
             <div class="col-lg-6 col-xl-4">
-              <small class="text-muted" v-if="item.productCode !== item.styleCode"
-                >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small
-              >
+              <small
+                class="text-muted"
+                v-if="item.productCode !== item.styleCode"
+              >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small>
             </div>
           </div>
         </div>
@@ -108,6 +104,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+
 export default {
   name: 'CatalogById',
   data() {

@@ -6,8 +6,8 @@
 
 - Make sure you have Node.js installed on your machine.
 - Clone the repository to your local machine and switch to the `develop` branch
-- Make a copy of the `.env-example` file in the root folder and title it `.env-development`
-- Fill in the following variables in the `.env-development` file:
+- Make a copy of the `.env.example` file in the root folder and title it `.env.development`
+- Fill in the following variables in the `.env.development` file:
 
   - MONGO_INITDB_ROOT_USERNAME=`set as a root admin user name (anything you like)`
   - MONGO_INITDB_ROOT_PASSWORD=`any string for a password`
@@ -21,6 +21,8 @@
   - GEOCODER_PROVIDER=`obtain geocoder API key and insert provider name here (ie. mapquest)`
   - GEOCODER_API_KEY=`insert GEOCODER API KEY from above provider here`
   - TIMEZONEDB_KEY=`obtain API from timezonedb.com and insert here`
+
+- Make a copy of the `.env.development` file in the root folder and title it `.env` so that the docker compose file will be able to use the MONGO_INITDB_ROOT_PORT & PORT variables you set
 
   - _\* request API keys from Chad Sparrow [csparrow@sugoi.com](mailto:csparrow@sugoi.com) if needed_
 
@@ -48,10 +50,10 @@ This will download the official MongoDB docker image, as well as the latest deve
 
 > Everytime you push commits to Gitlab, Gitlab reads the `.gitlab-ci.yml` file in the `root` directory and runs a CI/CD pipeline to automatically create and replace images in the project image repository found here: [Gitlab Container Registry](https://gitlab.com/garneau-dev/sugoi/team-builder/container_registry)
 >
-> - commits pushed to the `master` branch using a tag _`(git tag v1.0.0)`_ will create an image with the version tag and overwrite the `latest` image.  You can then always use the `latest` image in production, and have means to roll back to a previous tagged image when needed.
+> - commits pushed to the `master` branch using a tag _`(git tag v1.0.0)`_ will create an image with the version tag and overwrite the `latest` image. You can then always use the `latest` image in production, and have means to roll back to a previous tagged image when needed.
 > - commits pushed to `develop` branch - image is created with `develop` tag
 
-Once the docker-compose is complete you will have two docker containers running on your machine, one being the Node.js backend on the port you specified using the `PORT` env variable, and the MongoDB Database on the port you specified using the `MONDODB_INIT_ROOT_PORT` env variable. 
+Once the docker-compose is complete you will have two docker containers running on your machine, one being the Node.js backend on the port you specified using the `PORT` env variable, and the MongoDB Database on the port you specified using the `MONDODB_INIT_ROOT_PORT` env variable.
 
 A root user is created on the MongoDB container using the email/password combo you also specified in the env file above.
 
@@ -63,8 +65,10 @@ All development mongoDB data is persisted to a volume created on your system by 
   docker volume ls
 ```
 
-##### ** DO NOT USE:  _`'docker volume prune'`_ unless you have the containers running or you will lose all your development data.
+##### \*\* DO NOT USE: _`'docker volume prune'`_ unless you have the containers running or you will lose all your development data.
+
 ---
+
 > I highly recommend downloading and installing `Kitematic` to be able to view each container and its logs live without having to constantly issue docker commands to see them.
 
 > Also download and install `MongoDB Compass` for a really great and easy to use UI application to work with MongoDB. You can use the username & password specified in the env file to login.
@@ -77,8 +81,8 @@ Next, navigate to the `client` folder in terminal and issue the command:
   npm run serve
 ```
 
-This will spin up a development front-end server which is built using `Vue.js`. Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
----
+## This will spin up a development front-end server which is built using `Vue.js`. Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
+
 > Any changes made in the folder `'client/src'` will trigger the frontend to be rebuilt and automatically update live.
 
 > Any changes made in the `root` folder will trigger Node.js to restart the server (using nodemon).
@@ -91,8 +95,8 @@ When you are finished and want to close down development, simply navigate to the
   docker-compose -f docker-compose-dev.yml down --rmi all
 ```
 
-This will shut down all the containers and delete all the images related to the app, so that you force to download the most up-to-date image from the repository.  
+This will shut down all the containers and delete all the images related to the app, so that you force to download the most up-to-date image from the repository.
 
->Volumes *(persisted data)* are left behind and will stay until you prune or remove them.
+> Volumes _(persisted data)_ are left behind and will stay until you prune or remove them.
 
 If you have any troubles or questions, feel free to contact Chad Sparrow (csparrow@sugoi.com)
