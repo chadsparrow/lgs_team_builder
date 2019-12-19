@@ -10,6 +10,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+const history = require('connect-history-api-fallback');
 
 // const cors = require('cors');  // un-comment if calls will come from another domain on front-end
 // app.use(cors()); // un-comment if calls will come from another domain on front-end
@@ -37,6 +38,9 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
+
+// Set up fallback to index.html for Vue SPA
+app.use(history());
 
 // rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
