@@ -12,7 +12,7 @@
   "addTags": "Add Tag",
   "actions": "Actions",
   "yes": "Yes",
-  "no" : "No",
+  "no": "No",
   "confirm1": "Are you sure?",
   "confirm2": "Are you absolutely sure?",
   "admin": "Admin",
@@ -25,9 +25,16 @@
     "loginButton": "Login",
     "language": "Language",
     "resetPassTitle": "Forgot your username or password?",
-    "resetPass": "Reset Password" 
+    "resetPass": "Reset Password"
   },
-  "menu":{
+  "profiles": {
+    "updateGravatar": "Update Gravatar",
+    "timezone": "Timezone",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "updateEmail": "Update Email"
+  },
+  "menu": {
     "adminOnly": {
       "members": "Members",
       "catalogs": "Catalogs",
@@ -35,7 +42,7 @@
       "stores": "Stores",
       "orders": "Orders"
     },
-    "regular":{
+    "regular": {
       "teams": "My Teams",
       "stores": "My Stores",
       "orders": "My Orders"
@@ -45,7 +52,7 @@
     "logout": "Logout",
     "dashboard": "Dashboard"
   },
-  "catalogs":{
+  "catalogs": {
     "success": "Catalog Added",
     "updated": "Catalog Updated",
     "itemExists": "Product already exists",
@@ -54,7 +61,7 @@
     "style": "STYLE",
     "gender": {
       "U": "U",
-      "M" : "M",
+      "M": "M",
       "W": "W",
       "J": "J"
     },
@@ -81,7 +88,7 @@
     }
   },
   "members": {
-    "deactivate":"Deactivate Member",
+    "deactivate": "Deactivate Member",
     "successDelete": "Member Deactivated",
     "successUpdate": "Member Updated",
     "successAdd": "Member Added",
@@ -89,13 +96,14 @@
     "addMember": "Add Member",
     "removeMember": "Remove Member",
     "updateMember": "Update Member",
-    "memberSince":"Member Since",
-    "memberRole" : "Member Role",
+    "memberSince": "Member Since",
+    "memberRole": "Member Role",
     "memberTZ": "Member Timezone",
-    "memberOf":"Member of"
+    "memberOf": "Member of"
   },
   "teams": {
-    "account":"Account",
+    "account": "Account",
+    "team": "Team",
     "addTeam": "Add Team",
     "teamName": "Team Name",
     "teamTimezone": "Team Timezone",
@@ -108,14 +116,15 @@
     "joinLink": "Join Link copied to the clipboard",
     "joinLinkError": "Error copying Join Link - Try Again!",
     "removeMemberError": "Cannot remove member",
-    "removeMemberSuccess" : "Member removed",
+    "removeMemberSuccess": "Member removed",
     "editTeam": "Edit Team Details",
     "showTeamInfo": "Show Team Information",
     "hideTeamInfo": "Hide Team Information"
   },
-  "stores":{
+  "stores": {
     "noStores": "No Stores found",
     "addStore": "Add Store",
+    "order": "Order",
     "opening": "Opening Date",
     "noOpening": "No Opening Date",
     "closing": "Closing Date",
@@ -124,7 +133,10 @@
     "OPEN": "OPEN",
     "CLOSED": "CLOSED",
     "SURVEY": "SURVEY",
-    "HOLD": "HOLD"
+    "HOLD": "HOLD",
+    "totalOrders": "Total Orders",
+    "currency": "Currency",
+    "totalCollected": "Total Collected"
   },
   "formLabels": {
     "contact": "Contact Info",
@@ -144,7 +156,7 @@
     "emailAddress": "Email Address",
     "login": "Login",
     "address1": "Address1",
-    "address2":"Address2",
+    "address2": "Address2",
     "city": "City",
     "stateProv": "State/Province/Region",
     "selectRegion": "Select Region",
@@ -164,21 +176,21 @@
     "negotiable": "Negotiable",
     "one": "One Size",
     "xxs": "2XS",
-    "xs" :"XS",
+    "xs": "XS",
     "s": "S",
-    "m": "M", 
+    "m": "M",
     "l": "L",
     "xl": "XL",
     "xxl": "2XL",
-    "xxxl" : "3XL",
-    "xxxxl" : "4XL",
+    "xxxl": "3XL",
+    "xxxxl": "4XL",
     "gender": "Gender",
     "mens": "Mens",
     "womens": "Womens",
     "unisex": "Unisex",
     "junior": "Junior",
     "description": "Description",
-    "priceBreaks" : "Price Breaks",
+    "priceBreaks": "Price Breaks",
     "contactUs": "250+ Contact Us"
-   }
+  }
 }

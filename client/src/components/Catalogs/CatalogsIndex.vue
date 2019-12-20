@@ -1,54 +1,52 @@
 <template>
-  <div class="container-fluid" v-if="!isLoading">
-    <div class="row">
-      <div class="col-sm-12 mb-2">
-        <router-link to="/dashboard/catalogs/add" class="btn btn-info">
-          <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
-        </router-link>
+  <div class="page" v-if="!isLoading">
+    <div class="mb-2 header">
+      <router-link to="/dashboard/catalogs/add" class="btn btn-info">
+        <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
+      </router-link>
+    </div>
+    <div class="mb-2" v-if="currentCatalogs.length === 0">
+      <span>No Catalogs Found</span>
+    </div>
+    <div v-else>
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <tbody>
+            <tr
+              v-for="catalog of currentCatalogs"
+              :key="catalog._id"
+              @click.prevent="loadCatalog(catalog._id)"
+            >
+              <td v-if="catalog.brand === 'GARNEAU'">
+                <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
+              </td>
+              <td v-if="catalog.brand === 'SUGOI'">
+                <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
+              </td>
+              <td v-if="catalog.brand === 'SOMBRIO'">
+                <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
+              </td>
+              <td>{{ catalog.year }}</td>
+              <td>{{ catalog.season }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="col-sm-12 mb-2" v-if="currentCatalogs.length === 0">
-        <span>No Catalogs Found</span>
-      </div>
-      <div class="col-sm-12" v-else>
-        <div class="table-responsive-sm">
-          <table class="table table-hover table-striped">
-            <tbody>
-              <tr
-                v-for="catalog of currentCatalogs"
-                :key="catalog._id"
-                @click.prevent="loadCatalog(catalog._id)"
-              >
-                <td v-if="catalog.brand === 'GARNEAU'">
-                  <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
-                </td>
-                <td v-if="catalog.brand === 'SUGOI'">
-                  <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
-                </td>
-                <td v-if="catalog.brand === 'SOMBRIO'">
-                  <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
-                </td>
-                <td>{{ catalog.year }}</td>
-                <td>{{ catalog.season }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <paginate
-          v-model="currentPage"
-          :page-count="pageNumbers"
-          :container-class="'pagination pagination-sm'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-class="'page-item'"
-          :next-link-class="'page-link'"
-          :hide-prev-next="true"
-          :prev-text="previous"
-          :next-text="next"
-          v-if="pageNumbers > 1"
-        ></paginate>
-      </div>
+      <paginate
+        v-model="currentPage"
+        :page-count="pageNumbers"
+        :container-class="'pagination pagination-sm'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-class="'page-item'"
+        :next-link-class="'page-link'"
+        :hide-prev-next="true"
+        :prev-text="previous"
+        :next-text="next"
+        v-if="pageNumbers > 1"
+      ></paginate>
     </div>
   </div>
 </template>
@@ -119,7 +117,15 @@ export default {
 <style lang="scss" scoped>
 td {
   img {
-    height: 60%;
+    height: 45%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .page .header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid" v-if="!isLoading">
+  <div class="page" v-if="!isLoading">
     <div class="header mb-2">
-      <div class="form-group has-search">
+      <div class="form-group has-search m-0">
         <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
@@ -9,74 +9,75 @@
           v-if="stores.length > 0"
           class="form-control form-control-sm"
           v-model="storesSearchText"
-          placeholder="Search..."
-          autofocus
+          :placeholder="$t('search')"
         />
       </div>
     </div>
-    <h5 class="text-center" v-if="currentStores.length === 0">No Stores Found</h5>
+    <h5 class="text-center" v-if="currentStores.length === 0">{{ $t('stores.noStores') }}</h5>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
           <tr>
-            <th scope="col">Store Name</th>
-            <th scope="col">Brand</th>
-            <th scope="col">Team</th>
-            <th scope="col" v-if="access">Account #</th>
-            <th scope="col" v-if="access">Order #</th>
-            <th scope="col" v-if="access">Admin</th>
-            <th scope="col">Opening Date</th>
-            <th scope="col">Closing Date</th>
-            <th scope="col" class="text-center">Mode</th>
-            <th scope="col" v-if="access">Total Orders</th>
-            <th scope="col" v-if="access">Currency</th>
-            <th scope="col" v-if="access">Total Collected</th>
+            <th class="priority-1" scope="col">{{ $t('formLabels.name') }}</th>
+            <th class="priority-2" scope="col">{{ $t('catalogs.add.brand') }}</th>
+            <th class="priority-3" scope="col">{{ $t('teams.team') }}</th>
+            <th class="priority-4" scope="col" v-if="access">{{ $t('teams.account') }}</th>
+            <th class="priority-5" scope="col" v-if="access">{{ $t('stores.order') }}</th>
+            <th class="priority-6" scope="col" v-if="access">{{ $t('admin') }}</th>
+            <th class="priority-7" scope="col">{{ $t('stores.opening') }}</th>
+            <th class="priority-8" scope="col">{{ $t('stores.closing') }}</th>
+            <th class="text-center priority-9" scope="col">{{ $t('stores.mode') }}</th>
+            <th class="priority-10" scope="col" v-if="access">{{ $t('stores.totalOrders') }}</th>
+            <th class="priority-11" scope="col" v-if="access">{{ $t('stores.currency') }}</th>
+            <th class="priority-12" scope="col" v-if="access">{{ $t('stores.totalCollected') }}</th>
           </tr>
           <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
-            <td scope="row">{{ store.storeName }}</td>
-            <td v-if="store.brand === 'GARNEAU'">
+            <td class="priority-1" scope="row">{{ store.storeName }}</td>
+            <td class="priority-2" v-if="store.brand === 'GARNEAU'">
               <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
             </td>
-            <td v-if="store.brand === 'SUGOI'">
+            <td class="priority-2" v-if="store.brand === 'SUGOI'">
               <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
             </td>
-            <td v-if="store.brand === 'SOMBRIO'">
+            <td class="priority-2" v-if="store.brand === 'SOMBRIO'">
               <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
             </td>
-            <td>{{ store.teamId.name }}</td>
-            <td v-if="access">{{ store.teamId.teamId }}</td>
-            <td v-if="access">{{ store.refOrder }}</td>
-            <td v-if="access">{{ store.adminId.name }}</td>
-            <td v-if="store.openingDate">
+            <td class="priority-3">{{ store.teamId.name }}</td>
+            <td class="priority-4" v-if="access">{{ store.teamId.teamId }}</td>
+            <td class="priority-5" v-if="access">{{ store.refOrder }}</td>
+            <td class="priority-6" v-if="access">{{ store.adminId.name }}</td>
+            <td class="priority-7" v-if="store.openingDate">
               {{
                 store.openingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </td>
-            <td v-else>No Opening Date</td>
-            <td v-if="store.closingDate">
+            <td class="priority-7" v-else>{{ $t('stores.noOpening') }}</td>
+            <td class="priority-8" v-if="store.closingDate">
               {{
                 store.closingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
               }}
             </td>
-            <td v-else>No Closing Date</td>
+            <td class="priority-8" v-else>{{ $t('stores.noClosing') }}</td>
             <td
               :class="
                 store.mode === 'OPEN'
-                  ? 'bg-success text-white text-center'
+                  ? 'bg-success text-white text-center priority-9'
                   : store.mode === 'CLOSED'
-                  ? 'bg-danger text-white text-center'
+                  ? 'bg-danger text-white text-center priority-9'
                   : store.mode === 'HOLD'
-                  ? 'bg-warning text-white text-center'
+                  ? 'bg-warning text-white text-center priority-9'
                   : store.mode === 'SURVEY'
                   ? 'text-center'
                   : null
               "
             >
-              {{ store.mode }}
+              {{ $t(`stores.${store.mode}`) }}
             </td>
-            <td class="text-center" v-if="access">{{ store.totalOrders }}</td>
-            <td v-if="access">{{ store.currency }}</td>
-            <td class="text-center" v-if="access">{{ store.collectedAmount | currency }}</td>
+            <td class="text-center priority-10" v-if="access">{{ store.totalOrders }}</td>
+            <td class="priority-11" v-if="access">{{ store.currency }}</td>
+            <td class="text-center priority-12" v-if="access">
+              {{ store.collectedAmount | currency }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -101,6 +102,7 @@
 import Paginate from 'vuejs-paginate';
 import Vue2Filters from 'vue2-filters';
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'StoreIndex',
@@ -119,9 +121,9 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'Stores',
+          text: i18n.t('menu.adminOnly.stores'),
           link: '#'
         }
       ];
@@ -189,32 +191,174 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  .has-search .form-control {
-    padding-left: 2rem;
-    max-width: 250px;
+.page {
+  width: 100%;
+
+  .header {
+    padding: 0.25rem;
+    .has-search .form-control {
+      padding-left: 2rem;
+      max-width: 250px;
+    }
+
+    .has-search .form-control-feedback {
+      position: absolute;
+      z-index: 2;
+      display: block;
+      width: 2rem;
+      height: 2rem;
+      line-height: 2rem;
+      text-align: center;
+      pointer-events: none;
+      color: #aaa;
+    }
   }
 
-  .has-search .form-control-feedback {
-    position: absolute;
-    z-index: 2;
-    display: block;
-    width: 2rem;
-    height: 2rem;
-    line-height: 2rem;
-    text-align: center;
-    pointer-events: none;
-    color: #aaa;
+  table {
+    font-size: 0.75rem;
+
+    td {
+      img {
+        height: 45%;
+      }
+    }
   }
 }
 
-table {
-  font-size: 0.8rem;
+/* Extra Large */
+@media screen and (min-width: 993px) and (max-width: 1200px) {
+  .priority-11 {
+    display: none;
+  }
+  .priority-10 {
+    display: none;
+  }
+  .priority-6 {
+    display: none;
+  }
+  .priority-2 {
+    display: none;
+  }
+}
 
-  td {
-    img {
-      height: 45%;
+/* Large */
+@media screen and (min-width: 768px) and (max-width: 992px) {
+  .priority-12 {
+    display: none;
+  }
+  .priority-11 {
+    display: none;
+  }
+  .priority-10 {
+    display: none;
+  }
+  .priority-6 {
+    display: none;
+  }
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-2 {
+    display: none;
+  }
+}
+
+/* Medium */
+@media screen and (min-width: 576px) and (max-width: 767px) {
+  .priority-12 {
+    display: none;
+  }
+  .priority-11 {
+    display: none;
+  }
+  .priority-10 {
+    display: none;
+  }
+  .priority-6 {
+    display: none;
+  }
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
+  }
+  .priority-2 {
+    display: none;
+  }
+}
+
+/* Small */
+@media screen and (min-width: 398px) and (max-width: 575px) {
+  .priority-12 {
+    display: none;
+  }
+  .priority-11 {
+    display: none;
+  }
+  .priority-10 {
+    display: none;
+  }
+  .priority-6 {
+    display: none;
+  }
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
+  }
+  .priority-2 {
+    display: none;
+  }
+}
+
+/* Extra Small */
+@media screen and (min-width: 0px) and (max-width: 450px) {
+  .header {
+    .has-search .form-control {
+      max-width: 500px !important;
     }
+  }
+
+  .priority-12 {
+    display: none;
+  }
+  .priority-11 {
+    display: none;
+  }
+  .priority-10 {
+    display: none;
+  }
+  .priority-8 {
+    display: none;
+  }
+  .priority-7 {
+    display: none;
+  }
+  .priority-6 {
+    display: none;
+  }
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
+  }
+  .priority-2 {
+    display: none;
   }
 }
 </style>

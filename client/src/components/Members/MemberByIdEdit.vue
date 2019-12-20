@@ -10,7 +10,7 @@
       </div>
       <div class="row p-1">
         <small class="col-12 text-info">{{ $t('members.memberRole') }}:</small>
-        <span class="col-12">{{ member.isAdmin ? 'Admin' : 'Member' }}</span>
+        <span class="col-12">{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
       </div>
       <hr />
       <small class="text-info">{{ $t('actions') }}</small>
