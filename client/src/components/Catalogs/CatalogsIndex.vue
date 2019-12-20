@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid" v-if="!isLoading">
+  <div class="page" v-if="!isLoading">
     <div class="row">
-      <div class="col-sm-12 mb-2">
+      <div class="col-sm-12 mb-2 header">
         <router-link to="/dashboard/catalogs/add" class="btn btn-info">
           <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
         </router-link>
@@ -119,7 +119,15 @@ export default {
 <style lang="scss" scoped>
 td {
   img {
-    height: 60%;
+    height: 45%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .page .header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
   }
 }
 </style>

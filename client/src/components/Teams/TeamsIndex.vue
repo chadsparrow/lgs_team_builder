@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading" class="page">
     <div class="header mb-2">
-      <div class="form-group has-search">
+      <div class="form-group has-search m-0">
         <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
@@ -10,18 +10,15 @@
           class="form-control form-control-sm"
           v-model="teamSearchText"
           :placeholder="$t('search')"
-          autofocus
         />
       </div>
-      <div v-if="member && member.isAdmin">
-        <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info">
-          <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
-        </router-link>
-      </div>
+      <router-link to="/dashboard/teams/add" class="btn btn-sm btn-info addTeamBtn">
+        <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
+      </router-link>
     </div>
 
     <div class="member-list">
-      <span v-if="currentTeams.length === 0 && member && member.isAdmin">No Teams Found</span>
+      <span v-if="currentTeams.length === 0 && member.isAdmin">No Teams Found</span>
       <span v-else-if="currentTeams.length === 0"
         >No Teams Found - Contact your team manager to add you</span
       >
@@ -29,24 +26,28 @@
         <table class="table table-hover table-striped" v-if="currentTeams.length > 0">
           <tbody>
             <tr>
-              <th scope="col" v-if="member && member.isAdmin">{{ $t('teams.account') }}</th>
-              <th scope="col">{{ $t('formLabels.name') }}</th>
-              <th scope="col">{{ $t('admin') }}</th>
-              <th scope="col">{{ $t('manager') }}</th>
-              <th scope="col">{{ $t('memberPlural') }}</th>
+              <th class="priority-2" scope="col" v-if="member && member.isAdmin">
+                {{ $t('teams.account') }}
+              </th>
+              <th class="priority-1" scope="col">{{ $t('formLabels.name') }}</th>
+              <th class="priority-5" scope="col">{{ $t('admin') }}</th>
+              <th class="priority-4" scope="col">{{ $t('manager') }}</th>
+              <th class="priority-3" scope="col">{{ $t('memberPlural') }}</th>
             </tr>
             <tr v-for="team of currentTeams" :key="team._id" @click.prevent="loadTeam(team._id)">
-              <td scope="row" v-if="member && member.isAdmin">{{ team.teamId }}</td>
-              <td>{{ team.name }}</td>
-              <td>{{ team.adminId.name }}</td>
-              <td>
+              <td class="priority-2" scope="row" v-if="member && member.isAdmin">
+                {{ team.teamId }}
+              </td>
+              <td class="priority-1">{{ team.name }}</td>
+              <td class="priority-5">{{ team.adminId.name }}</td>
+              <td class="priority-4">
                 <i
                   class="fas fa-certificate text-warning mr-1"
                   v-if="member && team.managerId._id === member._id"
                 ></i>
                 {{ team.managerId.name }}
               </td>
-              <td>{{ team.members.length }}</td>
+              <td class="priority-3">{{ team.members.length }}</td>
             </tr>
           </tbody>
         </table>
@@ -163,7 +164,6 @@ export default {
     align-items: center;
     .has-search .form-control {
       padding-left: 2rem;
-      max-width: 250px;
     }
 
     .has-search .form-control-feedback {
@@ -177,6 +177,78 @@ export default {
       pointer-events: none;
       color: #aaa;
     }
+  }
+}
+
+/* Extra Large */
+@media screen and (min-width: 993px) and (max-width: 1200px) {
+  .priority-5 {
+    display: none;
+  }
+}
+
+/* Large */
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+}
+
+/* Medium */
+@media screen and (min-width: 576px) and (max-width: 768px) {
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+}
+
+/* Small */
+@media screen and (min-width: 398px) and (max-width: 575px) {
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
+  }
+}
+
+/* Extra Small */
+@media screen and (min-width: 0px) and (max-width: 397px) {
+  .page {
+    .header {
+      justify-content: center;
+      flex-direction: column-reverse;
+
+      .form-group {
+        max-width: 100%;
+        width: 100%;
+
+        .form-control {
+          width: 100%;
+        }
+      }
+      .addTeamBtn {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .priority-5 {
+    display: none;
+  }
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
   }
 }
 </style>

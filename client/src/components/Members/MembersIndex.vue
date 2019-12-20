@@ -12,14 +12,14 @@
           placeholder="Search..."
         />
       </div>
-      <div>
-        <router-link to="/dashboard/members/add" class="btn btn-sm btn-info">
+      <div v-if="loggedInMember.isAdmin">
+        <router-link to="/dashboard/members/add" class="btn btn-sm btn-info addMemberBtn">
           <i class="fas fa-plus mr-2"></i>{{ $t('members.addMember') }}
         </router-link>
       </div>
     </div>
     <span v-if="allMembers.length === 0">No Members Found</span>
-    <div class="table-responsive-sm" v-else>
+    <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
           <tr
@@ -27,12 +27,12 @@
             :key="member._id"
             @click.prevent="loadMember(member._id)"
           >
-            <td>
+            <td class="priority-1">
               <Gravatar :email="member.email" default-img="mp" :size="24" />
             </td>
-            <td>{{ member.name }}</td>
-            <td>{{ member.email }}</td>
-            <td>
+            <td class="priority-2">{{ member.name }}</td>
+            <td class="priority-3">{{ member.email }}</td>
+            <td class="priority-4">
               <span>{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
             </td>
           </tr>
@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['allMembers', 'isLoading']),
+    ...mapGetters(['allMembers', 'isLoading', 'loggedInMember']),
     filteredMembers: function() {
       return this.allMembers.filter(member => {
         if (
@@ -149,7 +149,6 @@ export default {
 
     .has-search .form-control {
       padding-left: 2rem;
-      max-width: 250px;
     }
 
     .has-search .form-control-feedback {
@@ -163,6 +162,55 @@ export default {
       pointer-events: none;
       color: #aaa;
     }
+  }
+}
+
+/* Large */
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .priority-4 {
+    display: none;
+  }
+}
+
+/* Medium */
+@media screen and (min-width: 576px) and (max-width: 768px) {
+  .priority-4 {
+    display: none;
+  }
+}
+
+/* Small */
+@media screen and (min-width: 398px) and (max-width: 575px) {
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
+  }
+}
+
+/* Extra Small */
+@media screen and (min-width: 0px) and (max-width: 397px) {
+  .page {
+    .header {
+      justify-content: center;
+      flex-direction: column-reverse;
+
+      .form-group {
+        max-width: 100%;
+        width: 100%;
+      }
+      .addMemberBtn {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .priority-4 {
+    display: none;
+  }
+  .priority-3 {
+    display: none;
   }
 }
 </style>
