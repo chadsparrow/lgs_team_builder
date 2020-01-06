@@ -1,51 +1,55 @@
 <template>
-  <form>
-    <div class="row">
-      <div class="form-group col-sm-12">
-        <label for="oldPassword">Old Password</label>
-        <input
-          id="oldPassword"
-          type="password"
-          class="form-control form-control-sm"
-          v-model="oldPassword"
-          ref="oldPassword"
-          autofocus
-        />
+  <div class="page">
+    <form>
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <label for="oldPassword">{{$t('profiles.oldPassword')}}</label>
+          <input
+            id="oldPassword"
+            type="password"
+            class="form-control form-control-sm"
+            v-model="oldPassword"
+            ref="oldPassword"
+            autofocus
+          />
+        </div>
+        <div class="form-group col-sm-12">
+          <label for="newpassword">{{$t('profiles.newPassword')}}</label>
+          <input
+            id="newPassword"
+            type="password"
+            class="form-control form-control-sm"
+            v-model="newPassword"
+            ref="newPassword"
+          />
+        </div>
+        <div class="form-group col-sm-12 mb-4">
+          <label for="confirmPassword">{{$t('profiles.confirmPassword')}}</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            class="form-control form-control-sm"
+            v-model="confirmPassword"
+            ref="confirmPassword"
+          />
+        </div>
+        <div class="col sm-6">
+          <button
+            class="btn btn-block btn-info"
+            @click.prevent="changePassword"
+          >{{$t('profiles.changePassword')}}</button>
+        </div>
+        <div class="col sm-6">
+          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{$t('cancel')}}</router-link>
+        </div>
       </div>
-      <div class="form-group col-sm-12">
-        <label for="newpassword">New Password</label>
-        <input
-          id="newPassword"
-          type="password"
-          class="form-control form-control-sm"
-          v-model="newPassword"
-          ref="newPassword"
-        />
-      </div>
-      <div class="form-group col-sm-12 mb-4">
-        <label for="confirmPassword">Confirm New Password</label>
-        <input
-          id="confirmPassword"
-          type="password"
-          class="form-control form-control-sm"
-          v-model="confirmPassword"
-          ref="confirmPassword"
-        />
-      </div>
-      <div class="col sm-6">
-        <button class="btn btn-block btn-info" @click.prevent="changePassword">
-          Change Password
-        </button>
-      </div>
-      <div class="col sm-6">
-        <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'ProfilesPassword',
@@ -63,13 +67,13 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'My Profile',
+          text: i18n.t('profiles.myProfile'),
           link: '/dashboard/profile'
         },
         {
-          text: 'Change Password',
+          text: i18n.t('profiles.changePassword'),
           link: '#'
         }
       ];
@@ -83,7 +87,7 @@ export default {
   methods: {
     changePassword: async function() {
       if (this.newPassword === this.oldPassword) {
-        this.$toasted.error('New Password should be different from Old Password.', {
+        this.$toasted.error(i18n.t('profiles.newPasswordError'), {
           icon: 'exclamation-triangle'
         });
         this.newPassword = '';
@@ -104,7 +108,7 @@ export default {
         });
         this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'profile' });
-        this.$toasted.success('Password Updated', { icon: 'lock' });
+        this.$toasted.success(i18n.t('profiles.passwordUpdated'), { icon: 'lock' });
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
@@ -119,7 +123,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  width: 600px;
+.page {
+  display: flex;
+  justify-content: center;
+  form {
+    max-width: 600px;
+    margin-top: 2rem;
+  }
 }
 </style>

@@ -43,7 +43,12 @@
     "confirmNewEmail": "Confirm New Email",
     "currentEmail": "Current Email",
     "emailExistsError": "New Email should be different from current email",
-    "newEmailSuccess": "Email has been updated"
+    "newEmailSuccess": "Email has been updated",
+    "oldPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "newPasswordError": "New password should be different from current password",
+    "passwordUpdated": "Password updated"
   },
   "menu": {
     "adminOnly": {
