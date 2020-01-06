@@ -37,7 +37,13 @@
     "changes": "Changes to your profile will only update shipping details for orders that have not yet been processed, or for stores that are currently open.",
     "shippingInfo": "Your shipping information will stay the same for already processed orders or for stores that are already closed.",
     "updateProfile": "Update Profile",
-    "myProfile": "My Profile"
+    "myProfile": "My Profile",
+    "newEmailTag": "Entered email will become your new login",
+    "newEmail": "New Email",
+    "confirmNewEmail": "Confirm New Email",
+    "currentEmail": "Current Email",
+    "emailExistsError": "New Email should be different from current email",
+    "newEmailSuccess": "Email has been updated"
   },
   "menu": {
     "adminOnly": {

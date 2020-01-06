@@ -1,53 +1,57 @@
 <template>
-  <form>
-    <p>Your new email address will become your username when logging in.</p>
-    <div class="row">
-      <div class="form-group col-sm-12">
-        <label for="currentEmail">Current Email</label>
-        <input
-          id="currentEmail"
-          type="email"
-          class="form-control form-control-sm"
-          v-model="loggedInMember.email"
-          ref="currentEmail"
-          readonly
-        />
+  <div class="page">
+    <form>
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <label for="currentEmail">{{$t('profiles.currentEmail')}}</label>
+          <input
+            id="currentEmail"
+            type="email"
+            class="form-control form-control-sm"
+            v-model="loggedInMember.email"
+            ref="currentEmail"
+            readonly
+          />
+        </div>
+        <div class="form-group col-sm-12">
+          <label for="newEmail">{{$t('profiles.newEmail')}}</label>
+          <input
+            id="newEmail"
+            type="email"
+            class="form-control form-control-sm"
+            v-model="newEmail"
+            ref="newEmail"
+            autofocus
+          />
+          <small class="text-muted">{{$t('profiles.newEmailTag')}}</small>
+        </div>
+        <div class="form-group col-sm-12 mb-4">
+          <label for="confirmEmail">{{$t('profiles.confirmNewEmail')}}</label>
+          <input
+            id="confirmEmail"
+            type="email"
+            class="form-control form-control-sm"
+            v-model="confirmEmail"
+            ref="confirmEmail"
+          />
+        </div>
+        <div class="col sm-6">
+          <button
+            class="btn btn-block btn-info"
+            @click.prevent="updateEmail"
+          >{{$t('profiles.updateEmail')}}</button>
+        </div>
+        <div class="col sm-6">
+          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{$t('cancel')}}</router-link>
+        </div>
       </div>
-      <div class="form-group col-sm-12">
-        <label for="newEmail">New Email</label>
-        <input
-          id="newEmail"
-          type="email"
-          class="form-control form-control-sm"
-          v-model="newEmail"
-          ref="newEmail"
-          autofocus
-        />
-      </div>
-      <div class="form-group col-sm-12 mb-4">
-        <label for="confirmEmail">Confirm New Email</label>
-        <input
-          id="confirmEmail"
-          type="email"
-          class="form-control form-control-sm"
-          v-model="confirmEmail"
-          ref="confirmEmail"
-        />
-      </div>
-      <div class="col sm-6">
-        <button class="btn btn-block btn-info" @click.prevent="updateEmail">
-          Update Email Address
-        </button>
-      </div>
-      <div class="col sm-6">
-        <router-link to="/dashboard/profile" class="btn btn-block btn-danger">Cancel</router-link>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import i18n from '../../i18n';
 
 export default {
   name: 'ProfilesEmail',
@@ -63,13 +67,13 @@ export default {
   created: async function() {
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
+        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
-          text: 'My Profile',
+          text: i18n.t('profiles.myProfile'),
           link: '/dashboard/profile'
         },
         {
-          text: 'Update Email',
+          text: i18n.t('profiles.updateEmail'),
           link: '#'
         }
       ];
@@ -81,7 +85,7 @@ export default {
   methods: {
     updateEmail: async function() {
       if (this.newEmail === this.loggedInMember.email) {
-        this.$toasted.error('New Email should be different from current Email.', {
+        this.$toasted.error(i18n.t('profiles.emailExistsError'), {
           icon: 'exclamation-triangle'
         });
         this.newEmail = '';
@@ -102,7 +106,7 @@ export default {
         });
 
         this.$router.push({ name: 'profile' });
-        this.$toasted.success(res.data[0].message, { icon: 'envelope' });
+        this.$toasted.success(i18n.t('profiles.newEmailSuccess'), { icon: 'envelope' });
       } catch (err) {
         this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
         this.newEmail = '';
@@ -115,7 +119,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-form {
-  width: 600px;
+.page {
+  display: flex;
+  justify-content: center;
+  form {
+    max-width: 600px;
+    margin-top: 2rem;
+  }
 }
 </style>
