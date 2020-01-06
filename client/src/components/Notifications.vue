@@ -12,7 +12,7 @@
       <li
         class="list-group-item list-group-item-action list-group-item-empty"
         v-if="notifications.length === 0"
-      >You have no notifications</li>
+      >{{$t('notifications.none')}}</li>
       <li
         class="list-group-item list-group-item-action"
         v-for="notification of notifications"

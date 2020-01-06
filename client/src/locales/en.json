@@ -32,7 +32,12 @@
     "timezone": "Timezone",
     "editProfile": "Edit Profile",
     "changePassword": "Change Password",
-    "updateEmail": "Update Email"
+    "updateEmail": "Update Email",
+    "importantNotice": "Important Notice",
+    "changes": "Changes to your profile will only update shipping details for orders that have not yet been processed, or for stores that are currently open.",
+    "shippingInfo": "Your shipping information will stay the same for already processed orders or for stores that are already closed.",
+    "updateProfile": "Update Profile",
+    "myProfile": "My Profile"
   },
   "menu": {
     "adminOnly": {
@@ -192,5 +197,8 @@
     "description": "Description",
     "priceBreaks": "Price Breaks",
     "contactUs": "250+ Contact Us"
+  },
+  "notifications": {
+    "none": "You have no notifications"
   }
 }
