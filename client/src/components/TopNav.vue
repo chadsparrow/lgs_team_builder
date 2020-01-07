@@ -35,43 +35,14 @@ export default {
 #topNav {
   grid-area: topnav;
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
-
-  .breadCrumbs {
-    display: none;
-  }
 
   .navBar {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-
-    .navItem {
-      display: flex;
-      align-items: center;
-
-      img {
-        border-radius: 0.25rem;
-      }
-
-      button {
-        display: flex;
-        align-items: center;
-      }
-    }
-  }
-}
-
-@media (min-width: 768px) {
-  #topNav {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    .breadCrumbs {
-      display: block;
-    }
   }
 }
 </style>

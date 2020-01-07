@@ -94,6 +94,15 @@ export default {
 .navItem {
   position: relative;
 
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    line-height: 32px;
+    padding: 0.4rem;
+  }
+
   .notificationsList {
     z-index: 999999;
     width: 300px;

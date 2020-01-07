@@ -3,9 +3,10 @@
     <div class="navItem">
       <button class="btn btn-info" @click="openCart">
         <i class="fas fa-shopping-cart fa-lg"></i>
-        <span class="badge badge-danger ml-2" v-if="currentCart && currentCart.items.length > 0">
-          {{ currentCart.items.length }}
-        </span>
+        <span
+          class="badge badge-danger ml-2"
+          v-if="currentCart && currentCart.items.length > 0"
+        >{{ currentCart.items.length }}</span>
       </button>
     </div>
   </div>

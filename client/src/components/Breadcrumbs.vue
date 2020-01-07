@@ -3,9 +3,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item" v-for="breadcrumb of breadcrumbs" :key="breadcrumb.text">
-          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">
-            {{ breadcrumb.text }}
-          </router-link>
+          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">{{ breadcrumb.text }}</router-link>
         </li>
       </ol>
     </nav>
@@ -24,8 +22,17 @@ export default {
 
 <style lang="scss">
 .breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 1rem;
   background-color: none !important;
   padding: 0px 15px !important;
+  font-size: 0.6rem;
+
+  .breadcrumb-item {
+    .btn {
+      font-size: 0.7rem;
+    }
+  }
 }
 </style>
