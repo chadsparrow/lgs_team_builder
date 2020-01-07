@@ -462,7 +462,6 @@ export default {
       }
 
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Teams',
           link: '/dashboard/teams'

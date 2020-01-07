@@ -343,7 +343,6 @@ export default {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Catalogs',
           link: '/dashboard/catalogs'

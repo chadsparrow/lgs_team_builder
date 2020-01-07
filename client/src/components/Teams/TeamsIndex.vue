@@ -89,7 +89,6 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('menu.adminOnly.teams'),
           link: '#'

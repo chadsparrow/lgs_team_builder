@@ -303,7 +303,6 @@ export default {
       await this.$store.dispatch('getStore', this.$route.params.id);
       await this.$store.dispatch('getTeam', this.store.teamId._id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Stores',
           link: '/dashboard/stores'

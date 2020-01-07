@@ -243,7 +243,6 @@ export default {
     try {
       await this.$store.dispatch('getMemberDetails', this.$route.params.id);
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('menu.adminOnly.members'),
           link: '/dashboard/members'

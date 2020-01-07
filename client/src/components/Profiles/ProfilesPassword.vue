@@ -3,7 +3,7 @@
     <form>
       <div class="row">
         <div class="form-group col-sm-12">
-          <label for="oldPassword">{{$t('profiles.oldPassword')}}</label>
+          <label for="oldPassword">{{ $t('profiles.oldPassword') }}</label>
           <input
             id="oldPassword"
             type="password"
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="form-group col-sm-12">
-          <label for="newpassword">{{$t('profiles.newPassword')}}</label>
+          <label for="newpassword">{{ $t('profiles.newPassword') }}</label>
           <input
             id="newPassword"
             type="password"
@@ -24,7 +24,7 @@
           />
         </div>
         <div class="form-group col-sm-12 mb-4">
-          <label for="confirmPassword">{{$t('profiles.confirmPassword')}}</label>
+          <label for="confirmPassword">{{ $t('profiles.confirmPassword') }}</label>
           <input
             id="confirmPassword"
             type="password"
@@ -34,13 +34,14 @@
           />
         </div>
         <div class="col sm-6">
-          <button
-            class="btn btn-block btn-info"
-            @click.prevent="changePassword"
-          >{{$t('profiles.changePassword')}}</button>
+          <button class="btn btn-block btn-info" @click.prevent="changePassword">
+            {{ $t('profiles.changePassword') }}
+          </button>
         </div>
         <div class="col sm-6">
-          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{$t('cancel')}}</router-link>
+          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{
+            $t('cancel')
+          }}</router-link>
         </div>
       </div>
     </form>
@@ -67,7 +68,6 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('profiles.myProfile'),
           link: '/dashboard/profile'

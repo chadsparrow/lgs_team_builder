@@ -77,7 +77,6 @@ export default {
     this.$store.commit('LOADING_TRUE');
     try {
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Orders',
           link: '#'

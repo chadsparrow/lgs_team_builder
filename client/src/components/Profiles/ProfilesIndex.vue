@@ -245,7 +245,6 @@ export default {
       const res = await this.$store.dispatch('getMemberDetails', this.loggedInMember._id);
       this.memberDetails = res.data.member;
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'My Profile',
           link: '#'

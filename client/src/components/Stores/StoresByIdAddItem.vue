@@ -374,7 +374,6 @@ export default {
     try {
       await this.$store.dispatch('getStore', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Stores',
           link: '/dashboard/stores'

@@ -380,7 +380,6 @@ export default {
       const res = await this.$store.dispatch('getTeam', this.$route.params.id);
       const teamName = res.data.name;
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('menu.adminOnly.teams'),
           link: '/dashboard/teams'

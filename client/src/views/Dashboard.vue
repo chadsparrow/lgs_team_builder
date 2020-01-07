@@ -8,7 +8,9 @@
       :collapsed="sideCollapsed"
     >
       <div slot="header" class="tbLogo">
-        <img src="/images/assets/tb_logo_white.svg" alt="Team Builder logo" />
+        <a href="/dashboard/index"
+          ><img src="/images/assets/tb_logo_white.svg" alt="Team Builder logo"
+        /></a>
       </div>
       <span slot="toggle-icon">
         <i class="fas fa-angle-right" v-if="sideCollapsed"></i>

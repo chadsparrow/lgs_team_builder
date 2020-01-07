@@ -3,7 +3,7 @@
     <form>
       <div class="row">
         <div class="form-group col-sm-12">
-          <label for="currentEmail">{{$t('profiles.currentEmail')}}</label>
+          <label for="currentEmail">{{ $t('profiles.currentEmail') }}</label>
           <input
             id="currentEmail"
             type="email"
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="form-group col-sm-12">
-          <label for="newEmail">{{$t('profiles.newEmail')}}</label>
+          <label for="newEmail">{{ $t('profiles.newEmail') }}</label>
           <input
             id="newEmail"
             type="email"
@@ -23,10 +23,10 @@
             ref="newEmail"
             autofocus
           />
-          <small class="text-muted">{{$t('profiles.newEmailTag')}}</small>
+          <small class="text-muted">{{ $t('profiles.newEmailTag') }}</small>
         </div>
         <div class="form-group col-sm-12 mb-4">
-          <label for="confirmEmail">{{$t('profiles.confirmNewEmail')}}</label>
+          <label for="confirmEmail">{{ $t('profiles.confirmNewEmail') }}</label>
           <input
             id="confirmEmail"
             type="email"
@@ -36,13 +36,14 @@
           />
         </div>
         <div class="col sm-6">
-          <button
-            class="btn btn-block btn-info"
-            @click.prevent="updateEmail"
-          >{{$t('profiles.updateEmail')}}</button>
+          <button class="btn btn-block btn-info" @click.prevent="updateEmail">
+            {{ $t('profiles.updateEmail') }}
+          </button>
         </div>
         <div class="col sm-6">
-          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{$t('cancel')}}</router-link>
+          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{
+            $t('cancel')
+          }}</router-link>
         </div>
       </div>
     </form>
@@ -67,7 +68,6 @@ export default {
   created: async function() {
     try {
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('profiles.myProfile'),
           link: '/dashboard/profile'

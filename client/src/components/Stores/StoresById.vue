@@ -390,7 +390,6 @@ export default {
       this.polling = setInterval(this.getNow, 1000);
       await this.$store.dispatch('getStore', this.$route.params.id);
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Stores',
           link: '/dashboard/stores'

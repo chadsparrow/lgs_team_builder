@@ -477,7 +477,6 @@ export default {
       await this.$store.dispatch('getMembers');
       this.adminId = this.member._id;
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('menu.adminOnly.teams'),
           link: '/dashboard/teams'

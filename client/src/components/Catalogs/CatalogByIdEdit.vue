@@ -79,7 +79,6 @@ export default {
     try {
       await this.$store.dispatch('getCatalog', this.$route.params.id);
       const breadcrumbs = [
-        { text: i18n.t('menu.dashboard'), link: '/dashboard/index' },
         {
           text: i18n.t('menu.adminOnly.catalogs'),
           link: '/dashboard/catalogs'

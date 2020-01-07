@@ -86,7 +86,6 @@ export default {
       this.manager = managerId;
       this.teamMembers = members;
       const breadcrumbs = [
-        { text: 'Dashboard', link: '/dashboard/index' },
         {
           text: 'Teams',
           link: '/dashboard/teams'

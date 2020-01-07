@@ -173,6 +173,11 @@ export default {
       if (isAdmin) {
         state.menu = [
           {
+            href: { path: '/dashboard/index' },
+            title: i18n.t('menu.dashboard'),
+            icon: 'fas fa-columns'
+          },
+          {
             href: { path: '/dashboard/members' },
             title: i18n.t('menu.adminOnly.members'),
             icon: 'fas fa-user'
