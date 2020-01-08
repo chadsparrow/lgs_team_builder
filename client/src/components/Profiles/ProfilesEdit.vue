@@ -139,7 +139,6 @@
               :preferred-countries="['US', 'CA']"
               ref="phone"
               :clearable="true"
-              :no-use-browser-locale="false"
               @update="copyPhone"
             />
           </div>
@@ -291,7 +290,6 @@
               :preferred-countries="['US', 'CA']"
               ref="billingPhone"
               :clearable="true"
-              :no-use-browser-locale="false"
             />
           </div>
         </div>
@@ -446,7 +444,6 @@
               :preferred-countries="['US', 'CA']"
               ref="shippingPhone"
               :clearable="true"
-              :no-use-browser-locale="false"
             />
           </div>
         </div>

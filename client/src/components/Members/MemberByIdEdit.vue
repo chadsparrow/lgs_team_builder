@@ -18,9 +18,7 @@
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
-      >
-        {{ $t('members.deactivate') }}
-      </button>
+      >{{ $t('members.deactivate') }}</button>
     </div>
 
     <!-- CONTACT SECTION -->
@@ -147,7 +145,6 @@
             :preferred-countries="['US', 'CA']"
             ref="phone"
             :clearable="true"
-            :no-use-browser-locale="true"
             @update="copyPhone"
             :translations="translations"
           />
@@ -167,9 +164,11 @@
               ref="billingSame"
               @change="copyContacttoBilling"
             />
-            <small class="form-check-label text-white" for="billingSame">{{
+            <small class="form-check-label text-white" for="billingSame">
+              {{
               $t('formLabels.useContact')
-            }}</small>
+              }}
+            </small>
           </div>
         </div>
       </div>
@@ -301,7 +300,6 @@
             :default-country-code="member.billing.country || null"
             :preferred-countries="['US', 'CA']"
             ref="billingPhone"
-            :no-use-browser-locale="true"
             :clearable="true"
             :translations="translations"
           />
@@ -321,9 +319,11 @@
               ref="shippingSame"
               @change="copyContacttoShipping"
             />
-            <small class="form-check-small text-white" for="shippingSame">{{
+            <small class="form-check-small text-white" for="shippingSame">
+              {{
               $t('formLabels.useContact')
-            }}</small>
+              }}
+            </small>
           </div>
         </div>
       </div>
@@ -455,7 +455,6 @@
             :default-country-code="member.shipping.country || null"
             :preferred-countries="['US', 'CA']"
             ref="shippingPhone"
-            :no-use-browser-locale="true"
             :clearable="true"
             :translations="translations"
           />
@@ -463,16 +462,16 @@
       </div>
       <div class="row mt-4">
         <div class="col-lg-6">
-          <button class="btn btn-block btn-info" @click.prevent="updateMember">
-            {{ $t('members.updateMember') }}
-          </button>
+          <button
+            class="btn btn-block btn-info"
+            @click.prevent="updateMember"
+          >{{ $t('members.updateMember') }}</button>
         </div>
         <div class="col-lg-6">
           <router-link
             :to="`/dashboard/members/${this.member._id}`"
             class="btn btn-block btn-danger"
-            >{{ $t('cancel') }}</router-link
-          >
+          >{{ $t('cancel') }}</router-link>
         </div>
       </div>
     </div>

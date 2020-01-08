@@ -217,6 +217,11 @@ export default {
       } else {
         state.menu = [
           {
+            href: { path: '/dashboard/index' },
+            title: i18n.t('menu.dashboard'),
+            icon: 'fas fa-columns'
+          },
+          {
             href: { path: '/dashboard/teams' },
             title: i18n.t('menu.regular.teams'),
             icon: 'fas fa-users'

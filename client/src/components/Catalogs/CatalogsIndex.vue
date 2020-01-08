@@ -1,3 +1,5 @@
+// i18n finished // responsiveness finished
+
 <template>
   <div class="page" v-if="!isLoading">
     <div class="mb-2 header">

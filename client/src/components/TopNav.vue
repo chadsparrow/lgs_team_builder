@@ -2,7 +2,7 @@
   <div id="topNav">
     <Breadcrumbs class="breadCrumbs" />
     <div class="navBar">
-      <Notifications />
+      <!-- <Notifications /> -->
       <CartButton class="ml-2" v-if="member && !member.isAdmin && showCart" />
     </div>
   </div>

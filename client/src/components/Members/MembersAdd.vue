@@ -2,9 +2,7 @@
   <div class="container-fluid middle-section">
     <div class="row">
       <div class="form-group col mb-3">
-        <label for="email"
-          >{{ $t('formLabels.emailAddress') }} / {{ $t('formLabels.login') }}
-        </label>
+        <label for="email">{{ $t('formLabels.emailAddress') }} / {{ $t('formLabels.login') }}</label>
         <input
           id="email"
           type="text"
@@ -143,9 +141,11 @@
               @change="copyMembertoBilling"
               ref="billingSame"
             />
-            <small class="form-check-label text-white" for="billingSame">{{
+            <small class="form-check-label text-white" for="billingSame">
+              {{
               $t('formLabels.useContact')
-            }}</small>
+              }}
+            </small>
           </div>
         </div>
         <div class="row">
@@ -316,9 +316,11 @@
               @change="copyMemberToShipping"
               ref="shippingSame"
             />
-            <small class="form-check-label text-white" for="shippingSame">{{
+            <small class="form-check-label text-white" for="shippingSame">
+              {{
               $t('formLabels.useContact')
-            }}</small>
+              }}
+            </small>
           </div>
         </div>
         <div class="row">
@@ -469,7 +471,6 @@
               :preferred-countries="['US', 'CA']"
               ref="shippingPhone"
               :clearable="true"
-              :no-use-browser-locale="true"
               v-else
               :translations="translations"
             />
@@ -480,14 +481,16 @@
         <div class="row">
           <div class="col-lg-8">
             <button class="btn btn-block btn-info mb-2" @click.prevent="addMember">
-              <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i
-              >{{ $t('members.addMember') }}
+              <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i>
+              {{ $t('members.addMember') }}
             </button>
           </div>
           <div class="col-lg-4">
-            <router-link to="/dashboard/members/" class="btn btn-block btn-danger">{{
+            <router-link to="/dashboard/members/" class="btn btn-block btn-danger">
+              {{
               $t('cancel')
-            }}</router-link>
+              }}
+            </router-link>
           </div>
         </div>
       </div>
