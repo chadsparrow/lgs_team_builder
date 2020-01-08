@@ -18,9 +18,7 @@
           v-clipboard:copy="joinLink"
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
-        >
-          {{ $t('teams.copyJoinLink') }}
-        </button>
+        >{{ $t('teams.copyJoinLink') }}</button>
       </div>
       <div v-else>
         <div class="placeholderImg"></div>
@@ -69,15 +67,13 @@
           <router-link
             :to="`/dashboard/teams/${team._id}/addmember`"
             class="btn btn-sm btn-block btn-info"
-            >{{ $t('members.addMember') }}</router-link
-          >
+          >{{ $t('members.addMember') }}</router-link>
         </div>
         <div class="col-sm-12 mt-2">
           <router-link
             :to="`/dashboard/teams/${team._id}/removemember`"
             class="btn btn-sm btn-block btn-danger"
-            >Remove Members</router-link
-          >
+          >Remove Members</router-link>
         </div>
       </div>
     </div>
@@ -91,7 +87,8 @@
           </div>
           <div v-if="access">
             <router-link :to="`/dashboard/teams/${team._id}/addstore`" class="btn btn-sm btn-info">
-              <i class="fas fa-plus mr-2"></i>{{ $t('stores.addStore') }}
+              <i class="fas fa-plus mr-2"></i>
+              {{ $t('stores.addStore') }}
             </router-link>
           </div>
         </div>
@@ -122,15 +119,15 @@
                 </td>
                 <td v-if="store.openingDate">
                   {{
-                    store.openingDate
-                      | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  store.openingDate
+                  | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
                   }}
                 </td>
                 <td v-else>{{ $t('stores.noOpening') }}</td>
                 <td v-if="store.closingDate">
                   {{
-                    store.closingDate
-                      | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
+                  store.closingDate
+                  | moment('timezone', team.timezone, 'MM/DD/YYYY - hh:mm a - z')
                   }}
                 </td>
                 <td v-else>{{ $t('stores.noClosing') }}</td>
@@ -144,9 +141,7 @@
                       ? 'bg-warning text-white'
                       : null
                   "
-                >
-                  {{ $t(`stores.${store.mode}`) }}
-                </td>
+                >{{ $t(`stores.${store.mode}`) }}</td>
               </tr>
             </tbody>
           </table>
@@ -177,141 +172,68 @@
             class="btn btn-sm btn-outline-info mb-1"
             @click="showTeamInfo = true"
             v-if="!showTeamInfo"
-          >
-            {{ $t('teams.showTeamInfo') }}
-          </button>
+          >{{ $t('teams.showTeamInfo') }}</button>
         </div>
 
-        <div class="row" v-if="showTeamInfo">
-          <div class="col-lg-6">
-            <div class="section-header bg-secondary">{{ $t('formLabels.mainContact') }}</div>
-            <div class="row info-spans">
-              <div class="col-xl-6">
-                <small>{{ $t('formLabels.name') }}</small>
-                <br />
-                <span>{{ team.mainContact.name }}</span>
-              </div>
-              <div class="col-xl-6" v-if="team.mainContact.company">
-                <small>{{ $t('formLabels.company') }}</small>
-                <br />
-                <span>{{ team.mainContact.company }}</span>
-              </div>
-              <div class="col-12 col-xl-6">
-                <small>{{ $t('formLabels.email') }}</small>
-                <br />
-                <span>{{ team.mainContact.email }}</span>
-              </div>
-              <div class="col-12 col-xl-6" v-if="member.isAdmin">
-                <small>{{ $t('formLabels.address1') }}</small>
-                <br />
-                <span>{{ team.mainContact.address1 }}</span>
-              </div>
-              <div class="col-12 col-xl-6" v-if="member.isAdmin && team.mainContact.address2">
-                <small>{{ $t('formLabels.address2') }}</small>
-                <br />
-                <span>{{ team.mainContact.address2 }}</span>
-              </div>
-              <div class="col-lg-6" v-if="member.isAdmin">
-                <small>{{ $t('formLabels.city') }}</small>
-                <br />
-                <span>{{ team.mainContact.city }}</span>
-              </div>
-              <div class="col-lg-6" v-if="member.isAdmin">
-                <small>{{ $t('formLabels.stateProv') }}</small>
-                <br />
-                <span>{{ team.mainContact.stateProv }}</span>
-              </div>
-              <div class="col-lg-6" v-if="member.isAdmin">
-                <small>{{ $t('formLabels.country') }}</small>
-                <br />
-                <span>{{ team.mainContact.country }}</span>
-              </div>
-              <div class="col-lg-6" v-if="member.isAdmin">
-                <small>{{ $t('formLabels.zipPostal') }}</small>
-                <br />
-                <span>{{ team.mainContact.zipPostal }}</span>
-              </div>
-              <div class="col-12 col-xl-6">
-                <small>{{ $t('formLabels.phone') }}</small>
-                <br />
-                <span>{{ team.mainContact.phone }}</span>
-              </div>
+        <div class="row teamInfo" v-if="showTeamInfo">
+          <div class="col-lg-6 mainContactInfo" v-if="member.isAdmin">
+            <div class="section-header bg-secondary">
+              {{ $t('formLabels.mainContact') }}
+              <router-link :to="`/dashboard/teams/${team._id}/edit`" v-if="member.isAdmin">
+                <i class="fas fa-edit text-white"></i>
+              </router-link>
+            </div>
+            <div>
+              <span>{{ team.mainContact.name }}</span>
+              <br />
+              <span v-if="team.mainContact.company">{{ team.mainContact.company}}</span>
+              <br v-if="team.mainContact.company" />
+              <span>{{ team.mainContact.email }}</span>
+              <br />
+              <span>{{ team.mainContact.address1 }}</span>
+              <br />
+              <span v-if="team.mainContact.address2">{{ team.mainContact.address2 || "--"}}</span>
+              <br v-if="team.mainContact.address2" />
+              <span>{{ team.mainContact.city }}, {{ team.mainContact.stateProv }}, {{ team.mainContact.country }}</span>
+              <br />
+              <span>{{ team.mainContact.zipPostal }}</span>
+              <br />
+              <span>{{ team.mainContact.phone }}</span>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="section-header bg-secondary">{{ $t('formLabels.bulkShipping') }}</div>
-            <div class="row info-spans">
-              <div class="col-xl-6">
-                <small>{{ $t('formLabels.name') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.name }}</span>
-              </div>
-              <div class="col-xl-6" v-if="team.bulkShipping.company">
-                <small>{{ $t('formLabels.company') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.company }}</span>
-              </div>
-              <div class="col-xl-6">
-                <small>{{ $t('formLabels.email') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.email }}</span>
-              </div>
-              <div class="col-xl-6">
-                <small>{{ $t('formLabels.address1') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.address1 }}</span>
-              </div>
-              <div class="col-xl-6" v-if="team.bulkShipping.address2">
-                <small>{{ $t('formLabels.address2') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.address2 }}</span>
-              </div>
-              <div class="col-lg-6">
-                <small>{{ $t('formLabels.city') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.city }}</span>
-              </div>
-              <div class="col-lg-6">
-                <small>{{ $t('formLabels.stateProv') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.stateProv }}</span>
-              </div>
-              <div class="col-lg-6">
-                <small>{{ $t('formLabels.country') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.country }}</span>
-              </div>
-              <div class="col-lg-6">
-                <small>{{ $t('formLabels.zipPostal') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.zipPostal }}</span>
-              </div>
-              <div class="col-xl-6">
-                <small>{{ $t('formLabels.phone') }}</small>
-                <br />
-                <span>{{ team.bulkShipping.phone }}</span>
-              </div>
+          <div class="col-lg-6 bulkShippingInfo">
+            <div class="section-header bg-secondary">
+              {{ $t('formLabels.bulkShipping') }}
+              <router-link :to="`/dashboard/teams/${team._id}/edit`" v-if="member.isAdmin">
+                <i class="fas fa-edit text-white"></i>
+              </router-link>
+            </div>
+            <div>
+              <span>{{ team.bulkShipping.name }}</span>
+              <br />
+              <span v-if="team.bulkShipping.company">{{ team.bulkShipping.company || '--'}}</span>
+              <br v-if="team.bulkShipping.company" />
+              <span>{{ team.bulkShipping.email }}</span>
+              <br />
+              <span>{{ team.bulkShipping.address1 }}</span>
+              <br />
+              <span v-if="team.bulkShipping.address2">{{ team.bulkShipping.address2 || "--"}}</span>
+              <br v-if="team.bulkShipping.address2" />
+              <span>{{ team.bulkShipping.city }}, {{ team.bulkShipping.stateProv }}, {{ team.bulkShipping.country }}</span>
+              <br />
+              <span>{{ team.bulkShipping.zipPostal }}</span>
+              <br />
+              <span>{{ team.bulkShipping.phone }}</span>
             </div>
           </div>
-          <div class="col-12 mt-3">
+          <div class="col-12 mt-2">
             <div class="row">
-              <div class="col-sm-6">
-                <router-link
-                  :to="`/dashboard/teams/${team._id}/edit`"
-                  class="btn btn-sm btn-block btn-info"
-                  v-if="member.isAdmin"
-                >
-                  <i class="fas fa-cog mr-3"></i>{{ $t('teams.editTeam') }}
-                </router-link>
-              </div>
-              <div class="col-sm-6">
+              <div class="col-12">
                 <button
                   class="btn btn-sm btn-block btn-outline-info"
                   @click="showTeamInfo = false"
                   v-if="showTeamInfo"
-                >
-                  {{ $t('teams.hideTeamInfo') }}
-                </button>
+                >{{ $t('teams.hideTeamInfo') }}</button>
               </div>
             </div>
           </div>
@@ -545,13 +467,9 @@ export default {
       margin: 0 0 0.5rem 0;
     }
 
-    .info-spans {
-      span {
-        background-color: rgba(255, 255, 255, 0.6);
-        padding: 0.1rem 0.25rem;
-        border-radius: 5px;
-        display: block;
-      }
+    .teamInfo {
+      font-size: 0.8em;
+      text-align: center;
     }
   }
 }
