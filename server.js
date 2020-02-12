@@ -49,8 +49,8 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // sets public folder for static files
 app.use(express.static(path.join(__dirname, 'static')));
@@ -123,8 +123,8 @@ cron.schedule(
 const PORT = config.get('app.port') || 5001;
 
 // configures server to listen to configured server port above
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   logger.info(`Team Builder (${config.get('env')}) now listening on port ${PORT}...`)
 );
 
-module.exports = app;
+module.exports = server;
