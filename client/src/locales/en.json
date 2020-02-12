@@ -56,7 +56,8 @@
       "catalogs": "Catalogs",
       "teams": "Teams",
       "stores": "Stores",
-      "orders": "Orders"
+      "orders": "Orders",
+      "notifications": "Notifications"
     },
     "regular": {
       "teams": "My Teams",
