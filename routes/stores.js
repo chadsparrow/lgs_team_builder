@@ -1,14 +1,9 @@
-const mongoose = require('mongoose');
 const express = require('express');
-const swearjar = require('swearjar');
-const { Store, validateStore } = require('../models/Store');
-const { Team } = require('../models/Team');
-const { Member } = require('../models/Member');
-
 const router = express.Router();
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
+
 const {
   getStores,
   getStore,
@@ -20,10 +15,6 @@ const {
   updateStoreItems,
   updateExtraCharges
 } = require('../controllers/stores');
-
-function validateId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
 
 router
   .route('/')

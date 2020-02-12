@@ -5,6 +5,10 @@ const { Store, validateStore } = require('../models/Store');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
 
+function validateId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
 // @desc    Gets all stores
 // @route   GET /api/v1/stores/
 // @access  Private
