@@ -17,7 +17,6 @@
   - MONGO_INITDB_ROOT_DB=`name of db to use (ie. teambuilder-dev)`
   - PORT=`port for the backend (ie. 5001)`
   - JWT_PRIVATE_KEY=`string used for encrypting/decrypting json web tokens`
-  - NODE_ENV=`current node environment (ie. development)`
   - GEOCODER_PROVIDER=`obtain geocoder API key and insert provider name here (ie. mapquest)`
   - GEOCODER_API_KEY=`insert GEOCODER API KEY from above provider here`
   - TIMEZONEDB_KEY=`obtain API from timezonedb.com and insert here`
@@ -75,13 +74,7 @@ All development mongoDB data is persisted to a volume created on your system by 
 
 ---
 
-Next, navigate to the `client` folder in terminal and issue the command:
-
-```bash
-  npm run serve
-```
-
-## This will spin up a development front-end server which is built using `Vue.js`. Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
+This will also spin up a development front-end server which is built using `Vue.js`. Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
 
 > Any changes made in the folder `'client/src'` will trigger the frontend to be rebuilt and automatically update live.
 

@@ -1,20 +1,20 @@
 {
-  "app": {
-    "port": "PORT",
-    "rootUser": "MONGO_INITDB_ROOT_USERNAME",
-    "rootPass": "MONGO_INITDB_ROOT_PASSWORD",
-    "rootEmail": "MONGO_INITDB_ROOT_EMAIL",
-    "geocoderProvider": "GEOCODER_PROVIDER",
-    "geocoderKey": "GEOCODER_API_KEY",
-    "timezonedbKey": "TIMEZONEDB_KEY"
-  },
-  "database": {
-    "user": "MONGO_INITDB_ROOT_USERNAME",
-    "pass": "MONGO_INITDB_ROOT_PASSWORD",
-    "adminSource": "MONGO_INITDB_ROOT_ADMINSOURCE",
-    "db": "MONGO_INITDB_ROOT_DB",
-    "port": "MONGO_INITDB_ROOT_PORT"
-  },
-  "env": "NODE_ENV",
-  "jwtPrivateKey": "JWT_PRIVATE_KEY"
+	"app": {
+		"port": "PORT",
+		"rootUser": "MONGO_INITDB_ROOT_USERNAME",
+		"rootPass": "MONGO_INITDB_ROOT_PASSWORD",
+		"rootEmail": "MONGO_INITDB_ROOT_EMAIL",
+		"geocoderProvider": "GEOCODER_PROVIDER",
+		"geocoderKey": "GEOCODER_API_KEY",
+		"timezonedbKey": "TIMEZONEDB_KEY"
+	},
+	"database": {
+		"user": "MONGO_INITDB_ROOT_USERNAME",
+		"pass": "MONGO_INITDB_ROOT_PASSWORD",
+		"adminSource": "MONGO_INITDB_ROOT_ADMINSOURCE",
+		"db": "MONGO_INITDB_ROOT_DB",
+		"port": "MONGO_INITDB_ROOT_PORT"
+	},
+	"env": "NODE_ENV",
+	"jwtPrivateKey": "JWT_PRIVATE_KEY"
 }
