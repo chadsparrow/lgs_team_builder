@@ -6,7 +6,6 @@
 	"scripts": {
 		"server-dev": "cross-env NODE_ENV=development nodemon -L server.js",
 		"client-dev": "npm run serve --prefix client",
-		"start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\"",
 		"start": "cross-env NODE_ENV=production node server.js"
 	},
 	"author": "Chad Sparrow",
@@ -25,7 +24,6 @@
 		"@hapi/joi": "^15.1.1",
 		"api-query-params": "^4.14.0",
 		"bcryptjs": "^2.4.3",
-		"concurrently": "^5.1.0",
 		"config": "^3.0.1",
 		"connect-history-api-fallback": "^1.6.0",
 		"cors": "^2.8.5",

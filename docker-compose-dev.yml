@@ -27,6 +27,6 @@ services:
       - .env.development
     environment:
       WAIT_HOSTS: mongo:${MONGO_INITDB_ROOT_PORT}
-    command: npm run start-dev
+    command: npm run server-dev
 volumes:
   mongodbdata:
