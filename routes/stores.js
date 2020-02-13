@@ -7,8 +7,8 @@ const storesController = require('../controllers/stores');
 
 router
   .route('/')
-  .get(auth, getStores)
-  .post(auth, admin, addStore);
+  .get(auth, storesController.getStores)
+  .post(auth, admin, storesController.addStore);
 
 router
   .route('/:id')
