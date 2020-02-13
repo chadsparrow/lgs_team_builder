@@ -3,18 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 const validateObjectId = require('../middleware/validateObjectId');
-
-const {
-  getStores,
-  getStore,
-  getTeamStores,
-  addStore,
-  duplicateStore,
-  updateStore,
-  getStoreItems,
-  updateStoreItems,
-  updateExtraCharges
-} = require('../controllers/stores');
+const storesController = require('../controllers/stores');
 
 router
   .route('/')
@@ -23,18 +12,18 @@ router
 
 router
   .route('/:id')
-  .get(validateObjectId, auth, getStore)
-  .put(validateObjectId, auth, admin, updateStore);
+  .get(validateObjectId, auth, storesController.getStore)
+  .put(validateObjectId, auth, admin, storesController.updateStore);
 
-router.route('/team/:id').get(validateObjectId, auth, getTeamStores);
+router.route('/team/:id').get(validateObjectId, auth, storesController.getTeamStores);
 
-router.route('/:id/dup').post(validateObjectId, auth, admin, duplicateStore);
+router.route('/:id/dup').post(validateObjectId, auth, admin, storesController.duplicateStore);
 
 router
   .route('/:id/items')
-  .get(validateObjectId, auth, getStoreItems)
-  .put(validateObjectId, auth, admin, updateStoreItems);
+  .get(validateObjectId, auth, storesController.getStoreItems)
+  .put(validateObjectId, auth, admin, storesController.updateStoreItems);
 
-router.route('/:id/extras').put(validateObjectId, auth, admin, updateExtraCharges);
+router.route('/:id/extras').put(validateObjectId, auth, admin, storesController.updateExtraCharges);
 
 module.exports = router;
