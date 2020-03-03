@@ -2,9 +2,9 @@
 
 [![pipeline status](https://gitlab.com/garneau-dev/sugoi/team-builder/badges/develop/pipeline.svg)](https://gitlab.com/garneau-dev/sugoi/team-builder/commits/develop) [![coverage report](https://gitlab.com/garneau-dev/sugoi/team-builder/badges/develop/coverage.svg)](https://gitlab.com/garneau-dev/sugoi/team-builder/commits/develop)
 
-### How to get local-dev environment up and running.
+### local-dev Setup instructions
 
-- Make sure you have Node.js installed on your machine.
+- Make sure to have Node.js installed on your machine.
 - Clone the repository to your local machine and switch to the `develop` branch
 - Make two copies of the `.env.example` file in the root folder and title them `.env` and `.env.development`
 - Fill in the following variables in the both files: (.env is used for the docker-compose file, .env.development is used for the containers during compose)
@@ -20,8 +20,6 @@
   - GEOCODER_PROVIDER=`obtain geocoder API key and insert provider name here (ie. mapquest)`
   - GEOCODER_API_KEY=`insert GEOCODER API KEY from above provider here`
   - TIMEZONEDB_KEY=`obtain API from timezonedb.com and insert here`
-
-- Make a copy of the `.env.development` file in the root folder and title it `.env` so that the docker compose file will be able to use the MONGO_INITDB_ROOT_PORT & PORT variables you set
 
   - _\* request API keys from Chad Sparrow [csparrow@sugoi.com](mailto:csparrow@sugoi.com) if needed_
 
@@ -47,7 +45,7 @@ When that is complete, navigate back to the `root` folder and issue the command:
 
 This will download the official MongoDB docker image, as well as the latest development docker image for the backend.
 
-> Everytime you push commits to Gitlab, Gitlab reads the `.gitlab-ci.yml` file in the `root` directory and runs a CI/CD pipeline to automatically create and replace images in the project image repository found here: [Gitlab Container Registry](https://gitlab.com/garneau-dev/sugoi/team-builder/container_registry)
+> commits pushed to Gitlab initiates the`.gitlab-ci.yml` file in the `root` directory and runs a CI/CD pipeline to create and replace images in the project image repository found here: [Gitlab Container Registry](https://gitlab.com/garneau-dev/sugoi/team-builder/container_registry)
 >
 > - commits pushed to the `master` branch using a tag _`(git tag v1.0.0)`_ will create an image with the version tag and overwrite the `latest` image. You can then always use the `latest` image in production, and have means to roll back to a previous tagged image when needed.
 > - commits pushed to `develop` branch - image is created with `develop` tag
@@ -66,13 +64,7 @@ All development mongoDB data is persisted to a volume created on your system by 
 
 ##### \*\* DO NOT USE: _`'docker volume prune'`_ unless you have the containers running or you will lose all your development data.
 
----
-
-> I highly recommend downloading and installing `Kitematic` to be able to view each container and its logs live without having to constantly issue docker commands to see them.
-
-> Also download and install `MongoDB Compass` for a really great and easy to use UI application to work with MongoDB. You can use the username & password specified in the env file to login.
-
----
+> Highly recommend downloading and installing `Kitematic` to be able to view each container and its logs live without having to constantly issue docker commands to see them. Also download and install `MongoDB Compass` for a really great and easy to use UI application to work with MongoDB. You can use the username & password specified in the env file to login.
 
 Next you will start up the front-end Vue.js development server by:
 
