@@ -8,8 +8,8 @@
     "client-dev": "cross-env NODE_ENV=development npm run serve --prefix client",
     "client-build": "cross-env NODE_ENV=production npm run build --prefix client",
     "start": "cross-env NODE_ENV=production node index.js",
-    "test": "cross-env NODE_ENV=test jest",
-    "coverage": "cross-env NODE_ENV=test jest --coverage"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "Chad Sparrow",
   "license": "UNLICENSED",
@@ -18,6 +18,9 @@
     "nodemon": "^1.18.10",
     "supertest": "^4.0.2",
     "xlsx": "^0.15.3"
+  },
+  "jest": {
+    "verbose": true
   },
   "nodemonConfig": {
     "ignore": [
