@@ -11,4 +11,3 @@ server/static/images/storeitems/*
 server/static/images/avatars
 server/static/images/avatars/*
 server/uploads/
-./startup/seeder/

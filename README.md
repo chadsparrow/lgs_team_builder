@@ -6,8 +6,8 @@
 
 - Make sure you have Node.js installed on your machine.
 - Clone the repository to your local machine and switch to the `develop` branch
-- Make a copy of the `.env.example` file in the root folder and title it `.env.development`
-- Fill in the following variables in the `.env.development` file:
+- Make two copies of the `.env.example` file in the root folder and title them `.env` and `.env.development`
+- Fill in the following variables in the both files: (.env is used for the docker-compose file, .env.development is used for the containers during compose)
 
   - MONGO_INITDB_ROOT_USERNAME=`set as a root admin user name (anything you like)`
   - MONGO_INITDB_ROOT_PASSWORD=`any string for a password`
