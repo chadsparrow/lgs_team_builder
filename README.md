@@ -74,11 +74,11 @@ All development mongoDB data is persisted to a volume created on your system by 
 
 ---
 
-<!-- Next you will start up the front-end Vue.js development server by:
+Next you will start up the front-end Vue.js development server by:
 
 ```
 npm run client-dev
-``` -->
+```
 
 Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
 
