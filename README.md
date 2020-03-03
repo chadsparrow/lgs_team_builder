@@ -31,7 +31,7 @@
 
 In order for the application and front end to run you'll need to then install all the dependancies listed in the `package.json` files in both the `root` folder _(backend)_ and the `client` folder _(frontend)._ which is super simple.
 
-Use your terminal and navigate to the `root` folder where you'll will find the file `package.json`. It will be the same folder that you will find the application main entry file `server.js`. Once there, issue the following command:
+Use your terminal and navigate to the `root` folder where you'll will find the file `package.json`. It will be the same folder that you will find the application main entry file `index.js`. Once there, issue the following command:
 
 ```bash
   npm install
@@ -74,11 +74,11 @@ All development mongoDB data is persisted to a volume created on your system by 
 
 ---
 
-Next you will start up the front-end Vue.js development server by:
+<!-- Next you will start up the front-end Vue.js development server by:
 
 ```
 npm run client-dev
-```
+``` -->
 
 Navigate, in your browser, to [http://localhost:8080/](http://localhost:8080) and it should give you the main login screen of the application, which you can then login to using the email & password set in your env file.
 

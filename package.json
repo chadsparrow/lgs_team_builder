@@ -4,8 +4,7 @@
   "description": "Kit Order Replacement App for LG/Sugoi",
   "main": "index.js",
   "scripts": {
-    "server-dev": "cross-env NODE_ENV=development nodemon index.js",
-    "client-dev": "npm run serve --prefix client",
+    "server-dev": "cross-env NODE_ENV=development concurrently \"nodemon index.js\" \"npm run serve --prefix client\"",
     "start": "cross-env NODE_ENV=production node index.js"
   },
   "author": "Chad Sparrow",
@@ -24,6 +23,7 @@
     "@hapi/joi": "^15.1.1",
     "api-query-params": "^4.14.0",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^5.1.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.0",
     "dotenv": "^8.2.0",
