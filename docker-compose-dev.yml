@@ -8,13 +8,12 @@ services:
       - ${MONGO_INITDB_ROOT_PORT}:${MONGO_INITDB_ROOT_PORT}
     volumes:
       - mongodbdata:/data/db
-      - ~/OneDrive - Louis Garneau Sports Inc/teambuilder/mongodb_backup_archives:/data/db/backups
     env_file:
       - .env.development
     command: mongod --port ${MONGO_INITDB_ROOT_PORT}
   server:
     container_name: team_builder_app_dev
-    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
+    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:test
     restart: always
     ports:
       - ${PORT}:${PORT}
