@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const jwt = require('jsonwebtoken');
 
 const joiOptions = { language: { key: '{{key}} ' } };
@@ -266,9 +267,11 @@ function validateNewRegister(member) {
       .required()
       .trim(),
     shippingStateProv: Joi.string()
+      .min(2)
       .required()
       .trim(),
     shippingCountry: Joi.string()
+      .min(2)
       .required()
       .trim(),
     shippingZipPostal: Joi.string()
@@ -295,9 +298,11 @@ function validateNewRegister(member) {
       .required()
       .trim(),
     billingStateProv: Joi.string()
+      .min(2)
       .required()
       .trim(),
     billingCountry: Joi.string()
+      .min(2)
       .required()
       .trim(),
     billingZipPostal: Joi.string()
@@ -364,9 +369,11 @@ function validateNewMember(member) {
       .required()
       .trim(),
     shippingStateProv: Joi.string()
+      .min(2)
       .required()
       .trim(),
     shippingCountry: Joi.string()
+      .min(2)
       .required()
       .trim(),
     shippingZipPostal: Joi.string()
@@ -393,9 +400,11 @@ function validateNewMember(member) {
       .required()
       .trim(),
     billingStateProv: Joi.string()
+      .min(2)
       .required()
       .trim(),
     billingCountry: Joi.string()
+      .min(2)
       .required()
       .trim(),
     billingZipPostal: Joi.string()
@@ -607,15 +616,16 @@ function validateUpdateMember(member) {
 function validateEmail(member) {
   const schema = {
     currentEmail: Joi.string()
-      .email()
-      .required(),
-    newEmail: Joi.string()
-      .email()
-      .required(),
-    confirmEmail: Joi.string()
-      .valid(Joi.ref('newEmail'))
-      .email()
       .required()
+      .email(),
+    newEmail: Joi.string()
+      .required()
+      .email()
+      .invalid(Joi.ref('currentEmail')),
+    confirmEmail: Joi.string()
+      .required()
+      .email()
+      .valid(Joi.ref('newEmail'))
       .options({
         language: { any: { allowOnly: 'and newEmail fields must match.' } }
       })
@@ -627,15 +637,16 @@ function validateEmail(member) {
 function validatePassword(member) {
   const schema = {
     oldPassword: Joi.string()
-      .min(8)
-      .required(),
-    newPassword: Joi.string()
-      .min(8)
-      .required(),
-    confirmPassword: Joi.string()
-      .valid(Joi.ref('newPassword'))
-      .min(8)
       .required()
+      .min(8),
+    newPassword: Joi.string()
+      .required()
+      .min(8)
+      .invalid(Joi.ref('oldPassword')),
+    confirmPassword: Joi.string()
+      .required()
+      .min(8)
+      .valid(Joi.ref('newPassword'))
       .options({
         language: { any: { allowOnly: 'and newpassword fields must match.' } }
       })
