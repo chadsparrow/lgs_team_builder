@@ -1057,7 +1057,7 @@ describe('validateNotification function', () => {
     reqbody.recipients = [];
     const result = validateNotification(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/recipients/);
+    expect(result.error.details[0].message).toMatch(/required/);
   });
 
   it('should return an error if recipients array passes invalid objectID', () => {
@@ -1084,7 +1084,7 @@ describe('validateNotification function', () => {
     reqbody.message = '';
     const result = validateNotification(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/message/);
+    expect(result.error.details[0].message).toMatch(/empty/);
   });
 
   it('should return an error if clickTo is not a string', () => {
