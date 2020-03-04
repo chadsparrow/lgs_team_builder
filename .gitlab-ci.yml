@@ -21,8 +21,8 @@ testing_testing:
   stage: test
   script: npm run test
 
-Build latest:
-  stage: build
+Push latest:
+  stage: push
   image: docker:18
   services:
     - docker:dind
@@ -54,8 +54,8 @@ Build latest:
     - docker push $CI_REGISTRY_IMAGE/app:latest
     - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
 
-Build develop:
-  stage: build
+Push develop:
+  stage: push
   image: docker:18
   services:
     - docker:dind
