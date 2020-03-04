@@ -1107,6 +1107,7 @@ describe('validateNotification function', () => {
 
 describe('generateAuthToken method', () => {
   it('should return a valid JWT', () => {
+    process.env['JWT_PRIVATE_KEY'] = '1234';
     const payload = { _id: mongoose.Types.ObjectId().toHexString() };
     const member = new Member(payload);
     const token = member.generateAuthToken();
