@@ -656,7 +656,7 @@ describe('validateUpdateMember function', () => {
   });
 
   it('should return error if name is less than 5 chars', () => {
-    reqbody.name = charArray(5);
+    reqbody.name = charArray(6);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
