@@ -57,7 +57,8 @@ Build latest:
 Build develop:
   stage: build
   image: docker:18
-  services: -docker:dind
+  services:
+    - docker:dind
   only:
     - develop
   cache:
