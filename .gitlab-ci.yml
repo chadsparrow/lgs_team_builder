@@ -17,11 +17,11 @@ install_dependancies:
     paths:
       - node_modules/
 
-testing_testing:
+Testing:
   stage: test
   script: npm run test
 
-Push latest:
+Push latest build:
   stage: push
   image: docker:18
   services:
@@ -54,7 +54,7 @@ Push latest:
     - docker push $CI_REGISTRY_IMAGE/app:latest
     - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
 
-Push develop:
+Push develop build:
   stage: push
   image: docker:18
   services:
