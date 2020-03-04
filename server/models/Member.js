@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const joiOptions = { language: { key: '{{key}} ' } };
 

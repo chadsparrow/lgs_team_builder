@@ -14,6 +14,8 @@ const {
 
 const faker = require('faker');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const email = faker.internet.email();
 const newEmail = faker.internet.email();
@@ -1100,5 +1102,15 @@ describe('validateNotification function', () => {
     expect(result.value).toBeTruthy();
     expect(result.value).toEqual(reqbody);
     expect(result.error).toBe(null);
+  });
+});
+
+describe('generateAuthToken method', () => {
+  it('should return a valid JWT', () => {
+    const payload = { _id: mongoose.Types.ObjectId().toHexString() };
+    const member = new Member(payload);
+    const token = member.generateAuthToken();
+    const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    expect(decoded).toMatchObject(payload);
   });
 });
