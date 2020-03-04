@@ -1,10 +1,24 @@
-stages:
-  - test
-  - build
+image: node:10-alpine
 
-Test:
+stages:
+  - build
+  - test
+  - push
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependancies:
+  stage: build
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+
+testing_testing:
   stage: test
-  image: node:10-alpine
   script: npm run test
 
 Build latest:
