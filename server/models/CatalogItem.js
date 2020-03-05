@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const Float = require('mongoose-float').loadType(mongoose);
 
 const joiOptions = { abortEarly: true, language: { key: '{{key}} ' } };
@@ -120,20 +121,36 @@ function validateCatalogItem(catalogItem) {
     gender: Joi.string()
       .required()
       .trim(),
-    categories: Joi.array().items(
-      Joi.string()
-        .allow('', null)
-        .trim()
-    ),
+    categories: Joi.array()
+      .required()
+      .items(
+        Joi.string()
+          .allow('', null)
+          .trim()
+      ),
     categoriesFR: Joi.array().items(
       Joi.string()
         .allow('', null)
         .trim()
     ),
     priceBreaks: Joi.object({
-      CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
-      USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
-    }),
+      CAD: Joi.array()
+        .required()
+        .items(
+          Joi.object({
+            priceBreak: Joi.string().required(),
+            price: Joi.number().required()
+          }).required()
+        ),
+      USD: Joi.array()
+        .required()
+        .items(
+          Joi.object({
+            priceBreak: Joi.string().required(),
+            price: Joi.number().required()
+          }).required()
+        )
+    }).required(),
     descriptionEN: Joi.string()
       .required()
       .trim(),
@@ -175,24 +192,48 @@ function validateCatalogItemEdit(catalogItem) {
     gender: Joi.string()
       .required()
       .trim(),
+    categories: Joi.array()
+      .required()
+      .items(
+        Joi.string()
+          .allow('', null)
+          .trim()
+      ),
+    categoriesFR: Joi.array().items(
+      Joi.string()
+        .allow('', null)
+        .trim()
+    ),
+    priceBreaks: Joi.object({
+      CAD: Joi.array()
+        .required()
+        .items(
+          Joi.object({
+            priceBreak: Joi.string().required(),
+            price: Joi.number().required()
+          }).required()
+        ),
+      USD: Joi.array()
+        .required()
+        .items(
+          Joi.object({
+            priceBreak: Joi.string().required(),
+            price: Joi.number().required()
+          }).required()
+        )
+    }).required(),
     descriptionEN: Joi.string()
       .required()
       .trim(),
     descriptionFR: Joi.string()
-      .trim()
-      .allow('', null),
-    categories: Joi.array().items({
-      text: Joi.string()
-        .allow('', null)
-        .trim(),
-      tiClasses: Joi.array()
-    }),
-    priceBreaks: Joi.object({
-      CAD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() }),
-      USD: Joi.array().items({ priceBreak: Joi.string(), price: Joi.number() })
-    }),
-    images: Joi.array().items(Joi.string().uri()),
-    isActive: Joi.boolean()
+      .allow('', null)
+      .trim(),
+    images: Joi.array().items(
+      Joi.string()
+        .uri()
+        .allow(null)
+    ),
+    isActive: true
   };
   return Joi.validate(catalogItem, schema, joiOptions);
 }
@@ -200,8 +241,8 @@ function validateCatalogItemEdit(catalogItem) {
 function validateCatalogImg(image) {
   const schema = {
     imageUrl: Joi.string()
-      .uri()
       .required()
+      .uri()
   };
   return Joi.validate(image, schema, joiOptions);
 }
