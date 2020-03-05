@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const Float = require('mongoose-float').loadType(mongoose);
 
 const joiOptions = { abortEarly: true, language: { key: '{{key}} ' } };
@@ -333,6 +334,7 @@ function validateStore(store) {
       .trim(),
     brand: Joi.string()
       .required()
+      .valid(['GARNEAU', 'SUGOI', 'SOMBRIO'])
       .trim(),
     refOrder: Joi.string()
       .required()
@@ -340,8 +342,8 @@ function validateStore(store) {
     adminId: Joi.objectId().required(),
     managerId: Joi.objectId().required(),
     mode: Joi.string()
-      .valid(['SURVEY', 'OPEN', 'CLOSED', 'HOLD'])
       .required()
+      .valid(['SURVEY', 'OPEN', 'CLOSED', 'HOLD'])
       .trim(),
     openingDate: Joi.date().allow('', null),
     closingDate: Joi.date().allow('', null),
@@ -349,13 +351,13 @@ function validateStore(store) {
       .required()
       .trim(),
     storeMessage: Joi.string()
+      .max(255)
       .allow('', null)
-      .trim()
-      .max(255),
+      .trim(),
     shippingType: Joi.string()
       .required()
-      .trim()
       .valid(['BULK', 'DROP', 'PREPACK'])
+      .trim()
   };
   return Joi.validate(store, schema, joiOptions);
 }
