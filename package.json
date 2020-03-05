@@ -9,6 +9,7 @@
     "client-build": "cross-env NODE_ENV=production npm run build --prefix client",
     "start": "cross-env NODE_ENV=production node index.js",
     "test": "jest",
+    "test-watch": "jest --watchAll",
     "coverage": "jest --coverage"
   },
   "author": "Chad Sparrow",

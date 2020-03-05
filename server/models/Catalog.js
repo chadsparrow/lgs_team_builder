@@ -40,9 +40,17 @@ function validateCatalog(catalog) {
       .trim(),
     season: Joi.string()
       .required()
+      .valid([
+        'CUSTOM',
+        'SPRING/SUMMER',
+        'FALL/WINTER',
+        'SPRING',
+        'SUMMER',
+        'FALL',
+        'WINTER'
+      ])
       .trim()
-      .uppercase()
-      .valid(['CUSTOM', 'SPRING/SUMMER', 'FALL/WINTER', 'SPRING', 'SUMMER', 'FALL', 'WINTER']),
+      .uppercase(),
     year: Joi.string()
       .required()
       .regex(/^\d{4}$/)
@@ -57,8 +65,8 @@ function validateCatalog(catalog) {
 function validateCoverImage(image) {
   const schema = {
     coverImg: Joi.string()
-      .uri()
       .required()
+      .uri()
   };
   return Joi.validate(image, schema, joiOptions);
 }
