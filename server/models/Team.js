@@ -191,13 +191,13 @@ function validateTeam(team) {
     contactAddress2: Joi.string().allow('', null),
     contactCity: Joi.string().required(),
     contactStateProv: Joi.string()
-      .min(2)
       .required()
+      .min(2)
       .trim(),
     contactCountry: Joi.string()
+      .required()
       .min(2)
-      .max(2)
-      .required(),
+      .max(2),
     contactZipPostal: Joi.string()
       .required()
       .trim(),
@@ -205,8 +205,8 @@ function validateTeam(team) {
       .required()
       .trim(),
     contactEmail: Joi.string()
-      .email()
       .required()
+      .email()
       .trim(),
     shippingName: Joi.string()
       .required()
@@ -218,13 +218,13 @@ function validateTeam(team) {
     shippingAddress2: Joi.string().allow('', null),
     shippingCity: Joi.string().required(),
     shippingStateProv: Joi.string()
-      .min(2)
       .required()
+      .min(2)
       .trim(),
     shippingCountry: Joi.string()
+      .required()
       .min(2)
-      .max(2)
-      .required(),
+      .max(2),
     shippingZipPostal: Joi.string()
       .required()
       .trim(),
@@ -232,8 +232,8 @@ function validateTeam(team) {
       .required()
       .trim(),
     shippingEmail: Joi.string()
-      .email()
       .required()
+      .email()
       .trim()
   };
   return Joi.validate(team, schema, joiOptions);
