@@ -37,7 +37,6 @@ module.exports = {
 
       // compares input password with db password
       const validPassword = await bcrypt.compare(req.body.password, member.password);
-
       if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
       // checks if account is closed

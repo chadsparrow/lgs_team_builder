@@ -5,16 +5,12 @@ module.exports = {
 
     proxy: {
       '/api/v1/*': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
-      '/images': {
-        target: 'http://localhost:5000',
+        target: 'http://192.168.99.100:5000',
         changeOrigin: true,
       },
     },
   },
-
+  outputDir: '../server/dist',
   pluginOptions: {
     i18n: {
       locale: 'en',

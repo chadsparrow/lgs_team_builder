@@ -1,5 +1,8 @@
 const logger = require('./server/middleware/logger');
 const app = require('./server/server');
+const serveStatic = require('serve-static');
+
+app.use(serveStatic(__dirname + '/server/dist'));
 
 // configures server port
 const PORT = process.env.PORT || 5000;

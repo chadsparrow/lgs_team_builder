@@ -11,7 +11,7 @@ const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 
-// const cors = require('cors');  // un-comment if calls will come from another domain
+// const cors = require('cors'); // un-comment if calls will come from another domain
 // app.use(cors()); // un-comment if calls will come from another domain
 
 // cron module
@@ -45,8 +45,8 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// sets public folder for static files
-app.use(express.static(path.join(__dirname, 'static')));
+// // sets public folder for static files
+// app.use(express.static(path.join(__dirname, 'static')));
 
 // allows calls if server is behind a proxy
 app.enable('trust proxy');

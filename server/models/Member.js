@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const joiOptions = { language: { key: '{{key}} ' } };
 
@@ -460,6 +461,17 @@ MemberSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id }, process.env.JWT_PRIVATE_KEY, signOptions);
   return token;
 };
+
+MemberSchema.pre('save', async function (next) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 exports.Member = mongoose.model('members', MemberSchema);
 exports.validateNewRegister = validateNewRegister;

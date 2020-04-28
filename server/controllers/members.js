@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Tzdb = require('timezonedb').Tzdb;
 
 const tzdb = new Tzdb({
-  apiToken: process.env.TIMEZONEDB_KEY
+  apiToken: process.env.TIMEZONEDB_KEY,
 });
 
 const geocoder = require('../utils/geocoder');
@@ -15,7 +15,7 @@ const {
   validateNewMember,
   validateUpdateMember,
   validateEmail,
-  validatePassword
+  validatePassword,
 } = require('../models/Member');
 
 module.exports = {
@@ -26,15 +26,13 @@ module.exports = {
     try {
       const members = await Member.find({
         _id: { $ne: req.member._id },
-        closedAccount: false
+        closedAccount: false,
       })
         .select('_id name email isAdmin invites')
         .sort({ name: 1 });
 
       if (members && members.length === 0)
-        return res
-          .status(404)
-          .send([{ message: 'There are no members in the database.' }]);
+        return res.status(404).send([{ message: 'There are no members in the database.' }]);
 
       return res.send(members);
     } catch (err) {
@@ -65,9 +63,7 @@ module.exports = {
         '_id name email createdAt timezone isAdmin'
       );
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       return res.send(member);
     } catch (err) {
@@ -84,14 +80,10 @@ module.exports = {
         '-__v -updatedAt -password -notifications'
       );
 
-      const teams = await Team.find({ members: req.params.id }).select(
-        'name _id'
-      );
+      const teams = await Team.find({ members: req.params.id }).select('name _id');
 
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       return res.send({ member, teams });
     } catch (err) {
@@ -104,9 +96,7 @@ module.exports = {
   // @access  Private
   getMyDetails: async (req, res, next) => {
     try {
-      const me = await Member.findById(req.params.id).select(
-        '-__v -updatedAt -password'
-      );
+      const me = await Member.findById(req.params.id).select('-__v -updatedAt -password');
       return res.status(200).send(me);
     } catch (err) {
       logger.error(err);
@@ -153,15 +143,22 @@ module.exports = {
         billingCountry,
         billingZipPostal,
         billingPhone,
-        billingEmail
+        billingEmail,
       } = req.body;
 
       const member = await Member.findOne({ email });
-      if (member)
-        return res.status(400).send([{ message: 'Email already registered.' }]);
+      if (member) return res.status(400).send([{ message: 'Email already registered.' }]);
+
+      let password;
+      if (process.env.NODE_ENV === 'development') {
+        password = 'password';
+      } else {
+        password = generator.generate({ length: 10, numbers: true });
+      }
 
       const newMember = new Member({
         name,
+        password,
         company,
         address1,
         address2,
@@ -171,21 +168,13 @@ module.exports = {
         zipPostal,
         phone,
         email,
-        isAdmin: false
+        isAdmin: false,
       });
 
       newMember.notifications.push({
         date: new Date(),
-        message: 'Welcome to Team Builder!'
+        message: 'Welcome to Team Builder!',
       });
-      let password;
-      if (process.env.NODE_ENV === 'development') {
-        password = 'password';
-      } else {
-        password = generator.generate({ length: 10, numbers: true });
-      }
-      const salt = await bcrypt.genSalt(10);
-      newMember.password = await bcrypt.hash(password, salt);
 
       if (shippingSame) {
         newMember.shipping.name = newMember.name;
@@ -240,12 +229,12 @@ module.exports = {
 
       const data = await tzdb.getTimeZoneByPosition({
         lat: loc[0].latitude,
-        lng: loc[0].longitude
+        lng: loc[0].longitude,
       });
 
       newMember.location = {
         type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude]
+        coordinates: [loc[0].longitude, loc[0].latitude],
       };
 
       newMember.timezone = data.zoneName;
@@ -298,14 +287,12 @@ module.exports = {
         billingCountry,
         billingZipPostal,
         billingPhone,
-        billingEmail
+        billingEmail,
       } = req.body;
 
       const updateMember = await Member.findById(req.params.id);
       if (!updateMember)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       updateMember.name = name;
       updateMember.company = company;
@@ -370,12 +357,12 @@ module.exports = {
 
       const data = await tzdb.getTimeZoneByPosition({
         lat: loc[0].latitude,
-        lng: loc[0].longitude
+        lng: loc[0].longitude,
       });
 
       updateMember.location = {
         type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude]
+        coordinates: [loc[0].longitude, loc[0].latitude],
       };
 
       updateMember.timezone = data.zoneName;
@@ -392,19 +379,19 @@ module.exports = {
         country: updateMember.country,
         zipPostal: updateMember.zipPostal,
         phone: updateMember.phone,
-        email: updateMember.email
+        email: updateMember.email,
       };
 
       // also updates information for team there email is used in main contact or bulk shipping information
       const teamsToUpdate = await Team.find({
         $or: [
           { 'mainContact.email': updateMember.email },
-          { 'bulkShipping.email': updateMember.email }
-        ]
+          { 'bulkShipping.email': updateMember.email },
+        ],
       });
 
       if (teamsToUpdate && teamsToUpdate.length > 0) {
-        teamsToUpdate.forEach(async team => {
+        teamsToUpdate.forEach(async (team) => {
           if (team.mainContact.email === updateMember.email) {
             await Team.updateOne(
               { _id: team._id },
@@ -418,8 +405,8 @@ module.exports = {
               {
                 $set: {
                   bulkShipping: updateMember.shipping,
-                  timezone: updateMember.timezone
-                }
+                  timezone: updateMember.timezone,
+                },
               }
             );
           }
@@ -444,36 +431,30 @@ module.exports = {
 
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       if (member.email === newEmail) {
-        return res
-          .status(400)
-          .send([
-            {
-              message: 'Email is identical to what is already set.',
-              context: { key: 'newEmail' }
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Email is identical to what is already set.',
+            context: { key: 'newEmail' },
+          },
+        ]);
       }
 
       // checks if new email already exists in the database and denies
       const emailCheck = await Member.findOne({
         _id: { $ne: req.params.id },
-        email: newEmail
+        email: newEmail,
       });
 
       if (emailCheck) {
-        return res
-          .status(400)
-          .send([
-            {
-              message: 'New email address already taken',
-              context: { key: 'newEmail' }
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'New email address already taken',
+            context: { key: 'newEmail' },
+          },
+        ]);
       }
 
       member.email = newEmail;
@@ -500,9 +481,7 @@ module.exports = {
 
       return res
         .status(200)
-        .send([
-          { message: 'Email address updated - this will be your new login.' }
-        ]);
+        .send([{ message: 'Email address updated - this will be your new login.' }]);
     } catch (err) {
       logger.error(err);
     }
@@ -520,14 +499,11 @@ module.exports = {
 
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       // checks to make sure the current password is correct
       const result = await bcrypt.compare(oldPassword, member.password);
-      if (!result)
-        return res.status(400).send([{ message: 'Old Password incorrect.' }]);
+      if (!result) return res.status(400).send([{ message: 'Old Password incorrect.' }]);
 
       const userEmail = member.email.split('@')[0];
 
@@ -535,18 +511,13 @@ module.exports = {
       if (newPassword.includes('password'))
         return res
           .status(400)
-          .send([
-            { message: "Please do not use 'password' in your NEW password" }
-          ]);
+          .send([{ message: "Please do not use 'password' in your NEW password" }]);
       if (newPassword.includes(userEmail))
-        return res
-          .status(400)
-          .send([
-            {
-              message:
-                'Please do not use your email username in your NEW password'
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Please do not use your email username in your NEW password',
+          },
+        ]);
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(newPassword, salt);
@@ -568,29 +539,18 @@ module.exports = {
       // if member is a manager of a team, will not allow - need to pick a new manager in team window first
       const teams = await Team.find({ 'managerId._id': req.params.id });
       if (teams && teams.length > 0)
-        return res
-          .status(400)
-          .send([
-            {
-              message:
-                'Contact your Team Admin to select a new Team Manager first'
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Contact your Team Admin to select a new Team Manager first',
+          },
+        ]);
 
-      const member = await Member.updateOne(
-        { _id: req.params.id },
-        { closedAccount: true }
-      );
+      const member = await Member.updateOne({ _id: req.params.id }, { closedAccount: true });
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       // removes member from all teams that member was a part of
-      await Team.updateMany(
-        { members: req.params.id },
-        { $pull: { members: req.params.id } }
-      );
+      await Team.updateMany({ members: req.params.id }, { $pull: { members: req.params.id } });
 
       return res.status(200).send([{ message: 'Member Account Cancelled' }]);
     } catch (err) {
@@ -605,12 +565,10 @@ module.exports = {
     try {
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        return res.status(400).send([{ message: 'Member with the given ID was not found.' }]);
 
       const filteredNotifications = member.notifications.filter(
-        notify => notify._id != req.params.nId
+        (notify) => notify._id != req.params.nId
       );
       member.notifications = filteredNotifications;
       await member.save();
@@ -618,5 +576,5 @@ module.exports = {
     } catch (err) {
       logger.error(err);
     }
-  }
+  },
 };
