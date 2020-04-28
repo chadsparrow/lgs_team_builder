@@ -9,13 +9,12 @@ const {
   validateUpdateMember,
   validateEmail,
   validatePassword,
-  validateNotification
+  validateNotification,
 } = require('../../../../server/models/Member');
 
 const faker = require('faker');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const email = faker.internet.email();
 const newEmail = faker.internet.email();
@@ -31,7 +30,7 @@ const zipPostal = faker.address.zipCode();
 const phone = faker.phone.phoneNumber();
 
 let reqbody;
-const charArray = function(num) {
+const charArray = function (num) {
   return new Array(num).join('a');
 };
 
@@ -70,7 +69,7 @@ describe('validateNewRegister function', () => {
       billingCountry: country,
       billingZipPostal: zipPostal,
       billingPhone: phone,
-      billingEmail: email
+      billingEmail: email,
     };
   });
 
@@ -369,7 +368,7 @@ describe('validateNewMember function', () => {
       billingCountry: country,
       billingZipPostal: zipPostal,
       billingPhone: phone,
-      billingEmail: email
+      billingEmail: email,
     };
   });
 
@@ -653,7 +652,7 @@ describe('validateUpdateMember function', () => {
       billingCountry: country,
       billingZipPostal: zipPostal,
       billingPhone: phone,
-      billingEmail: email
+      billingEmail: email,
     };
   });
 
@@ -895,7 +894,7 @@ describe('validateEmail function', () => {
     reqbody = {
       currentEmail: email,
       newEmail,
-      confirmEmail: newEmail
+      confirmEmail: newEmail,
     };
   });
 
@@ -970,7 +969,7 @@ describe('validatePassword function', () => {
     reqbody = {
       oldPassword: password,
       newPassword,
-      confirmPassword: newPassword
+      confirmPassword: newPassword,
     };
   });
 
@@ -1044,7 +1043,7 @@ describe('validateNotification function', () => {
     reqbody = {
       recipients: [mongoose.Types.ObjectId().toHexString()],
       message: 'Test',
-      clickTo: 'TestURL'
+      clickTo: 'TestURL',
     };
   });
 

@@ -3,10 +3,7 @@
  */
 
 const mongoose = require('mongoose');
-const {
-  validateTeam,
-  validateAddMember
-} = require('../../../../server/models/Team');
+const { validateTeam, validateAddMember } = require('../../../../server/models/Team');
 const faker = require('faker');
 
 let reqbody;
@@ -38,7 +35,7 @@ describe('validateTeam function', () => {
       shippingCountry: faker.address.countryCode(),
       shippingZipPostal: faker.address.zipCode(),
       shippingPhone: faker.phone.phoneNumber(),
-      shippingEmail: faker.internet.email()
+      shippingEmail: faker.internet.email(),
     };
   });
 
@@ -537,7 +534,7 @@ describe('validateTeam function', () => {
 describe('validateAddMember function', () => {
   beforeEach(() => {
     reqbody = {
-      memberId: mongoose.Types.ObjectId().toHexString()
+      memberId: mongoose.Types.ObjectId().toHexString(),
     };
   });
 
