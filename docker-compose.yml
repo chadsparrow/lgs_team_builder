@@ -25,7 +25,7 @@ services:
     restart: always
     working_dir: /usr/src/app/
     ports:
-      - 5001:5001
+      - 5000:5000
     volumes:
       - /data/logs/team-builder:/usr/src/app/logs
       - /data/logs/team-builder/npm:/root/.npm/

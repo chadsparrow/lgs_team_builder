@@ -15,7 +15,7 @@
   - MONGO_INITDB_ROOT_EMAIL=`root user login email`
   - MONGO_INITDB_ROOT_PORT=`port for your DB (ie. 27018)`
   - MONGO_INITDB_ROOT_DB=`name of db to use (ie. teambuilder-dev)`
-  - PORT=`port for the backend (ie. 5001)`
+  - PORT=`port for the backend (ie. 5000)`
   - JWT_PRIVATE_KEY=`string used for encrypting/decrypting json web tokens`
   - GEOCODER_PROVIDER=`obtain geocoder API key and insert provider name here (ie. mapquest)`
   - GEOCODER_API_KEY=`insert GEOCODER API KEY from above provider here`
