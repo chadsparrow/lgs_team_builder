@@ -1,4 +1,3 @@
-require('dotenv');
 const logger = require('./server/middleware/logger');
 const app = require('./server/server');
 

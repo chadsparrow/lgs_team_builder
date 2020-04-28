@@ -1,4 +1,3 @@
-require('dotenv');
 const path = require('path');
 const express = require('express');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
@@ -39,7 +38,7 @@ app.use(hpp());
 // rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 1000
+  max: 1000,
 });
 app.use(limiter);
 
@@ -68,13 +67,13 @@ DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@mongo:${DB_PORT}/${DB_DB}?authSource=
 require('./startup/db')(DB_HOST);
 
 // handle all uncaught exceptions
-process.on('uncaughtException', ex => {
+process.on('uncaughtException', (ex) => {
   logger.error(ex.message, ex);
   process.exit(1);
 });
 
 // throw an exception to uncaught exception handler if unhandled promise rejection is encountered.
-process.on('unhandledRejection', ex => {
+process.on('unhandledRejection', (ex) => {
   throw ex;
 });
 
@@ -92,7 +91,7 @@ cron.schedule(
   '0 * * * *',
   async () => {
     const stores = await Store.find();
-    stores.forEach(async store => {
+    stores.forEach(async (store) => {
       if (
         store.mode === 'SURVEY' &&
         store.openingDate &&
@@ -103,11 +102,7 @@ cron.schedule(
         await Store.findByIdAndUpdate(store._id, { mode: 'OPEN' });
       }
 
-      if (
-        store.mode === 'OPEN' &&
-        store.closingDate &&
-        store.closingDate <= Date.now()
-      ) {
+      if (store.mode === 'OPEN' && store.closingDate && store.closingDate <= Date.now()) {
         await Store.findByIdAndUpdate(store._id, { mode: 'CLOSED' });
       }
     });

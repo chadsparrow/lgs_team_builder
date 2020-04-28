@@ -5,7 +5,7 @@ const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
 
 const tzdb = new Tzdb({
-  apiToken: process.env.TIMEZONEDB_KEY
+  apiToken: process.env.TIMEZONEDB_KEY,
 });
 
 const geocoder = require('../utils/geocoder');
@@ -16,13 +16,8 @@ const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
 
 function validateLogin(req) {
   const schema = {
-    email: Joi.string()
-      .email()
-      .required(),
-    password: Joi.string()
-      .min(8)
-      .required()
-      .trim(false)
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required().trim(false),
   };
   return Joi.validate(req, schema, joiOptions);
 }
@@ -38,26 +33,20 @@ module.exports = {
 
       // checks if user with email exists
       const member = await Member.findOne({ email: req.body.email });
-      if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Invalid email or password.' }]);
+      if (!member) return res.status(400).send([{ message: 'Invalid email or password.' }]);
 
       // compares input password with db password
-      const validPassword = await bcrypt.compare(
-        req.body.password,
-        member.password
-      );
-      if (!validPassword)
-        return res.status(400).send([{ message: 'Invalid email or password' }]);
+      const validPassword = await bcrypt.compare(req.body.password, member.password);
+
+      if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
 
       // checks if account is closed
       if (member.closedAccount)
         return res.status(401).send([
           {
             message:
-              'Your account is currently deactivated, contact your Admin/Manager to reactivate'
-          }
+              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
+          },
         ]);
 
       // generates an JSONWebToken once authenticated
@@ -66,16 +55,9 @@ module.exports = {
       return res.send([
         {
           token,
-          member: _.pick(member, [
-            '_id',
-            'email',
-            'name',
-            'isAdmin',
-            'timezone',
-            'createdAt'
-          ]),
-          message: 'Welcome Back!'
-        }
+          member: _.pick(member, ['_id', 'email', 'name', 'isAdmin', 'timezone', 'createdAt']),
+          message: 'Welcome Back!',
+        },
       ]);
     } catch (err) {
       logger.error(err);
@@ -91,10 +73,7 @@ module.exports = {
       if (error) return res.status(400).send(error.details);
 
       const team = await Team.findById(req.params.id);
-      if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID not found' }]);
+      if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
 
       const {
         email,
@@ -129,30 +108,23 @@ module.exports = {
         billingCountry,
         billingZipPostal,
         billingPhone,
-        billingEmail
+        billingEmail,
       } = req.body.member;
 
       // checks if the word "password" or email address is in their password and denies creation
       const userEmail = email.split('@')[0];
       if (password.includes('password'))
-        return res
-          .status(400)
-          .send([{ message: "Please do not use 'password' in your password" }]);
+        return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
       if (password.includes(userEmail))
-        return res
-          .status(400)
-          .send([
-            {
-              message: 'Please do not use your email username in your password'
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Please do not use your email username in your password',
+          },
+        ]);
 
       // checks if email already registered
       const member = await Member.findOne({ email });
-      if (member)
-        return res
-          .status(400)
-          .send([{ message: 'Member already registered.' }]);
+      if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
 
       const newMember = new Member({
         name,
@@ -165,7 +137,7 @@ module.exports = {
         zipPostal,
         phone,
         email,
-        isAdmin: false
+        isAdmin: false,
       });
 
       if (shippingSame) {
@@ -224,24 +196,24 @@ module.exports = {
 
       const data = await tzdb.getTimeZoneByPosition({
         lat: loc[0].latitude,
-        lng: loc[0].longitude
+        lng: loc[0].longitude,
       });
 
       newMember.location = {
         type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude]
+        coordinates: [loc[0].longitude, loc[0].latitude],
       };
 
       newMember.timezone = data.zoneName;
 
       newMember.notifications.push({
         date: new Date(),
-        message: 'Welcome to Team Builder!'
+        message: 'Welcome to Team Builder!',
       });
       const notification = {
         date: Date.now(),
         message: `You are now part of team ${team.name}`,
-        clickTo: `/dashboard/teams/${team._id}`
+        clickTo: `/dashboard/teams/${team._id}`,
       };
       newMember.notifications.push(notification);
       team.members.push(newMember._id);
@@ -255,9 +227,9 @@ module.exports = {
           $push: {
             notifications: {
               date: Date.now(),
-              message: `${newMember.name} just joined your team - ${team.name}!`
-            }
-          }
+              message: `${newMember.name} just joined your team - ${team.name}!`,
+            },
+          },
         }
       );
 
@@ -267,9 +239,9 @@ module.exports = {
           $push: {
             notifications: {
               date: Date.now(),
-              message: `${newMember.name} just joined team - ${team.name}!`
-            }
-          }
+              message: `${newMember.name} just joined team - ${team.name}!`,
+            },
+          },
         }
       );
 
@@ -277,5 +249,5 @@ module.exports = {
     } catch (err) {
       logger.error(err);
     }
-  }
+  },
 };
