@@ -10,9 +10,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "test": "jest",
     "test-watch": "jest --watchAll",
-    "coverage": "jest --coverage",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "coverage": "jest --coverage"
   },
   "author": "Chad Sparrow",
   "license": "UNLICENSED",
@@ -60,8 +58,6 @@
     "timezonedb": "^1.0.2",
     "winston": "^2.4.0",
     "winston-daily-rotate-file": "^3.9.0",
-    "xss-clean": "^0.1.1",
-    "snyk": "^1.319.0"
-  },
-  "snyk": true
+    "xss-clean": "^0.1.1"
+  }
 }
