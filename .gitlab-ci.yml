@@ -33,6 +33,7 @@ Push latest build:
     # docker login asks for the password to be passed through stdin for security
     # we use $CI_JOB_TOKEN here which is a special token provided by GitLab
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker info
   script:
     # fetches the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE/app:latest || true
@@ -64,6 +65,7 @@ Push develop build:
       - node_modules/
   before_script:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker info
   script:
     - docker pull $CI_REGISTRY_IMAGE/app:develop || true
     - >
