@@ -2,7 +2,10 @@
   <div v-if="!isLoading" class="page">
     <div class="header mb-2">
       <div class="form-group has-search m-0">
-        <span class="fa fa-search form-control-feedback"></span>
+        <span
+          class="fa fa-search form-control-feedback"
+          v-if="allMembers.length > 0"
+        ></span>
         <input
           type="text"
           id="memberSearch"
@@ -13,7 +16,10 @@
         />
       </div>
       <div v-if="loggedInMember.isAdmin">
-        <router-link to="/dashboard/members/add" class="btn btn-sm btn-info addMemberBtn">
+        <router-link
+          to="/dashboard/members/add"
+          class="btn btn-sm btn-info addMemberBtn"
+        >
           <i class="fas fa-plus mr-2"></i>{{ $t('members.addMember') }}
         </router-link>
       </div>
@@ -67,39 +73,45 @@ export default {
   name: 'MembersIndex',
   components: {
     Paginate,
-    Gravatar
+    Gravatar,
   },
   data() {
     return {
       currentPage: 1,
       itemsPerPage: 12,
-      memberSearchText: ''
+      memberSearchText: '',
     };
   },
   created: async function() {
-    this.$store.commit('LOADING_TRUE');
     try {
-      await this.$store.dispatch('getMembers');
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.members'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+      this.$store.commit('LOADING_TRUE');
+      await this.$store.dispatch('getMembers');
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   computed: {
     ...mapGetters(['allMembers', 'isLoading', 'loggedInMember']),
     filteredMembers: function() {
-      return this.allMembers.filter(member => {
+      return this.allMembers.filter((member) => {
         if (
-          member.name.toLowerCase().includes(this.memberSearchText.toLowerCase()) ||
-          member.email.toLowerCase().includes(this.memberSearchText.toLowerCase())
+          member.name
+            .toLowerCase()
+            .includes(this.memberSearchText.toLowerCase()) ||
+          member.email
+            .toLowerCase()
+            .includes(this.memberSearchText.toLowerCase())
         ) {
           return member;
         }
@@ -115,23 +127,32 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentMembers: function() {
-      return this.filteredMembers.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      return this.filteredMembers.slice(
+        this.indexOfFirstItem,
+        this.indexOfLastItem
+      );
     },
     pageNumbers: function() {
       const pageArray = [];
       if (this.allMembers) {
-        for (let i = 1; i <= Math.ceil(this.filteredMembers.length / this.itemsPerPage); i++) {
+        for (
+          let i = 1;
+          i <= Math.ceil(this.filteredMembers.length / this.itemsPerPage);
+          i++
+        ) {
           pageArray.push(i);
         }
       }
       return pageArray.length;
-    }
+    },
   },
   methods: {
     loadMember: function(id) {
-      this.$router.push({ name: 'membersById', params: { id } }).catch(() => {});
-    }
-  }
+      this.$router
+        .push({ name: 'membersById', params: { id } })
+        .catch(() => {});
+    },
+  },
 };
 </script>
 

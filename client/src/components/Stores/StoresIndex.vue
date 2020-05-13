@@ -2,7 +2,10 @@
   <div class="page" v-if="!isLoading">
     <div class="header mb-2">
       <div class="form-group has-search m-0">
-        <span class="fa fa-search form-control-feedback"></span>
+        <span
+          class="fa fa-search form-control-feedback"
+          v-if="stores.length > 0"
+        ></span>
         <input
           type="text"
           id="storesSearchText"
@@ -13,25 +16,47 @@
         />
       </div>
     </div>
-    <h5 class="text-center" v-if="currentStores.length === 0">{{ $t('stores.noStores') }}</h5>
+    <h5 class="text-center" v-if="currentStores.length === 0">
+      {{ $t('stores.noStores') }}
+    </h5>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>
           <tr>
             <th class="priority-1" scope="col">{{ $t('formLabels.name') }}</th>
-            <th class="priority-2" scope="col">{{ $t('catalogs.add.brand') }}</th>
+            <th class="priority-2" scope="col">
+              {{ $t('catalogs.add.brand') }}
+            </th>
             <th class="priority-3" scope="col">{{ $t('teams.team') }}</th>
-            <th class="priority-4" scope="col" v-if="access">{{ $t('teams.account') }}</th>
-            <th class="priority-5" scope="col" v-if="access">{{ $t('stores.order') }}</th>
-            <th class="priority-6" scope="col" v-if="access">{{ $t('admin') }}</th>
+            <th class="priority-4" scope="col" v-if="access">
+              {{ $t('teams.account') }}
+            </th>
+            <th class="priority-5" scope="col" v-if="access">
+              {{ $t('stores.order') }}
+            </th>
+            <th class="priority-6" scope="col" v-if="access">
+              {{ $t('admin') }}
+            </th>
             <th class="priority-7" scope="col">{{ $t('stores.opening') }}</th>
             <th class="priority-8" scope="col">{{ $t('stores.closing') }}</th>
-            <th class="text-center priority-9" scope="col">{{ $t('stores.mode') }}</th>
-            <th class="priority-10" scope="col" v-if="access">{{ $t('stores.totalOrders') }}</th>
-            <th class="priority-11" scope="col" v-if="access">{{ $t('stores.currency') }}</th>
-            <th class="priority-12" scope="col" v-if="access">{{ $t('stores.totalCollected') }}</th>
+            <th class="text-center priority-9" scope="col">
+              {{ $t('stores.mode') }}
+            </th>
+            <th class="priority-10" scope="col" v-if="access">
+              {{ $t('stores.totalOrders') }}
+            </th>
+            <th class="priority-11" scope="col" v-if="access">
+              {{ $t('stores.currency') }}
+            </th>
+            <th class="priority-12" scope="col" v-if="access">
+              {{ $t('stores.totalCollected') }}
+            </th>
           </tr>
-          <tr v-for="store of currentStores" :key="store._id" @click.prevent="loadStore(store._id)">
+          <tr
+            v-for="store of currentStores"
+            :key="store._id"
+            @click.prevent="loadStore(store._id)"
+          >
             <td class="priority-1" scope="row">{{ store.storeName }}</td>
             <td class="priority-2" v-if="store.brand === 'GARNEAU'">
               <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
@@ -48,13 +73,23 @@
             <td class="priority-6" v-if="access">{{ store.adminId.name }}</td>
             <td class="priority-7" v-if="store.openingDate">
               {{
-                store.openingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+                store.openingDate
+                  | moment(
+                    'timezone',
+                    store.timezone,
+                    'MMM Do YYYY / hh:mm a - z'
+                  )
               }}
             </td>
             <td class="priority-7" v-else>{{ $t('stores.noOpening') }}</td>
             <td class="priority-8" v-if="store.closingDate">
               {{
-                store.closingDate | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+                store.closingDate
+                  | moment(
+                    'timezone',
+                    store.timezone,
+                    'MMM Do YYYY / hh:mm a - z'
+                  )
               }}
             </td>
             <td class="priority-8" v-else>{{ $t('stores.noClosing') }}</td>
@@ -73,7 +108,9 @@
             >
               {{ $t(`stores.${store.mode}`) }}
             </td>
-            <td class="text-center priority-10" v-if="access">{{ store.totalOrders }}</td>
+            <td class="text-center priority-10" v-if="access">
+              {{ store.totalOrders }}
+            </td>
             <td class="priority-11" v-if="access">{{ store.currency }}</td>
             <td class="text-center priority-12" v-if="access">
               {{ store.collectedAmount | currency }}
@@ -108,13 +145,13 @@ export default {
   name: 'StoreIndex',
   mixins: [Vue2Filters.mixin],
   components: {
-    Paginate
+    Paginate,
   },
   data() {
     return {
       currentPage: 1,
       itemsPerPage: 12,
-      storesSearchText: ''
+      storesSearchText: '',
     };
   },
   created: async function() {
@@ -123,8 +160,8 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.stores'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.commit('CLEAR_CURRENTS');
@@ -132,7 +169,9 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   computed: {
@@ -147,25 +186,46 @@ export default {
       return this.indexOfLastItem - this.itemsPerPage;
     },
     currentStores: function() {
-      return this.filteredStores.slice(this.indexOfFirstItem, this.indexOfLastItem);
+      return this.filteredStores.slice(
+        this.indexOfFirstItem,
+        this.indexOfLastItem
+      );
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.filteredStores.length / this.itemsPerPage); i++) {
+      for (
+        let i = 1;
+        i <= Math.ceil(this.filteredStores.length / this.itemsPerPage);
+        i++
+      ) {
         pageArray.push(i);
       }
       return pageArray.length;
     },
     filteredStores: function() {
-      return this.stores.filter(store => {
+      return this.stores.filter((store) => {
         if (
-          store.brand.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.storeName.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.teamId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.teamId.teamId.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.refOrder.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.adminId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
-          store.managerId.name.toLowerCase().includes(this.storesSearchText.toLowerCase()) ||
+          store.brand
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.storeName
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.teamId.name
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.teamId.teamId
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.refOrder
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.adminId.name
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
+          store.managerId.name
+            .toLowerCase()
+            .includes(this.storesSearchText.toLowerCase()) ||
           store.mode.toLowerCase().includes(this.storesSearchText.toLowerCase())
         ) {
           return store;
@@ -179,13 +239,13 @@ export default {
       if (this.member && this.member.isAdmin) return true;
 
       return false;
-    }
+    },
   },
   methods: {
     loadStore: function(id) {
       this.$router.push({ name: 'storesById', params: { id } }).catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>
 
