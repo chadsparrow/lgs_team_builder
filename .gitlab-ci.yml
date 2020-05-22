@@ -37,7 +37,6 @@ Develop build:
       - node_modules/
   before_script:
     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker info
   script:
     - docker pull $CI_REGISTRY_IMAGE/app:develop || true
     - >
