@@ -1,69 +1,37 @@
 stages:
-  - build
+  - dependencies
   - test
-  - push
+  - build
 
 cache:
   paths:
     - node_modules/
 
-install_dependancies:
-  stage: build
+Install_dependancies:
+  stage: dependencies
   script:
     - npm install
+  only:
+    - develop
+    - staging
   artifacts:
     paths:
       - node_modules/
 
 Testing:
   stage: test
+  only:
+    - develop
+    - staging
   script: npm run test
 
-Push latest build:
-  stage: push
-  image: docker:18
-  services:
-    - docker:dind
-  only:
-    - tags
-  tags:
-    - docker-prod
-  cache:
-    paths:
-      - node_modules/
-  before_script:
-    # docker login asks for the password to be passed through stdin for security
-    # we use $CI_JOB_TOKEN here which is a special token provided by GitLab
-    - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker info
-  script:
-    # fetches the latest image (not failing if image is not found)
-    - docker pull $CI_REGISTRY_IMAGE/app:latest || true
-    # builds the project, passing vcs vars for LABEL
-    # notice the cache-from, which is going to use the image we just pulled locally
-    # the built image is tagged locally with the commit SHA, and then pushed to
-    # the GitLab registry
-    - >
-      docker build
-      --pull
-      --build-arg VCS_REF=latest
-      --build-arg VCS_URL=$CI_PROJECT_URL
-      --cache-from $CI_REGISTRY_IMAGE:latest
-      --tag $CI_REGISTRY_IMAGE/app:latest
-      --tag $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
-      .
-    - docker push $CI_REGISTRY_IMAGE/app:latest
-    - docker push $CI_REGISTRY_IMAGE/app:$CI_COMMIT_REF_NAME
-
-Push develop build:
-  stage: push
+Develop build:
+  stage: build
   image: docker:18
   services:
     - docker:dind
   only:
     - develop
-  tags:
-    - docker-stage
   cache:
     paths:
       - node_modules/
@@ -82,15 +50,13 @@ Push develop build:
       .
     - docker push $CI_REGISTRY_IMAGE/app:develop
 
-Push staging build:
-  stage: push
+Staging build:
+  stage: build
   image: docker:18
   services:
     - docker:dind
   only:
     - staging
-  tags:
-    - docker-stage
   cache:
     paths:
       - node_modules/
