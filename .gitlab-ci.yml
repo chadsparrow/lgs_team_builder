@@ -26,6 +26,8 @@ Push latest build:
     - docker:dind
   only:
     - tags
+  tags:
+    - docker-prod
   cache:
     paths:
       - node_modules/
@@ -61,7 +63,7 @@ Push develop build:
   only:
     - develop
   tags:
-    - develop
+    - docker-stage
   cache:
     paths:
       - node_modules/
@@ -88,7 +90,7 @@ Push staging build:
   only:
     - staging
   tags:
-    - staging
+    - docker-stage
   cache:
     paths:
       - node_modules/
