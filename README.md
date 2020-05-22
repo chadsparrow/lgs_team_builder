@@ -92,4 +92,4 @@ This will shut down all the containers and delete all the images related to the 
 
 If you have any troubles or questions, feel free to contact Chad Sparrow (csparrow@sugoi.com)
 
-Gitlab Runner created on staging server - shell executor
+Gitlab Runner created on Staging server - docker executor
