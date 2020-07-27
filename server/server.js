@@ -63,7 +63,8 @@ if (process.env.NODE_ENV === 'test') {
   DB_DB = 'teambuilder-test';
 }
 
-DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@mongo:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}?retryWrites=true&w=majority`;
+//DB_HOST = `mongodb://${DB_USER}:${DB_PASS}@mongo:${DB_PORT}/${DB_DB}?authSource=${DB_ADMINSOURCE}?retryWrites=true&w=majority`;
+DB_HOST = `mongodb+srv://${DB_USER}:${DB_PASS}@teambuilder.a7dk1.mongodb.net/${DB_DB}?retryWrites=true&w=majority`;
 require('./startup/db')(DB_HOST);
 
 // handle all uncaught exceptions
@@ -102,7 +103,11 @@ cron.schedule(
         await Store.findByIdAndUpdate(store._id, { mode: 'OPEN' });
       }
 
-      if (store.mode === 'OPEN' && store.closingDate && store.closingDate <= Date.now()) {
+      if (
+        store.mode === 'OPEN' &&
+        store.closingDate &&
+        store.closingDate <= Date.now()
+      ) {
         await Store.findByIdAndUpdate(store._id, { mode: 'CLOSED' });
       }
     });

@@ -11,11 +11,13 @@ module.exports = async function (DB_HOST) {
     useCreateIndex: true,
     useUnifiedTopology: true,
   });
-  logger.info(`Connected to MongoDB - ${conn.connection.host}.${conn.connection.name}`);
+  logger.info(
+    `Connected to MongoDB Atlas - ${conn.connection.host}.${conn.connection.name}`
+  );
 
   // disconnects from mongodb if requested by SIGINT call
   process.on('SIGINT', async () => {
-    logger.info('Disconnecting from MongoDB..');
+    logger.info('Disconnecting from MongoDB Atlas..');
     await mongoose.disconnect();
     process.exit(0);
   });

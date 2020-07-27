@@ -1,28 +1,5 @@
 version: '3'
 services:
-  mongo:
-    container_name: team_builder_mongo_dev
-    image: mongo:4
-    restart: always
-    ports:
-      - ${MONGO_INITDB_ROOT_PORT}:${MONGO_INITDB_ROOT_PORT}
-    volumes:
-      - mongodbdata:/data/db
-    env_file:
-      - .env.development
-    command: mongod --port ${MONGO_INITDB_ROOT_PORT}
-  mongo-express:
-    container_name: team_builder_mongo_express_dev
-    image: mongo-express
-    restart: always
-    ports:
-      - 27018:8081
-    env_file:
-      - .env.development
-    depends_on:
-      - mongo
-    environment:
-      WAIT_HOSTS: mongo:${MONGO_INITDB_ROOT_PORT}
   server:
     container_name: team_builder_app_dev
     image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
@@ -32,12 +9,6 @@ services:
     volumes:
       - ./:/usr/src/app/
       - /usr/src/app/node_modules
-    depends_on:
-      - mongo
     env_file:
       - .env.development
-    environment:
-      WAIT_HOSTS: mongo:${MONGO_INITDB_ROOT_PORT}
     command: npm run server-dev
-volumes:
-  mongodbdata:
