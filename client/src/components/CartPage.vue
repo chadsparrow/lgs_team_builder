@@ -2,14 +2,20 @@
   <div v-if="!isLoading" class="mt-2">
     <div class="row">
       <div class="col-md-12 mb-2">
-        <router-link :to="`/dashboard/stores/${store._id}`" class="btn btn-danger mb-2"
+        <router-link
+          :to="`/dashboard/stores/${store._id}`"
+          class="btn btn-danger mb-2"
           ><i class="fas fa-arrow-left mr-2"></i>Go back to Store</router-link
         >
       </div>
       <div class="col-md-12 col-lg-8 cart-items">
         <h4 class="text-info text-center">Items</h4>
         <div class="cart-item-box">
-          <div class="cart-item mb-2" v-for="item in cart.items" :key="item._id">
+          <div
+            class="cart-item mb-2"
+            v-for="item in cart.items"
+            :key="item._id"
+          >
             <div class="row">
               <div
                 class="col-md-12 col-lg-3 cart-item-image"
@@ -19,12 +25,17 @@
               </div>
               <div class="col-md-12 col-lg-7 cart-item-info">
                 <div>
-                  <span class="text-danger" v-if="item.mandatoryItem">Mandatory Item</span>
+                  <span class="text-danger" v-if="item.mandatoryItem"
+                    >Mandatory Item</span
+                  >
                   <h4 class="text-info">{{ item.nameEN }}</h4>
                   <small class="text-muted"
-                    >Product Code: {{ item.productCode }} / Style Code: {{ item.styleCode }}</small
+                    >Product Code: {{ item.productCode }} / Style Code:
+                    {{ item.styleCode }}</small
                   >
-                  <h4 class="text-muted mt-3">Price: {{ item.storePrice | currency }}</h4>
+                  <h4 class="text-muted mt-3">
+                    Price: {{ item.storePrice | currency }}
+                  </h4>
                 </div>
                 <div class="row mt-2">
                   <div class="col">
@@ -36,7 +47,11 @@
                       v-model="item.size"
                       @change="dataChanged = true"
                     >
-                      <option v-for="(size, index) in item.sizes" :key="index">{{ size }}</option>
+                      <option
+                        v-for="(size, index) in item.sizes"
+                        :key="index"
+                        >{{ size }}</option
+                      >
                     </select>
                   </div>
                   <div class="col">
@@ -56,14 +71,19 @@
               </div>
               <div class="col-md-12 col-lg-2">
                 <div class="row m-0 mb-3" v-if="!item.mandatoryItem">
-                  <button class="btn btn-block btn-danger" @click="removeItem(item._id)">
+                  <button
+                    class="btn btn-block btn-danger"
+                    @click="removeItem(item._id)"
+                  >
                     <i class="fas fa-lg fa-trash mr-2"></i>Remove
                   </button>
                 </div>
                 <div class="row mx-0">
                   <span class="text-info"
                     >Item Total:
-                    <h4>{{ (item.storePrice * item.quantity) | currency }}</h4></span
+                    <h4>
+                      {{ (item.storePrice * item.quantity) | currency }}
+                    </h4></span
                   >
                 </div>
               </div>
@@ -86,8 +106,12 @@
         <hr />
         <div class="row">
           <div class="col-md-12 text-center">
-            <h5 class="text-info m-0">Sub-Total: {{ cartSubTotal | currency }}</h5>
-            <small class="text-muted">* before taxes, discounts, shipping &amp; extra fees</small>
+            <h5 class="text-info m-0">
+              Sub-Total: {{ cartSubTotal | currency }}
+            </h5>
+            <small class="text-muted"
+              >* before taxes, discounts, shipping &amp; extra fees</small
+            >
           </div>
           <div class="col-md-12 mt-3 text-center">
             <button
@@ -113,11 +137,17 @@ export default {
   name: 'CartPage',
   data() {
     return {
-      dataChanged: false
+      dataChanged: false,
     };
   },
   computed: {
-    ...mapGetters(['currentStore', 'currentCart', 'loggedInMember', 'isLoading', 'orders']),
+    ...mapGetters([
+      'currentStore',
+      'currentCart',
+      'loggedInMember',
+      'isLoading',
+      'orders',
+    ]),
     store: function() {
       return this.currentStore;
     },
@@ -131,7 +161,7 @@ export default {
       return this.cart.items.reduce((acc, obj) => {
         return acc + obj.storePrice * obj.quantity;
       }, 0);
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -140,16 +170,16 @@ export default {
       const breadcrumbs = [
         {
           text: 'Stores',
-          link: `/dashboard/stores/`
+          link: `/dashboard/stores/`,
         },
         {
           text: `${this.store.storeName}`,
-          link: `/dashboard/stores/${this.store._id}`
+          link: `/dashboard/stores/${this.store._id}`,
         },
         {
           text: 'Cart',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getMemberStoreCart', this.store._id);
@@ -159,18 +189,23 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     getImgUrl: function(item) {
-      // if (item.images.length === 0) return '/images/assets/missing_item_800.png';
-      return `/images/storesitems/${this.store._id}/800/${item.images[0]}_800.jpg`;
+      // if (item.images.length === 0) return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+      return `https://teambuilder.s3.amazonaws.com/images/storesitems/${this.store._id}/${item.images[0]}_hd.jpg`;
     },
     removeItem: async function(itemId) {
       this.$store.commit('LOADING_TRUE');
       try {
-        const res = await this.$store.dispatch('removeCartItem', { id: this.cart._id, itemId });
+        const res = await this.$store.dispatch('removeCartItem', {
+          id: this.cart._id,
+          itemId,
+        });
         this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
         if (this.cart.items && this.cart.items.length === 0) {
@@ -178,7 +213,9 @@ export default {
         }
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     updateCart: async function() {
@@ -186,24 +223,28 @@ export default {
       try {
         const res = await this.$store.dispatch('updateCart', {
           id: this.cart._id,
-          items: this.cart.items
+          items: this.cart.items,
         });
         this.$store.commit('LOADING_FALSE');
         this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
         this.dataChanged = false;
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     removeAllItems: async function() {
       try {
         if (confirm('Are you sure?')) {
           this.$store.commit('LOADING_TRUE');
-          const mandatoryItems = this.cart.items.filter(el => el.mandatoryItem);
+          const mandatoryItems = this.cart.items.filter(
+            (el) => el.mandatoryItem
+          );
           const res = await this.$store.dispatch('updateCart', {
             id: this.cart._id,
-            items: [...mandatoryItems]
+            items: [...mandatoryItems],
           });
           this.$store.commit('LOADING_FALSE');
           this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
@@ -214,7 +255,9 @@ export default {
         }
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     checkout: function() {
@@ -222,7 +265,7 @@ export default {
         if (!el.size) {
           this.$refs.itemSize[index].focus();
           return this.$toasted.error('There are items without a chosen size', {
-            icon: 'exclamation-triangle'
+            icon: 'exclamation-triangle',
           });
         }
       });
@@ -231,11 +274,11 @@ export default {
         if (el.quantity === 0 || !el.quantity) {
           this.$refs.quantity[index].focus();
           return this.$toasted.error('There are items without a chosen size', {
-            icon: 'exclamation-triangle'
+            icon: 'exclamation-triangle',
           });
         }
       });
-    }
+    },
   },
   beforeRouteLeave(to, from, next) {
     if (this.dataChanged) {
@@ -251,7 +294,7 @@ export default {
     }
 
     next();
-  }
+  },
 };
 </script>
 

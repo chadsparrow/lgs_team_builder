@@ -28,7 +28,7 @@ Vue.use(Toasted, {
   iconPack: 'fontawesome',
   fullWidth: true,
   fitToScreen: true,
-  singleton: true
+  singleton: true,
 });
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
@@ -38,9 +38,10 @@ Vue.use(VueCurrencyInput);
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   loading: 'https://media.giphy.com/media/hTrXs1jw6ABY9dDyxS/giphy.gif',
-  error: '/images/assets/missing_item_300.png',
+  error:
+    'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png',
   observer: true,
-  attempt: 1
+  attempt: 1,
 });
 Vue.use(VueSidebarMenu);
 
@@ -50,5 +51,5 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount('#app');

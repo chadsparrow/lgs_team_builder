@@ -12,7 +12,9 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="form-group">
-              <label for="categories">{{ $t('formLabels.categories') }} (EN)</label>
+              <label for="categories"
+                >{{ $t('formLabels.categories') }} (EN)</label
+              >
               <vue-tags-input
                 style="width: 100%;"
                 :placeholder="$t('addTags')"
@@ -20,13 +22,15 @@
                 v-model="category"
                 :tags="categories"
                 id="categories"
-                @tags-changed="newCategories => (categories = newCategories)"
+                @tags-changed="(newCategories) => (categories = newCategories)"
               />
             </div>
           </div>
           <div class="col-sm-12">
             <div class="form-group">
-              <label for="categoriesFR">{{ $t('formLabels.categories') }} (FR)</label>
+              <label for="categoriesFR"
+                >{{ $t('formLabels.categories') }} (FR)</label
+              >
               <vue-tags-input
                 style="width: 100%;"
                 v-model="categorie"
@@ -34,17 +38,31 @@
                 :placeholder="$t('addTags')"
                 :max-tags="5"
                 id="categoriesFR"
-                @tags-changed="newCategoriesFR => (categoriesFR = newCategoriesFR)"
+                @tags-changed="
+                  (newCategoriesFR) => (categoriesFR = newCategoriesFR)
+                "
               />
             </div>
           </div>
           <div class="form-group col-sm-12">
             <label for="nameEN">{{ $t('formLabels.name') }} (EN)</label>
-            <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
+            <input
+              id="nameEN"
+              type="text"
+              class="form-control"
+              v-model="nameEN"
+              ref="nameEN"
+            />
           </div>
           <div class="form-group col-sm-12">
             <label for="nameFR">{{ $t('formLabels.name') }} (FR)</label>
-            <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
+            <input
+              id="nameFR"
+              type="text"
+              class="form-control"
+              v-model="nameFR"
+              ref="nameFR"
+            />
           </div>
           <div class="form-group col-md-12 col-lg-6">
             <label for="productCode">{{ $t('formLabels.productCode') }}</label>
@@ -78,7 +96,9 @@
                 id="sizeONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeONE">{{ $t('formLabels.one') }}</label>
+              <label class="form-check-label" for="sizeONE">{{
+                $t('formLabels.one')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -89,7 +109,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size2XS">{{ $t('formLabels.xxs') }}</label>
+              <label class="form-check-label" for="size2XS">{{
+                $t('formLabels.xxs')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -100,7 +122,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeXS">{{ $t('formLabels.xs') }}</label>
+              <label class="form-check-label" for="sizeXS">{{
+                $t('formLabels.xs')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -111,7 +135,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeS">{{ $t('formLabels.s') }}</label>
+              <label class="form-check-label" for="sizeS">{{
+                $t('formLabels.s')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -122,7 +148,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeM">{{ $t('formLabels.m') }}</label>
+              <label class="form-check-label" for="sizeM">{{
+                $t('formLabels.m')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -133,7 +161,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeL">{{ $t('formLabels.l') }}</label>
+              <label class="form-check-label" for="sizeL">{{
+                $t('formLabels.l')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -144,7 +174,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="sizeXL">{{ $t('formLabels.xl') }}</label>
+              <label class="form-check-label" for="sizeXL">{{
+                $t('formLabels.xl')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -155,7 +187,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size2XL">{{ $t('formLabels.xxl') }}</label>
+              <label class="form-check-label" for="size2XL">{{
+                $t('formLabels.xxl')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -166,7 +200,9 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size3XL">{{ $t('formLabels.xxxl') }}</label>
+              <label class="form-check-label" for="size3XL">{{
+                $t('formLabels.xxxl')
+              }}</label>
             </div>
             <div class="form-check form-check-inline mx-3">
               <input
@@ -177,12 +213,19 @@
                 :disabled="ONE"
                 @change="setSizes"
               />
-              <label class="form-check-label" for="size4XL">{{ $t('formLabels.xxxxl') }}</label>
+              <label class="form-check-label" for="size4XL">{{
+                $t('formLabels.xxxxl')
+              }}</label>
             </div>
           </div>
           <div class="form-group col-sm-12">
             <label for="gender">{{ $t('formLabels.gender') }}</label>
-            <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
+            <select
+              class="form-control form-control"
+              id="gender"
+              v-model="gender"
+              ref="gender"
+            >
               <option value="M">{{ $t('formLabels.mens') }}</option>
               <option value="W">{{ $t('formLabels.womens') }}</option>
               <option value="J">{{ $t('formLabels.junior') }}</option>
@@ -190,7 +233,9 @@
             </select>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="descriptionEN">{{ $t('formLabels.description') }} (EN)</label>
+            <label for="descriptionEN"
+              >{{ $t('formLabels.description') }} (EN)</label
+            >
             <textarea
               id="descriptionEN"
               ref="descriptionEN"
@@ -200,7 +245,9 @@
             ></textarea>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="descriptionFR">{{ $t('formLabels.description') }} (FR)</label>
+            <label for="descriptionFR"
+              >{{ $t('formLabels.description') }} (FR)</label
+            >
             <textarea
               id="descriptionFR"
               ref="descriptionFR"
@@ -210,9 +257,15 @@
             ></textarea>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="priceBreaksCAD">{{ $t('formLabels.priceBreaks') }} (CAD)</label>
+            <label for="priceBreaksCAD"
+              >{{ $t('formLabels.priceBreaks') }} (CAD)</label
+            >
             <ul class="list-group" id="priceBreaksCAD">
-              <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
+              <li
+                class="list-group-item py-1"
+                v-for="pb of priceBreaks.CAD"
+                :key="pb.priceBreak"
+              >
                 <div>{{ pb.priceBreak }}</div>
                 <input
                   type="number"
@@ -222,13 +275,21 @@
                   v-model="pb.price"
                 />
               </li>
-              <li class="list-group-item py-1">{{ $t('formLabels.contactUs') }}</li>
+              <li class="list-group-item py-1">
+                {{ $t('formLabels.contactUs') }}
+              </li>
             </ul>
           </div>
           <div class="form-group col-md-12 col-lg-6 mt-2">
-            <label for="priceBreaksUSD">{{ $t('formLabels.priceBreaks') }} (USD)</label>
+            <label for="priceBreaksUSD"
+              >{{ $t('formLabels.priceBreaks') }} (USD)</label
+            >
             <ul class="list-group" id="priceBreaksUSD">
-              <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
+              <li
+                class="list-group-item py-1"
+                v-for="pb of priceBreaks.USD"
+                :key="pb.priceBreak"
+              >
                 <div>{{ pb.priceBreak }}</div>
                 <input
                   type="number"
@@ -238,7 +299,9 @@
                   v-model="pb.price"
                 />
               </li>
-              <li class="list-group-item py-1">{{ $t('formLabels.contactUs') }}</li>
+              <li class="list-group-item py-1">
+                {{ $t('formLabels.contactUs') }}
+              </li>
             </ul>
           </div>
           <div class="col-sm-12 my-4 text-right">
@@ -265,7 +328,7 @@ import i18n from '../../i18n';
 export default {
   name: 'CatalogItemByIdEdit',
   components: {
-    VueTagsInput
+    VueTagsInput,
   },
   data() {
     return {
@@ -273,23 +336,23 @@ export default {
         {
           id: 1,
           index: 0,
-          alt: 'Product Image 1'
+          alt: 'Product Image 1',
         },
         {
           id: 2,
           index: 1,
-          alt: 'Product Image 2'
+          alt: 'Product Image 2',
         },
         {
           id: 3,
           index: 2,
-          alt: 'Product Image 3'
+          alt: 'Product Image 3',
         },
         {
           id: 4,
           index: 3,
-          alt: 'Product Image 4'
-        }
+          alt: 'Product Image 4',
+        },
       ],
       nameEN: '',
       nameFR: '',
@@ -310,55 +373,55 @@ export default {
         CAD: [
           {
             priceBreak: '1',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '2-5',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '6-11',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '12-49',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '50-99',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '100-249',
-            price: 0.0
-          }
+            price: 0.0,
+          },
         ],
         USD: [
           {
             priceBreak: '1',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '2-5',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '6-11',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '12-49',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '50-99',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '100-249',
-            price: 0.0
-          }
-        ]
+            price: 0.0,
+          },
+        ],
       },
       gender: '',
       descriptionEN: '',
@@ -367,7 +430,7 @@ export default {
       categorie: '',
       categories: [],
       categoriesFR: [],
-      isActive: true
+      isActive: true,
     };
   },
   computed: {
@@ -375,7 +438,7 @@ export default {
     description: function() {
       const desc = this.currentCatalogItem.descriptionEN;
       const descArray = desc.split('•');
-      const bulletPoints = descArray.map(el => {
+      const bulletPoints = descArray.map((el) => {
         el = el.replace('\n', '').trim();
         return el;
       });
@@ -386,12 +449,15 @@ export default {
         if (i > 0) return el;
       });
       return bulletPoints;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
-      const res = await this.$store.dispatch('getCatalogItem', this.$route.params.id);
+      const res = await this.$store.dispatch(
+        'getCatalogItem',
+        this.$route.params.id
+      );
       const {
         nameEN,
         nameFR,
@@ -404,7 +470,7 @@ export default {
         descriptionEN,
         descriptionFR,
         categories,
-        categoriesFR
+        categoriesFR,
       } = res.data;
       this.nameEN = nameEN;
       this.nameFR = nameFR;
@@ -416,55 +482,60 @@ export default {
       this.descriptionEN = descriptionEN;
       this.descriptionFR = descriptionFR;
       if (categories.length > 0) {
-        this.categories = categories.map(el => {
+        this.categories = categories.map((el) => {
           return {
-            text: el
+            text: el,
           };
         });
       }
       if (categoriesFR.length > 0) {
-        this.categoriesFR = categoriesFR.map(el => {
+        this.categoriesFR = categoriesFR.map((el) => {
           return {
-            text: el
+            text: el,
           };
         });
       }
       this.isActive = isActive;
 
-      this.sizes.forEach(el => {
+      this.sizes.forEach((el) => {
         this[el] = true;
       });
 
-      await this.$store.dispatch('getCatalog', this.currentCatalogItem.catalogId._id);
+      await this.$store.dispatch(
+        'getCatalog',
+        this.currentCatalogItem.catalogId._id
+      );
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.catalogs'),
-          link: '/dashboard/catalogs'
+          link: '/dashboard/catalogs',
         },
         {
           text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
-          link: `/dashboard/catalogs/${this.currentCatalog._id}`
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`,
         },
         {
           text: `${this.currentCatalogItem.nameEN} (${this.currentCatalogItem.styleCode})`,
-          link: `/dashboard/catalogitems/${this.currentCatalogItem._id}`
+          link: `/dashboard/catalogitems/${this.currentCatalogItem._id}`,
         },
         {
           text: i18n.t('edit'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     updateCatalogItem: async function() {
-      const mappedCategoriesEN = this.categories.map(cat => cat.text);
-      const mappedCategoriesFR = this.categoriesFR.map(catFR => catFR.text);
+      const mappedCategoriesEN = this.categories.map((cat) => cat.text);
+      const mappedCategoriesFR = this.categoriesFR.map((catFR) => catFR.text);
 
       const updatedCatalogItem = {
         nameEN: this.nameEN,
@@ -477,28 +548,35 @@ export default {
         descriptionEN: this.descriptionEN,
         descriptionFR: this.descriptionFR,
         categories: mappedCategoriesEN,
-        categoriesFR: mappedCategoriesFR
+        categoriesFR: mappedCategoriesFR,
       };
 
       try {
         await this.$store.dispatch('updateCatalogItem', {
           id: this.currentCatalogItem._id,
-          updatedCatalogItem
+          updatedCatalogItem,
         });
         this.$router
-          .push({ name: 'catalogItemById', params: { id: this.currentCatalogItem._id } })
+          .push({
+            name: 'catalogItemById',
+            params: { id: this.currentCatalogItem._id },
+          })
           .catch(() => {});
-        this.$toasted.success(i18n.t('catalogs.itemUpdated'), { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('catalogs.itemUpdated'), {
+          icon: 'check-circle',
+        });
       } catch (err) {
         if (err.response.data[0].message === 'Product already exists.') {
           this.$toasted.error(i18n.t('catalogs.productExists'), {
-            icon: 'exclamation-triangle'
+            icon: 'exclamation-triangle',
           });
           this.$refs['productCode'].value = '';
           this.$refs['styleCode'].value = '';
           this.$refs['productCode'].focus();
         } else {
-          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
           if (err.response.data[0].context.key !== 'sizes') {
             const key = err.response.data[0].context.key;
             this.$refs[key].focus();
@@ -508,12 +586,13 @@ export default {
     },
     getImgUrl(index) {
       if (!this.isLoading) {
-        if (this.currentCatalogItem.images.length === 0)
-          return `/images/assets/missing_item_800.png`;
+        if (
+          this.currentCatalogItem.images.length === 0 ||
+          !this.currentCatalogItem.images[index]
+        )
+          return `https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png`;
 
-        if (!this.currentCatalogItem.images[index]) return `/images/assets/missing_item_800.png`;
-
-        return `/images/catalogs/${this.currentCatalog._id}/800/${this.currentCatalogItem.images[index]}_800.jpg`;
+        return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand}/${this.currentCatalogItem.images[index]}_hd.jpg`;
       }
     },
     setSizes: function() {
@@ -542,8 +621,8 @@ export default {
       }
 
       this.sizes = activeSizes;
-    }
-  }
+    },
+  },
 };
 </script>
 

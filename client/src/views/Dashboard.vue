@@ -9,7 +9,9 @@
     >
       <div slot="header" class="tbLogo">
         <a href="/dashboard/index"
-          ><img src="/images/assets/tb_logo_white.svg" alt="Team Builder logo"
+          ><img
+            src="https://teambuilder.s3.amazonaws.com/images/assets/tb_logo_white.svg"
+            alt="Team Builder logo"
         /></a>
       </div>
       <span slot="toggle-icon">
@@ -37,12 +39,12 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Dashboard',
   components: {
-    TopNav
+    TopNav,
   },
   data() {
     return {
       sideCollapsed: false,
-      screenWidth: 0
+      screenWidth: 0,
     };
   },
   created() {
@@ -72,11 +74,11 @@ export default {
       this.$router.push({ name: 'home' });
       this.$toasted.clear();
       this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
-    }
+    },
   },
   computed: {
-    ...mapGetters(['loggedInMember', 'menu'])
-  }
+    ...mapGetters(['loggedInMember', 'menu']),
+  },
 };
 </script>
 
@@ -93,7 +95,11 @@ export default {
     'topnav'
     'content';
 
-  background-image: linear-gradient(to bottom right, $white-text, $background-grey);
+  background-image: linear-gradient(
+    to bottom right,
+    $white-text,
+    $background-grey
+  );
 
   .logoutBtn {
     display: inline-block;
@@ -129,7 +135,11 @@ export default {
     'topnav'
     'content';
 
-  background-image: linear-gradient(to bottom right, $white-text, $background-grey);
+  background-image: linear-gradient(
+    to bottom right,
+    $white-text,
+    $background-grey
+  );
 
   .logoutBtn {
     display: inline-block;

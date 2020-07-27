@@ -4,17 +4,17 @@
       <div class="row p-1">
         <div class="col-sm-12">
           <img
-            src="/images/assets/garneau_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/garneau_logo.png"
             alt="Garneau Logo"
             v-if="store.brand === 'GARNEAU'"
           />
           <img
-            src="/images/assets/sombrio_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sombrio_logo.png"
             alt="Sombrio Logo"
             v-else-if="store.brand === 'SOMBRIO'"
           />
           <img
-            src="/images/assets/sugoi_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sugoi_logo.png"
             alt="Sugoi Logo"
             v-else-if="store.brand === 'SUGOI'"
           />
@@ -43,7 +43,12 @@
           <br />
           <span v-if="store.openingDate">
             {{
-              store.openingDate | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+              store.openingDate
+                | moment(
+                  'timezone',
+                  store.timezone,
+                  'MMM Do YYYY - hh:mm a - z'
+                )
             }}
           </span>
           <span v-else>No Opening Date</span>
@@ -53,7 +58,12 @@
           <br />
           <span v-if="store.closingDate">
             {{
-              store.closingDate | moment('timezone', store.timezone, 'MMM Do YYYY - hh:mm a - z')
+              store.closingDate
+                | moment(
+                  'timezone',
+                  store.timezone,
+                  'MMM Do YYYY - hh:mm a - z'
+                )
             }}
           </span>
           <span v-else>No Closing Date</span>
@@ -62,13 +72,17 @@
       <div class="row p-1 mt-1" v-if="currentDateTime">
         <small class="col-sm-12 text-info">Current Store Time:</small>
         <span class="col-sm-12">{{
-          currentDateTime | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')
+          currentDateTime
+            | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')
         }}</span>
       </div>
       <div class="row p-1">
         <small class="col-sm-12 text-info">Store Created:</small>
         <span class="col-sm-12">
-          {{ store.createdAt | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z') }}
+          {{
+            store.createdAt
+              | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm a - z')
+          }}
         </span>
       </div>
       <div class="row p-1" v-if="access">
@@ -137,7 +151,9 @@
             placeholder="Enter any product info..."
             autofocus
           />
-          <small class="text-muted">Showing: {{ filteredCount }}/{{ storeItems.length }}</small>
+          <small class="text-muted"
+            >Showing: {{ filteredCount }}/{{ storeItems.length }}</small
+          >
         </div>
         <div class="header-buttons" v-if="member.isAdmin">
           <router-link
@@ -150,9 +166,15 @@
             :to="`/dashboard/stores/${store._id}/add`"
             >Edit Items</router-link
           >
-          <button @click="displayExtrasModal" class="btn btn-sm btn-outline-info mr-2">
+          <button
+            @click="displayExtrasModal"
+            class="btn btn-sm btn-outline-info mr-2"
+          >
             Edit Extras
-            <span class="badge badge-light ml-2" v-if="extraCharges && extraCharges.length > 0">
+            <span
+              class="badge badge-light ml-2"
+              v-if="extraCharges && extraCharges.length > 0"
+            >
               {{ extraCharges.length }}
             </span>
           </button>
@@ -163,10 +185,21 @@
         </div>
       </div>
       <div class="gallery-list" v-if="filteredItems.length > 0">
-        <div class="card" v-for="(item, index) in filteredItems" :key="item._id">
+        <div
+          class="card"
+          v-for="(item, index) in filteredItems"
+          :key="item._id"
+        >
           <div class="card-image" v-lazy-container="{ selector: 'img' }">
-            <img :data-src="getImgUrl(item)" :alt="item.nameEN" class="card-img-top" />
-            <div class="mandatoryItem bg-danger text-white" v-if="item.mandatoryItem">
+            <img
+              :data-src="getImgUrl(item)"
+              :alt="item.nameEN"
+              class="card-img-top"
+            />
+            <div
+              class="mandatoryItem bg-danger text-white"
+              v-if="item.mandatoryItem"
+            >
               Mandatory
             </div>
             <div class="price-box">{{ item.storePrice | currency }}</div>
@@ -175,28 +208,45 @@
             <h6 class="card-title mb-2">{{ item.nameEN }}</h6>
             <span class="card-text text-muted">{{ item.productCode }}</span>
             <br />
-            <span class="card-text text-muted" v-if="member.isAdmin">{{ item.styleCode }}</span>
+            <span class="card-text text-muted" v-if="member.isAdmin">{{
+              item.styleCode
+            }}</span>
           </div>
           <div class="card-footer">
-            <div class="likes-section mb-3" v-if="(store.mode === 'SURVEY' && !access) || access">
+            <div
+              class="likes-section mb-3"
+              v-if="(store.mode === 'SURVEY' && !access) || access"
+            >
               <i
                 class="fas fa-heart fa-2x text-danger"
                 v-if="item.surveyLikedBy.includes(member._id)"
                 @click="removeLike(item._id)"
               ></i>
-              <i class="far fa-heart fa-2x text-secondary" v-else @click="addLike(item._id)"></i>
+              <i
+                class="far fa-heart fa-2x text-secondary"
+                v-else
+                @click="addLike(item._id)"
+              ></i>
               <span class="badge badge-danger ml-1" v-if="access">{{
                 item.surveyLikedBy.length
               }}</span>
             </div>
             <div
               class="cart-section mb-2"
-              v-if="store.mode === 'OPEN' && !member.isAdmin && !item.mandatoryItem"
+              v-if="
+                store.mode === 'OPEN' && !member.isAdmin && !item.mandatoryItem
+              "
             >
               <div class="form-inline">
                 <label class="mr-1" for="size">Size:</label>
-                <select class="form-control form-control-sm mr-2" id="size" ref="size">
-                  <option v-for="size in item.sizes" :key="size">{{ size }}</option>
+                <select
+                  class="form-control form-control-sm mr-2"
+                  id="size"
+                  ref="size"
+                >
+                  <option v-for="size in item.sizes" :key="size">{{
+                    size
+                  }}</option>
                 </select>
                 <label class="mr-1" for="qty">Qty:</label>
                 <input
@@ -216,13 +266,19 @@
                 Add to Cart
               </button>
             </div>
-            <div class="mb-2 text-center" v-if="item.mandatoryItem && !member.isAdmin">
+            <div
+              class="mb-2 text-center"
+              v-if="item.mandatoryItem && !member.isAdmin"
+            >
               <span class="text-danger">
                 Item is already in your cart.
                 <br />You can adjust size and quantity there.
               </span>
             </div>
-            <div class="progressBar text-center" v-if="access && store.mode === 'OPEN'">
+            <div
+              class="progressBar text-center"
+              v-if="access && store.mode === 'OPEN'"
+            >
               <label for="progress" class="mt-2">Price Break Goal</label>
               <div class="progress">
                 <div
@@ -315,7 +371,9 @@
                       />
                     </div>
                     <div class="col-md-2">
-                      <label for="extraPriceNew">Price {{ store.currency }}</label>
+                      <label for="extraPriceNew"
+                        >Price {{ store.currency }}</label
+                      >
                       <currency-input
                         :currency="store.currency"
                         :auto-decimal-mode="true"
@@ -329,12 +387,19 @@
                     <div class="col-md-2">
                       <button
                         class="btn btn-block btn-success"
-                        :disabled="!newChargeName || newChargePrice === 0 || !newChargePrice"
+                        :disabled="
+                          !newChargeName ||
+                            newChargePrice === 0 ||
+                            !newChargePrice
+                        "
                         @click="addNewCharge"
                       >
                         <i class="fas fa-check mr-2"></i>Add
                       </button>
-                      <button class="btn btn-block btn-danger" @click="cancelNewCharge">
+                      <button
+                        class="btn btn-block btn-danger"
+                        @click="cancelNewCharge"
+                      >
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -380,7 +445,7 @@ export default {
       showNewCharge: false,
       newChargePreset: '',
       newChargeName: '',
-      newChargePrice: 0.0
+      newChargePrice: 0.0,
     };
   },
   created: async function() {
@@ -392,12 +457,12 @@ export default {
       const breadcrumbs = [
         {
           text: 'Stores',
-          link: '/dashboard/stores'
+          link: '/dashboard/stores',
         },
         {
           text: `${this.store.storeName}`,
-          link: `/dashboard/stores/${this.store._id}`
-        }
+          link: `/dashboard/stores/${this.store._id}`,
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getStoreItems', this.store._id);
@@ -409,7 +474,9 @@ export default {
       this.addMandatoryItemsToCart();
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   beforeDestroy: function() {
@@ -424,7 +491,7 @@ export default {
       'loggedInMember',
       'isLoading',
       'orders',
-      'currentStoreItems'
+      'currentStoreItems',
     ]),
     store: function() {
       return this.currentStore;
@@ -436,13 +503,21 @@ export default {
       return this.currentStoreItems;
     },
     filteredItems: function() {
-      return this.storeItems.filter(item => {
+      return this.storeItems.filter((item) => {
         if (
           item.categories.includes(this.storeItemsSearchText.toUpperCase()) ||
-          item.nameEN.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
-          item.nameFR.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
-          item.productCode.toLowerCase().includes(this.storeItemsSearchText.toLowerCase()) ||
-          item.styleCode.toLowerCase().includes(this.storeItemsSearchText.toLowerCase())
+          item.nameEN
+            .toLowerCase()
+            .includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.nameFR
+            .toLowerCase()
+            .includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.productCode
+            .toLowerCase()
+            .includes(this.storeItemsSearchText.toLowerCase()) ||
+          item.styleCode
+            .toLowerCase()
+            .includes(this.storeItemsSearchText.toLowerCase())
         ) {
           if (
             (this.storeItemsSearchText.toLowerCase() === "men's" ||
@@ -475,7 +550,7 @@ export default {
     },
     extraCharges: function() {
       return this.store.extraCharges;
-    }
+    },
   },
   methods: {
     getNow: async function() {
@@ -495,7 +570,10 @@ export default {
       if (confirm('Are you sure?')) {
         this.$store.commit('LOADING_TRUE');
         try {
-          const res = await this.$store.dispatch('duplicateTeamStore', this.store._id);
+          const res = await this.$store.dispatch(
+            'duplicateTeamStore',
+            this.store._id
+          );
           await this.$store.dispatch('getTeamStores', this.store.teamId._id);
           this.$router
             .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
@@ -504,7 +582,9 @@ export default {
           this.$store.commit('LOADING_FALSE');
         } catch (err) {
           this.$store.commit('LOADING_FALSE');
-          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         }
       }
     },
@@ -515,20 +595,22 @@ export default {
       try {
         await this.$store.dispatch('updateStoreCharges', {
           id: this.store._id,
-          extraCharges: this.extraCharges
+          extraCharges: this.extraCharges,
         });
         this.showExtrasModal = false;
         this.showNewCharge = false;
       } catch (err) {
         this.showNewCharge = false;
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     addNewCharge: function() {
       this.showNewCharge = false;
       this.extraCharges.push({
         name: this.newChargeName,
-        amount: this.newChargePrice
+        amount: this.newChargePrice,
       });
       this.newChargeName = '';
       this.newChargePreset = '';
@@ -546,11 +628,15 @@ export default {
         try {
           await this.$store.dispatch('updateStoreCharges', {
             id: this.store._id,
-            extraCharges: this.extraCharges
+            extraCharges: this.extraCharges,
           });
-          this.$toasted.success('Extra Charge removed', { icon: 'check-circle' });
+          this.$toasted.success('Extra Charge removed', {
+            icon: 'check-circle',
+          });
         } catch (err) {
-          this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         }
       }
     },
@@ -566,28 +652,32 @@ export default {
       }
     },
     getImgUrl: function(item) {
-      // if (item.images.length === 0) return '/images/assets/missing_item_800.png';
-      return `/images/storeitems/${this.store._id}/800/${item.images[0]}_800.jpg`;
+      // if (item.images.length === 0) return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+      return `https://teambuilder.s3.amazonaws.com/images/storeitems/${this.store._id}/${item.images[0]}_hd.jpg`;
     },
     removeLike: async function(id) {
       try {
         if (!this.member.isAdmin && this.store.mode === 'SURVEY') {
           await this.$store.dispatch('removeLike', id);
-          this.storeItems.forEach(item => {
+          this.storeItems.forEach((item) => {
             if (item._id === id) {
-              item.surveyLikedBy = item.surveyLikedBy.filter(like => like !== this.member._id);
+              item.surveyLikedBy = item.surveyLikedBy.filter(
+                (like) => like !== this.member._id
+              );
             }
           });
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     addLike: async function(id) {
       try {
         if (!this.member.isAdmin && this.store.mode === 'SURVEY') {
           await this.$store.dispatch('addLike', id);
-          this.storeItems.forEach(item => {
+          this.storeItems.forEach((item) => {
             if (item._id === id) {
               if (!item.surveyLikedBy.includes(this.member._id)) {
                 item.surveyLikedBy.push(this.member._id);
@@ -596,12 +686,19 @@ export default {
           });
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     addToCart: async function(index) {
-      if (!this.$refs.quantity[index].value || this.$refs.quantity[index].value == 0) {
-        this.$toasted.error('quantity must be greater than 0', { icon: 'exclamation-triangle' });
+      if (
+        !this.$refs.quantity[index].value ||
+        this.$refs.quantity[index].value == 0
+      ) {
+        this.$toasted.error('quantity must be greater than 0', {
+          icon: 'exclamation-triangle',
+        });
         this.$refs.quantity[index].value = 0;
         return this.$refs.quantity[index].focus();
       }
@@ -615,7 +712,7 @@ export default {
         productCode,
         categories,
         sizes,
-        mandatoryItem
+        mandatoryItem,
       } = this.storeItems[index];
 
       const item = {
@@ -629,35 +726,45 @@ export default {
         productCode,
         categories,
         sizes,
-        mandatoryItem
+        mandatoryItem,
       };
 
       try {
         const res = await this.$store.dispatch('addItemToCart', {
           storeId: this.store._id,
-          item
+          item,
         });
         this.$toasted.success(res.data[0].message, { icon: 'shopping-cart' });
         this.$refs.quantity[index].value = null;
       } catch (err) {
         return this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle'
+          icon: 'exclamation-triangle',
         });
       }
     },
     addMandatoryItemsToCart: async function() {
       const mandatories = this.storeItems.filter(
-        mandatoryItem => mandatoryItem.mandatoryItem === true
+        (mandatoryItem) => mandatoryItem.mandatoryItem === true
       );
 
       if (mandatories && mandatories.length > 0) {
-        mandatories.forEach(async el => {
+        mandatories.forEach(async (el) => {
           try {
             if (
               this.currentCart.items &&
-              this.currentCart.items.filter(e => e.storeItemId === el._id).length === 0
+              this.currentCart.items.filter((e) => e.storeItemId === el._id)
+                .length === 0
             ) {
-              const { _id, images, nameEN, nameFR, styleCode, productCode, categories, sizes } = el;
+              const {
+                _id,
+                images,
+                nameEN,
+                nameFR,
+                styleCode,
+                productCode,
+                categories,
+                sizes,
+              } = el;
               const item = {
                 storeItemId: _id,
                 quantity: 1,
@@ -669,23 +776,23 @@ export default {
                 productCode,
                 categories,
                 sizes,
-                mandatoryItem: true
+                mandatoryItem: true,
               };
 
               await this.$store.dispatch('addItemToCart', {
                 storeId: this.store._id,
-                item
+                item,
               });
             }
           } catch (err) {
             return this.$toasted.error(err.response.data[0].message, {
-              icon: 'exclamation-triangle'
+              icon: 'exclamation-triangle',
             });
           }
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

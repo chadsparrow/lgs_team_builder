@@ -34,7 +34,10 @@
             </span>
             <span
               class="text-muted mr-2"
-              v-if="currentCatalogItem.categories[2] || currentCatalogItem.categoriesFR[2]"
+              v-if="
+                currentCatalogItem.categories[2] ||
+                  currentCatalogItem.categoriesFR[2]
+              "
             >
               /
               {{
@@ -45,7 +48,10 @@
             </span>
             <span
               class="text-muted mr-2"
-              v-if="currentCatalogItem.categories[3] || currentCatalogItem.categoriesFR[3]"
+              v-if="
+                currentCatalogItem.categories[3] ||
+                  currentCatalogItem.categoriesFR[3]
+              "
             >
               /
               {{
@@ -57,17 +63,31 @@
           </div>
           <div class="col-12 mt-1">
             <h1>
-              {{ $i18n.locale === 'en' ? currentCatalogItem.nameEN : currentCatalogItem.nameFR }}
+              {{
+                $i18n.locale === 'en'
+                  ? currentCatalogItem.nameEN
+                  : currentCatalogItem.nameFR
+              }}
             </h1>
           </div>
           <div class="col-12 text-info">
-            <span>{{ $t('catalogs.product') }}: {{ currentCatalogItem.productCode }}</span>
-            <span v-if="currentCatalogItem.productCode !== currentCatalogItem.styleCode"
-              >/ {{ $t('catalogs.style') }}: {{ currentCatalogItem.styleCode }}</span
+            <span
+              >{{ $t('catalogs.product') }}:
+              {{ currentCatalogItem.productCode }}</span
+            >
+            <span
+              v-if="
+                currentCatalogItem.productCode !== currentCatalogItem.styleCode
+              "
+              >/ {{ $t('catalogs.style') }}:
+              {{ currentCatalogItem.styleCode }}</span
             >
           </div>
           <div class="col-12">
-            <p class="mt-3 text-muted text-justify" v-if="description[0] !== 'NA'">
+            <p
+              class="mt-3 text-muted text-justify"
+              v-if="description[0] !== 'NA'"
+            >
               {{ description[0] }}
             </p>
             <ul class="bulletPoints" v-if="bulletPoints">
@@ -96,17 +116,30 @@
             </span>
           </div>
           <div class="col-12 mt-2">
-            <span class="text-info mr-2">{{ $t('formLabels.availableSizes') }}:</span>
-            <span class="mr-2" v-for="size in currentCatalogItem.sizes" :key="size">
+            <span class="text-info mr-2"
+              >{{ $t('formLabels.availableSizes') }}:</span
+            >
+            <span
+              class="mr-2"
+              v-for="size in currentCatalogItem.sizes"
+              :key="size"
+            >
               {{ size }}
             </span>
           </div>
           <div class="col-12 mt-2">
-            <span class="text-info mr-2">{{ $t('formLabels.itemActive') }}:</span>
-            <span>{{ currentCatalogItem.isActive ? `${$t('yes')}` : `${$t('no')}` }}</span>
+            <span class="text-info mr-2"
+              >{{ $t('formLabels.itemActive') }}:</span
+            >
+            <span>{{
+              currentCatalogItem.isActive ? `${$t('yes')}` : `${$t('no')}`
+            }}</span>
           </div>
           <div class="col-12 my-5">
-            <h4 class="text-info" style="font-weight: 700; text-decoration: underline;">
+            <h4
+              class="text-info"
+              style="font-weight: 700; text-decoration: underline;"
+            >
               {{ $t('formLabels.priceBreaks') }}:
             </h4>
             <div class="row mt-2">
@@ -119,7 +152,9 @@
                     class="list-group-item"
                   >
                     <span class="pricebreaks">{{ pb.priceBreak }}</span>
-                    <span class="prices text-info">{{ pb.price | currency }}</span>
+                    <span class="prices text-info">{{
+                      pb.price | currency
+                    }}</span>
                   </li>
                   <li class="list-group-item">
                     <span class="pricebreaks">250+</span>
@@ -136,11 +171,15 @@
                     class="list-group-item"
                   >
                     <span class="pricebreaks">{{ pb.priceBreak }}</span>
-                    <span class="prices text-info">{{ pb.price | currency }}</span>
+                    <span class="prices text-info">{{
+                      pb.price | currency
+                    }}</span>
                   </li>
                   <li class="list-group-item">
                     <span class="pricebreaks">250+</span>
-                    <span class="prices text-info">{{ $t('formLabels.negotiable') }}</span>
+                    <span class="prices text-info">{{
+                      $t('formLabels.negotiable')
+                    }}</span>
                   </li>
                 </ul>
               </div>
@@ -171,24 +210,24 @@ export default {
         {
           id: 1,
           index: 0,
-          alt: i18n.t('catalogs.page.productImage1')
+          alt: i18n.t('catalogs.page.productImage1'),
         },
         {
           id: 2,
           index: 1,
-          alt: i18n.t('catalogs.page.productImage2')
+          alt: i18n.t('catalogs.page.productImage2'),
         },
         {
           id: 3,
           index: 2,
-          alt: i18n.t('catalogs.page.productImage3')
+          alt: i18n.t('catalogs.page.productImage3'),
         },
         {
           id: 4,
           index: 3,
-          alt: i18n.t('catalogs.page.productImage4')
-        }
-      ]
+          alt: i18n.t('catalogs.page.productImage4'),
+        },
+      ],
     };
   },
   computed: {
@@ -202,7 +241,7 @@ export default {
       }
 
       const descArray = desc.split('•');
-      const bulletPoints = descArray.map(el => {
+      const bulletPoints = descArray.map((el) => {
         el = el.replace('\n', '').trim();
         return el;
       });
@@ -213,17 +252,18 @@ export default {
         if (i > 0) return el;
       });
       return bulletPoints;
-    }
+    },
   },
   methods: {
     getImgUrl(index) {
       if (!this.isLoading) {
-        if (this.currentCatalogItem.images.length === 0)
-          return `/images/assets/missing_item_800.png`;
+        if (
+          this.currentCatalogItem.images.length === 0 ||
+          !this.currentCatalogItem.images[index]
+        )
+          return `https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png`;
 
-        if (!this.currentCatalogItem.images[index]) return `/images/assets/missing_item_800.png`;
-
-        return `/images/catalogs/${this.currentCatalog._id}/800/${this.currentCatalogItem.images[index]}_800.jpg`;
+        return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand}/${this.currentCatalogItem.images[index]}_hd.jpg`;
       }
     },
     switchImage(id, ind) {
@@ -232,7 +272,7 @@ export default {
         this.images[0].index = ind;
         this.images[id - 1].index = currentZeroIndex;
       }
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -244,30 +284,35 @@ export default {
       } else {
         this.images = this.images.splice(0, imagesLength);
       }
-      await this.$store.dispatch('getCatalog', this.currentCatalogItem.catalogId._id);
+      await this.$store.dispatch(
+        'getCatalog',
+        this.currentCatalogItem.catalogId._id
+      );
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.catalogs'),
-          link: '/dashboard/catalogs'
+          link: '/dashboard/catalogs',
         },
         {
           text: `${this.currentCatalog.brand} - ${i18n
             .t(`catalogs.add.season.${this.currentCatalog.season}`)
             .toUpperCase()} - ${this.currentCatalog.year}`,
-          link: `/dashboard/catalogs/${this.currentCatalog._id}`
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`,
         },
         {
           text: `${this.currentCatalogItem.nameEN} (${this.currentCatalogItem.styleCode})`,
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
-  }
+  },
 };
 </script>
 

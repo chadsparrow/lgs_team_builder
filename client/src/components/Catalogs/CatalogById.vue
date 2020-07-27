@@ -6,17 +6,17 @@
       <div class="row text-center">
         <div class="col-lg-3">
           <img
-            src="/images/assets/garneau_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/garneau_logo.png"
             alt="Garneau Logo"
             v-if="currentCatalog.brand === 'GARNEAU'"
           />
           <img
-            src="/images/assets/sugoi_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sugoi_logo.png"
             alt="Sugoi Logo"
             v-if="currentCatalog.brand === 'SUGOI'"
           />
           <img
-            src="/images/assets/sombrio_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sombrio_logo.png"
             alt="Sombrio Logo"
             v-if="currentCatalog.brand === 'SOMBRIO'"
           />
@@ -43,9 +43,11 @@
               <i class="fas fa-times"></i>
             </button>
           </div>
-          <small
-            class="text-muted"
-          >{{ $t('showing') }}: {{ filteredCount }}/{{ currentCatalogItems.length }}</small>
+          <small class="text-muted"
+            >{{ $t('showing') }}: {{ filteredCount }}/{{
+              currentCatalogItems.length
+            }}</small
+          >
         </div>
         <div class="col-lg-6 col-xl-4">
           <div class="row">
@@ -79,22 +81,30 @@
         :to="`/dashboard/catalogItems/${item._id}`"
       >
         <div class="thumbnail-img" v-lazy-container="{ selector: 'img' }">
-          <img :data-src="getImgUrl(item)" :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR" />
+          <img
+            :data-src="getImgUrl(item)"
+            :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
+          />
         </div>
 
         <div class="thumbnail-body px-3">
           <div class="row">
             <div class="col-12">
-              <p class="productName mb-0">{{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}</p>
+              <p class="productName mb-0">
+                {{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}
+              </p>
             </div>
             <div class="col-lg-6 col-xl-4">
-              <small class="text-muted mr-4">{{ $t('catalogs.product') }} : {{ item.productCode }}</small>
+              <small class="text-muted mr-4"
+                >{{ $t('catalogs.product') }} : {{ item.productCode }}</small
+              >
             </div>
             <div class="col-lg-6 col-xl-4">
               <small
                 class="text-muted"
                 v-if="item.productCode !== item.styleCode"
-              >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small>
+                >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small
+              >
             </div>
           </div>
         </div>
@@ -111,19 +121,27 @@ export default {
   name: 'CatalogById',
   data() {
     return {
-      catalogItemSearch: ''
+      catalogItemSearch: '',
     };
   },
   computed: {
     ...mapGetters(['isLoading', 'currentCatalog', 'currentCatalogItems']),
     filteredItems: function() {
-      return this.currentCatalogItems.filter(item => {
+      return this.currentCatalogItems.filter((item) => {
         if (
           item.categories.includes(this.catalogItemSearch.toUpperCase()) ||
-          item.nameEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.nameFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.productCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.styleCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase())
+          item.nameEN
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.nameFR
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.productCode
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.styleCode
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase())
         ) {
           if (
             (this.catalogItemSearch.toLowerCase() === "men's" ||
@@ -140,7 +158,7 @@ export default {
     },
     filteredCount: function() {
       return this.filteredItems.length || this.currentCatalogItems.length;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -149,32 +167,34 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.catalogs'),
-          link: '/dashboard/catalogs'
+          link: '/dashboard/catalogs',
         },
         {
           text: `${this.currentCatalog.brand} - ${i18n
             .t(`catalogs.add.season.${this.currentCatalog.season}`)
             .toUpperCase()} - ${this.currentCatalog.year}`,
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogItems', this.currentCatalog._id);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     getImgUrl(item) {
-      return `/images/catalogs/${this.currentCatalog._id}/300/${item.images[0]}_300.jpg`;
+      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand}/${item.images[0]}_sd.jpg`;
     },
     resetSearchBar() {
       this.catalogItemSearch = '';
       this.$refs.searchBar.focus();
-    }
-  }
+    },
+  },
 };
 </script>
 

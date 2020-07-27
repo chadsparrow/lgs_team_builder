@@ -4,17 +4,17 @@
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">
           <img
-            src="/images/assets/garneau_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/garneau_logo.png"
             alt="Garneau Logo"
             v-if="store.brand === 'GARNEAU'"
           />
           <img
-            src="/images/assets/sugoi_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sugoi_logo.png"
             alt="Sugoi Logo"
             v-if="store.brand === 'SUGOI'"
           />
           <img
-            src="/images/assets/sombrio_logo.png"
+            src="https://teambuilder.s3.amazonaws.com/images/assets/sombrio_logo.png"
             alt="Sombrio Logo"
             v-if="store.brand === 'SOMBRIO'"
           />
@@ -26,8 +26,13 @@
           v-model="catalogPicker"
           @change="getCatalog"
         >
-          <option v-for="catalog in catalogs" :key="catalog._id" :value="catalog._id"
-            >{{ catalog.brand }} - {{ catalog.season }} -{{ catalog.year }}</option
+          <option
+            v-for="catalog in catalogs"
+            :key="catalog._id"
+            :value="catalog._id"
+            >{{ catalog.brand }} - {{ catalog.season }} -{{
+              catalog.year
+            }}</option
           >
         </select>
       </div>
@@ -45,7 +50,9 @@
           placeholder="Enter any product info to filter..."
           autofocus
         />
-        <small class="text-muted">Showing: {{ filteredCount }}/{{ catalogItems.length }}</small>
+        <small class="text-muted"
+          >Showing: {{ filteredCount }}/{{ catalogItems.length }}</small
+        >
       </div>
       <div class="catalogItemsList" v-if="currentCatalog._id">
         <draggable
@@ -54,14 +61,20 @@
           :clone="clone"
           :group="{ name: 'items', pull: 'clone', put: false }"
         >
-          <div class="list-group-item" v-for="(item, index) in filteredItems" :key="index">
+          <div
+            class="list-group-item"
+            v-for="(item, index) in filteredItems"
+            :key="index"
+          >
             <div class="itemImage" v-lazy-container="{ selector: 'img' }">
               <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
             </div>
             <div class="itemInfo">
               {{ item.nameEN }}
               <br />
-              <small class="text-muted">{{ item.productCode }} / {{ item.styleCode }}</small>
+              <small class="text-muted"
+                >{{ item.productCode }} / {{ item.styleCode }}</small
+              >
             </div>
           </div>
         </draggable>
@@ -76,12 +89,19 @@
           group="items"
           @change="updateStoreItems"
         >
-          <div class="list-group-item mb-1" v-for="(storeItem, index) in storeItems" :key="index">
+          <div
+            class="list-group-item mb-1"
+            v-for="(storeItem, index) in storeItems"
+            :key="index"
+          >
             <div class="itemImage" v-lazy-container="{ selector: 'img' }">
               <img :data-src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
             </div>
             <div class="itemInfo">
-              <div v-if="storeItem.mandatoryItem" class="text-danger mandatoryStar">
+              <div
+                v-if="storeItem.mandatoryItem"
+                class="text-danger mandatoryStar"
+              >
                 <span>Mandatory Item</span>
                 <br />
               </div>
@@ -92,7 +112,9 @@
               >
             </div>
             <div class="itemPricing">
-              <span class="text-info">{{ storeItem.storePrice | currency }}</span>
+              <span class="text-info">{{
+                storeItem.storePrice | currency
+              }}</span>
               <br />
               <label for="pbGoal">
                 <small>Price Break Goal:</small>
@@ -101,7 +123,10 @@
               <small id="pbGoal">{{ storeItem.priceBreakGoal }} unit(s)</small>
             </div>
             <div class="itemButtons">
-              <button class="btn btn-block btn-sm btn-info" @click="showEditWindow(storeItem)">
+              <button
+                class="btn btn-block btn-sm btn-info"
+                @click="showEditWindow(storeItem)"
+              >
                 Edit Item
               </button>
               <button
@@ -125,7 +150,9 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Edit: {{ currentStoreItem.nameEN }}</h5>
+                  <h5 class="modal-title">
+                    Edit: {{ currentStoreItem.nameEN }}
+                  </h5>
                 </div>
                 <div class="modal-body text-center">
                   <div class="container-fluid">
@@ -138,10 +165,13 @@
                             id="mandatoryItem"
                             v-model="currentStoreItem.mandatoryItem"
                           />
-                          <label class="form-check-label" for="mandatoryItem">Mandatory Item</label>
+                          <label class="form-check-label" for="mandatoryItem"
+                            >Mandatory Item</label
+                          >
                           <p v-if="currentStoreItem.mandatoryItem">
                             <small class="text-muted"
-                              >This item will be added to all member orders</small
+                              >This item will be added to all member
+                              orders</small
                             >
                           </p>
                         </div>
@@ -183,7 +213,9 @@
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="priceBreak">Price Break Goal ({{ store.currency }})</label>
+                          <label for="priceBreak"
+                            >Price Break Goal ({{ store.currency }})</label
+                          >
                           <select
                             class="form-control form-control-sm"
                             id="priceBreak"
@@ -195,9 +227,12 @@
                               v-for="(pb, index) in currentItemPriceBreaks"
                               :value="parseInt(pb.priceBreak.split('-')[0])"
                               :key="index"
-                              >{{ pb.priceBreak }} unit(s) - {{ pb.price | currency }}/unit</option
+                              >{{ pb.priceBreak }} unit(s) -
+                              {{ pb.price | currency }}/unit</option
                             >
-                            <option :value="250">250+ units - Set Price Below</option>
+                            <option :value="250"
+                              >250+ units - Set Price Below</option
+                            >
                           </select>
                         </div>
                       </div>
@@ -251,7 +286,9 @@
                             @change="overrideActual"
                             ref="overrideActualPrice"
                           />
-                          <label class="form-check-label text-white" for="overrideActualPrice"
+                          <label
+                            class="form-check-label text-white"
+                            for="overrideActualPrice"
                             >Override Actual Price -
                             {{ currentStoreItem.actualPrice | currency }}</label
                           >
@@ -263,9 +300,12 @@
                             >Store Price: ({{ store.currency }})<br /><small
                               class="text-muted"
                               v-if="!currentStoreItem.overrideActualPrice"
-                              >Actual Price: {{ currentStoreItem.actualPrice | currency }} +
+                              >Actual Price:
+                              {{ currentStoreItem.actualPrice | currency }} +
                               Up-Charge Amount:
-                              {{ currentStoreItem.upChargeTotal | currency }}</small
+                              {{
+                                currentStoreItem.upChargeTotal | currency
+                              }}</small
                             ><small class="text-muted" v-else
                               >Please fill in desired store price</small
                             ></label
@@ -277,7 +317,9 @@
                             :precision="2"
                             class="form-control form-control-lg text-center"
                             ref="storePrice"
-                            :readonly="!this.currentStoreItem.overrideActualPrice"
+                            :readonly="
+                              !this.currentStoreItem.overrideActualPrice
+                            "
                             id="storePrice"
                           />
                         </div>
@@ -286,7 +328,11 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-info" @click="closeModal">
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    @click="closeModal"
+                  >
                     Exit
                   </button>
                 </div>
@@ -306,14 +352,14 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'StoresByIdAddItem',
   components: {
-    draggable
+    draggable,
   },
   data() {
     return {
       catalogPicker: '',
       catalogItemSearch: '',
       showModal: false,
-      currentItemPriceBreaks: null
+      currentItemPriceBreaks: null,
     };
   },
   computed: {
@@ -324,7 +370,7 @@ export default {
       'currentCatalog',
       'currentCatalogItems',
       'currentStoreItem',
-      'currentStoreItems'
+      'currentStoreItems',
     ]),
     store: function() {
       return this.currentStore;
@@ -335,7 +381,7 @@ export default {
       },
       set(value) {
         this.$store.commit('SET_CURRENT_STORE_ITEM', value);
-      }
+      },
     },
     catalog: function() {
       return this.currentCatalog;
@@ -344,13 +390,21 @@ export default {
       return this.currentCatalogItems;
     },
     filteredItems: function() {
-      return this.catalogItems.filter(item => {
+      return this.catalogItems.filter((item) => {
         if (
           item.categories.includes(this.catalogItemSearch.toUpperCase()) ||
-          item.nameEN.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.nameFR.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.productCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase()) ||
-          item.styleCode.toLowerCase().includes(this.catalogItemSearch.toLowerCase())
+          item.nameEN
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.nameFR
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.productCode
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase()) ||
+          item.styleCode
+            .toLowerCase()
+            .includes(this.catalogItemSearch.toLowerCase())
         ) {
           if (
             (this.catalogItemSearch.toLowerCase() === "men's" ||
@@ -367,7 +421,7 @@ export default {
     },
     filteredCount: function() {
       return this.filteredItems.length || this.catalogItems.length;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -376,16 +430,16 @@ export default {
       const breadcrumbs = [
         {
           text: 'Stores',
-          link: '/dashboard/stores'
+          link: '/dashboard/stores',
         },
         {
           text: `${this.store.storeName}`,
-          link: `/dashboard/stores/${this.store._id}`
+          link: `/dashboard/stores/${this.store._id}`,
         },
         {
           text: 'Add Items',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getCatalogsQuery', this.store.brand);
@@ -394,7 +448,9 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -419,7 +475,9 @@ export default {
       if (!this.currentStoreItem.overrideActualPrice) {
         if (index !== 6) {
           this.$refs.overrideActualPrice.disabled = false;
-          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
+          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[
+            index
+          ].price;
           this.currentStoreItem.storePrice = this.currentStoreItem.actualPrice;
         } else {
           this.currentStoreItem.overrideActualPrice = true;
@@ -432,7 +490,9 @@ export default {
       } else {
         if (index !== 6) {
           this.$refs.overrideActualPrice.disabled = false;
-          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[index].price;
+          this.currentStoreItem.actualPrice = this.currentItemPriceBreaks[
+            index
+          ].price;
         } else {
           this.currentStoreItem.overrideActualPrice = true;
           this.$refs.overrideActualPrice.disabled = true;
@@ -448,7 +508,8 @@ export default {
       if (upChargeType === '$' && upChargeAmount && upChargeAmount > 0) {
         this.currentStoreItem.upChargeTotal = upChargeAmount;
         this.currentStoreItem.storePrice =
-          this.currentStoreItem.actualPrice + this.currentStoreItem.upChargeTotal;
+          this.currentStoreItem.actualPrice +
+          this.currentStoreItem.upChargeTotal;
         return;
       }
 
@@ -456,7 +517,8 @@ export default {
         this.currentStoreItem.upChargeTotal =
           this.currentStoreItem.actualPrice * (upChargeAmount / 100);
         this.currentStoreItem.storePrice =
-          this.currentStoreItem.actualPrice + this.currentStoreItem.upChargeTotal;
+          this.currentStoreItem.actualPrice +
+          this.currentStoreItem.upChargeTotal;
         return;
       }
     },
@@ -477,10 +539,12 @@ export default {
       try {
         await this.$store.dispatch('updateStoreItems', {
           id: this.store._id,
-          items
+          items,
         });
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     clone: function(el) {
@@ -512,7 +576,7 @@ export default {
         priceBreaks: el.priceBreaks,
         priceBreakIndex: 3,
         sizes: el.sizes,
-        styleCode: el.styleCode
+        styleCode: el.styleCode,
       };
     },
     async getCatalog() {
@@ -522,10 +586,11 @@ export default {
       this.$store.commit('LOADING_FALSE');
     },
     getImgUrl(item) {
-      if (item.images.length === 0) return '/images/assets/missing_item_800.png';
-      return `/images/catalogs/${this.catalog._id}/800/${item.images[0]}_800.jpg`;
-    }
-  }
+      if (item.images.length === 0)
+        return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.catalog.brand}/${item.images[0]}_hd.jpg`;
+    },
+  },
 };
 </script>
 

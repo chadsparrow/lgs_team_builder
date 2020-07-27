@@ -4,7 +4,11 @@
       <div class="container">
         <div class="row text-white p-4">
           <div class="col-sm-3 text-center">
-            <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+            <img
+              id="tbLogo"
+              src="https://teambuilder.s3.amazonaws.com/images/assets/tb_logo_white.svg"
+              alt="Team Builder Logo"
+            />
           </div>
           <div class="col-sm-9 text-center">
             <h1>{{ currentTeam.name }} Welcomes You!</h1>
@@ -161,7 +165,9 @@
                   @change="copyMembertoBilling"
                   ref="billingSame"
                 />
-                <small class="form-check-small text-white" for="billingSame">Use Contact</small>
+                <small class="form-check-small text-white" for="billingSame"
+                  >Use Contact</small
+                >
               </div>
             </div>
             <div class="row p-1">
@@ -305,7 +311,9 @@
                   @change="copyMemberToShipping"
                   ref="shippingSame"
                 />
-                <small class="form-check-label text-white" for="shippingSame">Use Contact</small>
+                <small class="form-check-label text-white" for="shippingSame"
+                  >Use Contact</small
+                >
               </div>
             </div>
             <div class="row p-1">
@@ -440,10 +448,14 @@
         </div>
         <div class="row mb-5 mt-2">
           <div class="col-sm-8 mb-2">
-            <button class="btn btn-block btn-info" @click.prevent="register">Join Team</button>
+            <button class="btn btn-block btn-info" @click.prevent="register">
+              Join Team
+            </button>
           </div>
           <div class="col-sm-4">
-            <router-link to="/login" class="btn btn-block btn-danger">Cancel</router-link>
+            <router-link to="/login" class="btn btn-block btn-danger"
+              >Cancel</router-link
+            >
           </div>
         </div>
       </form>
@@ -460,7 +472,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'JoinTeam',
   components: {
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
   },
   data() {
     return {
@@ -496,7 +508,7 @@ export default {
       shippingCountry: '',
       shippingZipPostal: '',
       shippingPhone: '',
-      shippingEmail: ''
+      shippingEmail: '',
     };
   },
   created: async function() {
@@ -505,12 +517,14 @@ export default {
       await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
       this.$store.commit('LOADING_FALSE');
     }
   },
   computed: {
-    ...mapGetters(['currentTeam', 'isLoading'])
+    ...mapGetters(['currentTeam', 'isLoading']),
   },
   methods: {
     register: async function() {
@@ -548,20 +562,25 @@ export default {
           billingCountry: this.billingCountry,
           billingZipPostal: this.billingZipPostal,
           billingPhone: this.billingPhone,
-          billingEmail: this.billingEmail
+          billingEmail: this.billingEmail,
         };
 
-        await this.$store.dispatch('joinTeam', { member, teamId: this.currentTeam._id });
+        await this.$store.dispatch('joinTeam', {
+          member,
+          teamId: this.currentTeam._id,
+        });
         this.$router.push({ name: 'home' });
         this.$toasted.success('You are now registered - go ahead and login!', {
-          icon: 'check-circle'
+          icon: 'check-circle',
         });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
         if (err.response.data[0].message === 'Member already registered.') {
           this.email = '';
           this.$refs['email'].focus();
@@ -713,8 +732,8 @@ export default {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
       this.$refs.billingStateProv.$el.focus();
-    }
-  }
+    },
+  },
 };
 </script>
 

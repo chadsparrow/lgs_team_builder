@@ -59,13 +59,22 @@
           >
             <td class="priority-1" scope="row">{{ store.storeName }}</td>
             <td class="priority-2" v-if="store.brand === 'GARNEAU'">
-              <img src="/images/assets/garneau_logo.png" alt="Garneau Logo" />
+              <img
+                src="https://teambuilder.s3.amazonaws.com/images/assets/garneau_logo.png"
+                alt="Garneau Logo"
+              />
             </td>
             <td class="priority-2" v-if="store.brand === 'SUGOI'">
-              <img src="/images/assets/sugoi_logo.png" alt="Sugoi Logo" />
+              <img
+                src="https://teambuilder.s3.amazonaws.com/images/assets/sugoi_logo.png"
+                alt="Sugoi Logo"
+              />
             </td>
             <td class="priority-2" v-if="store.brand === 'SOMBRIO'">
-              <img src="/images/assets/sombrio_logo.png" alt="Sombrio Logo" />
+              <img
+                src="https://teambuilder.s3.amazonaws.com/images/assets/sombrio_logo.png"
+                alt="Sombrio Logo"
+              />
             </td>
             <td class="priority-3">{{ store.teamId.name }}</td>
             <td class="priority-4" v-if="access">{{ store.teamId.teamId }}</td>

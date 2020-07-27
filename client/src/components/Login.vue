@@ -2,11 +2,22 @@
   <div class="page">
     <form @submit.prevent="login" novalidate>
       <div class="text-center">
-        <img id="tbLogo" src="/images/assets/tb_logo_white.svg" alt="Team Builder Logo" />
+        <img
+          id="tbLogo"
+          src="https://teambuilder.s3.amazonaws.com/images/assets/tb_logo_white.svg"
+          alt="Team Builder Logo"
+        />
       </div>
       <div class="form-group">
         <label for="email">{{ $t('login.emailAddress') }}</label>
-        <input type="email" class="form-control" id="email" ref="email" v-model="email" autofocus />
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          ref="email"
+          v-model="email"
+          autofocus
+        />
       </div>
       <div class="form-group">
         <label for="password">{{ $t('login.password') }}</label>
@@ -24,7 +35,9 @@
       <div class="text-center">
         <small>{{ $t('login.resetPassTitle') }}</small
         ><br />
-        <router-link tag="a" class="text-info" to="#">{{ $t('login.resetPass') }}</router-link>
+        <router-link tag="a" class="text-info" to="#">{{
+          $t('login.resetPass')
+        }}</router-link>
       </div>
       <div class="text-center mt-4">
         <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
@@ -63,7 +76,7 @@ export default {
   data() {
     return {
       email: undefined,
-      password: undefined
+      password: undefined,
     };
   },
   methods: {
@@ -80,10 +93,12 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
