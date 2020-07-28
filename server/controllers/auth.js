@@ -3,6 +3,7 @@ const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
+const randomString = require('randomstring');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -22,6 +23,14 @@ function validateLogin(req) {
   return Joi.validate(req, schema, joiOptions);
 }
 
+function validateForgotEmail(req) {
+  const schema = {
+    email: Joi.string().email().required(),
+  };
+
+  return Joi.validate(req, schema, joiOptions);
+}
+
 module.exports = {
   // @desc    Member login
   // @route   POST /api/v1/auth/login
@@ -33,11 +42,18 @@ module.exports = {
 
       // checks if user with email exists
       const member = await Member.findOne({ email: req.body.email });
-      if (!member) return res.status(400).send([{ message: 'Invalid email or password.' }]);
+      if (!member)
+        return res
+          .status(400)
+          .send([{ message: 'Invalid email or password.' }]);
 
       // compares input password with db password
-      const validPassword = await bcrypt.compare(req.body.password, member.password);
-      if (!validPassword) return res.status(400).send([{ message: 'Invalid email or password' }]);
+      const validPassword = await bcrypt.compare(
+        req.body.password,
+        member.password
+      );
+      if (!validPassword)
+        return res.status(400).send([{ message: 'Invalid email or password' }]);
 
       // checks if account is closed
       if (member.closedAccount)
@@ -54,7 +70,14 @@ module.exports = {
       return res.send([
         {
           token,
-          member: _.pick(member, ['_id', 'email', 'name', 'isAdmin', 'timezone', 'createdAt']),
+          member: _.pick(member, [
+            '_id',
+            'email',
+            'name',
+            'isAdmin',
+            'timezone',
+            'createdAt',
+          ]),
           message: 'Welcome Back!',
         },
       ]);
@@ -72,7 +95,10 @@ module.exports = {
       if (error) return res.status(400).send(error.details);
 
       const team = await Team.findById(req.params.id);
-      if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+      if (!team)
+        return res
+          .status(400)
+          .send([{ message: 'Team with the given ID not found' }]);
 
       const {
         email,
@@ -113,7 +139,9 @@ module.exports = {
       // checks if the word "password" or email address is in their password and denies creation
       const userEmail = email.split('@')[0];
       if (password.includes('password'))
-        return res.status(400).send([{ message: "Please do not use 'password' in your password" }]);
+        return res
+          .status(400)
+          .send([{ message: "Please do not use 'password' in your password" }]);
       if (password.includes(userEmail))
         return res.status(400).send([
           {
@@ -123,7 +151,10 @@ module.exports = {
 
       // checks if email already registered
       const member = await Member.findOne({ email });
-      if (member) return res.status(400).send([{ message: 'Member already registered.' }]);
+      if (member)
+        return res
+          .status(400)
+          .send([{ message: 'Member already registered.' }]);
 
       const newMember = new Member({
         name,
@@ -245,6 +276,51 @@ module.exports = {
       );
 
       return res.send([{ message: 'You are now registered!' }]);
+    } catch (err) {
+      logger.error(err);
+    }
+  },
+
+  // @desc Member Reset Password
+  // @route POST /api/v1/auth/reset
+  // @access Public
+  forgotPassword: async (req, res, next) => {
+    try {
+      const { error } = validateForgotEmail(req.body);
+      if (error) return res.status(400).send(error.details);
+
+      // checks if user with email exists
+      const member = await Member.findOne({ email: req.body.email });
+      if (!member)
+        return res
+          .status(400)
+          .send([{ message: 'Invalid email or password.' }]);
+
+      // checks if account is closed
+      if (member.closedAccount)
+        return res.status(401).send([
+          {
+            message:
+              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
+          },
+        ]);
+
+      // generates a resetToken
+      const token = randomString.generate();
+
+      // saves reset token and expiry to member
+      member.resetPasswordToken = token;
+      member.resetPasswordTokenExpires = Date.now() + 3600 * 1000;
+
+      await member.save();
+
+      return res.send([
+        {
+          token,
+          member: _.pick(member, ['_id', 'email']),
+          message: 'Reset Link Sent!',
+        },
+      ]);
     } catch (err) {
       logger.error(err);
     }

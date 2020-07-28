@@ -5,23 +5,30 @@ import store from './store';
 Vue.use(Router);
 
 const Login = () => import('./components/Login.vue');
+const Forgot = () => import('./components/Forgot.vue');
 const JoinTeam = () => import('./components/JoinTeam.vue');
 const Dashboard = () => import('./views/Dashboard.vue');
-const DashboardIndex = () => import('./components/Dashboard/DashboardIndex.vue');
+const DashboardIndex = () =>
+  import('./components/Dashboard/DashboardIndex.vue');
 const PageNotFound = () => import('./views/PageNotFound.vue');
 const ServerError = () => import('./views/ServerError.vue');
 const ProfilesIndex = () => import('./components/Profiles/ProfilesIndex.vue');
 const ProfilesEdit = () => import('./components/Profiles/ProfilesEdit.vue');
-const ProfilesPassword = () => import('./components/Profiles/ProfilesPassword.vue');
+const ProfilesPassword = () =>
+  import('./components/Profiles/ProfilesPassword.vue');
 const ProfilesEmail = () => import('./components/Profiles/ProfilesEmail.vue');
 const CartPage = () => import('./components/CartPage.vue');
 const CatalogsIndex = () => import('./components/Catalogs/CatalogsIndex.vue');
 const CatalogsAdd = () => import('./components/Catalogs/CatalogsAdd.vue');
 const CatalogById = () => import('./components/Catalogs/CatalogById.vue');
-const CatalogByIdEdit = () => import('./components/Catalogs/CatalogByIdEdit.vue');
-const CatalogItemsAdd = () => import('./components/Catalogs/CatalogItemsAdd.vue');
-const CatalogItemById = () => import('./components/Catalogs/CatalogItemById.vue');
-const CatalogItemByIdEdit = () => import('./components/Catalogs/CatalogItemByIdEdit.vue');
+const CatalogByIdEdit = () =>
+  import('./components/Catalogs/CatalogByIdEdit.vue');
+const CatalogItemsAdd = () =>
+  import('./components/Catalogs/CatalogItemsAdd.vue');
+const CatalogItemById = () =>
+  import('./components/Catalogs/CatalogItemById.vue');
+const CatalogItemByIdEdit = () =>
+  import('./components/Catalogs/CatalogItemByIdEdit.vue');
 const OrdersIndex = () => import('./components/Orders/OrdersIndex.vue');
 const MembersIndex = () => import('./components/Members/MembersIndex.vue');
 const MembersAdd = () => import('./components/Members/MembersAdd.vue');
@@ -30,14 +37,17 @@ const MemberByIdEdit = () => import('./components/Members/MemberByIdEdit.vue');
 const StoresIndex = () => import('./components/Stores/StoresIndex.vue');
 const StoresById = () => import('./components/Stores/StoresById.vue');
 const StoresByIdEdit = () => import('./components/Stores/StoresByIdEdit.vue');
-const StoresByIdAddItem = () => import('./components/Stores/StoresByIdAddItem.vue');
+const StoresByIdAddItem = () =>
+  import('./components/Stores/StoresByIdAddItem.vue');
 const TeamsIndex = () => import('./components/Teams/TeamsIndex.vue');
 const TeamsAdd = () => import('./components/Teams/TeamsAdd.vue');
 const TeamsAddMember = () => import('./components/Teams/TeamsAddMember.vue');
-const TeamsRemoveMember = () => import('./components/Teams/TeamsRemoveMember.vue');
+const TeamsRemoveMember = () =>
+  import('./components/Teams/TeamsRemoveMember.vue');
 const TeamsById = () => import('./components/Teams/TeamsById.vue');
 const TeamsByIdEdit = () => import('./components/Teams/TeamsByIdEdit.vue');
-const TeamsByIdAddStore = () => import('./components/Teams/TeamsByIdAddStore.vue');
+const TeamsByIdAddStore = () =>
+  import('./components/Teams/TeamsByIdAddStore.vue');
 
 let router = new Router({
   mode: 'history',
@@ -48,20 +58,25 @@ let router = new Router({
       name: 'home',
       component: Login,
       meta: {
-        guest: true
-      }
+        guest: true,
+      },
+    },
+    {
+      path: '/forgot',
+      name: 'forgot',
+      component: Forgot,
     },
     {
       path: '/join/:id',
       name: 'jointeam',
-      component: JoinTeam
+      component: JoinTeam,
     },
     {
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
       },
       children: [
         {
@@ -69,48 +84,48 @@ let router = new Router({
           name: 'dashboardIndex',
           component: DashboardIndex,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'profile',
           name: 'profile',
           component: ProfilesIndex,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'profile/edit',
           name: 'profileedit',
           component: ProfilesEdit,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'profile/password',
           name: 'profilepassword',
           component: ProfilesPassword,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'profile/email',
           name: 'profileemail',
           component: ProfilesEmail,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'cart/:id',
           name: 'cart',
           component: CartPage,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'catalogs',
@@ -118,8 +133,8 @@ let router = new Router({
           component: CatalogsIndex,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogs/add',
@@ -127,8 +142,8 @@ let router = new Router({
           component: CatalogsAdd,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogs/:id',
@@ -136,8 +151,8 @@ let router = new Router({
           component: CatalogById,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogs/:id/edit',
@@ -145,8 +160,8 @@ let router = new Router({
           component: CatalogByIdEdit,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogs/:id/add',
@@ -154,8 +169,8 @@ let router = new Router({
           component: CatalogItemsAdd,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogitems/:id',
@@ -163,8 +178,8 @@ let router = new Router({
           component: CatalogItemById,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'catalogitems/edit/:id',
@@ -172,32 +187,32 @@ let router = new Router({
           component: CatalogItemByIdEdit,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'orders',
           name: 'orders',
           component: OrdersIndex,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'stores',
           name: 'stores',
           component: StoresIndex,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'stores/:id',
           name: 'storesById',
           component: StoresById,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'stores/:id/edit',
@@ -205,8 +220,8 @@ let router = new Router({
           component: StoresByIdEdit,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'stores/:id/add',
@@ -214,16 +229,16 @@ let router = new Router({
           component: StoresByIdAddItem,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'teams',
           name: 'teams',
           component: TeamsIndex,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'teams/add',
@@ -231,16 +246,16 @@ let router = new Router({
           component: TeamsAdd,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'teams/:id',
           name: 'teamsById',
           component: TeamsById,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'teams/:id/edit',
@@ -248,8 +263,8 @@ let router = new Router({
           component: TeamsByIdEdit,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'teams/:id/addmember',
@@ -257,8 +272,8 @@ let router = new Router({
           component: TeamsAddMember,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'teams/:id/removemember',
@@ -266,8 +281,8 @@ let router = new Router({
           component: TeamsRemoveMember,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'teams/:id/addstore',
@@ -275,8 +290,8 @@ let router = new Router({
           component: TeamsByIdAddStore,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'members',
@@ -284,8 +299,8 @@ let router = new Router({
           component: MembersIndex,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'members/add',
@@ -293,16 +308,16 @@ let router = new Router({
           component: MembersAdd,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
+            isAdmin: true,
+          },
         },
         {
           path: 'members/:id',
           name: 'membersById',
           component: MemberById,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           path: 'members/:id/edit',
@@ -310,31 +325,31 @@ let router = new Router({
           component: MemberByIdEdit,
           meta: {
             requiresAuth: true,
-            isAdmin: true
-          }
-        }
-      ]
+            isAdmin: true,
+          },
+        },
+      ],
     },
     {
       path: '/500',
       name: '500',
-      component: ServerError
+      component: ServerError,
     },
     {
       path: '*',
       name: '404',
-      component: PageNotFound
-    }
-  ]
+      component: PageNotFound,
+    },
+  ],
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!store.getters.isLoggedIn) {
       Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
       next({
         path: '/home',
-        params: { nextUrl: to.fullPath }
+        params: { nextUrl: to.fullPath },
       });
       return;
     }
@@ -347,7 +362,7 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
 
-    if (to.matched.some(record => record.meta.isAdmin)) {
+    if (to.matched.some((record) => record.meta.isAdmin)) {
       if (member && member.isAdmin) {
         next();
       } else {
@@ -357,7 +372,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       next();
     }
-  } else if (to.matched.some(record => record.meta.guest)) {
+  } else if (to.matched.some((record) => record.meta.guest)) {
     if (!store.getters.isLoggedIn) {
       next();
     } else {

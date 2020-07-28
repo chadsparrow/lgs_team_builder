@@ -9,7 +9,7 @@ export default {
     loggedInMember: {},
     emails: [],
     notifications: [],
-    menu: []
+    menu: [],
   },
   actions: {
     login: ({ commit }, loginCreds) => {
@@ -57,7 +57,9 @@ export default {
     joinTeam(context, { member, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/auth/register/${teamId}`, { member });
+          const res = await axios.post(`/api/v1/auth/register/${teamId}`, {
+            member,
+          });
           resolve(res);
         } catch (err) {
           reject(err);
@@ -77,7 +79,10 @@ export default {
     changePassword(context, { updatedPassword, id }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.patch(`/api/v1/members/password/${id}`, updatedPassword);
+          const res = await axios.patch(
+            `/api/v1/members/password/${id}`,
+            updatedPassword
+          );
           resolve(res);
         } catch (err) {
           reject(err);
@@ -87,7 +92,10 @@ export default {
     updateEmail(context, { updatedEmail, id }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.patch(`/api/v1/members/email/${id}`, updatedEmail);
+          const res = await axios.patch(
+            `/api/v1/members/email/${id}`,
+            updatedEmail
+          );
           resolve(res);
         } catch (err) {
           reject(err);
@@ -121,7 +129,17 @@ export default {
     },
     setNotificationsReadyFalse({ commit }) {
       commit('SET_NOTIFICATIONS_READY_FALSE');
-    }
+    },
+    forgot({ commit }, { email }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.post(`/api/v1/auth/forgot`, { email });
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
   },
   mutations: {
     AUTH_REQUEST(state) {
@@ -175,89 +193,89 @@ export default {
           {
             href: { path: '/dashboard/index' },
             title: i18n.t('menu.dashboard'),
-            icon: 'fas fa-columns'
+            icon: 'fas fa-columns',
           },
           {
             href: { path: '/dashboard/members' },
             title: i18n.t('menu.adminOnly.members'),
-            icon: 'fas fa-user'
+            icon: 'fas fa-user',
           },
           {
             href: { path: '/dashboard/teams' },
             title: i18n.t('menu.adminOnly.teams'),
-            icon: 'fas fa-users'
+            icon: 'fas fa-users',
           },
           {
             href: { path: '/dashboard/stores' },
             title: i18n.t('menu.adminOnly.stores'),
-            icon: 'fas fa-store'
+            icon: 'fas fa-store',
           },
           {
             href: { path: '/dashboard/orders' },
             title: i18n.t('menu.adminOnly.orders'),
-            icon: 'fas fa-receipt'
+            icon: 'fas fa-receipt',
           },
           {
             href: { path: '/dashboard/catalogs' },
             title: i18n.t('menu.adminOnly.catalogs'),
-            icon: 'fas fa-book'
+            icon: 'fas fa-book',
           },
           {
             header: true,
             title: i18n.t('menu.accountHeader'),
             hiddenOnCollapse: true,
-            class: 'text-center'
+            class: 'text-center',
           },
           {
             href: { path: '/dashboard/profile' },
             title: i18n.t('menu.profile'),
-            icon: 'fas fa-id-card'
-          }
+            icon: 'fas fa-id-card',
+          },
         ];
       } else {
         state.menu = [
           {
             href: { path: '/dashboard/index' },
             title: i18n.t('menu.dashboard'),
-            icon: 'fas fa-columns'
+            icon: 'fas fa-columns',
           },
           {
             href: { path: '/dashboard/teams' },
             title: i18n.t('menu.regular.teams'),
-            icon: 'fas fa-users'
+            icon: 'fas fa-users',
           },
           {
             href: { path: '/dashboard/stores' },
             title: i18n.t('menu.regular.stores'),
-            icon: 'fas fa-store'
+            icon: 'fas fa-store',
           },
           {
             href: { path: '/dashboard/orders' },
             title: i18n.t('menu.regular.orders'),
-            icon: 'fas fa-receipt'
+            icon: 'fas fa-receipt',
           },
           {
             header: true,
             title: i18n.t('menu.accountHeader'),
             hiddenOnCollapse: true,
-            class: 'text-center'
+            class: 'text-center',
           },
           {
             href: { path: '/dashboard/profile' },
             title: i18n.t('menu.profile'),
-            icon: 'fas fa-id-card'
-          }
+            icon: 'fas fa-id-card',
+          },
         ];
       }
-    }
+    },
   },
   getters: {
-    notificationsReady: state => state.notificationsReady,
-    isLoggedIn: state => !!state.token,
-    authStatus: state => state.status,
-    loggedInMember: state => state.loggedInMember,
-    emails: state => state.emails,
-    notifications: state => state.notifications,
-    menu: state => state.menu
-  }
+    notificationsReady: (state) => state.notificationsReady,
+    isLoggedIn: (state) => !!state.token,
+    authStatus: (state) => state.status,
+    loggedInMember: (state) => state.loggedInMember,
+    emails: (state) => state.emails,
+    notifications: (state) => state.notifications,
+    menu: (state) => state.menu,
+  },
 };
