@@ -2,7 +2,7 @@ import axios from 'axios';
 export default {
   state: {
     allMembers: [],
-    currentMember: {}
+    currentMember: {},
   },
   actions: {
     getMember(context, id) {
@@ -78,7 +78,7 @@ export default {
         }
       });
     },
-    getAdmins() {
+    getAdmins(context) {
       return new Promise(async (resolve, reject) => {
         try {
           const res = await axios.get('/api/v1/members/admins');
@@ -87,7 +87,17 @@ export default {
           reject(err);
         }
       });
-    }
+    },
+    findMemberByResetPasswordToken({ commit }, token) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get(`/api/v1/auth/reset?token=${token}`);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
   },
   mutations: {
     SET_ALL_MEMBERS(state, payload) {
@@ -98,10 +108,10 @@ export default {
     },
     SET_CURRENT_MEMBER(state, payload) {
       state.currentMember = payload;
-    }
+    },
   },
   getters: {
-    allMembers: state => state.allMembers,
-    getMember: state => state.currentMember
-  }
+    allMembers: (state) => state.allMembers,
+    getMember: (state) => state.currentMember,
+  },
 };

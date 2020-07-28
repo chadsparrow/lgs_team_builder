@@ -32,6 +32,18 @@ function validateForgotEmail(req) {
   return Joi.validate(req, schema, joiOptions);
 }
 
+function validateNewPassword(req) {
+  const schema = {
+    password: Joi.string().required(),
+    confirmPassword: Joi.any()
+      .valid(Joi.ref('password'))
+      .required()
+      .options({ language: { any: { allowOnly: 'Must match password' } } }),
+  };
+
+  return Joi.validate(req, schema, joiOptions);
+}
+
 module.exports = {
   // @desc    Member login
   // @route   POST /api/v1/auth/login
@@ -330,13 +342,13 @@ module.exports = {
         subject: 'TeamBuilder Password Reset',
         text: `Hello, we received a request to reset your password!
         You can go ahead and do so by clicking the link below:
-        http://${req.headers.host}/reset?token=${token}
+        ${req.headers.origin}/reset?token=${token}
 
         If you did not request a password reset, you can ignore this email.
         `,
         html: `<b>Hello, we received a request to reset your password!</b><br><br>
         You can go ahead and do so by clicking the link below:<br>
-        <a href="http://${req.headers.host}/reset?token=${token}">Reset My Password</a><br><br>
+        <a href="${req.headers.origin}/reset?token=${token}">Reset my password</a><br><br>
         
         If you did not request a password reset, you can ignore this email.
         `,
@@ -347,6 +359,99 @@ module.exports = {
           message: 'Reset Link Sent!',
         },
       ]);
+    } catch (err) {
+      logger.error(err);
+    }
+  },
+  checkResetPasswordToken: async (req, res, next) => {
+    const token = req.query.token;
+    if (!token)
+      return res
+        .status(400)
+        .send({ message: 'Reset Password Token not provided.' });
+
+    try {
+      const member = await Member.findOne({ resetPasswordToken: token });
+      if (!member)
+        return res
+          .status(404)
+          .send({ message: 'Reset token invalid - Try Again' });
+
+      if (member.resetPasswordTokenExpires < Date.now())
+        return res
+          .status(400)
+          .send({ message: 'Reset token expired - Try Again' });
+
+      return res.status(200).send({ member: _.pick(member, ['_id', 'email']) });
+    } catch (err) {
+      logger.error(err);
+    }
+  },
+  resetPassword: async (req, res, next) => {
+    const { error } = validateNewPassword(req.body);
+    if (error) return res.status(400).send(error.details);
+
+    if (!req.params.id)
+      return res.status(400).send({ message: 'Member ID not provided' });
+
+    const id = req.params.id;
+    const { password } = req.body;
+
+    try {
+      const member = await Member.findById(id);
+      if (!member)
+        return res
+          .status(404)
+          .send({ message: 'Member with the given ID not found' });
+
+      if (!member.resetPasswordToken || member.resetPasswordToken === '')
+        return res.status(403).send({
+          message: 'Password already reset with token - Please try again',
+        });
+
+      // checks if the word "password" or email address is in their password and denies creation
+      const memberEmail = member.email.split('@')[0];
+      if (password.includes('password'))
+        return res
+          .status(400)
+          .send([{ message: "Please do not use 'password' in your password" }]);
+      if (password.includes(memberEmail))
+        return res.status(400).send([
+          {
+            message: 'Please do not use your email username in your password',
+          },
+        ]);
+
+      const salt = await bcrypt.genSalt(10);
+      member.password = await bcrypt.hash(password, salt);
+      member.resetPasswordToken = undefined;
+      member.resetPasswordTokenExpires = undefined;
+
+      await member.save();
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.SES_SMTP,
+        port: process.env.SES_PORT,
+        auth: {
+          user: process.env.SES_AUTH_USERNAME,
+          pass: process.env.SES_AUTH_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+        to: member.email,
+        subject: 'TeamBuilder Password Reset',
+        text: `Hello, your password was recently reset successfully.
+
+        If you did not request a password reset, please contact your team manager or admin.
+        `,
+        html: `<b>Hello, your password was recently reset successfully</b><br><br>
+        If you did not request a password reset, please contact your team manager or admin.
+        `,
+      });
+
+      return res.status(200).send({ message: 'Password has been reset' });
     } catch (err) {
       logger.error(err);
     }

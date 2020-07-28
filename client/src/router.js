@@ -6,6 +6,7 @@ Vue.use(Router);
 
 const Login = () => import('./components/Login.vue');
 const Forgot = () => import('./components/Forgot.vue');
+const Reset = () => import('./components/Reset.vue');
 const JoinTeam = () => import('./components/JoinTeam.vue');
 const Dashboard = () => import('./views/Dashboard.vue');
 const DashboardIndex = () =>
@@ -65,6 +66,11 @@ let router = new Router({
       path: '/forgot',
       name: 'forgot',
       component: Forgot,
+    },
+    {
+      path: '/reset',
+      name: 'reset',
+      component: Reset,
     },
     {
       path: '/join/:id',

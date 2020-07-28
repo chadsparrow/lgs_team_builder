@@ -140,6 +140,19 @@ export default {
         }
       });
     },
+    resetPassword({ commit }, { id, password, confirmPassword }) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.post(`/api/v1/auth/reset/${id}`, {
+            password,
+            confirmPassword,
+          });
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
   },
   mutations: {
     AUTH_REQUEST(state) {

@@ -7,7 +7,7 @@
         alt="Team Builder Logo"
       />
     </div>
-    <form @submit.prevent="reset" novalidate v-if="!linkSent">
+    <form @submit.prevent="forgot" novalidate v-if="!linkSent">
       <div class="form-group">
         <label for="email">{{ $t('login.emailAddress') }}</label>
         <input
@@ -40,7 +40,7 @@ export default {
     };
   },
   methods: {
-    reset: async function() {
+    forgot: async function() {
       const email = this.email;
 
       try {
