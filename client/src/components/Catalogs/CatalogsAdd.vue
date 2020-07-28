@@ -19,16 +19,33 @@
         </div>
         <div class="form-group col-sm-12 mb-2">
           <label for="season">{{ $t('catalogs.add.season.season') }}</label>
-          <select class="form-control form-control-sm" id="season" v-model="season" ref="season">
-            <option value="CUSTOM">{{ $t('catalogs.add.season.custom') }}</option>
+          <select
+            class="form-control form-control-sm"
+            id="season"
+            v-model="season"
+            ref="season"
+          >
+            <option value="CUSTOM">{{
+              $t('catalogs.add.season.custom')
+            }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING/SUMMER">{{ $t('catalogs.add.season.springSummer') }}</option>
-            <option value="FALL/WINTER">{{ $t('catalogs.add.season.fallWinter') }}</option>
+            <option value="SPRING/SUMMER">{{
+              $t('catalogs.add.season.springSummer')
+            }}</option>
+            <option value="FALL/WINTER">{{
+              $t('catalogs.add.season.fallWinter')
+            }}</option>
             <option disabled="disabled">--------</option>
-            <option value="SPRING">{{ $t('catalogs.add.season.spring') }}</option>
-            <option value="SUMMER">{{ $t('catalogs.add.season.summer') }}</option>
+            <option value="SPRING">{{
+              $t('catalogs.add.season.spring')
+            }}</option>
+            <option value="SUMMER">{{
+              $t('catalogs.add.season.summer')
+            }}</option>
             <option value="FALL">{{ $t('catalogs.add.season.fall') }}</option>
-            <option value="WINTER">{{ $t('catalogs.add.season.winter') }}</option>
+            <option value="WINTER">{{
+              $t('catalogs.add.season.winter')
+            }}</option>
           </select>
         </div>
         <div class="col-sm-12">
@@ -49,9 +66,12 @@
           </button>
         </div>
         <div class="col-sm-12 col-lg-4 mt-2">
-          <router-link tag="a" class="btn btn-danger btn-block" to="/dashboard/catalogs">{{
-            $t('cancel')
-          }}</router-link>
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            to="/dashboard/catalogs"
+            >{{ $t('cancel') }}</router-link
+          >
         </div>
       </div>
     </form>
@@ -67,7 +87,7 @@ export default {
       brand: '',
       season: '',
       year: '2020',
-      coverImg: ''
+      coverImg: '',
     };
   },
   created: async function() {
@@ -76,36 +96,46 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.catalogs'),
-          link: '/dashboard/catalogs'
+          link: '/dashboard/catalogs',
         },
         {
           text: i18n.t('catalogs.add.addCatalog'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     addCatalog: async function() {
-      const catalog = { brand: this.brand, season: this.season, year: this.year };
+      const catalog = {
+        brand: this.brand,
+        season: this.season,
+        year: this.year,
+      };
       try {
         await this.$store.dispatch('addCatalog', catalog);
-        this.$toasted.success(i18n.t('catalogs.add.success'), { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('catalogs.success'), {
+          icon: 'check-circle',
+        });
         this.$router.push({ name: 'catalogs' }).catch(() => {});
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

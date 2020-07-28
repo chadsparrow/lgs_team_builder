@@ -103,7 +103,10 @@
           <div class="col-12 mt-3">
             <span class="text-info mr-2">{{ $t('formLabels.gender') }}:</span>
             <span>
-              {{ $t(`catalogs.gender.${currentCatalogItem.gender}`) }} -
+              {{
+                $t(`catalogs.gender.${currentCatalogItem.gender.toLowerCase()}`)
+              }}
+              -
               {{
                 currentCatalogItem.gender === 'U'
                   ? `(${$t('formLabels.unisex')})`
@@ -295,7 +298,9 @@ export default {
         },
         {
           text: `${this.currentCatalog.brand} - ${i18n
-            .t(`catalogs.add.season.${this.currentCatalog.season}`)
+            .t(
+              `catalogs.add.season.${this.currentCatalog.season.toLowerCase()}`
+            )
             .toUpperCase()} - ${this.currentCatalog.year}`,
           link: `/dashboard/catalogs/${this.currentCatalog._id}`,
         },

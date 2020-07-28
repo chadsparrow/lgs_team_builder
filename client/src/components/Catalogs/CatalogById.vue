@@ -171,7 +171,9 @@ export default {
         },
         {
           text: `${this.currentCatalog.brand} - ${i18n
-            .t(`catalogs.add.season.${this.currentCatalog.season}`)
+            .t(
+              `catalogs.add.season.${this.currentCatalog.season.toLowerCase()}`
+            )
             .toUpperCase()} - ${this.currentCatalog.year}`,
           link: '#',
         },
