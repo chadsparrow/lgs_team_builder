@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
-const { sendMail } = require('../middleware/mailer');
+const nodemailer = require('nodemailer');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -315,8 +315,32 @@ module.exports = {
 
       await member.save();
 
-      const result = sendMail(req, to, { token });
-      console.log(result);
+      const transporter = nodemailer.createTransport({
+        host: process.env.SES_SMTP,
+        port: process.env.SES_PORT,
+        auth: {
+          user: process.env.SES_AUTH_USERNAME,
+          pass: process.env.SES_AUTH_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+        to: member.email,
+        subject: 'TeamBuilder Password Reset',
+        text: `Hello, we received a request to reset your password!
+        You can go ahead and do so by clicking the link below:
+        http://${req.headers.host}/reset?token=${token}
+
+        If you did not request a password reset, you can ignore this email.
+        `,
+        html: `<b>Hello, we received a request to reset your password!</b><br><br>
+        You can go ahead and do so by clicking the link below:<br>
+        <a href="http://${req.headers.host}/reset?token=${token}">Reset My Password</a><br><br>
+        
+        If you did not request a password reset, you can ignore this email.
+        `,
+      });
 
       return res.send([
         {
