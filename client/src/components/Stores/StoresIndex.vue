@@ -283,7 +283,7 @@ export default {
   }
 
   table {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
 
     td {
       img {

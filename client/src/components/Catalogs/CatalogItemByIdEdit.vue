@@ -592,7 +592,9 @@ export default {
         )
           return `https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png`;
 
-        return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand}/${this.currentCatalogItem.images[index]}_hd.jpg`;
+        return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand.toLowerCase()}/${
+          this.currentCatalogItem.images[index]
+        }_hd.jpg`;
       }
     },
     setSizes: function() {
@@ -674,18 +676,18 @@ export default {
 
   .info-section {
     label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .bulletPoints {
       padding-left: 1rem;
       .bulletPoint {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
       }
     }
 
     .list-group-item {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       display: flex;
       flex-direction: row;
       justify-content: space-between;

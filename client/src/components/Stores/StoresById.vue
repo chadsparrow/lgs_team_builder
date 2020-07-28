@@ -830,7 +830,7 @@ export default {
         border-radius: 2px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
         transition: all 0.5s ease;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
 
         .modal-body {
           .charge-row {
@@ -841,7 +841,7 @@ export default {
           }
 
           .form-control {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
           }
 
           .extras-list {

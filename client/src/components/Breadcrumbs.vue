@@ -2,8 +2,14 @@
   <div>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item" v-for="breadcrumb of breadcrumbs" :key="breadcrumb.text">
-          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">{{ breadcrumb.text }}</router-link>
+        <li
+          class="breadcrumb-item"
+          v-for="breadcrumb of breadcrumbs"
+          :key="breadcrumb.text"
+        >
+          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">{{
+            breadcrumb.text
+          }}</router-link>
         </li>
       </ol>
     </nav>
@@ -15,8 +21,8 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Breadcrumbs',
   computed: {
-    ...mapGetters(['breadcrumbs'])
-  }
+    ...mapGetters(['breadcrumbs']),
+  },
 };
 </script>
 
@@ -27,7 +33,7 @@ export default {
   margin-top: 1rem;
   background-color: none !important;
   padding: 0px 15px !important;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
 
   .breadcrumb-item {
     .btn {

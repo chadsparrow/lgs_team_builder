@@ -35,7 +35,7 @@
       <div class="text-center">
         <small>{{ $t('login.resetPassTitle') }}</small
         ><br />
-        <router-link tag="a" class="text-info" to="#">{{
+        <router-link class="text-info" to="#">{{
           $t('login.resetPass')
         }}</router-link>
       </div>
@@ -127,21 +127,20 @@ export default {
     }
 
     label {
+      font-size: 0.85rem;
+      line-height: 1rem;
       margin-left: 0.25rem;
       margin-bottom: 0.25rem;
     }
 
-    a {
-      font-weight: 700;
-    }
-
     button {
       margin: 2rem 0;
+      font-weight: 700;
     }
 
     .langChooser {
       margin-top: 1rem;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       text-align: center;
 
       input {
@@ -155,6 +154,12 @@ export default {
           font-weight: 700;
           text-decoration: underline;
         }
+      }
+    }
+
+    .text-center {
+      .text-info {
+        font-size: 0.85rem;
       }
     }
   }

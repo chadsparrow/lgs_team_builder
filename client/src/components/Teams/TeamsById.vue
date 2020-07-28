@@ -166,7 +166,7 @@
                       : null
                   "
                 >
-                  {{ $t(`stores.${store.mode}`) }}
+                  {{ $t(`stores.${store.mode.toLowerCase()}`) }}
                 </td>
               </tr>
             </tbody>
@@ -432,7 +432,7 @@ export default {
   width: 100%;
   height: 100%;
   grid-gap: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   grid-template-areas:
     'left-bar main '
     'buttons main';
@@ -441,7 +441,7 @@ export default {
 .team-info {
   grid-area: left-bar;
   span {
-    font-size: 0.8em;
+    font-size: 0.85em;
   }
   .placeholderImg {
     border-radius: 1rem;
@@ -459,7 +459,7 @@ export default {
         overflow-y: auto;
 
         .list-group-item {
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           padding: 0.3rem 0.7rem;
           display: flex;
           align-items: center;
@@ -516,7 +516,7 @@ export default {
 
   .contact-bar {
     grid-area: contact-bar;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 
     .team-info {
       justify-content: space-around;
@@ -535,7 +535,7 @@ export default {
     }
 
     .teamInfo {
-      font-size: 0.8em;
+      font-size: 0.85rem;
       text-align: center;
     }
   }

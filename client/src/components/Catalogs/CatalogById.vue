@@ -190,7 +190,9 @@ export default {
   },
   methods: {
     getImgUrl(item) {
-      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand}/${item.images[0]}_sd.jpg`;
+      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand.toLowerCase()}/${
+        item.images[0]
+      }_sd.jpg`;
     },
     resetSearchBar() {
       this.catalogItemSearch = '';
@@ -244,6 +246,7 @@ export default {
       color: $black-text;
       margin: 0 0 0.5rem 0;
       width: 100%;
+      min-height: 125px;
 
       .thumbnail-img {
         min-width: 125px;
@@ -257,11 +260,11 @@ export default {
       .thumbnail-body {
         width: 100%;
         p {
-          font-size: 1.25em;
+          font-size: 1.25rem;
           font-weight: 700;
         }
         .text-muted {
-          font-size: 0.8em;
+          font-size: 0.85rem;
         }
       }
 
@@ -276,7 +279,7 @@ export default {
 @media screen and (min-width: 0px) and (max-width: 449px) {
   .thumbnail-body {
     p {
-      font-size: 0.9em !important;
+      font-size: 0.85rem !important;
     }
     .text-muted {
       display: none;
@@ -287,7 +290,7 @@ export default {
 @media screen and (min-width: 450px) and (max-width: 700px) {
   .thumbnail-body {
     p {
-      font-size: 1em !important;
+      font-size: 1rem !important;
     }
     .text-muted {
       font-size: 0.65em !important;

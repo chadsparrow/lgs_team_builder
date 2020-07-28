@@ -30,9 +30,8 @@
             v-for="catalog in catalogs"
             :key="catalog._id"
             :value="catalog._id"
-            >{{ catalog.brand }} - {{ catalog.season }} -{{
-              catalog.year
-            }}</option
+            >{{ catalog.brand }} - {{ catalog.season }} -
+            {{ catalog.year }}</option
           >
         </select>
       </div>
@@ -51,7 +50,7 @@
           autofocus
         />
         <small class="text-muted"
-          >Showing: {{ filteredCount }}/{{ catalogItems.length }}</small
+          >{{ filteredCount }}/{{ catalogItems.length }}</small
         >
       </div>
       <div class="catalogItemsList" v-if="currentCatalog._id">
@@ -588,7 +587,9 @@ export default {
     getImgUrl(item) {
       if (item.images.length === 0)
         return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
-      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.catalog.brand}/${item.images[0]}_hd.jpg`;
+      return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.catalog.brand.toLowerCase()}/${
+        item.images[0]
+      }_hd.jpg`;
     },
   },
 };
@@ -715,6 +716,7 @@ export default {
 
       .itemImage {
         width: 100px;
+        min-height: 60px;
         img {
           width: 100px;
         }

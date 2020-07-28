@@ -21,17 +21,17 @@ import { mapGetters } from 'vuex';
 
 export default {
   components: {
-    Loading
+    Loading,
   },
   computed: {
-    ...mapGetters(['isLoading'])
+    ...mapGetters(['isLoading']),
   },
   methods: {
     logout: async function() {
       await this.$store.dispatch('logout');
       this.$router.push({ name: 'home' }).catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -45,7 +45,7 @@ html {
   box-sizing: border-box;
   font-family: 'Overpass', sans-serif;
   background: $black-text;
-  font-size: 16px;
+  font-size: 14px;
   scroll-behavior: smooth;
   a {
     cursor: pointer;
@@ -124,7 +124,7 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   span {
-    font-size: 0.85em;
+    font-size: 0.85rem;
   }
 
   .list-group {
@@ -134,7 +134,7 @@ textarea {
     max-height: 250px;
 
     .list-group-item {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       padding: 0.3rem 0.7rem;
       display: flex;
       align-items: center;
@@ -194,11 +194,10 @@ textarea {
   grid-area: right-section;
   overflow-x: hidden;
   overflow-y: auto;
+  font-size: 0.85rem;
   small {
-    font-size: 0.8rem;
     color: $blue-color;
   }
-  font-size: 0.85rem;
 }
 
 .sizesBox {
