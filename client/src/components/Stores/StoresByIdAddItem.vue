@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="catalog-list">
       <div class="form-group catalogDropDown">
         <div class="brand-logo mb-2">

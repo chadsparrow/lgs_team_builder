@@ -1,19 +1,25 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="row p-1">
-        <small class="col-sm-12 text-info">{{$t('profiles.timezone')}}:</small>
+        <small class="col-sm-12 text-info"
+          >{{ $t('profiles.timezone') }}:</small
+        >
         <span class="col-sm-12">{{ memberDetails.timezone }}</span>
       </div>
       <hr />
       <div class="row">
         <span class="col-sm-12 text-danger text-center">
           <strong>
-            <em>** {{$t('profiles.importantNotice')}} **</em>
+            <em>** {{ $t('profiles.importantNotice') }} **</em>
           </strong>
         </span>
-        <small class="col-sm-12 mt-2 text-muted text-justify">{{$t('profiles.changes')}}</small>
-        <small class="col-sm-12 mt-2 text-muted text-justify">{{$t('profiles.shippingInfo')}}</small>
+        <small class="col-sm-12 mt-2 text-muted text-justify">{{
+          $t('profiles.changes')
+        }}</small>
+        <small class="col-sm-12 mt-2 text-muted text-justify">{{
+          $t('profiles.shippingInfo')
+        }}</small>
       </div>
     </div>
     <div class="middle-section">
@@ -21,12 +27,12 @@
       <div class="contactSection">
         <div class="row m-0">
           <div class="section-header bg-secondary">
-            <span class="text-white">{{$t('formLabels.contact')}}</span>
+            <span class="text-white">{{ $t('formLabels.contact') }}</span>
           </div>
         </div>
         <div class="row p-1 mb-2">
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="name">{{$t('formLabels.name')}}</label>
+            <label for="name">{{ $t('formLabels.name') }}</label>
             <input
               id="name"
               type="text"
@@ -37,7 +43,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="company">{{$t('formLabels.company')}}</label>
+            <label for="company">{{ $t('formLabels.company') }}</label>
             <input
               id="company"
               type="text"
@@ -48,7 +54,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="email">{{$t('formLabels.email')}}</label>
+            <label for="email">{{ $t('formLabels.email') }}</label>
             <input
               id="email"
               type="email"
@@ -59,7 +65,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="address1">{{$t('formLabels.address1')}}</label>
+            <label for="address1">{{ $t('formLabels.address1') }}</label>
             <input
               id="address1"
               type="text"
@@ -70,7 +76,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="address2">{{$t('formLabels.address2')}}</label>
+            <label for="address2">{{ $t('formLabels.address2') }}</label>
             <input
               id="address2"
               type="text"
@@ -81,7 +87,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="city">{{$t('formLabels.city')}}</label>
+            <label for="city">{{ $t('formLabels.city') }}</label>
             <input
               id="city"
               type="text"
@@ -92,7 +98,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="country">{{$t('formLabels.country')}}</label>
+            <label for="country">{{ $t('formLabels.country') }}</label>
             <country-select
               id="country"
               v-model="memberDetails.country"
@@ -104,7 +110,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="stateProv">{{$t('formLabels.stateProv')}}</label>
+            <label for="stateProv">{{ $t('formLabels.stateProv') }}</label>
             <region-select
               id="stateProv"
               v-model="memberDetails.stateProv"
@@ -119,7 +125,7 @@
           </div>
 
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="zipPostal">{{$t('formLabels.zipPostal')}}</label>
+            <label for="zipPostal">{{ $t('formLabels.zipPostal') }}</label>
             <input
               id="zipPostal"
               type="text"
@@ -130,7 +136,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="phone">{{$t('formLabels.phone')}}</label>
+            <label for="phone">{{ $t('formLabels.phone') }}</label>
             <VuePhoneNumberInput
               v-model="memberDetails.phone"
               id="phone"
@@ -149,7 +155,7 @@
       <div class="billingSection">
         <div class="row m-0">
           <div class="section-header bg-secondary">
-            <span class="text-white">{{$t('formLabels.billing')}}</span>
+            <span class="text-white">{{ $t('formLabels.billing') }}</span>
             <div class="form-check">
               <input
                 type="checkbox"
@@ -159,13 +165,15 @@
                 ref="billingSame"
                 @change="copyContacttoBilling"
               />
-              <small class="form-check-label text-white" for="billingSame">Use Contact</small>
+              <small class="form-check-label text-white" for="billingSame"
+                >Use Contact</small
+              >
             </div>
           </div>
         </div>
         <div class="row p-1 mb-2">
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="billingName">{{$t('formLabels.name')}}</label>
+            <label for="billingName">{{ $t('formLabels.name') }}</label>
             <input
               id="billingName"
               type="text"
@@ -176,7 +184,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="billingCompany">{{$t('formLabels.company')}}</label>
+            <label for="billingCompany">{{ $t('formLabels.company') }}</label>
             <input
               id="billingCompany"
               type="text"
@@ -187,7 +195,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="billingEmail">{{$t('formLabels.email')}}</label>
+            <label for="billingEmail">{{ $t('formLabels.email') }}</label>
             <input
               id="billingEmail"
               type="text"
@@ -198,7 +206,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="billingAddress1">{{$t('formLabels.address1')}}</label>
+            <label for="billingAddress1">{{ $t('formLabels.address1') }}</label>
             <input
               id="billingAddress1"
               type="text"
@@ -209,7 +217,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="billingAddress2">{{$t('formLabels.address2')}}</label>
+            <label for="billingAddress2">{{ $t('formLabels.address2') }}</label>
             <input
               id="billingAddress2"
               type="text"
@@ -220,7 +228,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="billingCity">{{$t('formLabels.city')}}</label>
+            <label for="billingCity">{{ $t('formLabels.city') }}</label>
             <input
               id="billingCity"
               type="text"
@@ -231,7 +239,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="billingCountry">{{$t('formLabels.country')}}</label>
+            <label for="billingCountry">{{ $t('formLabels.country') }}</label>
             <country-select
               id="billingCountry"
               v-model="memberDetails.billing.country"
@@ -244,7 +252,9 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="billingStateProv">{{$t('formLabels.stateProv')}}</label>
+            <label for="billingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <region-select
               id="billingStateProv"
               v-model="memberDetails.billing.stateProv"
@@ -259,7 +269,9 @@
           </div>
 
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="billingZipPostal">{{$t('formLabels.zipPostal')}}</label>
+            <label for="billingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
             <input
               id="billingZipPostal"
               type="text"
@@ -270,7 +282,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6" v-if="billingSame">
-            <label for="billingPhone">{{$t('formLabels.phone')}}</label>
+            <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
             <input
               id="billingPhone"
               type="text"
@@ -281,7 +293,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6" v-else>
-            <label for="billingPhone">{{$t('formLabels.phone')}}</label>
+            <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
             <VuePhoneNumberInput
               v-model="memberDetails.billing.phone"
               id="billingPhone"
@@ -299,7 +311,7 @@
       <div class="shippingSection">
         <div class="row m-0">
           <div class="section-header bg-secondary">
-            <span class="text-white">{{$t('formLabels.shipping')}}</span>
+            <span class="text-white">{{ $t('formLabels.shipping') }}</span>
             <div class="form-check">
               <input
                 type="checkbox"
@@ -309,16 +321,15 @@
                 ref="shippingSame"
                 @change="copyContacttoShipping"
               />
-              <small
-                class="form-check-label text-white"
-                for="shippingSame"
-              >{{$t('formLabels.useContact')}}</small>
+              <small class="form-check-label text-white" for="shippingSame">{{
+                $t('formLabels.useContact')
+              }}</small>
             </div>
           </div>
         </div>
         <div class="row p-1 mb-2">
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="shippingName">{{$t('formLabels.name')}}</label>
+            <label for="shippingName">{{ $t('formLabels.name') }}</label>
             <input
               id="shippingName"
               type="text"
@@ -329,7 +340,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="shippingCompany">{{$t('formLabels.company')}}</label>
+            <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
             <input
               id="shippingCompany"
               type="text"
@@ -340,7 +351,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="shippingEmail">{{$t('formLabels.email')}}</label>
+            <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
             <input
               id="shippingEmail"
               type="text"
@@ -351,7 +362,9 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="shippingAddress1">{{$t('formLabels.address1')}}</label>
+            <label for="shippingAddress1">{{
+              $t('formLabels.address1')
+            }}</label>
             <input
               id="shippingAddress1"
               type="text"
@@ -362,7 +375,9 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="shippingAddress2">{{$t('formLabels.address2')}}</label>
+            <label for="shippingAddress2">{{
+              $t('formLabels.address2')
+            }}</label>
             <input
               id="shippingAddress2"
               type="text"
@@ -373,7 +388,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-xl-6">
-            <label for="shippingCity">{{$t('formLabels.city')}}</label>
+            <label for="shippingCity">{{ $t('formLabels.city') }}</label>
             <input
               id="shippingCity"
               type="text"
@@ -385,7 +400,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="shippingCountry">{{$t('formLabels.country')}}</label>
+            <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
             <country-select
               id="shippingCountry"
               v-model="memberDetails.shipping.country"
@@ -398,7 +413,9 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-            <label for="shippingStateProv">{{$t('formLabels.stateProv')}}</label>
+            <label for="shippingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <region-select
               id="shippingStateProv"
               v-model="memberDetails.shipping.stateProv"
@@ -413,7 +430,9 @@
           </div>
 
           <div class="form-group col-sm-12 col-lg-6">
-            <label for="shippingZipPostal">{{$t('formLabels.zipPostal')}}</label>
+            <label for="shippingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
             <input
               id="shippingZipPostal"
               type="text"
@@ -424,7 +443,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6" v-if="shippingSame">
-            <label for="shippingPhone">{{$t('formLabels.phone')}}</label>
+            <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
             <input
               id="shippingPhone"
               type="text"
@@ -435,7 +454,7 @@
             />
           </div>
           <div class="form-group col-sm-12 col-lg-6" v-else>
-            <label for="shippingPhone">{{$t('formLabels.phone')}}</label>
+            <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
             <VuePhoneNumberInput
               v-model="memberDetails.shipping.phone"
               id="shippingPhone"
@@ -455,10 +474,16 @@
             <button
               class="btn btn-block btn-info"
               @click.prevent="updateProfile"
-            >{{$t('profiles.updateProfile')}}</button>
+            >
+              {{ $t('profiles.updateProfile') }}
+            </button>
           </div>
           <div class="col-sm-6 mt-2">
-            <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{$t('cancel')}}</router-link>
+            <router-link
+              to="/dashboard/profile"
+              class="btn btn-block btn-danger"
+              >{{ $t('cancel') }}</router-link
+            >
           </div>
         </div>
       </div>
@@ -475,7 +500,7 @@ import i18n from '../../i18n';
 export default {
   name: 'ProfilesEdit',
   components: {
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
   },
   data() {
     return {
@@ -483,11 +508,11 @@ export default {
       billingSame: false,
       backupBilling: {},
       backupShipping: {},
-      memberDetails: {}
+      memberDetails: {},
     };
   },
   computed: {
-    ...mapGetters(['loggedInMember', 'isLoading'])
+    ...mapGetters(['loggedInMember', 'isLoading']),
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -495,20 +520,25 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('profiles.myProfile'),
-          link: '/dashboard/profile'
+          link: '/dashboard/profile',
         },
         {
           text: i18n.t('edit'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      const res = await this.$store.dispatch('getMemberDetails', this.loggedInMember._id);
+      const res = await this.$store.dispatch(
+        'getMemberDetails',
+        this.loggedInMember._id
+      );
       this.memberDetails = res.data.member;
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -596,7 +626,7 @@ export default {
           stateProv: this.memberDetails.stateProv,
           country: this.memberDetails.country,
           zipPostal: this.memberDetails.zipPostal,
-          phone: this.memberDetails.phone
+          phone: this.memberDetails.phone,
         };
       } else {
         this.memberDetails.billing = this.backupBilling;
@@ -615,7 +645,7 @@ export default {
           stateProv: this.memberDetails.stateProv,
           country: this.memberDetails.country,
           zipPostal: this.memberDetails.zipPostal,
-          phone: this.memberDetails.phone
+          phone: this.memberDetails.phone,
         };
       } else {
         this.memberDetails.shipping = this.backupShipping;
@@ -683,12 +713,12 @@ export default {
         billingCountry: this.memberDetails.billing.country,
         billingZipPostal: this.memberDetails.billing.zipPostal,
         billingPhone: this.memberDetails.billing.phone,
-        billingEmail: this.memberDetails.billing.email
+        billingEmail: this.memberDetails.billing.email,
       };
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
-          id: this.loggedInMember._id
+          id: this.loggedInMember._id,
         });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'profile' });
@@ -697,10 +727,12 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

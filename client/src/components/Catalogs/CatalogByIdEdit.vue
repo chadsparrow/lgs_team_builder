@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="form-group mt-4">
       <div class="row">
         <div class="col-12">

@@ -1,14 +1,26 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <form @submit.prevent="addCatalogItem" novalidate>
       <div class="row">
         <div class="form-group col-sm-12 col-lg-6">
           <label for="nameEN">Name (EN)</label>
-          <input id="nameEN" type="text" class="form-control" v-model="nameEN" ref="nameEN" />
+          <input
+            id="nameEN"
+            type="text"
+            class="form-control"
+            v-model="nameEN"
+            ref="nameEN"
+          />
         </div>
         <div class="form-group col-sm-12 col-lg-6">
           <label for="nameFR">Name (FR)</label>
-          <input id="nameFR" type="text" class="form-control" v-model="nameFR" ref="nameFR" />
+          <input
+            id="nameFR"
+            type="text"
+            class="form-control"
+            v-model="nameFR"
+            ref="nameFR"
+          />
         </div>
         <div class="form-group col-sm-12 col-lg-6">
           <label for="productCode">ERP Product Code</label>
@@ -146,7 +158,12 @@
         </div>
         <div class="form-group col-sm-12 col-lg-6">
           <label for="gender">Gender</label>
-          <select class="form-control form-control" id="gender" v-model="gender" ref="gender">
+          <select
+            class="form-control form-control"
+            id="gender"
+            v-model="gender"
+            ref="gender"
+          >
             <option value="M">Mens</option>
             <option value="W">Womens</option>
             <option value="J">Junior</option>
@@ -161,7 +178,7 @@
                 style="width: 100%;"
                 v-model="category"
                 :tags="categories"
-                @tags-changed="newCategories => (categories = newCategories)"
+                @tags-changed="(newCategories) => (categories = newCategories)"
               />
             </div>
             <div class="form-group col-sm-12 col-xl-6">
@@ -170,7 +187,9 @@
                 style="width: 100%;"
                 v-model="categorie"
                 :tags="categoriesFR"
-                @tags-changed="newCategoriesFR => (categoriesFR = newCategoriesFR)"
+                @tags-changed="
+                  (newCategoriesFR) => (categoriesFR = newCategoriesFR)
+                "
               />
             </div>
           </div>
@@ -198,7 +217,11 @@
         <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="priceBreaksCAD">Price Breaks (CAD)</label>
           <ul class="list-group" id="priceBreaksCAD">
-            <li class="list-group-item py-1" v-for="pb of priceBreaks.CAD" :key="pb.priceBreak">
+            <li
+              class="list-group-item py-1"
+              v-for="pb of priceBreaks.CAD"
+              :key="pb.priceBreak"
+            >
               <div>{{ pb.priceBreak }}</div>
               <input
                 type="number"
@@ -214,7 +237,11 @@
         <div class="form-group col-sm-12 col-lg-6 col-xl-3">
           <label for="priceBreaksUSD">Price Breaks (USD)</label>
           <ul class="list-group" id="priceBreaksUSD">
-            <li class="list-group-item py-1" v-for="pb of priceBreaks.USD" :key="pb.priceBreak">
+            <li
+              class="list-group-item py-1"
+              v-for="pb of priceBreaks.USD"
+              :key="pb.priceBreak"
+            >
               <div>{{ pb.priceBreak }}</div>
               <input
                 type="number"
@@ -230,7 +257,9 @@
       </div>
       <div class="row mt-2">
         <div class="col-sm-12 col-lg-6 mt-2">
-          <button type="submit" class="btn btn-block btn-info">Add Catalog Item</button>
+          <button type="submit" class="btn btn-block btn-info">
+            Add Catalog Item
+          </button>
         </div>
         <div class="col-sm-12 col-lg-6 mt-2">
           <router-link
@@ -252,7 +281,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'CatalogItemsAdd',
   components: {
-    VueTagsInput
+    VueTagsInput,
   },
   data() {
     return {
@@ -275,55 +304,55 @@ export default {
         CAD: [
           {
             priceBreak: '1',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '2-5',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '6-11',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '12-49',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '50-99',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '100-249',
-            price: 0.0
-          }
+            price: 0.0,
+          },
         ],
         USD: [
           {
             priceBreak: '1',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '2-5',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '6-11',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '12-49',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '50-99',
-            price: 0.0
+            price: 0.0,
           },
           {
             priceBreak: '100-249',
-            price: 0.0
-          }
-        ]
+            price: 0.0,
+          },
+        ],
       },
       gender: '',
       descriptionEN: '',
@@ -332,11 +361,11 @@ export default {
       categories: [],
       categorie: '',
       categoriesFR: [],
-      isActive: true
+      isActive: true,
     };
   },
   computed: {
-    ...mapGetters(['isLoading', 'currentCatalog'])
+    ...mapGetters(['isLoading', 'currentCatalog']),
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -345,22 +374,24 @@ export default {
       const breadcrumbs = [
         {
           text: 'Catalogs',
-          link: '/dashboard/catalogs'
+          link: '/dashboard/catalogs',
         },
         {
           text: `${this.currentCatalog.brand} - ${this.currentCatalog.season} - ${this.currentCatalog.year}`,
-          link: `/dashboard/catalogs/${this.currentCatalog._id}`
+          link: `/dashboard/catalogs/${this.currentCatalog._id}`,
         },
         {
           text: 'Add Item',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -392,8 +423,8 @@ export default {
       this.sizes = activeSizes;
     },
     addCatalogItem: async function() {
-      const mappedCategories = this.categories.map(cat => cat.text);
-      const mappedCategoriesFR = this.categoriesFR.map(catFR => catFR.text);
+      const mappedCategories = this.categories.map((cat) => cat.text);
+      const mappedCategoriesFR = this.categoriesFR.map((catFR) => catFR.text);
 
       const newCatalogItem = {
         catalogId: this.currentCatalog._id,
@@ -407,16 +438,24 @@ export default {
         descriptionEN: this.descriptionEN,
         descriptionFR: this.descriptionFR,
         categories: mappedCategories,
-        categoriesFR: mappedCategoriesFR
+        categoriesFR: mappedCategoriesFR,
       };
       try {
-        const res = await this.$store.dispatch('addCatalogItem', newCatalogItem);
+        const res = await this.$store.dispatch(
+          'addCatalogItem',
+          newCatalogItem
+        );
         this.$router
-          .push({ name: 'catalogsById', params: { id: this.currentCatalog._id } })
+          .push({
+            name: 'catalogsById',
+            params: { id: this.currentCatalog._id },
+          })
           .catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
         if (err.response.data[0].message === 'Product already exists.') {
           this.$refs['productCode'].value = '';
           this.$refs['styleCode'].value = '';
@@ -428,8 +467,8 @@ export default {
           }
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

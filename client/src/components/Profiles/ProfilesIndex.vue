@@ -1,11 +1,14 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="memberDetails.email" default-img="mp" :size="200" />
-        <a href="https://gravatar.com" target="_blank" class="btn btn-sm btn-block btn-info mt-1">{{
-          $t('profiles.updateGravatar')
-        }}</a>
+        <a
+          href="https://gravatar.com"
+          target="_blank"
+          class="btn btn-sm btn-block btn-info mt-1"
+          >{{ $t('profiles.updateGravatar') }}</a
+        >
       </div>
       <div class="row mt-2">
         <small class="col-12 text-info">{{ $t('profiles.timezone') }}:</small>
@@ -16,20 +19,33 @@
         <span class="col-12">
           {{
             memberDetails.createdAt
-              | moment('timezone', memberDetails.timezone, 'MMM Do YYYY - hh:mm a - z')
+              | moment(
+                'timezone',
+                memberDetails.timezone,
+                'MMM Do YYYY - hh:mm a - z'
+              )
           }}
         </span>
       </div>
       <div class="row mt-3 mx-0">
-        <router-link :to="`/dashboard/profile/edit`" class="btn btn-sm btn-block btn-info">
+        <router-link
+          :to="`/dashboard/profile/edit`"
+          class="btn btn-sm btn-block btn-info"
+        >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.editProfile') }}
         </router-link>
-        <router-link :to="`/dashboard/profile/password`" class="btn btn-sm btn-block btn-danger">
+        <router-link
+          :to="`/dashboard/profile/password`"
+          class="btn btn-sm btn-block btn-danger"
+        >
           <i class="fas fa-lock mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.changePassword') }}
         </router-link>
-        <router-link :to="`/dashboard/profile/email`" class="btn btn-sm btn-block btn-danger">
+        <router-link
+          :to="`/dashboard/profile/email`"
+          class="btn btn-sm btn-block btn-danger"
+        >
           <i class="fas fa-envelope mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.updateEmail') }}
         </router-link>
@@ -162,57 +178,57 @@
       <div class="shippingSection mb-3">
         <div class="row m-0">
           <div class="section-header bg-secondary">
-            <span class="text-white">{{$t('formLabels.shipping')}}</span>
+            <span class="text-white">{{ $t('formLabels.shipping') }}</span>
           </div>
         </div>
         <div class="row info-spans">
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{$t('formLabels.name')}}</label>
+            <label class="text-info">{{ $t('formLabels.name') }}</label>
             <br />
             <span>{{ memberDetails.shipping.name }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{$t('formLabels.company')}}</label>
+            <label class="text-info">{{ $t('formLabels.company') }}</label>
             <br />
             <span>{{ memberDetails.shipping.company || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{$t('formLabels.email')}}</label>
+            <label class="text-info">{{ $t('formLabels.email') }}</label>
             <br />
             <span>{{ memberDetails.shipping.email }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{$t('formLabels.address1')}}</label>
+            <label class="text-info">{{ $t('formLabels.address1') }}</label>
             <br />
             <span>{{ memberDetails.shipping.address1 }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{$t('formLabels.address2')}}</label>
+            <label class="text-info">{{ $t('formLabels.address2') }}</label>
             <br />
             <span>{{ memberDetails.shipping.address2 || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{$t('formLabels.city')}}</label>
+            <label class="text-info">{{ $t('formLabels.city') }}</label>
             <br />
             <span>{{ memberDetails.shipping.city }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{$t('formLabels.stateProv')}}</label>
+            <label class="text-info">{{ $t('formLabels.stateProv') }}</label>
             <br />
             <span>{{ memberDetails.shipping.stateProv }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{$t('formLabels.country')}}</label>
+            <label class="text-info">{{ $t('formLabels.country') }}</label>
             <br />
             <span>{{ memberDetails.shipping.country }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{$t('formLabels.zipPostal')}}</label>
+            <label class="text-info">{{ $t('formLabels.zipPostal') }}</label>
             <br />
             <span>{{ memberDetails.shipping.zipPostal }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{$t('formLabels.phone')}}</label>
+            <label class="text-info">{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.shipping.phone }}</span>
           </div>
@@ -229,34 +245,39 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'ProfilesIndex',
   components: {
-    Gravatar
+    Gravatar,
   },
   computed: {
-    ...mapGetters(['isLoading', 'loggedInMember'])
+    ...mapGetters(['isLoading', 'loggedInMember']),
   },
   data() {
     return {
-      memberDetails: {}
+      memberDetails: {},
     };
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
-      const res = await this.$store.dispatch('getMemberDetails', this.loggedInMember._id);
+      const res = await this.$store.dispatch(
+        'getMemberDetails',
+        this.loggedInMember._id
+      );
       this.memberDetails = res.data.member;
       const breadcrumbs = [
         {
           text: 'My Profile',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
-  }
+  },
 };
 </script>
 

@@ -1,7 +1,7 @@
 // i18n finished // responsiveness finished
 
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="mb-2 header">
       <router-link to="/dashboard/catalogs/add" class="btn btn-info">
         <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}

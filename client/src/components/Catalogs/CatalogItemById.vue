@@ -1,7 +1,7 @@
 // i18n finished // responsive finished
 
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="row">
       <div class="col-lg-6 col-xl-5 image-section">
         <div class="image-box">

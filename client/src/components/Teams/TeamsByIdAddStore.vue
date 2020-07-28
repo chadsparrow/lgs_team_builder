@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div v-if="team.name">
         <avatar
@@ -57,7 +57,12 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label for="brand">Store Brand</label>
-              <select class="form-control" id="brand" v-model="brand" ref="brand">
+              <select
+                class="form-control"
+                id="brand"
+                v-model="brand"
+                ref="brand"
+              >
                 <option value="GARNEAU">GARNEAU</option>
                 <option value="SUGOI">SUGOI</option>
                 <option value="SOMBRIO">SOMBRIO</option>
@@ -186,10 +191,17 @@
             </div>
             <div class="row mt-2">
               <div class="col-sm-6">
-                <button class="btn btn-block btn-info" @click.prevent="addStore">Add Store</button>
+                <button
+                  class="btn btn-block btn-info"
+                  @click.prevent="addStore"
+                >
+                  Add Store
+                </button>
               </div>
               <div class="col-sm-6">
-                <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
+                <router-link
+                  :to="`/dashboard/teams/${team._id}`"
+                  class="btn btn-block btn-danger"
                   >Cancel</router-link
                 >
               </div>
@@ -217,7 +229,8 @@
         <div class="row px-2">
           <span class="col">
             All orders from this store will ship to the
-            <strong>Team Member's Shipping Address</strong> specified in their own profile.
+            <strong>Team Member's Shipping Address</strong> specified in their
+            own profile.
           </span>
         </div>
       </div>
@@ -229,8 +242,8 @@
         <div class="row px-2">
           <span class="col">
             All orders from this store will ship to the
-            <strong>Team's Bulk Shipping Address</strong> but will be individually packaged for each
-            member.
+            <strong>Team's Bulk Shipping Address</strong> but will be
+            individually packaged for each member.
           </span>
         </div>
       </div>
@@ -245,7 +258,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'TeamsAddStore',
   components: {
-    Avatar
+    Avatar,
   },
   data() {
     return {
@@ -258,7 +271,7 @@ export default {
       openingDate: null,
       closingDate: null,
       storeMessage: '',
-      shippingType: 'BULK'
+      shippingType: 'BULK',
     };
   },
   computed: {
@@ -268,7 +281,7 @@ export default {
     },
     team: function() {
       return this.currentTeam;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -277,16 +290,16 @@ export default {
       const breadcrumbs = [
         {
           text: 'Teams',
-          link: '/dashboard/teams'
+          link: '/dashboard/teams',
         },
         {
           text: `${this.team.name}`,
-          link: `/dashboard/teams/${this.team._id}`
+          link: `/dashboard/teams/${this.team._id}`,
         },
         {
           text: 'Add Store',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
@@ -294,7 +307,9 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -324,7 +339,7 @@ export default {
         closingDate: this.closingDate,
         timezone: this.team.timezone,
         storeMessage: this.storeMessage,
-        shippingType: this.shippingType
+        shippingType: this.shippingType,
       };
       try {
         const res = await this.$store.dispatch('addTeamStore', newStore);
@@ -336,10 +351,12 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

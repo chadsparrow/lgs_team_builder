@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <!-- TEAM INFO GRID SECTION -->
     <div class="team-info">
       <div v-if="team.name">

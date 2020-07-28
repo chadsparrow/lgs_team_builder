@@ -1,5 +1,7 @@
 <template>
-  <h1>DASHBOARD INDEX</h1>
+  <div class="container">
+    <h1>DASHBOARD INDEX</h1>
+  </div>
 </template>
 
 <script>

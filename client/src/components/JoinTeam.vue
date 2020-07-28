@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading">
+  <div v-if="!isLoading" class="container">
     <div class="bg-dark headerBlock mb-3">
       <div class="container">
         <div class="row text-white p-4">

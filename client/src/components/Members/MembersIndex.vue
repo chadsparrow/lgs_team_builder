@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading" class="page">
+  <div v-if="!isLoading" class="page container">
     <div class="header mb-2">
       <div class="form-group has-search m-0">
         <span

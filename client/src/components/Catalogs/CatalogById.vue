@@ -1,7 +1,7 @@
 // i18n finished //
 
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="header">
       <div class="row text-center">
         <div class="col-lg-3">
@@ -223,6 +223,10 @@ export default {
 
     img {
       height: 35px;
+    }
+
+    input {
+      border-radius: 4px;
     }
   }
 

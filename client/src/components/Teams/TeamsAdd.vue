@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid" v-if="!isLoading">
+  <div class="container" v-if="!isLoading">
     <div class="row">
       <div class="col middle-section">
         <form novalidate>
@@ -35,9 +35,12 @@
                 v-model="adminId"
                 ref="adminId"
               >
-                <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
-                  admin.name
-                }}</option>
+                <option
+                  v-for="admin of adminsList"
+                  :key="admin._id"
+                  :value="admin._id"
+                  >{{ admin.name }}</option
+                >
               </select>
             </div>
             <!-- MANAGER SELECTOR -->
@@ -66,9 +69,11 @@
                 ref="useManagerDetails"
                 :disabled="!managerId || chosenMember === null"
               />
-              <small class="form-check-label text-white" for="useManagerDetails">{{
-                $t('formLabels.useManager')
-              }}</small>
+              <small
+                class="form-check-label text-white"
+                for="useManagerDetails"
+                >{{ $t('formLabels.useManager') }}</small
+              >
             </div>
           </div>
           <div class="row px-2 mb-3">
@@ -109,7 +114,9 @@
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="contactAddress1">{{ $t('formLabels.address1') }}</label>
+              <label for="contactAddress1">{{
+                $t('formLabels.address1')
+              }}</label>
               <input
                 id="contactAddress1"
                 type="text"
@@ -121,7 +128,9 @@
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="contactAddress2">{{ $t('formLabels.address2') }}</label>
+              <label for="contactAddress2">{{
+                $t('formLabels.address2')
+              }}</label>
               <input
                 id="contactAddress2"
                 type="text"
@@ -159,7 +168,9 @@
               />
             </div>
             <div class="form-group col-sm-6 col-lg-3">
-              <label for="contactStateProv">{{ $t('formLabels.stateProv') }}</label>
+              <label for="contactStateProv">{{
+                $t('formLabels.stateProv')
+              }}</label>
               <region-select
                 id="contactStateProv"
                 v-model="contactStateProv"
@@ -176,7 +187,9 @@
             </div>
 
             <div class="form-group col-md-6">
-              <label for="contactZipPostal">{{ $t('formLabels.zipPostal') }}</label>
+              <label for="contactZipPostal">{{
+                $t('formLabels.zipPostal')
+              }}</label>
               <input
                 id="contactZipPostal"
                 type="text"
@@ -226,9 +239,11 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <small class="form-check-label text-white" for="useAboveDetails">{{
-                  $t('formLabels.useAbove')
-                }}</small>
+                <small
+                  class="form-check-label text-white"
+                  for="useAboveDetails"
+                  >{{ $t('formLabels.useAbove') }}</small
+                >
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -241,9 +256,11 @@
                   :disabled="!managerId || chosenMember === null"
                   @change="copytoBulk"
                 />
-                <small class="form-check-label text-white" for="useManagerDetails2">{{
-                  $t('formLabels.useManagerShipping')
-                }}</small>
+                <small
+                  class="form-check-label text-white"
+                  for="useManagerDetails2"
+                  >{{ $t('formLabels.useManagerShipping') }}</small
+                >
               </div>
               <div class="form-check form-check-inline">
                 <input
@@ -255,9 +272,11 @@
                   v-model="bulkUseDetails"
                   @change="copytoBulk"
                 />
-                <small class="form-check-label text-white" for="useNewDetails">{{
-                  $t('formLabels.useOther')
-                }}</small>
+                <small
+                  class="form-check-label text-white"
+                  for="useNewDetails"
+                  >{{ $t('formLabels.useOther') }}</small
+                >
               </div>
             </div>
           </div>
@@ -274,7 +293,9 @@
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3">
-              <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
+              <label for="shippingCompany">{{
+                $t('formLabels.company')
+              }}</label>
               <input
                 id="shippingCompany"
                 type="text"
@@ -296,7 +317,9 @@
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="shippingAddress1">{{ $t('formLabels.address1') }}</label>
+              <label for="shippingAddress1">{{
+                $t('formLabels.address1')
+              }}</label>
               <input
                 id="shippingAddress1"
                 type="text"
@@ -307,7 +330,9 @@
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="shippingAddress2">{{ $t('formLabels.address2') }}</label>
+              <label for="shippingAddress2">{{
+                $t('formLabels.address2')
+              }}</label>
               <input
                 id="shippingAddress2"
                 type="text"
@@ -330,7 +355,9 @@
               />
             </div>
             <div class="form-group col-sm-6 col-lg-3">
-              <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
+              <label for="shippingCountry">{{
+                $t('formLabels.country')
+              }}</label>
               <country-select
                 id="shippingCountry"
                 v-model="shippingCountry"
@@ -343,7 +370,9 @@
               />
             </div>
             <div class="form-group col-sm-6 col-lg-3">
-              <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
+              <label for="shippingStateProv">{{
+                $t('formLabels.stateProv')
+              }}</label>
               <region-select
                 id="shippingStateProv"
                 v-model="shippingStateProv"
@@ -358,7 +387,9 @@
             </div>
 
             <div class="form-group col-md-6">
-              <label for="shippingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
+              <label for="shippingZipPostal">{{
+                $t('formLabels.zipPostal')
+              }}</label>
               <input
                 id="shippingZipPostal"
                 type="text"
@@ -398,9 +429,11 @@
               </button>
             </div>
             <div class="col-sm-6">
-              <router-link to="/dashboard/teams" class="btn btn-block btn-danger">{{
-                $t('cancel')
-              }}</router-link>
+              <router-link
+                to="/dashboard/teams"
+                class="btn btn-block btn-danger"
+                >{{ $t('cancel') }}</router-link
+              >
             </div>
           </div>
         </form>
@@ -421,7 +454,7 @@ export default {
   name: 'TeamsAdd',
   components: {
     VuePhoneNumberInput,
-    vSelect
+    vSelect,
   },
   data() {
     return {
@@ -456,17 +489,22 @@ export default {
       adminsList: [],
       backupContact: {},
       backupShipping: {},
-      chosenMember: ''
+      chosenMember: '',
     };
   },
   computed: {
-    ...mapGetters(['isLoading', 'loggedInMember', 'allMembers', 'phoneTranslations']),
+    ...mapGetters([
+      'isLoading',
+      'loggedInMember',
+      'allMembers',
+      'phoneTranslations',
+    ]),
     member: function() {
       return this.loggedInMember;
     },
     members: function() {
       return this.allMembers;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -479,18 +517,20 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.teams'),
-          link: '/dashboard/teams'
+          link: '/dashboard/teams',
         },
         {
           text: i18n.t('teams.addTeam'),
-          link: `#`
-        }
+          link: `#`,
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -520,7 +560,7 @@ export default {
         shippingCountry: this.shippingCountry,
         shippingZipPostal: this.shippingZipPostal,
         shippingPhone: this.shippingPhone,
-        shippingEmail: this.shippingEmail
+        shippingEmail: this.shippingEmail,
       };
       try {
         const res = await this.$store.dispatch('addTeam', newTeam);
@@ -531,13 +571,18 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     getManagerDetails: async function() {
       try {
         if (this.chosenMember !== null) {
-          const res = await this.$store.dispatch('getMemberDetails', this.chosenMember._id);
+          const res = await this.$store.dispatch(
+            'getMemberDetails',
+            this.chosenMember._id
+          );
           const manager = res.data.member;
 
           const {
@@ -553,7 +598,7 @@ export default {
             email,
             phone,
             timezone,
-            shipping
+            shipping,
           } = manager;
 
           this.managerDetails = {
@@ -568,7 +613,7 @@ export default {
             email,
             phone,
             timezone,
-            shipping
+            shipping,
           };
 
           this.managerId = _id;
@@ -580,7 +625,9 @@ export default {
           this.bulkUseDetails = 'other';
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     copyManagertoMain: async function() {
@@ -595,7 +642,7 @@ export default {
           country: this.contactCountry,
           zipPostal: this.contactZipPostal,
           phone: this.contactPhone,
-          email: this.contactEmail
+          email: this.contactEmail,
         };
 
         const {
@@ -608,7 +655,7 @@ export default {
           country,
           zipPostal,
           email,
-          phone
+          phone,
         } = this.managerDetails;
         this.contactName = name;
         this.contactCompany = company;
@@ -631,7 +678,7 @@ export default {
           country,
           zipPostal,
           phone,
-          email
+          email,
         } = this.backupContact;
         this.contactName = name;
         this.contactCompany = company;
@@ -656,7 +703,7 @@ export default {
           country: this.shippingCountry,
           zipPostal: this.shippingZipPostal,
           phone: this.shippingPhone,
-          email: this.shippingEmail
+          email: this.shippingEmail,
         };
 
         this.shippingName = this.contactName;
@@ -684,7 +731,7 @@ export default {
           country: this.shippingCountry,
           zipPostal: this.shippingZipPostal,
           phone: this.shippingPhone,
-          email: this.shippingEmail
+          email: this.shippingEmail,
         };
         this.shippingName = shipping.name;
         this.shippingCompany = shipping.company;
@@ -708,7 +755,7 @@ export default {
           country: this.shippingCountry,
           zipPostal: this.shippingZipPostal,
           phone: this.shippingPhone,
-          email: this.shippingEmail
+          email: this.shippingEmail,
         };
         this.shippingName = this.contactName;
         this.shippingCompany = this.contactCompany;
@@ -731,7 +778,7 @@ export default {
           country,
           zipPostal,
           phone,
-          email
+          email,
         } = this.backupShipping;
         this.shippingName = name;
         this.shippingCompany = company;
@@ -790,8 +837,8 @@ export default {
     },
     checkShippingCountry: function() {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
-    }
-  }
+    },
+  },
 };
 </script>
 

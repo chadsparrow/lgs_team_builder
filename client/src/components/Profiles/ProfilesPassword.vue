@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page container">
     <form>
       <div class="row">
         <div class="form-group col-sm-12">
@@ -24,7 +24,9 @@
           />
         </div>
         <div class="form-group col-sm-12 mb-4">
-          <label for="confirmPassword">{{ $t('profiles.confirmPassword') }}</label>
+          <label for="confirmPassword">{{
+            $t('profiles.confirmPassword')
+          }}</label>
           <input
             id="confirmPassword"
             type="password"
@@ -34,14 +36,19 @@
           />
         </div>
         <div class="col sm-6">
-          <button class="btn btn-block btn-info" @click.prevent="changePassword">
+          <button
+            class="btn btn-block btn-info"
+            @click.prevent="changePassword"
+          >
             {{ $t('profiles.changePassword') }}
           </button>
         </div>
         <div class="col sm-6">
-          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{
-            $t('cancel')
-          }}</router-link>
+          <router-link
+            to="/dashboard/profile"
+            class="btn btn-block btn-danger"
+            >{{ $t('cancel') }}</router-link
+          >
         </div>
       </div>
     </form>
@@ -55,13 +62,13 @@ import i18n from '../../i18n';
 export default {
   name: 'ProfilesPassword',
   computed: {
-    ...mapGetters(['loggedInMember'])
+    ...mapGetters(['loggedInMember']),
   },
   data() {
     return {
       oldPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
     };
   },
   created: async function() {
@@ -70,25 +77,27 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('profiles.myProfile'),
-          link: '/dashboard/profile'
+          link: '/dashboard/profile',
         },
         {
           text: i18n.t('profiles.changePassword'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     changePassword: async function() {
       if (this.newPassword === this.oldPassword) {
         this.$toasted.error(i18n.t('profiles.newPasswordError'), {
-          icon: 'exclamation-triangle'
+          icon: 'exclamation-triangle',
         });
         this.newPassword = '';
         this.confirmPassword = '';
@@ -98,27 +107,31 @@ export default {
       const updatedPassword = {
         oldPassword: this.oldPassword,
         newPassword: this.newPassword,
-        confirmPassword: this.confirmPassword
+        confirmPassword: this.confirmPassword,
       };
       this.$store.commit('LOADING_TRUE');
       try {
         await this.$store.dispatch('changePassword', {
           updatedPassword,
-          id: this.loggedInMember._id
+          id: this.loggedInMember._id,
         });
         this.$store.commit('LOADING_FALSE');
         this.$router.push({ name: 'profile' });
-        this.$toasted.success(i18n.t('profiles.passwordUpdated'), { icon: 'lock' });
+        this.$toasted.success(i18n.t('profiles.passwordUpdated'), {
+          icon: 'lock',
+        });
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

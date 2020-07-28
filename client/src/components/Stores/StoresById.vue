@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="row p-1">
         <div class="col-sm-12">

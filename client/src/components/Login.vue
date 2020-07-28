@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page container">
     <form @submit.prevent="login" novalidate>
       <div class="text-center">
         <img

@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper mb-2">
         <Gravatar :email="member.email" default-img="mp" :size="200" />
@@ -10,7 +10,9 @@
       </div>
       <div class="row p-1">
         <small class="col-12 text-info">{{ $t('members.memberRole') }}:</small>
-        <span class="col-12">{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
+        <span class="col-12">{{
+          member.isAdmin ? $t('admin') : $t('member')
+        }}</span>
       </div>
       <hr />
       <small class="text-info">{{ $t('actions') }}</small>
@@ -18,7 +20,9 @@
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
-      >{{ $t('members.deactivate') }}</button>
+      >
+        {{ $t('members.deactivate') }}
+      </button>
     </div>
 
     <!-- CONTACT SECTION -->
@@ -165,9 +169,7 @@
               @change="copyContacttoBilling"
             />
             <small class="form-check-label text-white" for="billingSame">
-              {{
-              $t('formLabels.useContact')
-              }}
+              {{ $t('formLabels.useContact') }}
             </small>
           </div>
         </div>
@@ -320,9 +322,7 @@
               @change="copyContacttoShipping"
             />
             <small class="form-check-small text-white" for="shippingSame">
-              {{
-              $t('formLabels.useContact')
-              }}
+              {{ $t('formLabels.useContact') }}
             </small>
           </div>
         </div>
@@ -410,7 +410,9 @@
           />
         </div>
         <div class="form-group col-sm-6 col-xl-3">
-          <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
+          <label for="shippingStateProv">{{
+            $t('formLabels.stateProv')
+          }}</label>
           <region-select
             id="shippingStateProv"
             v-model="member.shipping.stateProv"
@@ -425,7 +427,9 @@
           />
         </div>
         <div class="form-group col-lg-6">
-          <label for="shippingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
+          <label for="shippingZipPostal">{{
+            $t('formLabels.zipPostal')
+          }}</label>
           <input
             id="shippingZipPostal"
             type="text"
@@ -462,16 +466,16 @@
       </div>
       <div class="row mt-4">
         <div class="col-lg-6">
-          <button
-            class="btn btn-block btn-info"
-            @click.prevent="updateMember"
-          >{{ $t('members.updateMember') }}</button>
+          <button class="btn btn-block btn-info" @click.prevent="updateMember">
+            {{ $t('members.updateMember') }}
+          </button>
         </div>
         <div class="col-lg-6">
           <router-link
             :to="`/dashboard/members/${this.member._id}`"
             class="btn btn-block btn-danger"
-          >{{ $t('cancel') }}</router-link>
+            >{{ $t('cancel') }}</router-link
+          >
         </div>
       </div>
     </div>
@@ -489,14 +493,14 @@ export default {
   name: 'MemberByIdEdit',
   components: {
     VuePhoneNumberInput,
-    Gravatar
+    Gravatar,
   },
   data() {
     return {
       shippingSame: false,
       billingSame: false,
       backupBilling: {},
-      backupShipping: {}
+      backupShipping: {},
     };
   },
   computed: {
@@ -509,7 +513,7 @@ export default {
     },
     translations: function() {
       return this.phoneTranslations;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -518,22 +522,24 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.members'),
-          link: '/dashboard/members'
+          link: '/dashboard/members',
         },
         {
           text: `${this.member.name}`,
-          link: `/dashboard/members/${this.member._id}`
+          link: `/dashboard/members/${this.member._id}`,
         },
         {
           text: i18n.t('edit'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
       this.$store.commit('LOADING_FALSE');
     }
   },
@@ -550,7 +556,9 @@ export default {
         }
         this.$store.commit('LOADING_FALSE');
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
         this.$store.commit('LOADING_FALSE');
       }
     },
@@ -638,7 +646,7 @@ export default {
           stateProv: this.member.stateProv,
           country: this.member.country,
           zipPostal: this.member.zipPostal,
-          phone: this.member.phone
+          phone: this.member.phone,
         };
       } else {
         this.member.billing = this.backupBilling;
@@ -657,7 +665,7 @@ export default {
           stateProv: this.member.stateProv,
           country: this.member.country,
           zipPostal: this.member.zipPostal,
-          phone: this.member.phone
+          phone: this.member.phone,
         };
       } else {
         this.member.shipping = this.backupShipping;
@@ -728,24 +736,31 @@ export default {
         billingCountry: this.member.billing.country,
         billingZipPostal: this.member.billing.zipPostal,
         billingPhone: this.member.billing.phone,
-        billingEmail: this.member.billing.email
+        billingEmail: this.member.billing.email,
       };
       try {
         await this.$store.dispatch('updateMember', {
           updatedMember,
-          id: this.member._id
+          id: this.member._id,
         });
-        this.$toasted.success(i18n.t('members.successUpdate'), { icon: 'check-circle' });
-        this.$router.push({ name: 'membersById', params: { id: this.member._id } });
+        this.$toasted.success(i18n.t('members.successUpdate'), {
+          icon: 'check-circle',
+        });
+        this.$router.push({
+          name: 'membersById',
+          params: { id: this.member._id },
+        });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

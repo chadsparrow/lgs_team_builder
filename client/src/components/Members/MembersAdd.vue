@@ -1,8 +1,11 @@
 <template>
-  <div class="container-fluid middle-section">
+  <div class="container middle-section">
     <div class="row">
       <div class="form-group col mb-3">
-        <label for="email">{{ $t('formLabels.emailAddress') }} / {{ $t('formLabels.login') }}</label>
+        <label for="email"
+          >{{ $t('formLabels.emailAddress') }} /
+          {{ $t('formLabels.login') }}</label
+        >
         <input
           id="email"
           type="text"
@@ -15,7 +18,9 @@
 
       <!-- CONTACT SECTION -->
       <div class="col-12 contactSection mb-2">
-        <div class="section-header bg-secondary">{{ $t('formLabels.contact') }}</div>
+        <div class="section-header bg-secondary">
+          {{ $t('formLabels.contact') }}
+        </div>
         <div class="row">
           <div class="form-group col-lg-6">
             <label for="name">{{ $t('formLabels.name') }}</label>
@@ -142,9 +147,7 @@
               ref="billingSame"
             />
             <small class="form-check-label text-white" for="billingSame">
-              {{
-              $t('formLabels.useContact')
-              }}
+              {{ $t('formLabels.useContact') }}
             </small>
           </div>
         </div>
@@ -241,7 +244,9 @@
             />
           </div>
           <div class="form-group col-sm-6 col-xl-3" v-if="!billingSame">
-            <label for="billingStateProv">{{ $t('formLabels.stateProv') }}</label>
+            <label for="billingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <region-select
               id="billingStateProv"
               v-model="billingStateProv"
@@ -256,7 +261,9 @@
             />
           </div>
           <div class="form-group col-sm-6 col-xl-3" v-else>
-            <label for="billingStateProv">{{ $t('formLabels.stateProv') }}</label>
+            <label for="billingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <input
               id="billingStateProv"
               type="text"
@@ -267,7 +274,9 @@
             />
           </div>
           <div class="form-group col-lg-6">
-            <label for="billingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
+            <label for="billingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
             <input
               id="billingZipPostal"
               type="text"
@@ -317,9 +326,7 @@
               ref="shippingSame"
             />
             <small class="form-check-label text-white" for="shippingSame">
-              {{
-              $t('formLabels.useContact')
-              }}
+              {{ $t('formLabels.useContact') }}
             </small>
           </div>
         </div>
@@ -358,7 +365,9 @@
             />
           </div>
           <div class="form-group col-lg-6">
-            <label for="shippingAddress1">{{ $t('formLabels.address1') }}</label>
+            <label for="shippingAddress1">{{
+              $t('formLabels.address1')
+            }}</label>
             <input
               id="shippingAddress1"
               type="text"
@@ -369,7 +378,9 @@
             />
           </div>
           <div class="form-group col-lg-6">
-            <label for="shippingAddress2">{{ $t('formLabels.address2') }}</label>
+            <label for="shippingAddress2">{{
+              $t('formLabels.address2')
+            }}</label>
             <input
               id="shippingAddress2"
               type="text"
@@ -416,7 +427,9 @@
             />
           </div>
           <div class="form-group col-sm-6 col-xl-3" v-if="!shippingSame">
-            <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
+            <label for="shippingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <region-select
               id="shippingStateProv"
               v-model="shippingStateProv"
@@ -431,7 +444,9 @@
             />
           </div>
           <div class="form-group col-sm-6 col-xl-3" v-else>
-            <label for="shippingStateProv">{{ $t('formLabels.stateProv') }}</label>
+            <label for="shippingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
             <input
               id="shippingStateProv"
               type="text"
@@ -443,7 +458,9 @@
           </div>
 
           <div class="form-group col-lg-6">
-            <label for="shippingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
+            <label for="shippingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
             <input
               id="shippingZipPostal"
               type="text"
@@ -480,16 +497,20 @@
       <div class="col-12 buttonsSection">
         <div class="row">
           <div class="col-lg-8">
-            <button class="btn btn-block btn-info mb-2" @click.prevent="addMember">
+            <button
+              class="btn btn-block btn-info mb-2"
+              @click.prevent="addMember"
+            >
               <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i>
               {{ $t('members.addMember') }}
             </button>
           </div>
           <div class="col-lg-4">
-            <router-link to="/dashboard/members/" class="btn btn-block btn-danger">
-              {{
-              $t('cancel')
-              }}
+            <router-link
+              to="/dashboard/members/"
+              class="btn btn-block btn-danger"
+            >
+              {{ $t('cancel') }}
             </router-link>
           </div>
         </div>
@@ -506,7 +527,7 @@ import i18n from '../../i18n';
 export default {
   name: 'MembersAdd',
   components: {
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
   },
   data() {
     return {
@@ -541,7 +562,7 @@ export default {
       billingCountry: '',
       billingZipPostal: '',
       billingPhone: '',
-      billingEmail: ''
+      billingEmail: '',
     };
   },
   created: async function() {
@@ -550,24 +571,26 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.members'),
-          link: '/dashboard/members'
+          link: '/dashboard/members',
         },
         {
           text: i18n.t('members.addMember'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   computed: {
     translations: function() {
       return this.$store.getters.phoneTranslations;
-    }
+    },
   },
   methods: {
     addMember: async function() {
@@ -603,18 +626,22 @@ export default {
         billingCountry: this.billingCountry,
         billingZipPostal: this.billingZipPostal,
         billingPhone: this.billingPhone,
-        billingEmail: this.billingEmail
+        billingEmail: this.billingEmail,
       };
       try {
         await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
-        this.$toasted.success(i18n.t('members.successAdd'), { icon: 'check-circle' });
+        this.$toasted.success(i18n.t('members.successAdd'), {
+          icon: 'check-circle',
+        });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
         if (err.response.data[0].message === 'Member already registered.') {
           this.$refs['email'].value = '';
           this.$refs['email'].focus();
@@ -765,8 +792,8 @@ export default {
       this.$refs.shippingPhone.countryCode = this.shippingCountry;
       this.shippingStateProv = '';
       this.$refs.shippingStateProv.$el.focus();
-    }
-  }
+    },
+  },
 };
 </script>
 

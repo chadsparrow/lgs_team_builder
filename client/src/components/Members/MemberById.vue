@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
         <Gravatar :email="member.email" default-img="mp" :size="200" />
@@ -7,12 +7,15 @@
       <div class="row p-1 mt-2">
         <small class="col-12 text-info">{{ $t('members.memberSince') }}:</small>
         <span class="col-12">{{
-          member.createdAt | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
+          member.createdAt
+            | moment('timezone', member.timezone, 'MMM Do YYYY / hh:mm a - z')
         }}</span>
       </div>
       <div class="row p-1">
         <small class="col-12 text-info">{{ $t('members.memberRole') }}:</small>
-        <span class="col-12">{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
+        <span class="col-12">{{
+          member.isAdmin ? $t('admin') : $t('member')
+        }}</span>
       </div>
       <div class="row p-1">
         <small class="col-12 text-info">{{ $t('members.memberTZ') }}:</small>
@@ -224,7 +227,7 @@ import i18n from '../../i18n';
 export default {
   name: 'MemberById',
   components: {
-    Gravatar
+    Gravatar,
   },
   computed: {
     ...mapGetters(['loggedInMember', 'getMember', 'isLoading']),
@@ -236,7 +239,7 @@ export default {
     },
     teams: function() {
       return this.getMember.teams;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -245,25 +248,27 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.members'),
-          link: '/dashboard/members'
+          link: '/dashboard/members',
         },
         {
           text: `${this.member.name}`,
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     loadTeam: function(id) {
       this.$router.push({ name: 'teamsById', params: { id } }).catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>
 

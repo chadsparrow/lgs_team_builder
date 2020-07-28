@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="header mb-2">
       <div class="form-group has-search m-0">
         <span
@@ -115,7 +115,7 @@
                   : null
               "
             >
-              {{ $t(`stores.${store.mode}`) }}
+              {{ $t(`stores.${store.mode.toLowerCase()}`) }}
             </td>
             <td class="text-center priority-10" v-if="access">
               {{ store.totalOrders }}

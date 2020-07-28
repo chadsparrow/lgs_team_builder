@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div v-if="team.name">
         <avatar
@@ -11,13 +11,18 @@
           :src="team.logo"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info">Timezone: (uses shipping location)</small>
+          <small class="col-sm-12 text-info"
+            >Timezone: (uses shipping location)</small
+          >
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1" v-if="team.createdAt && team.timezone">
           <small class="col-sm-12 text-info">Team Since:</small>
           <span class="col-sm-12">
-            {{ team.createdAt | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z') }}
+            {{
+              team.createdAt
+                | moment('timezone', team.timezone, 'MMM Do YYYY / hh:mm a - z')
+            }}
           </span>
         </div>
       </div>
@@ -30,7 +35,13 @@
         <div class="row">
           <div class="form-group col-sm-12">
             <label for="name">Team Name</label>
-            <input id="name" type="text" class="form-control" v-model="team.name" ref="name" />
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              v-model="team.name"
+              ref="name"
+            />
           </div>
           <!-- ADMIN SELECTOR -->
           <div class="form-group col-sm-4">
@@ -51,9 +62,12 @@
               v-model="team.adminId._id"
               ref="adminId"
             >
-              <option v-for="admin of adminsList" :key="admin._id" :value="admin._id">{{
-                admin.name
-              }}</option>
+              <option
+                v-for="admin of adminsList"
+                :key="admin._id"
+                :value="admin._id"
+                >{{ admin.name }}</option
+              >
             </select>
           </div>
           <!-- MANAGER SELECTOR -->
@@ -66,9 +80,12 @@
               ref="managerId"
               @change="getManagerDetails()"
             >
-              <option v-for="manager of team.members" :key="manager._id" :value="manager._id">{{
-                manager.name
-              }}</option>
+              <option
+                v-for="manager of team.members"
+                :key="manager._id"
+                :value="manager._id"
+                >{{ manager.name }}</option
+              >
             </select>
           </div>
         </div>
@@ -268,7 +285,9 @@
                 v-model="bulkUseDetails"
                 @change="copytoBulk"
               />
-              <small class="form-check-label text-white" for="useNewDetails">Use Other</small>
+              <small class="form-check-label text-white" for="useNewDetails"
+                >Use Other</small
+              >
             </div>
           </div>
         </div>
@@ -406,7 +425,9 @@
             </button>
           </div>
           <div class="col-sm-6">
-            <router-link :to="`/dashboard/teams/${team._id}`" class="btn btn-block btn-danger"
+            <router-link
+              :to="`/dashboard/teams/${team._id}`"
+              class="btn btn-block btn-danger"
               >Cancel</router-link
             >
           </div>
@@ -426,7 +447,7 @@ export default {
   name: 'TeamByIdEdit',
   components: {
     Avatar,
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
   },
   data() {
     return {
@@ -435,7 +456,7 @@ export default {
       bulkUseDetails: 'other',
       adminsList: [],
       backupContact: {},
-      backupBulk: {}
+      backupBulk: {},
     };
   },
   computed: {
@@ -445,7 +466,7 @@ export default {
     },
     team: function() {
       return this.currentTeam;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -464,22 +485,24 @@ export default {
       const breadcrumbs = [
         {
           text: 'Teams',
-          link: '/dashboard/teams'
+          link: '/dashboard/teams',
         },
         {
           text: `${teamName}`,
-          link: `/dashboard/teams/${teamId}`
+          link: `/dashboard/teams/${teamId}`,
         },
         {
           text: 'Edit',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -509,12 +532,12 @@ export default {
         shippingCountry: this.team.bulkShipping.country,
         shippingZipPostal: this.team.bulkShipping.zipPostal,
         shippingPhone: this.team.bulkShipping.phone,
-        shippingEmail: this.team.bulkShipping.email
+        shippingEmail: this.team.bulkShipping.email,
       };
       try {
         const res = await this.$store.dispatch('updateTeam', {
           updatedTeam,
-          id: this.team._id
+          id: this.team._id,
         });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
@@ -523,13 +546,18 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     getManagerDetails: async function() {
       this.$store.commit('LOADING_TRUE');
       try {
-        const res = await this.$store.dispatch('getMemberDetails', this.team.managerId._id);
+        const res = await this.$store.dispatch(
+          'getMemberDetails',
+          this.team.managerId._id
+        );
         const manager = res.data.member;
 
         const {
@@ -545,7 +573,7 @@ export default {
           phone,
           timezone,
           timezoneAbbrev,
-          shipping
+          shipping,
         } = manager;
 
         this.managerDetails = {
@@ -561,7 +589,7 @@ export default {
           phone,
           timezone,
           timezoneAbbrev,
-          shipping
+          shipping,
         };
 
         if (this.useManagerDetails) this.copyManagertoMain();
@@ -569,7 +597,9 @@ export default {
         this.$store.commit('LOADING_FALSE');
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
     },
     copyManagertoMain: async function() {
@@ -644,8 +674,8 @@ export default {
       this.$refs.shippingPhone.countryCode = this.team.bulkShipping.country;
       this.team.bulkShipping.stateProv = '';
       this.$refs.shippingStateProv.$el.focus();
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,27 +1,41 @@
 <template>
-  <div class="mt-4 container-fluid" v-if="!isLoading">
+  <div class="mt-4 container" v-if="!isLoading">
     <div v-if="!member.isAdmin">
       <span>You do not have access to Add Members</span>
       <br />
       <br />
-      <router-link :to="`/dashboard/teams/${id}`" class="btn btn-dark">Return to Team</router-link>
+      <router-link :to="`/dashboard/teams/${id}`" class="btn btn-dark"
+        >Return to Team</router-link
+      >
     </div>
     <form @submit.prevent="addTeamMember" novalidate v-else class="mb-4">
       <h6>Add a single registered member to your team</h6>
       <div class="row">
         <div class="form-group col-sm-12 mt-2">
           <label for="newMember">Type the email address</label>
-          <vSelect id="newMember" v-model="chosenMember" label="email" :options="members"></vSelect>
+          <vSelect
+            id="newMember"
+            v-model="chosenMember"
+            label="email"
+            :options="members"
+          ></vSelect>
         </div>
       </div>
       <div class="row mt-2">
         <div class="col-sm-6">
-          <button type="submit" class="btn btn-block btn-info" :disabled="!chosenMember">
+          <button
+            type="submit"
+            class="btn btn-block btn-info"
+            :disabled="!chosenMember"
+          >
             Add Member
           </button>
         </div>
         <div class="col-sm-6">
-          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+          <router-link
+            tag="a"
+            class="btn btn-danger btn-block"
+            :to="`/dashboard/teams/${id}`"
             >Cancel</router-link
           >
         </div>
@@ -44,17 +58,17 @@ export default {
       managerId: '',
       members: [],
       chosenMember: '',
-      teamMembers: []
+      teamMembers: [],
     };
   },
   components: {
-    vSelect
+    vSelect,
   },
   computed: {
     ...mapGetters(['isLoading', 'loggedInMember']),
     member: function() {
       return this.loggedInMember;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -68,16 +82,16 @@ export default {
       const breadcrumbs = [
         {
           text: 'Teams',
-          link: '/dashboard/teams'
+          link: '/dashboard/teams',
         },
         {
           text: `${name}`,
-          link: `/dashboard/teams/${_id}`
+          link: `/dashboard/teams/${_id}`,
         },
         {
           text: 'Add Member',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
 
@@ -86,9 +100,9 @@ export default {
       const availMembers = [];
 
       let found;
-      memberList.forEach(element => {
+      memberList.forEach((element) => {
         found = false;
-        this.teamMembers.forEach(teamMember => {
+        this.teamMembers.forEach((teamMember) => {
           if (teamMember._id === element._id) {
             found = true;
           }
@@ -101,26 +115,35 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     addTeamMember: async function() {
       const newTeamMember = {
-        memberId: this.chosenMember._id
+        memberId: this.chosenMember._id,
       };
       this.$store.commit('LOADING_TRUE');
       try {
-        await this.$store.dispatch('addTeamMember', { newTeamMember, id: this.id });
+        await this.$store.dispatch('addTeamMember', {
+          newTeamMember,
+          id: this.id,
+        });
         this.$store.commit('LOADING_FALSE');
-        this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
+        this.$router
+          .push({ name: 'teamsById', params: { id: this.id } })
+          .catch(() => {});
         this.$toasted.success('Member Added to Team', { icon: 'check-circle' });
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

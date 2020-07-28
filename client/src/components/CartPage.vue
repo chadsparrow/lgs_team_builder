@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading" class="mt-2">
+  <div v-if="!isLoading" class="mt-2 container">
     <div class="row">
       <div class="col-md-12 mb-2">
         <router-link

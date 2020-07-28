@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page container">
     <form>
       <div class="row">
         <div class="form-group col-sm-12">
@@ -41,9 +41,11 @@
           </button>
         </div>
         <div class="col sm-6">
-          <router-link to="/dashboard/profile" class="btn btn-block btn-danger">{{
-            $t('cancel')
-          }}</router-link>
+          <router-link
+            to="/dashboard/profile"
+            class="btn btn-block btn-danger"
+            >{{ $t('cancel') }}</router-link
+          >
         </div>
       </div>
     </form>
@@ -57,12 +59,12 @@ import i18n from '../../i18n';
 export default {
   name: 'ProfilesEmail',
   computed: {
-    ...mapGetters(['loggedInMember'])
+    ...mapGetters(['loggedInMember']),
   },
   data() {
     return {
       newEmail: '',
-      confirmEmail: ''
+      confirmEmail: '',
     };
   },
   created: async function() {
@@ -70,23 +72,25 @@ export default {
       const breadcrumbs = [
         {
           text: i18n.t('profiles.myProfile'),
-          link: '/dashboard/profile'
+          link: '/dashboard/profile',
         },
         {
           text: i18n.t('profiles.updateEmail'),
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     updateEmail: async function() {
       if (this.newEmail === this.loggedInMember.email) {
         this.$toasted.error(i18n.t('profiles.emailExistsError'), {
-          icon: 'exclamation-triangle'
+          icon: 'exclamation-triangle',
         });
         this.newEmail = '';
         this.confirmEmail = '';
@@ -96,25 +100,29 @@ export default {
       const updatedEmail = {
         currentEmail: this.loggedInMember.email,
         newEmail: this.newEmail,
-        confirmEmail: this.confirmEmail
+        confirmEmail: this.confirmEmail,
       };
 
       try {
         const res = await this.$store.dispatch('updateEmail', {
           updatedEmail,
-          id: this.loggedInMember._id
+          id: this.loggedInMember._id,
         });
 
         this.$router.push({ name: 'profile' });
-        this.$toasted.success(i18n.t('profiles.newEmailSuccess'), { icon: 'envelope' });
+        this.$toasted.success(i18n.t('profiles.newEmailSuccess'), {
+          icon: 'envelope',
+        });
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
         this.newEmail = '';
         this.confirmEmail = '';
         this.$refs['newEmail'].focus();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

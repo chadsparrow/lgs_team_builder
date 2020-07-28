@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="!isLoading">
+  <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div v-if="team.name">
         <avatar
@@ -57,7 +57,12 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label for="brand">Store Brand</label>
-              <select class="form-control" id="brand" v-model="store.brand" ref="brand">
+              <select
+                class="form-control"
+                id="brand"
+                v-model="store.brand"
+                ref="brand"
+              >
                 <option value="GARNEAU">GARNEAU</option>
                 <option value="SUGOI">SUGOI</option>
                 <option value="SOMBRIO">SOMBRIO</option>
@@ -186,12 +191,17 @@
             </div>
             <div class="row mt-2">
               <div class="col-sm-6">
-                <button class="btn btn-block btn-info" @click.prevent="updateStore">
+                <button
+                  class="btn btn-block btn-info"
+                  @click.prevent="updateStore"
+                >
                   Update Store
                 </button>
               </div>
               <div class="col-sm-6">
-                <router-link :to="`/dashboard/stores/${store._id}`" class="btn btn-block btn-danger"
+                <router-link
+                  :to="`/dashboard/stores/${store._id}`"
+                  class="btn btn-block btn-danger"
                   >Cancel</router-link
                 >
               </div>
@@ -204,7 +214,9 @@
         <div class="section-header mt-4 mb-2 bg-secondary">
           <span>
             Bulk Shipping Details
-            <small class="ml-2">(uses Team Bulk Shipping Details from Previous Page)</small>
+            <small class="ml-2"
+              >(uses Team Bulk Shipping Details from Previous Page)</small
+            >
           </span>
         </div>
         <div class="row px-2">
@@ -263,7 +275,8 @@
         <div class="row px-2">
           <span class="col">
             All orders from this store will ship to the
-            <strong>Team Member's Shipping Address</strong> specified in their own profile.
+            <strong>Team Member's Shipping Address</strong> specified in their
+            own profile.
           </span>
         </div>
       </div>
@@ -278,15 +291,20 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'StoresByIdEdit',
   components: {
-    Avatar
+    Avatar,
   },
   data() {
     return {
-      openingDate: null
+      openingDate: null,
     };
   },
   computed: {
-    ...mapGetters(['isLoading', 'currentStore', 'loggedInMember', 'currentTeam']),
+    ...mapGetters([
+      'isLoading',
+      'currentStore',
+      'loggedInMember',
+      'currentTeam',
+    ]),
     store: function() {
       return this.currentStore;
     },
@@ -295,7 +313,7 @@ export default {
     },
     team: function() {
       return this.currentTeam;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -305,23 +323,25 @@ export default {
       const breadcrumbs = [
         {
           text: 'Stores',
-          link: '/dashboard/stores'
+          link: '/dashboard/stores',
         },
         {
           text: `${this.store.storeName}`,
-          link: `/dashboard/stores/${this.store._id}`
+          link: `/dashboard/stores/${this.store._id}`,
         },
         {
           text: 'Edit Store',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
 
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -358,21 +378,29 @@ export default {
         closingDate: this.store.closingDate,
         timezone: this.team.timezone,
         storeMessage: this.store.storeMessage,
-        shippingType: this.store.shippingType
+        shippingType: this.store.shippingType,
       };
       try {
-        const res = await this.$store.dispatch('updateStore', { id: this.store._id, updatedStore });
+        const res = await this.$store.dispatch('updateStore', {
+          id: this.store._id,
+          updatedStore,
+        });
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-        this.$router.push({ name: 'storesById', params: { id: this.store._id } });
+        this.$router.push({
+          name: 'storesById',
+          params: { id: this.store._id },
+        });
       } catch (err) {
         if (err.response.data[0].context) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

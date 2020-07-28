@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isLoading">
+  <div v-if="!isLoading" class="page container">
     <span v-if="currentOrders.length === 0">No Orders Found</span>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
@@ -46,12 +46,12 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'OrdersIndex',
   components: {
-    Paginate
+    Paginate,
   },
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 12
+      itemsPerPage: 12,
     };
   },
   computed: {
@@ -67,11 +67,15 @@ export default {
     },
     pageNumbers: function() {
       const pageArray = [];
-      for (let i = 1; i <= Math.ceil(this.orders.length / this.itemsPerPage); i++) {
+      for (
+        let i = 1;
+        i <= Math.ceil(this.orders.length / this.itemsPerPage);
+        i++
+      ) {
         pageArray.push(i);
       }
       return pageArray.length;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -79,21 +83,23 @@ export default {
       const breadcrumbs = [
         {
           text: 'Orders',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       await this.$store.dispatch('getOrders');
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
     loadOrder: function(id) {
       this.$router.push({ name: 'orderById', params: { id } }).catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>
