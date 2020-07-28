@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
+const { sendMail } = require('../middleware/mailer');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -314,10 +315,11 @@ module.exports = {
 
       await member.save();
 
+      const result = sendMail(req, to, { token });
+      console.log(result);
+
       return res.send([
         {
-          token,
-          member: _.pick(member, ['_id', 'email']),
           message: 'Reset Link Sent!',
         },
       ]);

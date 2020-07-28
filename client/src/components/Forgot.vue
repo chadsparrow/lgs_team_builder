@@ -1,15 +1,15 @@
 <template>
   <div class="page container">
-    <form @submit.prevent="reset" novalidate>
-      <div class="text-center">
-        <img
-          id="tbLogo"
-          src="https://teambuilder.s3.amazonaws.com/images/assets/tb_logo_white.svg"
-          alt="Team Builder Logo"
-        />
-      </div>
+    <div class="text-center">
+      <img
+        id="tbLogo"
+        src="https://teambuilder.s3.amazonaws.com/images/assets/tb_logo_white.svg"
+        alt="Team Builder Logo"
+      />
+    </div>
+    <form @submit.prevent="reset" novalidate v-if="!linkSent">
       <div class="form-group">
-        <label for="email">{{ Enter your $t('login.emailAddress') }}</label>
+        <label for="email">{{ $t('login.emailAddress') }}</label>
         <input
           type="email"
           class="form-control"
@@ -20,9 +20,13 @@
         />
       </div>
       <button type="submit" class="btn btn-lg btn-info btn-block">
-        {{ $t('login.resetPass') }}
+        Send Password Reset Link
       </button>
     </form>
+    <div class="result" v-else>
+      Check your email for your password reset link <br />
+      Link will expire in 1 hour
+    </div>
   </div>
 </template>
 
@@ -32,6 +36,7 @@ export default {
   data() {
     return {
       email: undefined,
+      linkSent: false,
     };
   },
   methods: {
@@ -40,13 +45,12 @@ export default {
 
       try {
         const res = await this.$store.dispatch('forgot', { email });
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-        console.log(res);
-      } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
-          this.$refs[key].focus();
+        if (res.data[0].message === 'Reset Link Sent!') {
+          this.linkSent = true;
         }
+      } catch (err) {
+        this.email = '';
+        this.$refs.email.focus();
         this.$toasted.error(err.response.data[0].message, {
           icon: 'exclamation-triangle',
         });
@@ -60,24 +64,25 @@ export default {
 .page {
   display: flex;
   height: 100vh;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   color: white;
   padding: 1rem;
+  position: relative;
+
+  #tbLogo {
+    width: 150px;
+    margin-bottom: 2.5rem;
+  }
 
   form {
     width: 100%;
     max-width: 400px;
-    margin-bottom: 8rem;
 
     input {
       text-align: center;
-    }
-
-    #tbLogo {
-      width: 150px;
-      margin-bottom: 2.5rem;
     }
 
     label {
@@ -91,6 +96,11 @@ export default {
       margin: 2rem 0;
       font-weight: 700;
     }
+  }
+
+  .result {
+    margin-top: 2rem;
+    text-align: center;
   }
 }
 </style>

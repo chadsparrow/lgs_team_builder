@@ -35,7 +35,7 @@
       <div class="text-center">
         <small>{{ $t('login.resetPassTitle') }}</small
         ><br />
-        <router-link class="text-info" to="#">{{
+        <router-link class="text-info" to="/forgot">{{
           $t('login.resetPass')
         }}</router-link>
       </div>
