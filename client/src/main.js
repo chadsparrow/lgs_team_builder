@@ -3,8 +3,6 @@ import App from './App.vue';
 import router from './router';
 import store from './store/index';
 import Toasted from 'vue-toasted';
-import VuejsDialog from 'vuejs-dialog';
-import 'vuejs-dialog/dist/vuejs-dialog.min.css';
 import VueMoment from 'vue-moment';
 import moment from 'moment-timezone';
 import Datetime from 'vue-datetime';
@@ -21,7 +19,6 @@ import i18n from './i18n';
 
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
-Vue.use(VuejsDialog);
 Vue.use(Toasted, {
   position: 'bottom-center',
   duration: 4000,
@@ -37,7 +34,8 @@ Vue.use(Vue2Filters);
 Vue.use(VueCurrencyInput);
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  loading: 'https://media.giphy.com/media/hTrXs1jw6ABY9dDyxS/giphy.gif',
+  loading:
+    'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png',
   error:
     'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png',
   observer: true,
