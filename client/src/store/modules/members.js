@@ -98,6 +98,16 @@ export default {
         }
       });
     },
+    findMemberByVerificationToken({ commit }, token) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await axios.get(`/api/v1/auth/verify?token=${token}`);
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
   },
   mutations: {
     SET_ALL_MEMBERS(state, payload) {

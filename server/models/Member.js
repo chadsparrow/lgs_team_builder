@@ -216,6 +216,12 @@ const MemberSchema = new mongoose.Schema(
     resetPasswordTokenExpires: {
       type: Date,
     },
+    verificationToken: {
+      type: String,
+    },
+    verificationTokenExpires: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

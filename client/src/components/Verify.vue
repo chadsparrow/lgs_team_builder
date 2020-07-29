@@ -1,0 +1,70 @@
+<template>
+  <div class="page container"></div>
+</template>
+
+<script>
+export default {
+  name: 'Verify',
+  created: async function() {
+    try {
+      const res = await this.$store.dispatch(
+        'findMemberByVerificationToken',
+        this.$route.query.token
+      );
+      this.$toasted.success('Account Verified - please login', {
+        icon: 'check-circle',
+      });
+      this.$router.push({ path: '/' });
+    } catch (err) {
+      this.$toasted.error('Account Verification Error - please try again', {
+        icon: 'exclamation-triangle',
+      });
+      this.$router.push({ path: '/' });
+    }
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.page {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+  padding: 1rem;
+  position: relative;
+
+  #tbLogo {
+    width: 150px;
+    margin-bottom: 2rem;
+  }
+
+  .greeting {
+    margin-bottom: 2rem;
+  }
+
+  form {
+    width: 100%;
+    max-width: 400px;
+
+    input {
+      text-align: center;
+    }
+
+    label {
+      font-size: 0.85rem;
+      line-height: 1rem;
+      margin-left: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    button {
+      margin: 2rem 0;
+      font-weight: 700;
+    }
+  }
+}
+</style>

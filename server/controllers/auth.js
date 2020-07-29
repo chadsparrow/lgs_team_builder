@@ -77,6 +77,14 @@ module.exports = {
           },
         ]);
 
+      // checks if account has not been verified
+      if (!member.isVerified)
+        return res.status(403).send([
+          {
+            message: 'Account not verified yet, click "Resend" below',
+          },
+        ]);
+
       // generates an JSONWebToken once authenticated
       const token = member.generateAuthToken();
 
@@ -288,6 +296,42 @@ module.exports = {
         }
       );
 
+      // generates a resetToken
+      const token = randomString.generate();
+
+      // saves reset token and expiry to member
+      newMember.verificationToken = token;
+      let date = new Date();
+      date.setDate(date.getDate() + 7);
+      newMember.verificationTokenExpires = date;
+
+      await newMember.save();
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.SES_SMTP,
+        port: process.env.SES_PORT,
+        auth: {
+          user: process.env.SES_AUTH_USERNAME,
+          pass: process.env.SES_AUTH_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+        to: newMember.email,
+        subject: 'TeamBuilder Account Verification',
+        text: `Hello and welcome to TeamBuilder.  Please click the link below to verify your account email within 7 days!
+
+        ${req.headers.origin}/verify?token=${token}
+
+        Thank you for joining us!
+        `,
+        html: `<b>Hello and welcome to TeamBuilder.  Please click the link below to verify your account email within 7 days!</b><br><br>
+        <a href="${req.headers.origin}/verify?token=${token}">Verify my account</a><br><br>
+        Thank you for joining us!
+        `,
+      });
+
       return res.send([{ message: 'You are now registered!' }]);
     } catch (err) {
       logger.error(err);
@@ -363,6 +407,7 @@ module.exports = {
       logger.error(err);
     }
   },
+
   checkResetPasswordToken: async (req, res, next) => {
     const token = req.query.token;
     if (!token)
@@ -387,6 +432,7 @@ module.exports = {
       logger.error(err);
     }
   },
+
   resetPassword: async (req, res, next) => {
     const { error } = validateNewPassword(req.body);
     if (error) return res.status(400).send(error.details);
@@ -452,6 +498,107 @@ module.exports = {
       });
 
       return res.status(200).send({ message: 'Password has been reset' });
+    } catch (err) {
+      logger.error(err);
+    }
+  },
+
+  verifyEmail: async (req, res, next) => {
+    try {
+      const { error } = validateForgotEmail(req.body);
+      if (error) return res.status(400).send(error.details);
+
+      // checks if user with email exists
+      const member = await Member.findOne({ email: req.body.email });
+      if (!member)
+        return res
+          .status(400)
+          .send([{ message: 'Invalid email or password.' }]);
+
+      // checks if account is closed
+      if (member.closedAccount)
+        return res.status(401).send([
+          {
+            message:
+              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
+          },
+        ]);
+
+      if (member.isVerified)
+        return res.status(400).send([{ message: 'Account already verified' }]);
+
+      // generates a resetToken
+      const token = randomString.generate();
+
+      // saves reset token and expiry to member
+      member.verificationToken = token;
+      member.verificationTokenExpires = Date.now() + 3600 * 1000;
+
+      await member.save();
+
+      const transporter = nodemailer.createTransport({
+        host: process.env.SES_SMTP,
+        port: process.env.SES_PORT,
+        auth: {
+          user: process.env.SES_AUTH_USERNAME,
+          pass: process.env.SES_AUTH_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+        to: member.email,
+        subject: 'TeamBuilder Account Verification',
+        text: `Hello, we received a request to verify your account!
+        You can go ahead and do so by clicking the link below:
+        ${req.headers.origin}/verify?token=${token}
+
+        If you did not make this request, you can ignore this email.
+        `,
+        html: `<b>Hello, we received a request to verify your account!</b><br><br>
+        You can go ahead and do so by clicking the link below:<br>
+        <a href="${req.headers.origin}/verify?token=${token}">Verify my account</a><br><br>
+        
+        If you did not make this request, you can ignore this email.
+        `,
+      });
+
+      return res.send([
+        {
+          message: 'Verification Email Sent',
+        },
+      ]);
+    } catch (err) {
+      logger.error(err);
+    }
+  },
+
+  verifyAccount: async (req, res, next) => {
+    const token = req.query.token;
+    if (!token)
+      return res
+        .status(400)
+        .send({ message: 'Verification Token not provided.' });
+
+    try {
+      const member = await Member.findOne({ verificationToken: token });
+      if (!member)
+        return res
+          .status(404)
+          .send({ message: 'Verification token invalid - Try Again' });
+
+      if (member.verificationTokenExpires < Date.now())
+        return res
+          .status(400)
+          .send({ message: 'Verification token expired - Try Again' });
+
+      member.isVerified = true;
+      member.verificationToken = undefined;
+      member.verificationTokenExpires = undefined;
+
+      await member.save();
+
+      return res.status(200).send({ message: 'Account verified' });
     } catch (err) {
       logger.error(err);
     }

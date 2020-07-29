@@ -1,6 +1,6 @@
 <template>
   <div class="page container">
-    <form @submit.prevent="login" novalidate>
+    <form @submit.prevent="login" novalidate v-if="verified && !emailSent">
       <div class="text-center">
         <img
           id="tbLogo"
@@ -67,6 +67,30 @@
         </div>
       </div>
     </form>
+    <form
+      @submit.prevent="verify"
+      novalidate
+      v-else-if="!verified && !emailSent"
+    >
+      <div class="form-group">
+        <label for="email">{{ $t('login.emailAddress') }}</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          ref="email"
+          v-model="email"
+          autofocus
+        />
+      </div>
+      <button type="submit" class="btn btn-lg btn-info btn-block">
+        {{ $t('login.verifyEmail') }}
+      </button>
+    </form>
+    <div class="result" v-else>
+      Check your email for your verification email<br />
+      Link expires in 1 hour
+    </div>
   </div>
 </template>
 
@@ -77,6 +101,8 @@ export default {
     return {
       email: undefined,
       password: undefined,
+      verified: true,
+      emailSent: false,
     };
   },
   methods: {
@@ -93,6 +119,25 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
+
+        if (err.response.data[0].message.includes('not verified')) {
+          this.verified = false;
+        }
+
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
+      }
+    },
+    verify: async function() {
+      const email = this.email;
+
+      try {
+        const res = await this.$store.dispatch('verifyEmail', { email });
+        this.emailSent = true;
+      } catch (err) {
+        this.email = '';
+        this.$refs.email.focus();
         this.$toasted.error(err.response.data[0].message, {
           icon: 'exclamation-triangle',
         });
@@ -162,6 +207,11 @@ export default {
         font-size: 0.85rem;
       }
     }
+  }
+
+  .result {
+    margin-top: 2rem;
+    text-align: center;
   }
 }
 </style>
