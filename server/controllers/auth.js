@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
-const nodemailer = require('nodemailer');
+const mailer = require('../utils/mailer');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -307,17 +307,7 @@ module.exports = {
 
       await newMember.save();
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.SES_SMTP,
-        port: process.env.SES_PORT,
-        auth: {
-          user: process.env.SES_AUTH_USERNAME,
-          pass: process.env.SES_AUTH_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+      await mailer.sendEmail({
         to: newMember.email,
         subject: 'TeamBuilder Account Verification',
         text: `Hello and welcome to TeamBuilder.  Please click the link below to verify your account email within 7 days!
@@ -371,17 +361,7 @@ module.exports = {
 
       await member.save();
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.SES_SMTP,
-        port: process.env.SES_PORT,
-        auth: {
-          user: process.env.SES_AUTH_USERNAME,
-          pass: process.env.SES_AUTH_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+      await mailer.sendEmail({
         to: member.email,
         subject: 'TeamBuilder Password Reset',
         text: `Hello, we received a request to reset your password!
@@ -475,17 +455,7 @@ module.exports = {
 
       await member.save();
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.SES_SMTP,
-        port: process.env.SES_PORT,
-        auth: {
-          user: process.env.SES_AUTH_USERNAME,
-          pass: process.env.SES_AUTH_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+      await mailer.sendEmail({
         to: member.email,
         subject: 'TeamBuilder Password Reset',
         text: `Hello, your password was recently reset successfully.
@@ -536,17 +506,7 @@ module.exports = {
 
       await member.save();
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.SES_SMTP,
-        port: process.env.SES_PORT,
-        auth: {
-          user: process.env.SES_AUTH_USERNAME,
-          pass: process.env.SES_AUTH_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',
+      await mailer.sendEmail({
         to: member.email,
         subject: 'TeamBuilder Account Verification',
         text: `Hello, we received a request to verify your account!

@@ -41,6 +41,16 @@
             <td class="priority-4">
               <span>{{ member.isAdmin ? $t('admin') : $t('member') }}</span>
             </td>
+            <td class="priority-5">
+              <span
+                ><i
+                  class="fas fa-user-check"
+                  style="color: green;"
+                  v-if="member.isVerified"
+                ></i
+                ><i class="fas fa-user-times" style="color:red" v-else></i
+              ></span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -187,6 +197,9 @@ export default {
 
 /* Large */
 @media screen and (min-width: 769px) and (max-width: 992px) {
+  .priority-5 {
+    display: none;
+  }
   .priority-4 {
     display: none;
   }
@@ -194,6 +207,9 @@ export default {
 
 /* Medium */
 @media screen and (min-width: 576px) and (max-width: 768px) {
+  .priority-5 {
+    display: none;
+  }
   .priority-4 {
     display: none;
   }
@@ -201,6 +217,9 @@ export default {
 
 /* Small */
 @media screen and (min-width: 398px) and (max-width: 575px) {
+  .priority-5 {
+    display: none;
+  }
   .priority-4 {
     display: none;
   }
@@ -224,6 +243,10 @@ export default {
         margin-bottom: 0.5rem;
       }
     }
+  }
+
+  .priority-5 {
+    display: none;
   }
 
   .priority-4 {

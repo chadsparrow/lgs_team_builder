@@ -162,6 +162,7 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   font-size: 0.85rem;
+  padding: 0 0.5rem 0 0;
 
   .section-header {
     padding: 0.5rem;
