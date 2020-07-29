@@ -11,23 +11,23 @@
           :src="team.logo"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info">Store Timezone:</small>
+          <small class="col-sm-12">Store Timezone:</small>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Name:</small>
+          <small class="col-sm-12">Team Name:</small>
           <span class="col-sm-12">{{ team.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team ID#:</small>
+          <small class="col-sm-12">Team ID#:</small>
           <span class="col-sm-12">{{ team.teamId }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Admin:</small>
+          <small class="col-sm-12">Team Admin:</small>
           <span class="col-sm-12">{{ team.adminId.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Manager:</small>
+          <small class="col-sm-12">Team Manager:</small>
           <span class="col-sm-12">{{ team.managerId.name }}</span>
         </div>
       </div>

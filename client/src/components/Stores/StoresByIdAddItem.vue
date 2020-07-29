@@ -111,9 +111,7 @@
               >
             </div>
             <div class="itemPricing">
-              <span class="text-info">{{
-                storeItem.storePrice | currency
-              }}</span>
+              <span>{{ storeItem.storePrice | currency }}</span>
               <br />
               <label for="pbGoal">
                 <small>Price Break Goal:</small>

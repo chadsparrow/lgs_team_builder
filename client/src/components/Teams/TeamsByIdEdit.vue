@@ -11,13 +11,11 @@
           :src="team.logo"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info"
-            >Timezone: (uses shipping location)</small
-          >
+          <small class="col-sm-12">Timezone: (uses shipping location)</small>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1" v-if="team.createdAt && team.timezone">
-          <small class="col-sm-12 text-info">Team Since:</small>
+          <small class="col-sm-12">Team Since:</small>
           <span class="col-sm-12">
             {{
               team.createdAt

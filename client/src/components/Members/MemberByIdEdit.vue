@@ -5,17 +5,17 @@
         <Gravatar :email="member.email" default-img="mp" :size="200" />
       </div>
       <div class="row p-1">
-        <small class="col-12 text-info">{{ $t('members.memberTZ') }}:</small>
+        <label class="col-12">{{ $t('members.memberTZ') }}:</label>
         <span class="col-12">{{ member.timezone }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-12 text-info">{{ $t('members.memberRole') }}:</small>
+        <label class="col-12">{{ $t('members.memberRole') }}:</label>
         <span class="col-12">{{
           member.isAdmin ? $t('admin') : $t('member')
         }}</span>
       </div>
       <hr />
-      <small class="text-info">{{ $t('actions') }}</small>
+      <label>{{ $t('actions') }}</label>
       <button
         class="btn btn-sm btn-block btn-danger mt-2 mb-4"
         @click.prevent="deleteMember"
@@ -27,7 +27,7 @@
 
     <!-- CONTACT SECTION -->
     <div class="middle-section">
-      <h3 class="text-info text-center">{{ $t('formLabels.information') }}</h3>
+      <h3 class="text-center">{{ $t('formLabels.information') }}</h3>
       <div class="row m-0">
         <div class="section-header bg-secondary">
           <span class="text-white">{{ $t('formLabels.contact') }}</span>

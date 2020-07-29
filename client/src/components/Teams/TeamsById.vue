@@ -29,10 +29,10 @@
       <!-- MEMBER LIST SECTION -->
       <div class="member-list mt-3">
         <div class="row p-1" v-if="team.members.length > 0">
-          <small class="text-info col-sm-12 mb-1">
+          <label class="col-sm-12 mb-1">
             {{ $t('teams.membersList') }}:
             <span class="ml-3">{{ team.members.length }}</span>
-          </small>
+          </label>
           <div class="memberlist col-sm-12">
             <ul class="list-group">
               <li
@@ -54,7 +54,7 @@
         </div>
         <div class="row p-1" v-else>
           <div class="col-sm-12">
-            <small class="text-info">{{ $t('teams.membersList') }}:</small>
+            <label>{{ $t('teams.membersList') }}:</label>
             <br />
             <span>{{ $t('teams.noMembers') }}</span>
           </div>

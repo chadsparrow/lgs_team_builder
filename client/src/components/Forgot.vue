@@ -20,12 +20,12 @@
         />
       </div>
       <button type="submit" class="btn btn-lg btn-info btn-block">
-        Send Password Reset Link
+        {{ $t('login.resetPass') }}
       </button>
     </form>
     <div class="result" v-else>
-      Check your email for your password reset link <br />
-      Link will expire in 1 hour
+      {{ $t('login.resultline1') }}<br />
+      {{ $t('login.resultline2') }}
     </div>
   </div>
 </template>

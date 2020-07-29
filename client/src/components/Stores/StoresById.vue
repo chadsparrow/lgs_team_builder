@@ -39,7 +39,7 @@
       </div>
       <div class="row p-1 mt-2">
         <div class="col-sm-6">
-          <small class="text-info">Opening Date:</small>
+          <label>Opening Date:</label>
           <br />
           <span v-if="store.openingDate">
             {{
@@ -54,7 +54,7 @@
           <span v-else>No Opening Date</span>
         </div>
         <div class="col-sm-6">
-          <small class="text-info">Closing Date:</small>
+          <label>Closing Date:</label>
           <br />
           <span v-if="store.closingDate">
             {{
@@ -70,14 +70,14 @@
         </div>
       </div>
       <div class="row p-1 mt-1" v-if="currentDateTime">
-        <small class="col-sm-12 text-info">Current Store Time:</small>
+        <label class="col-sm-12">Current Store Time:</label>
         <span class="col-sm-12">{{
           currentDateTime
             | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')
         }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Store Created:</small>
+        <label class="col-sm-12">Store Created:</label>
         <span class="col-sm-12">
           {{
             store.createdAt
@@ -87,40 +87,40 @@
       </div>
       <div class="row p-1" v-if="access">
         <div class="col-sm-6">
-          <small class="text-info">Store Country:</small>
+          <label>Store Country:</label>
           <br />
           <span>{{ store.storeCountry }}</span>
         </div>
         <div class="col-sm-6">
-          <small class="text-info">Account #:</small>
+          <label>Account #:</label>
           <br />
           <span>{{ store.teamId.teamId }}</span>
         </div>
         <div class="col-sm-12">
-          <small class="text-info">Order Reference:</small>
+          <label>Order Reference:</label>
           <br />
           <span>{{ store.refOrder }}</span>
         </div>
       </div>
       <div class="row p-1" v-if="access">
-        <small class="col-sm-12 text-info">Store Admin:</small>
+        <label class="col-sm-12">Store Admin:</label>
         <span class="col-sm-12">{{ store.adminId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.adminId.email }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Store Manager:</small>
+        <label class="col-sm-12">Store Manager:</label>
         <span class="col-sm-12">{{ store.managerId.name }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.email }}</span>
         <span class="col-sm-12 text-muted">{{ store.managerId.phone }}</span>
       </div>
       <div class="row p-1">
-        <small class="col-sm-12 text-info">Shipping Type:</small>
+        <label class="col-sm-12">Shipping Type:</label>
         <span class="col-sm-12">
           {{ store.shippingType == 'BULK' ? 'BULK SHIP' : 'DROP SHIP' }}
         </span>
       </div>
       <div class="row p-1" v-if="(store.shippingType = 'BULK')">
-        <small class="col-sm-12 text-info">Bulk Shipping Information:</small>
+        <label class="col-sm-12">Bulk Shipping Information:</label>
         <span class="col-sm-12">{{ store.bulkShipping.name }}</span>
         <span class="col-sm-12" v-if="store.bulkShipping.company">
           {{ store.bulkShipping.company }}
@@ -152,7 +152,7 @@
             autofocus
           />
           <small class="text-muted"
-            >Showing: {{ filteredCount }}/{{ storeItems.length }}</small
+            >{{ filteredCount }}/{{ storeItems.length }}</small
           >
         </div>
         <div class="header-buttons" v-if="member.isAdmin">
@@ -342,7 +342,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="mb-3 text-center text-info" v-else>
+                <div class="mb-3 text-center" v-else>
                   No Extra Charges
                   <hr />
                 </div>

@@ -40,7 +40,7 @@
         }}</router-link>
       </div>
       <div class="text-center mt-4">
-        <small>&copy; 2019 Garneau.com - LGS Team Builder</small>
+        <small>&copy; {{ $t('year') }} Garneau.com - LGS TeamBuilder</small>
       </div>
       <div class="langChooser">
         <div class="form-check form-check-inline">
@@ -88,8 +88,8 @@
       </button>
     </form>
     <div class="result" v-else>
-      Check your email for your verification email<br />
-      Link expires in 1 hour
+      {{ $t('login.resultline1') }}<br />
+      {{ $t('login.resultline2') }}
     </div>
   </div>
 </template>
@@ -199,12 +199,6 @@ export default {
           font-weight: 700;
           text-decoration: underline;
         }
-      }
-    }
-
-    .text-center {
-      .text-info {
-        font-size: 0.85rem;
       }
     }
   }

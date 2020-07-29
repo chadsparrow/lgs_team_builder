@@ -19,6 +19,7 @@
   "member": "Member",
   "memberPlural": "Members",
   "manager": "Manager",
+  "year": "2021",
   "login": {
     "emailAddress": "Email Address",
     "password": "Password",
@@ -26,7 +27,9 @@
     "language": "Language",
     "resetPassTitle": "Forgot your username or password?",
     "resetPass": "Reset Password",
-    "verifyEmail": "Resend Verification"
+    "verifyEmail": "Resend Verification",
+    "resultline1": "Check your email for your verification email",
+    "resultline2": "Link expires in 1 hour"
   },
   "profiles": {
     "updateGravatar": "Update Gravatar",
@@ -117,7 +120,9 @@
     "memberSince": "Member Since",
     "memberRole": "Member Role",
     "memberTZ": "Member Timezone",
-    "memberOf": "Member of"
+    "memberOf": "Member of",
+    "verified": "Verified",
+    "unverified": "Unverified"
   },
   "teams": {
     "account": "Account",

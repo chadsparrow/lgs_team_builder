@@ -2,9 +2,7 @@
   <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="row p-1">
-        <small class="col-sm-12 text-info"
-          >{{ $t('profiles.timezone') }}:</small
-        >
+        <label class="col-sm-12">{{ $t('profiles.timezone') }}:</label>
         <span class="col-sm-12">{{ memberDetails.timezone }}</span>
       </div>
       <hr />

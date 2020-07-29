@@ -11,11 +11,11 @@
         >
       </div>
       <div class="row mt-2">
-        <small class="col-12 text-info">{{ $t('profiles.timezone') }}:</small>
+        <label class="col-12">{{ $t('profiles.timezone') }}:</label>
         <span class="col-12">{{ memberDetails.timezone }}</span>
       </div>
       <div class="row mt-2">
-        <small class="col-12 text-info">{{ $t('members.memberSince') }}:</small>
+        <label class="col-12">{{ $t('members.memberSince') }}:</label>
         <span class="col-12">
           {{
             memberDetails.createdAt
@@ -61,52 +61,52 @@
         </div>
         <div class="row info-spans">
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.name') }}</label>
+            <label>{{ $t('formLabels.name') }}</label>
             <br />
             <span>{{ memberDetails.name }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.company') }}</label>
+            <label>{{ $t('formLabels.company') }}</label>
             <br />
             <span>{{ memberDetails.company || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.email') }}</label>
+            <label>{{ $t('formLabels.email') }}</label>
             <br />
             <span>{{ memberDetails.email }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address1') }}</label>
+            <label>{{ $t('formLabels.address1') }}</label>
             <br />
             <span>{{ memberDetails.address1 }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address2') }}</label>
+            <label>{{ $t('formLabels.address2') }}</label>
             <br />
             <span>{{ memberDetails.address2 || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.city') }}</label>
+            <label>{{ $t('formLabels.city') }}</label>
             <br />
             <span>{{ memberDetails.city }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.stateProv') }}</label>
+            <label>{{ $t('formLabels.stateProv') }}</label>
             <br />
             <span>{{ memberDetails.stateProv }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.country') }}</label>
+            <label>{{ $t('formLabels.country') }}</label>
             <br />
             <span>{{ memberDetails.country }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.zipPostal') }}</label>
+            <label>{{ $t('formLabels.zipPostal') }}</label>
             <br />
             <span>{{ memberDetails.zipPostal }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.phone') }}</label>
+            <label>{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.phone }}</span>
           </div>
@@ -122,52 +122,52 @@
         </div>
         <div class="row info-spans">
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.name') }}</label>
+            <label>{{ $t('formLabels.name') }}</label>
             <br />
             <span>{{ memberDetails.billing.name }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.company') }}</label>
+            <label>{{ $t('formLabels.company') }}</label>
             <br />
             <span>{{ memberDetails.billing.company || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.email') }}</label>
+            <label>{{ $t('formLabels.email') }}</label>
             <br />
             <span>{{ memberDetails.billing.email }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address1') }}</label>
+            <label>{{ $t('formLabels.address1') }}</label>
             <br />
             <span>{{ memberDetails.billing.address1 }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address2') }}</label>
+            <label>{{ $t('formLabels.address2') }}</label>
             <br />
             <span>{{ memberDetails.billing.address2 || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.city') }}</label>
+            <label>{{ $t('formLabels.city') }}</label>
             <br />
             <span>{{ memberDetails.billing.city }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.stateProv') }}</label>
+            <label>{{ $t('formLabels.stateProv') }}</label>
             <br />
             <span>{{ memberDetails.billing.stateProv }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.country') }}</label>
+            <label>{{ $t('formLabels.country') }}</label>
             <br />
             <span>{{ memberDetails.billing.country }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.zipPostal') }}</label>
+            <label>{{ $t('formLabels.zipPostal') }}</label>
             <br />
             <span>{{ memberDetails.billing.zipPostal }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.phone') }}</label>
+            <label>{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.billing.phone }}</span>
           </div>
@@ -183,52 +183,52 @@
         </div>
         <div class="row info-spans">
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.name') }}</label>
+            <label>{{ $t('formLabels.name') }}</label>
             <br />
             <span>{{ memberDetails.shipping.name }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.company') }}</label>
+            <label>{{ $t('formLabels.company') }}</label>
             <br />
             <span>{{ memberDetails.shipping.company || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.email') }}</label>
+            <label>{{ $t('formLabels.email') }}</label>
             <br />
             <span>{{ memberDetails.shipping.email }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address1') }}</label>
+            <label>{{ $t('formLabels.address1') }}</label>
             <br />
             <span>{{ memberDetails.shipping.address1 }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.address2') }}</label>
+            <label>{{ $t('formLabels.address2') }}</label>
             <br />
             <span>{{ memberDetails.shipping.address2 || '--' }}</span>
           </div>
           <div class="col-xl-6">
-            <label class="text-info">{{ $t('formLabels.city') }}</label>
+            <label>{{ $t('formLabels.city') }}</label>
             <br />
             <span>{{ memberDetails.shipping.city }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.stateProv') }}</label>
+            <label>{{ $t('formLabels.stateProv') }}</label>
             <br />
             <span>{{ memberDetails.shipping.stateProv }}</span>
           </div>
           <div class="col-lg-6 col-xl-3">
-            <label class="text-info">{{ $t('formLabels.country') }}</label>
+            <label>{{ $t('formLabels.country') }}</label>
             <br />
             <span>{{ memberDetails.shipping.country }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.zipPostal') }}</label>
+            <label>{{ $t('formLabels.zipPostal') }}</label>
             <br />
             <span>{{ memberDetails.shipping.zipPostal }}</span>
           </div>
           <div class="col-lg-6">
-            <label class="text-info">{{ $t('formLabels.phone') }}</label>
+            <label>{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.shipping.phone }}</span>
           </div>

@@ -11,23 +11,23 @@
           :src="team.logo"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12 text-info">Store Timezone:</small>
+          <label class="col-sm-12">Store Timezone:</label>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Name:</small>
+          <label class="col-sm-12">Team Name:</label>
           <span class="col-sm-12">{{ team.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team ID#:</small>
+          <label class="col-sm-12">Team ID#:</label>
           <span class="col-sm-12">{{ team.teamId }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Admin:</small>
+          <label class="col-sm-12">Team Admin:</label>
           <span class="col-sm-12">{{ team.adminId.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12 text-info">Team Manager:</small>
+          <label class="col-sm-12">Team Manager:</label>
           <span class="col-sm-12">{{ team.managerId.name }}</span>
         </div>
       </div>
@@ -82,7 +82,7 @@
               />
             </div>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-4 mt-2">
             <div class="form-group col">
               <label for="currency">Store Currency</label>
               <select
@@ -172,7 +172,7 @@
               </select>
             </div>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-8 mt-2">
             <div class="row">
               <div class="form-group col">
                 <label for="storeMessage">Initial Store Message:</label>
