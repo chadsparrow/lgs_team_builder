@@ -747,6 +747,8 @@ export default {
   grid-template-areas: 'sidebar-left middle-section';
 
   .middle-section {
+    padding: 0 0.5rem 0 0;
+
     .form-group {
       margin-bottom: 0.3rem;
     }

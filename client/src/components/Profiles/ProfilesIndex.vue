@@ -298,6 +298,7 @@ export default {
   }
 
   .middle-section {
+    padding: 0 0.5rem 0 0;
     h3 {
       display: none;
     }

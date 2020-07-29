@@ -20,7 +20,7 @@ import i18n from './i18n';
 interceptorsSetup();
 Vue.use(VueMoment, { moment });
 Vue.use(Toasted, {
-  position: 'bottom-center',
+  position: 'top-center',
   duration: 4000,
   iconPack: 'fontawesome',
   fullWidth: true,

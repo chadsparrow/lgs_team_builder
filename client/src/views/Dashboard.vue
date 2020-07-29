@@ -6,6 +6,7 @@
       :menu="menu"
       :width="'150px'"
       :collapsed="sideCollapsed"
+      class="sidebar-menu"
     >
       <div slot="header" class="tbLogo">
         <a href="/dashboard/index"
@@ -171,6 +172,8 @@ export default {
 }
 
 .v-sidebar-menu {
+  padding-bottom: 1.25rem;
+
   .vsm--link,
   .vsm--header {
     font-size: 0.85rem;
