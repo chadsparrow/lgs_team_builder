@@ -190,11 +190,12 @@
           v-for="(item, index) in filteredItems"
           :key="item._id"
         >
-          <div class="card-image" v-lazy-container="{ selector: 'img' }">
+          <div class="card-image">
             <img
-              :data-src="getImgUrl(item)"
+              :src="getImgUrl(item)"
               :alt="item.nameEN"
               class="card-img-top"
+              loading="lazy"
             />
             <div
               class="mandatoryItem bg-danger text-white"
@@ -652,7 +653,9 @@ export default {
       }
     },
     getImgUrl: function(item) {
-      // if (item.images.length === 0) return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+      if (item.images.length === 0)
+        return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+
       return `https://teambuilder.s3.amazonaws.com/images/storeitems/${this.store._id}/${item.images[0]}_hd.jpg`;
     },
     removeLike: async function(id) {
@@ -877,7 +880,6 @@ export default {
 .middle-section {
   grid-area: middle-section;
   width: 100%;
-  height: 100;
 
   .header {
     display: flex;

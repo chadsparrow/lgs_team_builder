@@ -80,12 +80,12 @@
         :key="item._id"
         :to="`/dashboard/catalogItems/${item._id}`"
       >
-        <div class="thumbnail-img" v-lazy-container="{ selector: 'img' }">
-          <img
-            :data-src="getImgUrl(item)"
-            :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
-          />
-        </div>
+        <img
+          :src="getImgUrl(item)"
+          :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
+          loading="lazy"
+          class="thumbnail-img"
+        />
 
         <div class="thumbnail-body px-3">
           <div class="row">
@@ -253,6 +253,7 @@ export default {
       min-height: 125px;
 
       .thumbnail-img {
+        max-width: 100%;
         min-width: 125px;
         width: 125px;
         img {

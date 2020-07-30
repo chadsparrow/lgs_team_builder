@@ -12,7 +12,6 @@ import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
 import interceptorsSetup from './helpers/interceptors';
 import VueCurrencyInput from 'vue-currency-input';
-import VueLazyload from 'vue-lazyload';
 import VueSidebarMenu from 'vue-sidebar-menu';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import i18n from './i18n';
@@ -32,15 +31,6 @@ Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);
 Vue.use(Vue2Filters);
 Vue.use(VueCurrencyInput);
-Vue.use(VueLazyload, {
-  preLoad: 1.3,
-  loading:
-    'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png',
-  error:
-    'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png',
-  observer: true,
-  attempt: 1,
-});
 Vue.use(VueSidebarMenu);
 
 Vue.config.productionTip = false;

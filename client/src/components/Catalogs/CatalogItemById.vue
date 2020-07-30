@@ -9,6 +9,7 @@
             <img
               :src="getImgUrl(image.index)"
               :alt="image.alt"
+              loading="lazy"
               @click="switchImage(image.id, image.index)"
             />
           </div>
@@ -264,11 +265,13 @@ export default {
           this.currentCatalogItem.images.length === 0 ||
           !this.currentCatalogItem.images[index]
         )
-          return `https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png`;
+          return `https://teambuilder.s3.amazonaws.com/images/assets/missing_item_${
+            index > 0 ? 'sd' : 'hd'
+          }.png`;
 
         return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand.toLowerCase()}/${
           this.currentCatalogItem.images[index]
-        }_hd.jpg`;
+        }_${index > 0 ? 'sd' : 'hd'}.jpg`;
       }
     },
     switchImage(id, ind) {
@@ -339,30 +342,26 @@ export default {
 
       #image1 {
         grid-area: image1;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
       }
       #image2 {
         grid-area: image2;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
       #image3 {
         grid-area: image3;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
       #image4 {
         grid-area: image4;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
 
       img {
-        width: 100%;
+        max-width: 100%;
       }
     }
   }

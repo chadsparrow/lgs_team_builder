@@ -17,11 +17,8 @@
             :key="item._id"
           >
             <div class="row">
-              <div
-                class="col-md-12 col-lg-3 cart-item-image"
-                v-lazy-container="{ selector: 'img' }"
-              >
-                <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
+              <div class="col-md-12 col-lg-3 cart-item-image">
+                <img :src="getImgUrl(item)" :alt="item.nameEN" loading="lazy" />
               </div>
               <div class="col-md-12 col-lg-7 cart-item-info">
                 <div>

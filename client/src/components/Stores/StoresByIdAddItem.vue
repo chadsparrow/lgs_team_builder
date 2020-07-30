@@ -65,8 +65,8 @@
             v-for="(item, index) in filteredItems"
             :key="index"
           >
-            <div class="itemImage" v-lazy-container="{ selector: 'img' }">
-              <img :data-src="getImgUrl(item)" :alt="item.nameEN" />
+            <div class="itemImage">
+              <img :src="getImgUrl(item)" :alt="item.nameEN" loading="lazy" />
             </div>
             <div class="itemInfo">
               {{ item.nameEN }}
@@ -93,8 +93,12 @@
             v-for="(storeItem, index) in storeItems"
             :key="index"
           >
-            <div class="itemImage" v-lazy-container="{ selector: 'img' }">
-              <img :data-src="getImgUrl(storeItem)" :alt="storeItem.nameEN" />
+            <div class="itemImage">
+              <img
+                :src="getImgUrl(storeItem)"
+                :alt="storeItem.nameEN"
+                loading="lazy"
+              />
             </div>
             <div class="itemInfo">
               <div
@@ -584,10 +588,10 @@ export default {
     },
     getImgUrl(item) {
       if (item.images.length === 0)
-        return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_hd.png';
+        return 'https://teambuilder.s3.amazonaws.com/images/assets/missing_item_sd.png';
       return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.catalog.brand.toLowerCase()}/${
         item.images[0]
-      }_hd.jpg`;
+      }_sd.jpg`;
     },
   },
 };
@@ -716,7 +720,7 @@ export default {
         width: 100px;
         min-height: 60px;
         img {
-          width: 100px;
+          max-width: 100px;
         }
       }
 

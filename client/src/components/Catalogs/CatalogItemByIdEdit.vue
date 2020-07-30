@@ -4,7 +4,11 @@
       <div class="col-md-12 col-lg-6 col-xl-5 image-section">
         <div class="image-box">
           <div v-for="image of images" :key="image.id" :id="`image${image.id}`">
-            <img :src="getImgUrl(image.index)" :alt="image.alt" />
+            <img
+              :src="getImgUrl(image.index)"
+              :alt="image.alt"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
@@ -594,7 +598,7 @@ export default {
 
         return `https://teambuilder.s3.amazonaws.com/images/catalogs/${this.currentCatalog.brand.toLowerCase()}/${
           this.currentCatalogItem.images[index]
-        }_hd.jpg`;
+        }_${index > 0 ? 'sd' : 'hd'}.jpg`;
       }
     },
     setSizes: function() {
@@ -646,30 +650,26 @@ export default {
 
       #image1 {
         grid-area: image1;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
       }
       #image2 {
         grid-area: image2;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
       #image3 {
         grid-area: image3;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
       #image4 {
         grid-area: image4;
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
         cursor: pointer;
       }
 
       img {
-        width: 100%;
+        max-width: 100%;
       }
     }
   }
