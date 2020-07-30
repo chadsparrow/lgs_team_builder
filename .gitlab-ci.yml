@@ -21,6 +21,7 @@ Install_dependancies:
 
 Testing:
   stage: test
+  image: node:12.16.3-alpine
   only:
     - develop
     - staging
