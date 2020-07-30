@@ -2,6 +2,7 @@ const generator = require('generate-password');
 const logger = require('../middleware/logger');
 const bcrypt = require('bcryptjs');
 const Tzdb = require('timezonedb').Tzdb;
+const mailer = require('../utils/mailer');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -250,9 +251,33 @@ module.exports = {
 
       newMember.timezone = data.zoneName;
 
+      // generates a resetToken
+      const token = randomString.generate();
+
+      // saves reset token and expiry to member
+      member.resetPasswordToken = token;
+      member.resetPasswordTokenExpires = Date.now() + 3600 * 1000;
+
       await newMember.save();
 
       // SEND EMAIL TO USER TO ALLOW PASSWORD RESET USING TOKEN
+      await mailer.sendEmail({
+        to: member.email,
+        subject: 'TeamBuilder Password Reset',
+        text: `Hello, You've been added as a member on TeamBuilder and we just need you to verify your account and setup your password!
+        You can go ahead and do so by clicking the link below:
+
+        ${req.headers.origin}/reset?token=${token}
+
+        Thanks.
+        `,
+        html: `<b>You've been added as a member on TeamBuilder and we just need you to verify your account and setup your password!</b><br><br>
+        You can go ahead and do so by clicking the link below:<br><br>
+        <a href="${req.headers.origin}/reset?token=${token}">Reset my password</a><br><br>
+        
+        Thanks!.
+        `,
+      });
 
       return res.status(201).send([{ message: 'Member Registered' }]);
     } catch (err) {

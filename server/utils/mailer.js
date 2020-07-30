@@ -12,6 +12,10 @@ const transport = nodemailer.createTransport({
 module.exports = {
   sendEmail: ({ to, subject, text, html }) => {
     return new Promise((resolve, reject) => {
+      if (!to || to === '') {
+        reject(new Error('"To" field required'));
+      }
+
       transport.sendMail(
         {
           from: '"LGS TeamBuilder" <no-reply@teambuilder.garneau.com>',

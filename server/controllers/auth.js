@@ -452,6 +452,7 @@ module.exports = {
       member.password = await bcrypt.hash(password, salt);
       member.resetPasswordToken = undefined;
       member.resetPasswordTokenExpires = undefined;
+      member.isVerified = true;
 
       await member.save();
 
