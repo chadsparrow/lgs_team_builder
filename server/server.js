@@ -54,9 +54,9 @@ app.enable('trust proxy');
 // set up database connection
 const DB_USER = process.env.MONGO_INITDB_ROOT_USERNAME;
 const DB_PASS = process.env.MONGO_INITDB_ROOT_PASSWORD;
-const DB_ADMINSOURCE = process.env.MONGO_INITDB_ROOT_ADMINSOURCE;
+//const DB_ADMINSOURCE = process.env.MONGO_INITDB_ROOT_ADMINSOURCE;
 let DB_DB = process.env.MONGO_INITDB_ROOT_DB;
-const DB_PORT = process.env.MONGO_INITDB_ROOT_PORT || 27018;
+//const DB_PORT = process.env.MONGO_INITDB_ROOT_PORT || 27018;
 let DB_HOST = '';
 
 if (process.env.NODE_ENV === 'test') {
