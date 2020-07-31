@@ -804,7 +804,7 @@ export default {
   display: grid;
   grid-template-columns: 255px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1.5rem;
+  grid-gap: 1rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
@@ -830,10 +830,10 @@ export default {
         margin: 0px auto;
         padding: 1rem;
         background-color: $white-text;
-        border-radius: 2px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
         transition: all 0.5s ease;
-        font-size: 0.85rem;
+        font-size: $span-font-size;
 
         .modal-body {
           .charge-row {
@@ -844,7 +844,7 @@ export default {
           }
 
           .form-control {
-            font-size: 0.85rem;
+            font-size: $span-font-size;
           }
 
           .extras-list {
@@ -878,6 +878,7 @@ export default {
 }
 
 .middle-section {
+  padding: $scrollbar-padding;
   grid-area: middle-section;
   width: 100%;
 
@@ -886,7 +887,7 @@ export default {
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    font-weight: 700;
+    font-weight: $font-weight-bold;
 
     .form-control {
       width: 250px;
@@ -898,7 +899,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-auto-rows: min-content;
-    grid-gap: 1rem;
+    grid-gap: 0.5rem;
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 0.5rem;
@@ -914,7 +915,7 @@ export default {
           color: $white-text;
           top: 0.5rem;
           left: 0.5rem;
-          border-radius: 5px;
+          border-radius: $border-radius;
         }
 
         .price-box {
@@ -923,7 +924,7 @@ export default {
           bottom: 0.5rem;
           right: 1rem;
           font-size: 1.75rem;
-          font-weight: 200;
+          font-weight: $font-weight-light;
           color: $white-text;
           text-shadow: 2px 2px 6px rgba($color: $black-text, $alpha: 0.65);
         }
@@ -955,7 +956,7 @@ export default {
             opacity: 0.5;
           }
           .badge {
-            font-size: 0.85rem;
+            font-size: $span-font-size;
           }
         }
 
@@ -983,10 +984,10 @@ export default {
 }
 
 .modeBox {
-  border-radius: 6px;
+  border-radius: $border-radius;
   span {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: $base-font-size;
+    font-weight: $font-weight-bold;
   }
   margin: 0px 4px;
 }

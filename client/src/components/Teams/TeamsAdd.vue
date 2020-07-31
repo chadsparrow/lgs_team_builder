@@ -1,443 +1,431 @@
 <template>
   <div class="container" v-if="!isLoading">
-    <div class="row">
-      <div class="col middle-section">
-        <form novalidate>
-          <div class="row mb-3">
-            <div class="form-group col-12 mb-2">
-              <label for="name">{{ $t('teams.teamName') }}</label>
-              <input
-                id="name"
-                type="text"
-                class="form-control form-control-lg"
-                v-model="name"
-                ref="name"
-                autofocus
-              />
-            </div>
-
-            <!-- ADMIN SELECTOR -->
-            <div class="form-group col-md-2">
-              <label for="teamId">{{ $t('teams.erpId') }}</label>
-              <input
-                id="teamId"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="teamId"
-                ref="teamId"
-              />
-            </div>
-            <div class="form-group col-md-4">
-              <label for="adminId">{{ $t('teams.teamAdmin') }}</label>
-              <select
-                class="form-control form-control-sm"
-                id="adminId"
-                v-model="adminId"
-                ref="adminId"
-              >
-                <option
-                  v-for="admin of adminsList"
-                  :key="admin._id"
-                  :value="admin._id"
-                  >{{ admin.name }}</option
-                >
-              </select>
-            </div>
-            <!-- MANAGER SELECTOR -->
-            <div class="form-group col-md-6" v-if="members.length > 0">
-              <label for="managerId">{{ $t('teams.teamManager') }}</label>
-              <vSelect
-                id="managerId"
-                v-model="chosenMember"
-                label="email"
-                :options="members"
-                @input="getManagerDetails"
-                ref="managerId"
-              ></vSelect>
-            </div>
+    <div class="middle-section mt-2">
+      <form novalidate>
+        <div class="row mb-3">
+          <div class="form-group col-12 mb-2">
+            <label for="name">{{ $t('teams.teamName') }}</label>
+            <input
+              id="name"
+              type="text"
+              class="form-control form-control-lg"
+              v-model="name"
+              ref="name"
+              autofocus
+            />
           </div>
-          <!-- MAIN CONTACT -->
-          <div class="section-header bg-secondary">
-            <span>{{ $t('formLabels.mainContact') }}</span>
-            <div class="form-check text-center">
+
+          <!-- ADMIN SELECTOR -->
+          <div class="form-group col-md-2">
+            <label for="teamId">{{ $t('teams.erpId') }}</label>
+            <input
+              id="teamId"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="teamId"
+              ref="teamId"
+            />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="adminId">{{ $t('teams.teamAdmin') }}</label>
+            <select
+              class="form-control form-control-sm"
+              id="adminId"
+              v-model="adminId"
+              ref="adminId"
+            >
+              <option
+                v-for="admin of adminsList"
+                :key="admin._id"
+                :value="admin._id"
+                >{{ admin.name }}</option
+              >
+            </select>
+          </div>
+          <!-- MANAGER SELECTOR -->
+          <div class="form-group col-md-6" v-if="members.length > 0">
+            <label for="managerId">{{ $t('teams.teamManager') }}</label>
+            <vSelect
+              id="managerId"
+              v-model="chosenMember"
+              label="email"
+              :options="members"
+              @input="getManagerDetails"
+              ref="managerId"
+            ></vSelect>
+          </div>
+        </div>
+        <!-- MAIN CONTACT -->
+        <div class="section-header bg-secondary">
+          <span>{{ $t('formLabels.mainContact') }}</span>
+          <div class="form-check text-center">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="useManagerDetails"
+              v-model="useManagerDetails"
+              @change="copyManagertoMain"
+              ref="useManagerDetails"
+              :disabled="!managerId || chosenMember === null"
+            />
+            <small
+              class="form-check-label text-white"
+              for="useManagerDetails"
+              >{{ $t('formLabels.useManager') }}</small
+            >
+          </div>
+        </div>
+        <div class="row px-2 mb-3">
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="contactName">{{ $t('formLabels.name') }}</label>
+            <input
+              id="contactName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactName"
+              ref="contactName"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="contactCompany">{{ $t('formLabels.company') }}</label>
+            <input
+              id="contactCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactCompany"
+              ref="contactCompany"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="contactEmail">{{ $t('formLabels.email') }}</label>
+            <input
+              id="contactEmail"
+              type="email"
+              class="form-control form-control-sm"
+              v-model="contactEmail"
+              ref="contactEmail"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="contactAddress1">{{ $t('formLabels.address1') }}</label>
+            <input
+              id="contactAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactAddress1"
+              ref="contactAddress1"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="contactAddress2">{{ $t('formLabels.address2') }}</label>
+            <input
+              id="contactAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactAddress2"
+              ref="contactAddress2"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="contactCity">{{ $t('formLabels.city') }}</label>
+            <input
+              id="contactCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactCity"
+              ref="contactCity"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-lg-3">
+            <label for="contactCountry">{{ $t('formLabels.country') }}</label>
+            <country-select
+              id="contactCountry"
+              v-model="contactCountry"
+              :country="contactCountry"
+              class="form-control form-control-sm"
+              @input="checkCountry"
+              :readonly="useManagerDetails"
+              ref="contactCountry"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectCountry')"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-lg-3">
+            <label for="contactStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
+            <region-select
+              id="contactStateProv"
+              v-model="contactStateProv"
+              :country="contactCountry"
+              :region="contactStateProv"
+              class="form-control form-control-sm"
+              @input="checkRegion"
+              :readonly="useManagerDetails"
+              :regionName="true"
+              ref="contactStateProv"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectRegion')"
+            />
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="contactZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
+            <input
+              id="contactZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactZipPostal"
+              ref="contactZipPostal"
+              @change="changeDetails"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-md-6" v-if="useManagerDetails">
+            <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
+            <input
+              id="contactPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="contactPhone"
+              :readonly="useManagerDetails"
+            />
+          </div>
+          <div class="form-group col-md-6" v-else>
+            <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
+            <VuePhoneNumberInput
+              v-model="contactPhone"
+              id="contactPhone"
+              size="sm"
+              :preferred-countries="['US', 'CA']"
+              ref="contactPhone"
+              :clearable="true"
+              :no-use-browser-locale="true"
+              @update="copyPhone"
+              :translations="phoneTranslations"
+            />
+          </div>
+        </div>
+        <!-- BULK SHIPPING -->
+        <div class="section-header bg-secondary">
+          <span class="mr-4">{{ $t('formLabels.bulkShipping') }}</span>
+          <div class="radios m-0">
+            <div class="form-check form-check-inline">
               <input
-                type="checkbox"
                 class="form-check-input"
-                id="useManagerDetails"
-                v-model="useManagerDetails"
-                @change="copyManagertoMain"
-                ref="useManagerDetails"
-                :disabled="!managerId || chosenMember === null"
+                type="radio"
+                name="bulkUseDetails"
+                id="useAboveDetails"
+                value="above"
+                v-model="bulkUseDetails"
+                @change="copytoBulk"
               />
               <small
                 class="form-check-label text-white"
-                for="useManagerDetails"
-                >{{ $t('formLabels.useManager') }}</small
+                for="useAboveDetails"
+                >{{ $t('formLabels.useAbove') }}</small
               >
             </div>
-          </div>
-          <div class="row px-2 mb-3">
-            <div class="form-group col-sm-6 col-xl-3">
-              <label for="contactName">{{ $t('formLabels.name') }}</label>
+            <div class="form-check form-check-inline">
               <input
-                id="contactName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactName"
-                ref="contactName"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
+                class="form-check-input"
+                type="radio"
+                name="bulkUseDetails"
+                id="useManagerDetails2"
+                value="manager"
+                v-model="bulkUseDetails"
+                :disabled="!managerId || chosenMember === null"
+                @change="copytoBulk"
               />
-            </div>
-            <div class="form-group col-sm-6 col-xl-3">
-              <label for="contactCompany">{{ $t('formLabels.company') }}</label>
-              <input
-                id="contactCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactCompany"
-                ref="contactCompany"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-xl-6">
-              <label for="contactEmail">{{ $t('formLabels.email') }}</label>
-              <input
-                id="contactEmail"
-                type="email"
-                class="form-control form-control-sm"
-                v-model="contactEmail"
-                ref="contactEmail"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="contactAddress1">{{
-                $t('formLabels.address1')
-              }}</label>
-              <input
-                id="contactAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactAddress1"
-                ref="contactAddress1"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="contactAddress2">{{
-                $t('formLabels.address2')
-              }}</label>
-              <input
-                id="contactAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactAddress2"
-                ref="contactAddress2"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="contactCity">{{ $t('formLabels.city') }}</label>
-              <input
-                id="contactCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactCity"
-                ref="contactCity"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-sm-6 col-lg-3">
-              <label for="contactCountry">{{ $t('formLabels.country') }}</label>
-              <country-select
-                id="contactCountry"
-                v-model="contactCountry"
-                :country="contactCountry"
-                class="form-control form-control-sm"
-                @input="checkCountry"
-                :readonly="useManagerDetails"
-                ref="contactCountry"
-                :usei18n="false"
-                :placeholder="$t('formLabels.selectCountry')"
-              />
-            </div>
-            <div class="form-group col-sm-6 col-lg-3">
-              <label for="contactStateProv">{{
-                $t('formLabels.stateProv')
-              }}</label>
-              <region-select
-                id="contactStateProv"
-                v-model="contactStateProv"
-                :country="contactCountry"
-                :region="contactStateProv"
-                class="form-control form-control-sm"
-                @input="checkRegion"
-                :readonly="useManagerDetails"
-                :regionName="true"
-                ref="contactStateProv"
-                :usei18n="false"
-                :placeholder="$t('formLabels.selectRegion')"
-              />
-            </div>
-
-            <div class="form-group col-md-6">
-              <label for="contactZipPostal">{{
-                $t('formLabels.zipPostal')
-              }}</label>
-              <input
-                id="contactZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactZipPostal"
-                ref="contactZipPostal"
-                @change="changeDetails"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-md-6" v-if="useManagerDetails">
-              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
-              <input
-                id="contactPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="contactPhone"
-                :readonly="useManagerDetails"
-              />
-            </div>
-            <div class="form-group col-md-6" v-else>
-              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
-              <VuePhoneNumberInput
-                v-model="contactPhone"
-                id="contactPhone"
-                size="sm"
-                :preferred-countries="['US', 'CA']"
-                ref="contactPhone"
-                :clearable="true"
-                :no-use-browser-locale="true"
-                @update="copyPhone"
-                :translations="phoneTranslations"
-              />
-            </div>
-          </div>
-          <!-- BULK SHIPPING -->
-          <div class="section-header bg-secondary">
-            <span class="mr-4">{{ $t('formLabels.bulkShipping') }}</span>
-            <div class="radios m-0">
-              <div class="form-check form-check-inline">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useAboveDetails"
-                  value="above"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <small
-                  class="form-check-label text-white"
-                  for="useAboveDetails"
-                  >{{ $t('formLabels.useAbove') }}</small
-                >
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useManagerDetails2"
-                  value="manager"
-                  v-model="bulkUseDetails"
-                  :disabled="!managerId || chosenMember === null"
-                  @change="copytoBulk"
-                />
-                <small
-                  class="form-check-label text-white"
-                  for="useManagerDetails2"
-                  >{{ $t('formLabels.useManagerShipping') }}</small
-                >
-              </div>
-              <div class="form-check form-check-inline">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="bulkUseDetails"
-                  id="useNewDetails"
-                  value="other"
-                  v-model="bulkUseDetails"
-                  @change="copytoBulk"
-                />
-                <small
-                  class="form-check-label text-white"
-                  for="useNewDetails"
-                  >{{ $t('formLabels.useOther') }}</small
-                >
-              </div>
-            </div>
-          </div>
-          <div class="row px-2">
-            <div class="form-group col-sm-6 col-xl-3">
-              <label for="shippingName">{{ $t('formLabels.name') }}</label>
-              <input
-                id="shippingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingName"
-                ref="shippingName"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6 col-xl-3">
-              <label for="shippingCompany">{{
-                $t('formLabels.company')
-              }}</label>
-              <input
-                id="shippingCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingCompany"
-                ref="shippingCompany"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-xl-6">
-              <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
-              <input
-                id="shippingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingEmail"
-                ref="shippingEmail"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="shippingAddress1">{{
-                $t('formLabels.address1')
-              }}</label>
-              <input
-                id="shippingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingAddress1"
-                ref="shippingAddress1"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="shippingAddress2">{{
-                $t('formLabels.address2')
-              }}</label>
-              <input
-                id="shippingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingAddress2"
-                ref="shippingAddress2"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-lg-6">
-              <label for="shippingCity">{{ $t('formLabels.city') }}</label>
-              <input
-                id="shippingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingCity"
-                @change="changeDetails"
-                ref="shippingCity"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-sm-6 col-lg-3">
-              <label for="shippingCountry">{{
-                $t('formLabels.country')
-              }}</label>
-              <country-select
-                id="shippingCountry"
-                v-model="shippingCountry"
-                :country="shippingCountry"
-                class="form-control form-control-sm"
-                @input="checkShippingCountry"
-                :readonly="bulkUseDetails !== 'other'"
-                :usei18n="false"
-                :placeholder="$t('formLabels.selectCountry')"
-              />
-            </div>
-            <div class="form-group col-sm-6 col-lg-3">
-              <label for="shippingStateProv">{{
-                $t('formLabels.stateProv')
-              }}</label>
-              <region-select
-                id="shippingStateProv"
-                v-model="shippingStateProv"
-                :country="shippingCountry"
-                :region="shippingStateProv"
-                class="form-control form-control-sm"
-                :regionName="true"
-                :readonly="bulkUseDetails !== 'other'"
-                :usei18n="false"
-                :placeholder="$t('formLabels.selectRegion')"
-              />
-            </div>
-
-            <div class="form-group col-md-6">
-              <label for="shippingZipPostal">{{
-                $t('formLabels.zipPostal')
-              }}</label>
-              <input
-                id="shippingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingZipPostal"
-                ref="shippingZipPostal"
-                :readonly="bulkUseDetails !== 'other'"
-              />
-            </div>
-            <div class="form-group col-md-6" v-if="bulkUseDetails !== 'other'">
-              <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
-              <input
-                id="shippingPhone"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingPhone"
-                readonly
-              />
-            </div>
-            <div class="form-group col-md-6" v-else>
-              <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
-              <VuePhoneNumberInput
-                v-model="shippingPhone"
-                id="shippingPhone"
-                size="sm"
-                ref="shippingPhone"
-                :clearable="true"
-                :no-use-browser-locale="true"
-                :translations="phoneTranslations"
-              />
-            </div>
-          </div>
-          <div class="row mt-4 mb-5">
-            <div class="col-sm-6">
-              <button class="btn btn-block btn-info" @click.prevent="addTeam">
-                {{ $t('teams.addTeam') }}
-              </button>
-            </div>
-            <div class="col-sm-6">
-              <router-link
-                to="/dashboard/teams"
-                class="btn btn-block btn-danger"
-                >{{ $t('cancel') }}</router-link
+              <small
+                class="form-check-label text-white"
+                for="useManagerDetails2"
+                >{{ $t('formLabels.useManagerShipping') }}</small
               >
             </div>
+            <div class="form-check form-check-inline">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="bulkUseDetails"
+                id="useNewDetails"
+                value="other"
+                v-model="bulkUseDetails"
+                @change="copytoBulk"
+              />
+              <small class="form-check-label text-white" for="useNewDetails">{{
+                $t('formLabels.useOther')
+              }}</small>
+            </div>
           </div>
-        </form>
-      </div>
+        </div>
+        <div class="row px-2">
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="shippingName">{{ $t('formLabels.name') }}</label>
+            <input
+              id="shippingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingName"
+              ref="shippingName"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
+            <input
+              id="shippingCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingCompany"
+              ref="shippingCompany"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
+            <input
+              id="shippingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingEmail"
+              ref="shippingEmail"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingAddress1">{{
+              $t('formLabels.address1')
+            }}</label>
+            <input
+              id="shippingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingAddress1"
+              ref="shippingAddress1"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingAddress2">{{
+              $t('formLabels.address2')
+            }}</label>
+            <input
+              id="shippingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingAddress2"
+              ref="shippingAddress2"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingCity">{{ $t('formLabels.city') }}</label>
+            <input
+              id="shippingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingCity"
+              @change="changeDetails"
+              ref="shippingCity"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-lg-3">
+            <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
+            <country-select
+              id="shippingCountry"
+              v-model="shippingCountry"
+              :country="shippingCountry"
+              class="form-control form-control-sm"
+              @input="checkShippingCountry"
+              :readonly="bulkUseDetails !== 'other'"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectCountry')"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-lg-3">
+            <label for="shippingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
+            <region-select
+              id="shippingStateProv"
+              v-model="shippingStateProv"
+              :country="shippingCountry"
+              :region="shippingStateProv"
+              class="form-control form-control-sm"
+              :regionName="true"
+              :readonly="bulkUseDetails !== 'other'"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectRegion')"
+            />
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="shippingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
+            <input
+              id="shippingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingZipPostal"
+              ref="shippingZipPostal"
+              :readonly="bulkUseDetails !== 'other'"
+            />
+          </div>
+          <div class="form-group col-md-6" v-if="bulkUseDetails !== 'other'">
+            <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
+            <input
+              id="shippingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="shippingPhone"
+              readonly
+            />
+          </div>
+          <div class="form-group col-md-6" v-else>
+            <label for="contactPhone">{{ $t('formLabels.phone') }}</label>
+            <VuePhoneNumberInput
+              v-model="shippingPhone"
+              id="shippingPhone"
+              size="sm"
+              ref="shippingPhone"
+              :clearable="true"
+              :no-use-browser-locale="true"
+              :translations="phoneTranslations"
+            />
+          </div>
+        </div>
+        <div class="row mt-4 mb-5">
+          <div class="col-sm-6">
+            <button class="btn btn-block btn-info" @click.prevent="addTeam">
+              {{ $t('teams.addTeam') }}
+            </button>
+          </div>
+          <div class="col-sm-6">
+            <router-link
+              to="/dashboard/teams"
+              class="btn btn-block btn-danger"
+              >{{ $t('cancel') }}</router-link
+            >
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -841,9 +829,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.form-group {
-  margin-top: 0.3rem;
-}
-</style>

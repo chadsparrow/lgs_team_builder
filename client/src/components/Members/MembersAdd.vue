@@ -812,7 +812,7 @@ export default {
 <style lang="scss" scoped>
 .page {
   .middle-section {
-    padding: 0 0.5rem 0 0;
+    padding: $scrollbar-padding;
   }
 }
 

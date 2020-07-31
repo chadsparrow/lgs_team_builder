@@ -10,12 +10,12 @@
           :rounded="false"
           :src="team.logo"
         ></avatar>
-        <div class="row p-1 mt-4">
-          <small class="col-sm-12">Timezone: (uses shipping location)</small>
+        <div class="row p-1 mt-2">
+          <label class="col-sm-12">Timezone: (uses shipping location)</label>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1" v-if="team.createdAt && team.timezone">
-          <small class="col-sm-12">Team Since:</small>
+          <label class="col-sm-12">Team Since:</label>
           <span class="col-sm-12">
             {{
               team.createdAt
@@ -88,7 +88,7 @@
           </div>
         </div>
         <!-- MAIN CONTACT -->
-        <div class="section-header bg-secondary" v-if="team.managerId">
+        <div class="section-header bg-secondary mt-3" v-if="team.managerId">
           <span>Main Contact</span>
           <div class="form-check text-center">
             <input
@@ -682,7 +682,7 @@ export default {
   display: grid;
   grid-template-columns: 255px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';

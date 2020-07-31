@@ -260,8 +260,6 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  width: 100%;
-
   .header {
     padding: 0.25rem;
     .has-search .form-control {
@@ -278,12 +276,12 @@ export default {
       line-height: 2rem;
       text-align: center;
       pointer-events: none;
-      color: #aaa;
+      color: $label-color;
     }
   }
 
   table {
-    font-size: 0.85rem;
+    font-size: $span-font-size;
 
     td {
       img {

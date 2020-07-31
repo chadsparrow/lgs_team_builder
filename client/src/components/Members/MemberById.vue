@@ -282,7 +282,7 @@ export default {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
@@ -312,7 +312,7 @@ export default {
 
     .sidebar-left {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: $base-font-size;
       margin-bottom: 1rem;
     }
 

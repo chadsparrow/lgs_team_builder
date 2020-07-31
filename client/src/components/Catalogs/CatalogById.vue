@@ -1,5 +1,3 @@
-// i18n finished //
-
 <template>
   <div class="page container" v-if="!isLoading">
     <div class="header">
@@ -217,7 +215,7 @@ export default {
   .header {
     position: relative;
     grid-area: header;
-    font-weight: 700;
+    font-weight: $font-weight-bold;
     padding: 0.5rem;
     margin: 0;
 
@@ -226,7 +224,7 @@ export default {
     }
 
     input {
-      border-radius: 4px;
+      border-radius: $border-radius;
     }
   }
 
@@ -246,7 +244,7 @@ export default {
       justify-content: flex-start;
       align-items: center;
       background-color: $white-text;
-      border-radius: 5px;
+      border-radius: $border-radius;
       color: $black-text;
       margin: 0 0 0.5rem 0;
       width: 100%;
@@ -266,15 +264,15 @@ export default {
         width: 100%;
         p {
           font-size: 1.25rem;
-          font-weight: 700;
+          font-weight: $font-weight-bold;
         }
         .text-muted {
-          font-size: 0.85rem;
+          font-size: $span-font-size;
         }
       }
 
       &:hover {
-        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+        box-shadow: $box-shadow;
         background: $white-smoke;
       }
     }
@@ -284,7 +282,7 @@ export default {
 @media screen and (min-width: 0px) and (max-width: 449px) {
   .thumbnail-body {
     p {
-      font-size: 0.85rem !important;
+      font-size: $span-font-size !important;
     }
     .text-muted {
       display: none;
@@ -295,10 +293,10 @@ export default {
 @media screen and (min-width: 450px) and (max-width: 700px) {
   .thumbnail-body {
     p {
-      font-size: 1rem !important;
+      font-size: $base-font-size !important;
     }
     .text-muted {
-      font-size: 0.65em !important;
+      font-size: $muted-font-size !important;
       margin: 0;
     }
   }

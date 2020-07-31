@@ -641,7 +641,7 @@ export default {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 3fr 1fr;
-      grid-gap: 1rem;
+      grid-gap: 0.5rem;
       grid-template-areas:
         'image1 image1 image1'
         'image2 image3 image4';
@@ -676,18 +676,18 @@ export default {
 
   .info-section {
     label {
-      font-size: 0.85rem;
+      font-size: $span-font-size;
     }
 
     .bulletPoints {
       padding-left: 1rem;
       .bulletPoint {
-        font-size: 0.85rem;
+        font-size: $span-font-size;
       }
     }
 
     .list-group-item {
-      font-size: 0.85rem;
+      font-size: $span-font-size;
       display: flex;
       flex-direction: row;
       justify-content: space-between;

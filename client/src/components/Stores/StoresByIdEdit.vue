@@ -421,7 +421,7 @@ export default {
   display: grid;
   grid-template-columns: 255px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
@@ -430,7 +430,7 @@ export default {
 .bulkShipping .row span {
   background-color: rgba(255, 255, 255, 0.5);
   padding: 0.4rem;
-  border-radius: 5px;
+  border-radius: $border-radius;
   display: block;
 }
 </style>

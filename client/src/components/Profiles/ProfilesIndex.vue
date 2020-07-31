@@ -105,7 +105,7 @@
             <br />
             <span>{{ memberDetails.zipPostal }}</span>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-6 mb-1">
             <label>{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.phone }}</span>
@@ -166,7 +166,7 @@
             <br />
             <span>{{ memberDetails.billing.zipPostal }}</span>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-6 mb-1">
             <label>{{ $t('formLabels.phone') }}</label>
             <br />
             <span>{{ memberDetails.billing.phone }}</span>
@@ -298,7 +298,7 @@ export default {
   }
 
   .middle-section {
-    padding: 0 0.5rem 0 0;
+    padding: $scrollbar-padding;
     h3 {
       display: none;
     }
@@ -323,11 +323,12 @@ export default {
 
     .sidebar-left {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: $base-font-size;
       margin-bottom: 1rem;
     }
 
     .middle-section {
+      padding: $scrollbar-padding;
       h3 {
         display: block;
       }

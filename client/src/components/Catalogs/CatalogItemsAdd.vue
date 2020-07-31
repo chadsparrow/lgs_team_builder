@@ -478,7 +478,7 @@ export default {
   margin: 0;
 
   .list-group-item {
-    font-size: 0.85rem;
+    font-size: $span-font-size;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

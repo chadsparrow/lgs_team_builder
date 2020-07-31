@@ -441,11 +441,11 @@ export default {
 .team-info {
   grid-area: left-bar;
   span {
-    font-size: 0.85em;
+    font-size: $span-font-size;
   }
   .placeholderImg {
-    border-radius: 1rem;
-    background-color: white;
+    border-radius: $border-radius;
+    background-color: $white-text;
     width: 225px;
     height: 225px;
   }
@@ -459,7 +459,7 @@ export default {
         overflow-y: auto;
 
         .list-group-item {
-          font-size: 0.85rem;
+          font-size: $span-font-size;
           padding: 0.3rem 0.7rem;
           display: flex;
           align-items: center;
@@ -516,7 +516,7 @@ export default {
 
   .contact-bar {
     grid-area: contact-bar;
-    font-size: 0.85rem;
+    font-size: $span-font-size;
 
     .team-info {
       justify-content: space-around;
@@ -526,7 +526,7 @@ export default {
     .section-header {
       padding: 0.5rem;
       width: 100%;
-      border-radius: 5px;
+      border-radius: $border-radius;
       color: $white-text;
       display: flex;
       align-items: center;
@@ -535,7 +535,7 @@ export default {
     }
 
     .teamInfo {
-      font-size: 0.85rem;
+      font-size: $span-font-size;
       text-align: center;
     }
   }

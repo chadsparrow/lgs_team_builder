@@ -46,9 +46,9 @@ body,
 html {
   margin: 0;
   padding: 0;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: $base-font-family;
   background: $black-text;
-  font-size: 14px;
+  font-size: $base-font-size;
   scroll-behavior: smooth;
   a {
     cursor: pointer;
@@ -57,7 +57,7 @@ html {
 
 label {
   color: $blue-color;
-  font-size: 0.75rem;
+  font-size: $label-font-size;
   margin: 0;
   padding: 0;
 }
@@ -75,7 +75,7 @@ label {
 }
 
 .table {
-  font-size: 0.85rem;
+  font-size: $span-font-size;
 }
 
 .table > tbody > tr > td,
@@ -129,7 +129,7 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   span {
-    font-size: 0.85rem;
+    font-size: $span-font-size;
   }
 
   .list-group {
@@ -139,7 +139,7 @@ textarea {
     max-height: 250px;
 
     .list-group-item {
-      font-size: 0.85rem;
+      font-size: $span-font-size;
       padding: 0.3rem 0.7rem;
       display: flex;
       align-items: center;
@@ -162,13 +162,13 @@ textarea {
   grid-area: middle-section;
   overflow-x: hidden;
   overflow-y: auto;
-  font-size: 0.85rem;
-  padding: 0 0.5rem 0 0;
+  font-size: $span-font-size;
+  padding: $scrollbar-padding;
 
   .section-header {
     padding: 0.5rem;
     width: 100%;
-    border-radius: 5px;
+    border-radius: $border-radius;
     color: $white-text;
     display: flex;
     align-items: center;
@@ -179,9 +179,9 @@ textarea {
   .info-spans {
     margin-bottom: 0.5rem;
     span {
-      background-color: rgba(255, 255, 255, 0.6);
-      padding: 0.1rem 0.25rem;
-      border-radius: 5px;
+      background-color: $info-spans-background;
+      padding: 0.15rem 0.25rem;
+      border-radius: $border-radius;
       display: block;
     }
 
@@ -200,7 +200,7 @@ textarea {
   grid-area: right-section;
   overflow-x: hidden;
   overflow-y: auto;
-  font-size: 0.85rem;
+  font-size: $span-font-size;
   small {
     color: $blue-color;
   }
@@ -208,7 +208,7 @@ textarea {
 
 .sizesBox {
   background-color: $blue-color;
-  font-size: 0.85rem;
+  font-size: $span-font-size;
   margin: 0.5rem 0;
   padding: 1rem;
   label {
@@ -219,14 +219,14 @@ textarea {
 ::-webkit-scrollbar {
   width: 6px;
   background-color: $scrollbar_track;
-  border-radius: 7px;
-  -webkit-border-radius: 7px;
+  border-radius: $border-radius;
+  -webkit-border-radius: $border-radius;
 }
 
 ::-webkit-scrollbar-thumb {
   background-clip: initial;
-  border-radius: 7px;
-  -webkit-border-radius: 7px;
+  border-radius: $border-radius;
+  -webkit-border-radius: $border-radius;
   background-color: $blue-color;
 }
 

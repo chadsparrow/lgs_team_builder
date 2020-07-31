@@ -168,8 +168,6 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  width: 100%;
-
   .header {
     display: flex;
     flex-flow: row wrap;

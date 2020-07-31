@@ -335,7 +335,7 @@ export default {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 3fr 1fr;
-      grid-gap: 0.75rem;
+      grid-gap: 0.5rem;
       grid-template-areas:
         'image1 image1 image1'
         'image2 image3 image4';
@@ -371,7 +371,7 @@ export default {
     .bulletPoints {
       padding-left: 1rem;
       .bulletPoint {
-        font-size: 0.85rem;
+        font-size: $span-font-size;
       }
     }
 
@@ -380,7 +380,7 @@ export default {
       padding: 0.25rem 1rem;
 
       .pricebreaks {
-        font-weight: 700;
+        font-weight: $font-weight-bold;
       }
       .prices {
         float: right;

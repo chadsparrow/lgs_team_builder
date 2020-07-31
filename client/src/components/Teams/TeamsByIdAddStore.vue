@@ -11,23 +11,23 @@
           :src="team.logo"
         ></avatar>
         <div class="row p-1 mt-4">
-          <small class="col-sm-12">Store Timezone:</small>
+          <label class="col-sm-12">Store Timezone:</label>
           <span class="col-sm-12">{{ team.timezone }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12">Team Name:</small>
+          <label class="col-sm-12">Team Name:</label>
           <span class="col-sm-12">{{ team.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12">Team ID#:</small>
+          <label class="col-sm-12">Team ID#:</label>
           <span class="col-sm-12">{{ team.teamId }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12">Team Admin:</small>
+          <label class="col-sm-12">Team Admin:</label>
           <span class="col-sm-12">{{ team.adminId.name }}</span>
         </div>
         <div class="row p-1">
-          <small class="col-sm-12">Team Manager:</small>
+          <label class="col-sm-12">Team Manager:</label>
           <span class="col-sm-12">{{ team.managerId.name }}</span>
         </div>
       </div>
@@ -81,8 +81,8 @@
               />
             </div>
           </div>
-          <div class="col-sm-4">
-            <div class="form-group col">
+          <div class="col-sm-4 mt-2">
+            <div class="form-group col mb-1">
               <label for="currency">Store Currency</label>
               <select
                 class="form-control form-control-sm"
@@ -94,7 +94,7 @@
                 <option value="CAD">CAD</option>
               </select>
             </div>
-            <div class="form-group col">
+            <div class="form-group col mb-1">
               <label for="refOrder">ERP Order Reference #</label>
               <input
                 id="refOrder"
@@ -104,7 +104,7 @@
                 ref="refOrder"
               />
             </div>
-            <div class="form-group col">
+            <div class="form-group col mb-2">
               <label for="currency">Store Mode:</label>
               <select
                 class="form-control form-control-sm"
@@ -119,7 +119,7 @@
                 <option value="HOLD">HOLD</option>
               </select>
             </div>
-            <div class="form-group col">
+            <div class="form-group col mb-1">
               <label for="openingDate">Opening Date/Time</label>
               <datetime
                 type="datetime"
@@ -135,7 +135,7 @@
                 title="When do you want the store to open?"
               ></datetime>
             </div>
-            <div class="form-group col">
+            <div class="form-group col mb-1">
               <label for="closingDate">Closing Date/Time</label>
               <datetime
                 type="datetime"
@@ -172,7 +172,7 @@
               </select>
             </div>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-8 mt-2">
             <div class="row">
               <div class="form-group col">
                 <label for="storeMessage">Initial Store Message:</label>
@@ -361,8 +361,6 @@ export default {
 </script>
 
 <style lang="scss">
-$blue-color: #17a2b8;
-
 .vdatetime-popup__header,
 .vdatetime-calendar__month__day--selected > span > span,
 .vdatetime-calendar__month__day--selected:hover > span > span {
@@ -379,7 +377,7 @@ $blue-color: #17a2b8;
   display: grid;
   grid-template-columns: 255px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 0.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';

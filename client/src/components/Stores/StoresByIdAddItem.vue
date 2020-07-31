@@ -19,7 +19,7 @@
             v-if="store.brand === 'SOMBRIO'"
           />
         </div>
-        <small for="catalogSelection">Select your catalog</small>
+        <label for="catalogSelection">Select your catalog</label>
         <select
           class="form-control"
           id="catalogSelection"
@@ -639,6 +639,7 @@ export default {
     }
 
     .catalogItemsList {
+      padding: $scrollbar-padding;
       grid-area: catalogitem-list;
       overflow-x: none;
       overflow-y: auto;
@@ -661,9 +662,9 @@ export default {
 
         .itemInfo {
           text-align: center;
-          font-size: 0.85rem;
+          font-size: $span-font-size;
           width: 100%;
-          font-weight: 700;
+          font-weight: $font-weight-bold;
         }
       }
     }
@@ -687,7 +688,7 @@ export default {
     .store-items-list {
       grid-area: store-items-list;
       padding: 0.5rem;
-      border: 2px dotted red;
+      border: 1px dotted red;
       background-color: whitesmoke;
       overflow-x: hidden;
       overflow-y: auto;
@@ -702,7 +703,7 @@ export default {
       background-color: none;
       border: 2px dotted grey;
       color: grey;
-      font-weight: 700;
+      font-weight: $font-weight-black;
       width: 100%;
       height: 50px;
       opacity: 0.4;
@@ -726,20 +727,20 @@ export default {
 
       .itemInfo {
         text-align: center;
-        font-size: 1.25rem;
+        font-size: $base-font-size;
         width: 100%;
-        font-weight: 700;
+        font-weight: $font-weight-bold;
 
         .mandatoryStar {
-          font-size: 1.25rem;
+          font-size: $base-font-size;
         }
       }
 
       .itemPricing {
         width: 250px;
         span {
-          font-weight: 700;
-          font-size: 1.25rem;
+          font-weight: $font-weight-bold;
+          font-size: $base-font-size;
         }
       }
 
