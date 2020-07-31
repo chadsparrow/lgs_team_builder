@@ -1,14 +1,4 @@
 server/logs
 node_modules
-coverage
 .env
 .env.development
-server/startup/seeder
-server/static/images/catalogs
-server/static/images/catalogs/*
-server/static/images/storeitems
-server/static/images/storeitems/*
-server/static/images/avatars
-server/static/images/avatars/*
-server/uploads/
-deploy-application.sh
