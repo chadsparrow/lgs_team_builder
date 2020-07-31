@@ -1,7 +1,6 @@
 const logger = require('../middleware/logger');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
-const Joi = require('@hapi/joi');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
 const mailer = require('../utils/mailer');
@@ -11,38 +10,16 @@ const tzdb = new Tzdb({
 });
 
 const geocoder = require('../utils/geocoder');
-const { Member, validateNewRegister } = require('../models/Member');
+
+const {
+  Member,
+  validateNewRegister,
+  validateLogin,
+  validateForgotEmail,
+  validatePasswordReset,
+} = require('../models/Member');
+
 const { Team } = require('../models/Team');
-
-const joiOptions = { abortEarly: false, language: { key: '{{key}} ' } };
-
-function validateLogin(req) {
-  const schema = {
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required().trim(false),
-  };
-  return Joi.validate(req, schema, joiOptions);
-}
-
-function validateForgotEmail(req) {
-  const schema = {
-    email: Joi.string().email().required(),
-  };
-
-  return Joi.validate(req, schema, joiOptions);
-}
-
-function validateNewPassword(req) {
-  const schema = {
-    password: Joi.string().required(),
-    confirmPassword: Joi.any()
-      .valid(Joi.ref('password'))
-      .required()
-      .options({ language: { any: { allowOnly: 'Must match password' } } }),
-  };
-
-  return Joi.validate(req, schema, joiOptions);
-}
 
 module.exports = {
   // @desc    Member login
@@ -328,8 +305,8 @@ module.exports = {
     }
   },
 
-  // @desc Member Reset Password
-  // @route POST /api/v1/auth/reset
+  // @desc Member Forgot Password
+  // @route POST /api/v1/auth/forgot
   // @access Public
   forgotPassword: async (req, res, next) => {
     try {
@@ -388,6 +365,9 @@ module.exports = {
     }
   },
 
+  // @desc Member Check Reset Password Token
+  // @route GET /api/v1/auth/reset
+  // @access Public
   checkResetPasswordToken: async (req, res, next) => {
     const token = req.query.token;
     if (!token)
@@ -413,8 +393,11 @@ module.exports = {
     }
   },
 
+  // @desc Member Reset Password
+  // @route POST /api/v1/auth/reset/:id
+  // @access Public
   resetPassword: async (req, res, next) => {
-    const { error } = validateNewPassword(req.body);
+    const { error } = validatePasswordReset(req.body);
     if (error) return res.status(400).send(error.details);
 
     if (!req.params.id)
@@ -474,6 +457,9 @@ module.exports = {
     }
   },
 
+  // @desc Member Verify Email
+  // @route POST /api/v1/auth/verifyemail
+  // @access Public
   verifyEmail: async (req, res, next) => {
     try {
       const { error } = validateForgotEmail(req.body);
@@ -534,6 +520,9 @@ module.exports = {
     }
   },
 
+  // @desc Member Verify Account
+  // @route GET /api/v1/auth/verify
+  // @access Public
   verifyAccount: async (req, res, next) => {
     const token = req.query.token;
     if (!token)

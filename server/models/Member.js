@@ -226,6 +226,15 @@ const MemberSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+function validateLogin(login) {
+  const schema = {
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required().trim(false),
+  };
+
+  return Joi.validate(login, schema, joiOptions);
+}
+
 function validateNewRegister(member) {
   const schema = {
     email: Joi.string().email().required(),
@@ -438,6 +447,14 @@ function validateEmail(member) {
   return Joi.validate(member, schema, joiOptions);
 }
 
+function validateForgotEmail(req) {
+  const schema = {
+    email: Joi.string().email().required(),
+  };
+
+  return Joi.validate(req, schema, joiOptions);
+}
+
 function validatePassword(member) {
   const schema = {
     oldPassword: Joi.string().required().min(8),
@@ -452,6 +469,18 @@ function validatePassword(member) {
   };
 
   return Joi.validate(member, schema, joiOptions);
+}
+
+function validatePasswordReset(req) {
+  const schema = {
+    password: Joi.string().required(),
+    confirmPassword: Joi.string()
+      .required()
+      .valid(Joi.ref('password'))
+      .options({ language: { any: { allowOnly: 'Must match password' } } }),
+  };
+
+  return Joi.validate(req, schema, joiOptions);
 }
 
 function validateNotification(notification) {
@@ -498,3 +527,6 @@ exports.validateUpdateMember = validateUpdateMember;
 exports.validateEmail = validateEmail;
 exports.validatePassword = validatePassword;
 exports.validateNotification = validateNotification;
+exports.validateLogin = validateLogin;
+exports.validateForgotEmail = validateForgotEmail;
+exports.validatePasswordReset = validatePasswordReset;

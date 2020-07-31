@@ -10,6 +10,9 @@ const {
   validateEmail,
   validatePassword,
   validateNotification,
+  validateLogin,
+  validateForgotEmail,
+  validatePasswordReset,
 } = require('../../../../server/models/Member');
 
 const faker = require('faker');
@@ -1112,5 +1115,168 @@ describe('generateAuthToken method', () => {
     const token = member.generateAuthToken();
     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
     expect(decoded).toMatchObject(payload);
+  });
+});
+
+describe('validateLogin function', () => {
+  beforeEach(() => {
+    reqbody = {
+      email,
+      password,
+    };
+  });
+
+  it('should return an error if email is not provided', () => {
+    delete reqbody.email;
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return an error if email is not a proper email', () => {
+    reqbody.email = charArray(8);
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return an error if email is not a string', () => {
+    reqbody.email = 1;
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/string/);
+  });
+
+  it('should return an error if password is not provided', () => {
+    delete reqbody.password;
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  it('should return an error if password is not a string', () => {
+    reqbody.password = 1;
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/string/);
+  });
+
+  it('should return an error if password is less than 8 chars', () => {
+    reqbody.password = charArray(8);
+    const result = validateLogin(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  // HAPPY PATH
+  it('should return validated body data if req.body is valid', () => {
+    const result = validateLogin(reqbody);
+    expect(result.value).toBeTruthy();
+    expect(result.value).toEqual(reqbody);
+    expect(result.error).toBe(null);
+  });
+});
+
+describe('validateForgotEmail function', () => {
+  beforeEach(() => {
+    reqbody = {
+      email,
+    };
+  });
+
+  it('should return an error if email is not provided', () => {
+    delete reqbody.email;
+    const result = validateForgotEmail(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return an error if email is not a string', () => {
+    reqbody.email = 1;
+    const result = validateForgotEmail(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/string/);
+  });
+
+  it('should return an error if email is not a proper email', () => {
+    reqbody.email = charArray(8);
+    const result = validateForgotEmail(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  // HAPPY PATH
+  it('should return validated body data if req.body is valid', () => {
+    const result = validateForgotEmail(reqbody);
+    expect(result.value).toBeTruthy();
+    expect(result.value).toEqual(reqbody);
+    expect(result.error).toBe(null);
+  });
+});
+
+describe('validatePasswordReset function', () => {
+  beforeEach(() => {
+    const newPassword = faker.internet.password();
+    reqbody = {
+      password: newPassword,
+      confirmPassword: newPassword,
+    };
+  });
+
+  it('should return an error if password is not provided', () => {
+    delete reqbody.password;
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  it('should return an error if password is not a string', () => {
+    reqbody.password = 1;
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/string/);
+  });
+
+  it('should return an error if password is less than 8 chars', () => {
+    reqbody.password = charArray(8);
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  it('should return an error if password matches oldPassword', () => {
+    reqbody.password = reqbody.oldPassword;
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  it('should return an error if confirmPassword is not provided', () => {
+    delete reqbody.confirmPassword;
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/confirmPassword/);
+  });
+
+  it('should return an error if confirmPassword is not a string', () => {
+    reqbody.confirmPassword = 1;
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/string/);
+  });
+
+  it('should return an error if confirmPassword does not match password', () => {
+    reqbody.confirmPassword = faker.internet.password();
+    const result = validatePasswordReset(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/confirmPassword/);
+  });
+
+  // HAPPY PATH
+  it('should return validated body data if req.body is valid', () => {
+    const result = validatePasswordReset(reqbody);
+    expect(result.value).toBeTruthy();
+    expect(result.value).toEqual(reqbody);
+    expect(result.error).toBe(null);
   });
 });
