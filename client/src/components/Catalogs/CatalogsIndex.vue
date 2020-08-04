@@ -78,29 +78,34 @@ export default {
       itemsPerPage: 15,
       next: i18n.t('next'),
       previous: i18n.t('previous'),
+      catalogs: [],
     };
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
-    try {
-      const breadcrumbs = [
-        {
-          text: i18n.t('menu.adminOnly.catalogs'),
-          link: '#',
-        },
-      ];
-      await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      await this.$store.dispatch('getCatalogs');
-      this.$store.commit('LOADING_FALSE');
-    } catch (err) {
-      this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
+    const breadcrumbs = [
+      {
+        text: i18n.t('menu.adminOnly.catalogs'),
+        link: '#',
+      },
+    ];
+    await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
+
+    this.axios
+      .get('/api/v1/catalogs')
+      .then(({ data }) => {
+        this.catalogs = data;
+        this.$store.commit('LOADING_FALSE');
+      })
+      .catch((err) => {
+        this.$store.commit('LOADING_FALSE');
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       });
-    }
   },
   computed: {
-    ...mapGetters(['isLoading', 'catalogs']),
+    ...mapGetters(['isLoading']),
     indexOfLastItem: function() {
       return this.currentPage * this.itemsPerPage;
     },
