@@ -10,22 +10,30 @@ import 'vue-datetime/dist/vue-datetime.css';
 import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
+
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 import interceptorsSetup from './helpers/interceptors';
+
 import VueCurrencyInput from 'vue-currency-input';
 import VueSidebarMenu from 'vue-sidebar-menu';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import i18n from './i18n';
 
+Vue.use(VueAxios, axios);
 interceptorsSetup();
+
 Vue.use(VueMoment, { moment });
+
 Vue.use(Toasted, {
-  position: 'top-center',
+  position: 'bottom-right',
   duration: 4000,
   iconPack: 'fontawesome',
-  fullWidth: true,
-  fitToScreen: true,
+  fullWidth: false,
+  fitToScreen: false,
   singleton: true,
 });
+
 Vue.use(Datetime);
 Vue.use(vueCountryRegionSelect);
 Vue.use(VueClipboard);

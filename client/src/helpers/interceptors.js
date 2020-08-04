@@ -1,9 +1,9 @@
-import axios from 'axios';
+import Vue from 'vue';
 import store from '../store';
 import router from '../router';
 
 export default function setup() {
-  axios.interceptors.response.use(
+  Vue.axios.interceptors.response.use(
     function(response) {
       return response;
     },
@@ -28,7 +28,7 @@ export default function setup() {
     }
   );
 
-  axios.interceptors.request.use(
+  Vue.axios.interceptors.request.use(
     function(config) {
       const token = localStorage.getItem('token');
       if (token) {
