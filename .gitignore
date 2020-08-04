@@ -1,4 +1,5 @@
 server/logs
+server/uploads
 node_modules
 .env
 .env.development
