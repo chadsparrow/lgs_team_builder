@@ -91,6 +91,7 @@ export default {
     ];
     await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
 
+    //new api call instead of vuex
     this.axios
       .get('/api/v1/catalogs')
       .then(({ data }) => {
