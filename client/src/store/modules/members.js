@@ -1,4 +1,4 @@
-import axios from 'axios';
+import Vue from 'vue';
 export default {
   state: {
     allMembers: [],
@@ -8,7 +8,7 @@ export default {
     getMember(context, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/members/${id}`);
+          const res = await Vue.axios.get(`/api/v1/members/${id}`);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -19,7 +19,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_MEMBERS');
-          const res = await axios.get('/api/v1/members');
+          const res = await Vue.axios.get('/api/v1/members');
           commit('SET_ALL_MEMBERS', res.data);
           resolve(res);
         } catch (err) {
@@ -30,7 +30,7 @@ export default {
     getMemberDetails({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/members/${id}/details`);
+          const res = await Vue.axios.get(`/api/v1/members/${id}/details`);
           commit('SET_CURRENT_MEMBER', res.data);
           resolve(res);
         } catch (err) {
@@ -41,7 +41,7 @@ export default {
     getMemberTeams(context, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/members/${id}/teams`);
+          const res = await Vue.axios.get(`/api/v1/members/${id}/teams`);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -51,7 +51,7 @@ export default {
     addMember(context, member) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post('/api/v1/members/register', member);
+          const res = await Vue.axios.post('/api/v1/members/register', member);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -61,7 +61,7 @@ export default {
     deleteMember(context, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.delete(`/api/v1/members/${id}`);
+          const res = await Vue.axios.delete(`/api/v1/members/${id}`);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -71,7 +71,10 @@ export default {
     updateMember(context, { updatedMember, id }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/members/${id}`, updatedMember);
+          const res = await Vue.axios.put(
+            `/api/v1/members/${id}`,
+            updatedMember
+          );
           resolve(res);
         } catch (err) {
           reject(err);
@@ -81,7 +84,7 @@ export default {
     getAdmins(context) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get('/api/v1/members/admins');
+          const res = await Vue.axios.get('/api/v1/members/admins');
           resolve(res);
         } catch (err) {
           reject(err);
@@ -91,7 +94,7 @@ export default {
     findMemberByResetPasswordToken({ commit }, token) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/auth/reset?token=${token}`);
+          const res = await Vue.axios.get(`/api/v1/auth/reset?token=${token}`);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -101,7 +104,7 @@ export default {
     findMemberByVerificationToken({ commit }, token) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/auth/verify?token=${token}`);
+          const res = await Vue.axios.get(`/api/v1/auth/verify?token=${token}`);
           resolve(res);
         } catch (err) {
           reject(err);

@@ -1,18 +1,18 @@
-import axios from 'axios';
+import Vue from 'vue';
 
 export default {
   state: {
     stores: [],
     currentStore: {},
     currentStoreItems: [],
-    currentStoreItem: {}
+    currentStoreItem: {},
   },
   actions: {
     getStores({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_STORES');
-          const res = await axios.get('/api/v1/stores');
+          const res = await Vue.axios.get('/api/v1/stores');
           commit('SET_STORES', res.data);
           resolve(res);
         } catch (err) {
@@ -23,7 +23,7 @@ export default {
     getStore({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/stores/${id}`);
+          const res = await Vue.axios.get(`/api/v1/stores/${id}`);
           commit('SET_CURRENT_STORE', res.data);
           resolve(res);
         } catch (err) {
@@ -34,7 +34,7 @@ export default {
     updateStore(context, { id, updatedStore }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/stores/${id}`, updatedStore);
+          const res = await Vue.axios.put(`/api/v1/stores/${id}`, updatedStore);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -45,7 +45,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_STORE_ITEMS');
-          const res = await axios.get(`/api/v1/stores/${id}/items`);
+          const res = await Vue.axios.get(`/api/v1/stores/${id}/items`);
           commit('SET_CURRENT_STORE_ITEMS', res.data);
           resolve(res);
         } catch (err) {
@@ -57,7 +57,9 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_STORE_ITEMS');
-          const res = await axios.put(`/api/v1/stores/${id}/items`, { items });
+          const res = await Vue.axios.put(`/api/v1/stores/${id}/items`, {
+            items,
+          });
           commit('SET_CURRENT_STORE_ITEMS', res.data[0].items);
           resolve(res);
         } catch (err) {
@@ -68,7 +70,9 @@ export default {
     updateStoreCharges({ commit }, { id, extraCharges }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/stores/${id}/extras`, { extraCharges });
+          const res = await Vue.axios.put(`/api/v1/stores/${id}/extras`, {
+            extraCharges,
+          });
           commit('SET_CURRENT_STORE', res.data[0].store);
           resolve(res);
         } catch (err) {
@@ -79,7 +83,9 @@ export default {
     removeLike(context, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/storeitems/${id}/removelike`);
+          const res = await Vue.axios.put(
+            `/api/v1/storeitems/${id}/removelike`
+          );
           resolve(res);
         } catch (err) {
           reject(err);
@@ -89,13 +95,13 @@ export default {
     addLike(context, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/storeitems/${id}/addlike`);
+          const res = await Vue.axios.put(`/api/v1/storeitems/${id}/addlike`);
           resolve(res);
         } catch (err) {
           reject(err);
         }
       });
-    }
+    },
   },
   mutations: {
     SET_STORES(state, payload) {
@@ -120,13 +126,15 @@ export default {
       state.currentStoreItem.price = payload;
     },
     REMOVE_STORE_ITEM(state, payload) {
-      state.currentStoreItems = state.currentStoreItems.filter(item => item._id !== payload);
-    }
+      state.currentStoreItems = state.currentStoreItems.filter(
+        (item) => item._id !== payload
+      );
+    },
   },
   getters: {
-    stores: state => state.stores,
-    currentStore: state => state.currentStore,
-    currentStoreItems: state => state.currentStoreItems,
-    currentStoreItem: state => state.currentStoreItem
-  }
+    stores: (state) => state.stores,
+    currentStore: (state) => state.currentStore,
+    currentStoreItems: (state) => state.currentStoreItems,
+    currentStoreItem: (state) => state.currentStoreItem,
+  },
 };

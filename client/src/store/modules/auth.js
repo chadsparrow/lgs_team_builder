@@ -1,4 +1,4 @@
-import axios from 'axios';
+import Vue from 'vue';
 import i18n from '../../i18n';
 
 export default {
@@ -16,7 +16,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('AUTH_REQUEST');
-          const res = await axios.post('/api/v1/auth/login', loginCreds);
+          const res = await Vue.axios.post('/api/v1/auth/login', loginCreds);
           const token = res.data[0].token;
           const member = res.data[0].member;
           const emails = res.data[0].emails;
@@ -35,7 +35,7 @@ export default {
     setLoggedInMember({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/members/${id}`);
+          const res = await Vue.axios.get(`/api/v1/members/${id}`);
           const member = res.data;
           commit('SET_LOGGED_IN', member);
           resolve(res);
@@ -47,7 +47,7 @@ export default {
     register(context, member) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post('/api/v1/auth/register', member);
+          const res = await Vue.axios.post('/api/v1/auth/register', member);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -57,7 +57,7 @@ export default {
     joinTeam(context, { member, teamId }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/auth/register/${teamId}`, {
+          const res = await Vue.axios.post(`/api/v1/auth/register/${teamId}`, {
             member,
           });
           resolve(res);
@@ -79,7 +79,7 @@ export default {
     changePassword(context, { updatedPassword, id }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.patch(
+          const res = await Vue.axios.patch(
             `/api/v1/members/password/${id}`,
             updatedPassword
           );
@@ -92,7 +92,7 @@ export default {
     updateEmail(context, { updatedEmail, id }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.patch(
+          const res = await Vue.axios.patch(
             `/api/v1/members/email/${id}`,
             updatedEmail
           );
@@ -105,7 +105,7 @@ export default {
     getMe({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/members/${id}/me`);
+          const res = await Vue.axios.get(`/api/v1/members/${id}/me`);
           const payload = res.data.notifications;
           commit('SET_NOTIFICATIONS', payload);
           resolve(res);
@@ -117,7 +117,7 @@ export default {
     removeNotification(context, { nId }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.delete(`/api/v1/notifications/${nId}`);
+          const res = await Vue.axios.delete(`/api/v1/notifications/${nId}`);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -133,7 +133,7 @@ export default {
     forgot({ commit }, { email }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/auth/forgot`, { email });
+          const res = await Vue.axios.post(`/api/v1/auth/forgot`, { email });
           resolve(res);
         } catch (err) {
           reject(err);
@@ -143,7 +143,7 @@ export default {
     resetPassword({ commit }, { id, password, confirmPassword }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/auth/reset/${id}`, {
+          const res = await Vue.axios.post(`/api/v1/auth/reset/${id}`, {
             password,
             confirmPassword,
           });
@@ -156,7 +156,9 @@ export default {
     verifyEmail({ commit }, { email }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/auth/verifyemail`, { email });
+          const res = await Vue.axios.post(`/api/v1/auth/verifyemail`, {
+            email,
+          });
           resolve(res);
         } catch (err) {
           reject(err);

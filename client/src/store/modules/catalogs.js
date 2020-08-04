@@ -1,17 +1,18 @@
-import axios from 'axios';
+import Vue from 'vue';
+
 export default {
   state: {
     catalogs: [],
     currentCatalog: {},
     currentCatalogItems: [],
-    currentCatalogItem: {}
+    currentCatalogItem: {},
   },
   actions: {
     getCatalogs({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_CATALOGS');
-          const res = await axios.get('/api/v1/catalogs');
+          const res = await Vue.axios.get('/api/v1/catalogs');
           commit('SET_CATALOGS', res.data);
           resolve(res);
         } catch (err) {
@@ -24,7 +25,7 @@ export default {
         try {
           commit('CLEAR_CATALOGS');
           commit('CLEAR_CURRENT_CATALOG');
-          const res = await axios.get(`/api/v1/catalogs?brand=${brand}`);
+          const res = await Vue.axios.get(`/api/v1/catalogs?brand=${brand}`);
           commit('SET_CATALOGS', res.data);
           resolve(res);
         } catch (err) {
@@ -35,7 +36,7 @@ export default {
     getCatalog({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/catalogs/${id}`);
+          const res = await Vue.axios.get(`/api/v1/catalogs/${id}`);
           commit('SET_CURRENT_CATALOG', res.data);
           resolve(res);
         } catch (err) {
@@ -46,7 +47,7 @@ export default {
     addCatalog(context, catalog) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/catalogs`, catalog);
+          const res = await Vue.axios.post(`/api/v1/catalogs`, catalog);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -56,7 +57,7 @@ export default {
     editCatalog(context, { id, catalog }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/catalogs/${id}`, catalog);
+          const res = await Vue.axios.put(`/api/v1/catalogs/${id}`, catalog);
           resolve(res);
         } catch (err) {
           reject(err);
@@ -67,7 +68,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_CATALOG_ITEMS');
-          const res = await axios.get(`/api/v1/catalogitems/catalog/${id}`);
+          const res = await Vue.axios.get(`/api/v1/catalogitems/catalog/${id}`);
           commit('SET_CURRENT_CATALOG_ITEMS', res.data);
           resolve(res);
         } catch (err) {
@@ -78,7 +79,10 @@ export default {
     addCatalogItem(context, catalogItem) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.post(`/api/v1/catalogitems/`, catalogItem);
+          const res = await Vue.axios.post(
+            `/api/v1/catalogitems/`,
+            catalogItem
+          );
           resolve(res);
         } catch (err) {
           reject(err);
@@ -88,7 +92,7 @@ export default {
     getCatalogItem({ commit }, id) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.get(`/api/v1/catalogitems/${id}`);
+          const res = await Vue.axios.get(`/api/v1/catalogitems/${id}`);
           commit('SET_CURRENT_CATALOG_ITEM', res.data);
           resolve(res);
         } catch (err) {
@@ -99,13 +103,16 @@ export default {
     updateCatalogItem(context, { id, updatedCatalogItem }) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await axios.put(`/api/v1/catalogitems/${id}`, updatedCatalogItem);
+          const res = await Vue.axios.put(
+            `/api/v1/catalogitems/${id}`,
+            updatedCatalogItem
+          );
           resolve(res);
         } catch (err) {
           reject(err);
         }
       });
-    }
+    },
   },
   mutations: {
     CLEAR_CATALOGS(state) {
@@ -128,12 +135,12 @@ export default {
     },
     SET_CURRENT_CATALOG_ITEM(state, payload) {
       state.currentCatalogItem = payload;
-    }
+    },
   },
   getters: {
-    catalogs: state => state.catalogs,
-    currentCatalog: state => state.currentCatalog,
-    currentCatalogItems: state => state.currentCatalogItems,
-    currentCatalogItem: state => state.currentCatalogItem
-  }
+    catalogs: (state) => state.catalogs,
+    currentCatalog: (state) => state.currentCatalog,
+    currentCatalogItems: (state) => state.currentCatalogItems,
+    currentCatalogItem: (state) => state.currentCatalogItem,
+  },
 };

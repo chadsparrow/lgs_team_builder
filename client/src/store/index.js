@@ -19,7 +19,7 @@ export default new Vuex.Store({
     teams,
     stores,
     carts,
-    orders
+    orders,
   },
   state: {
     isLoading: false,
@@ -28,8 +28,8 @@ export default new Vuex.Store({
       countrySelectorLabel: i18n.t('formLabels.countrySelectorLabel'),
       countrySelectorError: i18n.t('formLabels.countrySelectorError'),
       phoneNumberLabel: i18n.t('formLabels.phoneNumberLabel'),
-      example: i18n.t('formLabels.example')
-    }
+      example: i18n.t('formLabels.example'),
+    },
   },
   actions: {
     setBreadcrumbs({ commit }, breadcrumbs) {
@@ -41,7 +41,7 @@ export default new Vuex.Store({
           reject(err);
         }
       });
-    }
+    },
   },
   mutations: {
     LOADING_TRUE(state) {
@@ -52,11 +52,11 @@ export default new Vuex.Store({
     },
     SET_BREADCRUMBS(state, breadcrumbs) {
       state.breadcrumbs = breadcrumbs;
-    }
+    },
   },
   getters: {
-    isLoading: state => state.isLoading,
-    breadcrumbs: state => state.breadcrumbs,
-    phoneTranslations: state => state.translations
-  }
+    isLoading: (state) => state.isLoading,
+    breadcrumbs: (state) => state.breadcrumbs,
+    phoneTranslations: (state) => state.translations,
+  },
 });

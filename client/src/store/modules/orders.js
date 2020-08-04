@@ -1,22 +1,22 @@
-import axios from 'axios';
+import Vue from 'vue';
 export default {
   state: {
     orders: [],
-    currentOrder: {}
+    currentOrder: {},
   },
   actions: {
     getOrders({ commit }) {
       return new Promise(async (resolve, reject) => {
         try {
           commit('CLEAR_ORDERS');
-          const res = await axios.get('/api/v1/orders');
+          const res = await Vue.axios.get('/api/v1/orders');
           commit('SET_ORDERS');
           resolve(res);
         } catch (err) {
           reject(err);
         }
       });
-    }
+    },
   },
   mutations: {
     SET_ORDERS(state, payload) {
@@ -24,9 +24,9 @@ export default {
     },
     CLEAR_ORDERS(state) {
       state.orders = [];
-    }
+    },
   },
   getters: {
-    orders: state => state.orders
-  }
+    orders: (state) => state.orders,
+  },
 };
