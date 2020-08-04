@@ -40,21 +40,21 @@ export default {
     };
   },
   methods: {
-    forgot: async function() {
-      const email = this.email;
-
-      try {
-        const res = await this.$store.dispatch('forgot', { email });
-        if (res.data[0].message === 'Reset Link Sent!') {
-          this.linkSent = true;
-        }
-      } catch (err) {
-        this.email = '';
-        this.$refs.email.focus();
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
+    forgot() {
+      this.axios
+        .post('/api/v1/auth/forgot', { email: this.email })
+        .then(({ data }) => {
+          if (data[0].message === 'Reset Link Sent!') {
+            this.linkSent = true;
+          }
+        })
+        .catch((err) => {
+          this.email = '';
+          this.$refs.email.focus();
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         });
-      }
     },
   },
 };

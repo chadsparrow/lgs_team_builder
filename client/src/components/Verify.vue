@@ -5,22 +5,21 @@
 <script>
 export default {
   name: 'Verify',
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch(
-        'findMemberByVerificationToken',
-        this.$route.query.token
-      );
-      this.$toasted.success('Account Verified - please login', {
-        icon: 'check-circle',
+  created() {
+    this.axios
+      .get(`/api/v1/auth/verify?token=${this.$route.query.token}`)
+      .then((res) => {
+        this.$toasted.success('Account Verified - please login', {
+          icon: 'check-circle',
+        });
+        this.$router.push({ path: '/' });
+      })
+      .catch((err) => {
+        this.$toasted.error('Account Verification Error - please try again', {
+          icon: 'exclamation-triangle',
+        });
+        this.$router.push({ path: '/' });
       });
-      this.$router.push({ path: '/' });
-    } catch (err) {
-      this.$toasted.error('Account Verification Error - please try again', {
-        icon: 'exclamation-triangle',
-      });
-      this.$router.push({ path: '/' });
-    }
   },
 };
 </script>

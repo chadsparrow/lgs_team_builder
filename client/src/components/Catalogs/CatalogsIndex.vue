@@ -96,6 +96,7 @@ export default {
       .get('/api/v1/catalogs')
       .then(({ data }) => {
         this.catalogs = data;
+        this.$store.commit('SET_CATALOGS', data);
         this.$store.commit('LOADING_FALSE');
       })
       .catch((err) => {

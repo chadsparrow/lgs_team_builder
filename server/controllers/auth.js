@@ -58,7 +58,7 @@ module.exports = {
       if (!member.isVerified)
         return res.status(403).send([
           {
-            message: 'Account not verified yet, click "Resend" below',
+            message: 'Account not verified yet, click "Resend" button',
           },
         ]);
 

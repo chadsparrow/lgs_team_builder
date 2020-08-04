@@ -129,19 +129,19 @@ export default {
         });
       }
     },
-    verify: async function() {
-      const email = this.email;
-
-      try {
-        const res = await this.$store.dispatch('verifyEmail', { email });
-        this.emailSent = true;
-      } catch (err) {
-        this.email = '';
-        this.$refs.email.focus();
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
+    verify() {
+      this.axios
+        .post('/api/v1/auth/verifyemail', { email: this.email })
+        .then((res) => {
+          this.emailSent = true;
+        })
+        .catch((err) => {
+          this.email = '';
+          this.$refs.email.focus();
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         });
-      }
     },
   },
 };

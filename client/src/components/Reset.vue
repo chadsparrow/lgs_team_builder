@@ -53,38 +53,38 @@ export default {
       member: undefined,
     };
   },
-  created: async function() {
-    try {
-      const res = await this.$store.dispatch(
-        'findMemberByResetPasswordToken',
-        this.$route.query.token
-      );
-      this.member = res.data.member;
-    } catch (err) {
-      this.$toasted.error(err.response.data.message, {
-        icon: 'exclamation-triangle',
+  created() {
+    this.axios
+      .get(`/api/v1/auth/reset?token=${this.$route.query.token}`)
+      .then(({ data }) => {
+        this.member = data.member;
+      })
+      .catch((err) => {
+        this.$toasted.error(err.response.data.message, {
+          icon: 'exclamation-triangle',
+        });
+        this.$router.push({ path: '/forgot' });
       });
-      this.$router.push({ path: '/forgot' });
-    }
   },
   methods: {
-    reset: async function() {
+    reset() {
       const password = this.password;
       const confirmPassword = this.confirmPassword;
 
-      try {
-        const res = await this.$store.dispatch('resetPassword', {
-          id: this.member._id,
+      this.axios
+        .post(`/api/v1/auth/reset/${this.member._id}`, {
           password: this.password,
           confirmPassword: this.confirmPassword,
+        })
+        .then(({ data }) => {
+          this.$toasted.success(data.message, { icon: 'check-circle' });
+          this.$router.push({ path: '/' });
+        })
+        .catch((err) => {
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         });
-        this.$toasted.success(res.data.message, { icon: 'check-circle' });
-        this.$router.push({ path: '/' });
-      } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
-      }
     },
   },
 };

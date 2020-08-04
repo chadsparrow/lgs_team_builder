@@ -651,7 +651,12 @@ export default {
         justify-content: flex-start;
         align-items: center;
         padding: 0px;
-        cursor: grab;
+        cursor: move;
+
+        &:hover {
+          background-color: whitesmoke;
+        }
+
         img {
           width: 60px;
         }
@@ -715,7 +720,11 @@ export default {
       justify-content: flex-start;
       align-items: center;
       padding: 0px;
-      cursor: grab;
+      cursor: move;
+
+      &:hover {
+        background-color: whitesmoke;
+      }
 
       .itemImage {
         width: 100px;
