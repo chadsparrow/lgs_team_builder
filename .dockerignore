@@ -1,6 +1,4 @@
 node_modules
 server/logs/
-server/static/images/avatars/
-server/static/images/catalogs/
-server/static/images/storeitems/
 server/uploads/
+client

@@ -15,9 +15,6 @@ Install_dependancies:
   only:
     - develop
     - staging
-  except:
-    changes:
-      - client
   artifacts:
     paths:
       - node_modules/
@@ -28,9 +25,6 @@ Testing:
   only:
     - develop
     - staging
-  except:
-    changes:
-      - client
   script: npm run test
 
 Develop build:
@@ -40,9 +34,6 @@ Develop build:
     - docker:dind
   only:
     - develop
-  except:
-    changes:
-      - client
   cache:
     paths:
       - node_modules/
