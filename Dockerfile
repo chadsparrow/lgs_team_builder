@@ -3,8 +3,8 @@ RUN apk update && apk add bash
 
 WORKDIR /usr/src/app/
 COPY package*.json ./
-RUN npm install
+RUN npm install --silent
 
-# COPY . .
+COPY . .
 
 EXPOSE 5000
