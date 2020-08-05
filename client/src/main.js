@@ -20,6 +20,9 @@ import VueSidebarMenu from 'vue-sidebar-menu';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 import i18n from './i18n';
 
+import Vuelidate from 'vuelidate';
+Vue.use(Vuelidate);
+
 Vue.use(VueAxios, axios);
 interceptorsSetup();
 

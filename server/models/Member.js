@@ -495,7 +495,7 @@ function validateNotification(notification) {
 
 MemberSchema.methods.generateAuthToken = function () {
   const signOptions = {
-    expiresIn: this.isAdmin ? '1m' : '1m',
+    expiresIn: this.isAdmin ? '8h' : '1h',
   };
 
   const token = jwt.sign(

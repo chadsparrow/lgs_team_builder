@@ -1,6 +1,6 @@
 <template>
   <div class="page container">
-    <form @submit.prevent="login" novalidate v-if="verified && !emailSent">
+    <form @submit.prevent="submit" novalidate v-if="verified && !emailSent">
       <div class="text-center">
         <img
           id="tbLogo"
@@ -8,29 +8,56 @@
           alt="Team Builder Logo"
         />
       </div>
-      <div class="form-group">
-        <label for="email">{{ $t('login.emailAddress') }}</label>
+      <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
+        <label for="email" class="form__label">{{
+          $t('login.emailAddress')
+        }}</label>
         <input
           type="email"
           class="form-control"
           id="email"
+          name="email"
           ref="email"
-          v-model="email"
+          v-model.trim="$v.email.$model"
           autofocus
         />
+        <div v-if="$v.email.$error || $v.email.$dirty">
+          <span class="error" v-if="!$v.email.required">Email is required</span>
+          <span class="error" v-if="!$v.email.email"
+            >Must be a valid email</span
+          >
+        </div>
       </div>
-      <div class="form-group">
-        <label for="password">{{ $t('login.password') }}</label>
+      <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
+        <label for="password" class="form__label">{{
+          $t('login.password')
+        }}</label>
         <input
           type="password"
           class="form-control"
           id="password"
+          name="password"
           ref="password"
-          v-model="password"
+          v-model.trim="$v.password.$model"
         />
+        <div v-if="$v.password.$error || $v.password.$dirty">
+          <span class="error" v-if="!$v.password.required">
+            Password is required
+          </span>
+        </div>
       </div>
-      <button type="submit" class="btn btn-lg btn-info btn-block">
-        {{ $t('login.loginButton') }}
+      <button
+        type="submit"
+        class="btn btn-lg btn-info btn-block"
+        :disabled="submitStatus === 'PENDING' || $v.$invalid"
+      >
+        {{ $t('login.loginButton')
+        }}<span
+          class="spinner-border spinner-border-sm ml-2"
+          role="status"
+          aria-hidden="true"
+          v-show="submitStatus === 'PENDING' || submitStatus === 'OK'"
+        ></span>
       </button>
       <div class="text-center">
         <small>{{ $t('login.resetPassTitle') }}</small
@@ -95,6 +122,13 @@
 </template>
 
 <script>
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+} from 'vuelidate/lib/validators';
+
 export default {
   name: 'login',
   data() {
@@ -103,30 +137,47 @@ export default {
       password: undefined,
       verified: true,
       emailSent: false,
+      submitStatus: null,
     };
   },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+    password: {
+      required,
+    },
+  },
   methods: {
-    login: async function() {
-      const email = this.email;
-      const password = this.password;
+    submit: async function() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.submitStatus = 'ERROR';
+      } else {
+        this.submitStatus = 'PENDING';
 
-      try {
-        const res = await this.$store.dispatch('login', { email, password });
-        this.$router.push({ name: 'dashboardIndex' }).catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
-      } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
-          this.$refs[key].focus();
+        const email = this.email.toLowerCase();
+        const password = this.password;
+        try {
+          const res = await this.$store.dispatch('login', { email, password });
+          this.$router.push({ name: 'dashboardIndex' }).catch(() => {});
+          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+          this.submitStatus = 'OK';
+        } catch (err) {
+          this.submitStatus = 'ERROR';
+
+          if (err.response.data[0].message.includes('not verified')) {
+            this.verified = false;
+          }
+
+          this.email = '';
+          this.password = '';
+
+          this.$toasted.error(err.response.data[0].message, {
+            icon: 'exclamation-triangle',
+          });
         }
-
-        if (err.response.data[0].message.includes('not verified')) {
-          this.verified = false;
-        }
-
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
       }
     },
     verify() {
@@ -162,8 +213,30 @@ export default {
     max-width: 400px;
     margin-bottom: 8rem;
 
-    input {
-      text-align: center;
+    .form-group {
+      .form__label {
+        font-size: $label-font-size;
+        line-height: 1rem;
+        margin-left: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      input {
+        text-align: center;
+      }
+
+      .error {
+        color: red;
+        margin-left: 4px;
+        font-size: $label-font-size;
+        font-weight: $font-weight-bold;
+      }
+
+      &--error {
+        input {
+          border-color: red;
+        }
+      }
     }
 
     #tbLogo {
@@ -171,16 +244,12 @@ export default {
       margin-bottom: 2.5rem;
     }
 
-    label {
-      font-size: 0.85rem;
-      line-height: 1rem;
-      margin-left: 0.25rem;
-      margin-bottom: 0.25rem;
-    }
-
     button {
       margin: 2rem 0;
       font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .langChooser {

@@ -139,7 +139,7 @@
               v-model="memberDetails.phone"
               id="phone"
               size="sm"
-              :default-country-code="memberDetails.country || null"
+              :default-country-code="memberDetails.country || 'CA'"
               :preferred-countries="['US', 'CA']"
               ref="phone"
               :clearable="true"
@@ -296,7 +296,7 @@
               v-model="memberDetails.billing.phone"
               id="billingPhone"
               size="sm"
-              :default-country-code="memberDetails.billing.country || null"
+              :default-country-code="memberDetails.billing.country || 'CA'"
               :preferred-countries="['US', 'CA']"
               ref="billingPhone"
               :clearable="true"
@@ -457,7 +457,7 @@
               v-model="memberDetails.shipping.phone"
               id="shippingPhone"
               size="sm"
-              :default-country-code="memberDetails.shipping.country || null"
+              :default-country-code="memberDetails.shipping.country || 'CA'"
               :preferred-countries="['US', 'CA']"
               ref="shippingPhone"
               :clearable="true"
@@ -659,8 +659,6 @@ export default {
       }
     },
     checkCountry: function() {
-      this.$refs.phone.countryCode = this.memberDetails.country;
-      this.memberDetails.stateProv = '';
       if (this.billingSame) {
         this.memberDetails.billing.country = this.memberDetails.country;
         this.memberDetails.billing.stateProv = '';
@@ -669,15 +667,19 @@ export default {
       if (this.shippingSame) {
         this.memberDetails.shipping.country = this.memberDetails.country;
         this.memberDetails.shipping.stateProv = '';
+        this.$refs.stateProv.$el.focus();
       }
+
+      this.memberDetails.stateProv = '';
+      this.$refs.stateProv.$el.focus();
     },
     checkBillingCountry: function() {
-      this.$refs.billingPhone.countryCode = this.memberDetails.billing.country;
       this.memberDetails.billing.stateProv = '';
+      this.$refs.billingStateProv.$el.focus();
     },
     checkShippingCountry: function() {
-      this.$refs.shippingPhone.countryCode = this.memberDetails.shipping.country;
       this.memberDetails.shipping.stateProv = '';
+      this.$refs.shippingStateProv.$el.focus();
     },
     updateProfile: async function() {
       const updatedMember = {
