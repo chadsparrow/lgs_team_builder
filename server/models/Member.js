@@ -493,12 +493,11 @@ function validateNotification(notification) {
   return Joi.validate(notification, schema, joiOptions);
 }
 
-// eslint-disable-next-line func-names
 MemberSchema.methods.generateAuthToken = function () {
   const signOptions = {
-    expiresIn: '4h', // *****   change to 8h for production
+    expiresIn: this.isAdmin ? '1m' : '1m',
   };
-  // eslint-disable-next-line no-underscore-dangle
+
   const token = jwt.sign(
     { _id: this._id },
     process.env.JWT_PRIVATE_KEY,

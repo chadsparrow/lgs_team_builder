@@ -36,6 +36,7 @@
 <script>
 import TopNav from '../components/TopNav';
 import { mapGetters } from 'vuex';
+import jwt from 'jsonwebtoken';
 
 export default {
   name: 'Dashboard',
@@ -46,12 +47,33 @@ export default {
     return {
       sideCollapsed: false,
       screenWidth: 0,
+      polling: null,
     };
   },
   created() {
     this.setScreenWidth();
     window.addEventListener('resize', this.setScreenWidth);
     this.$store.commit('SET_MENU', this.loggedInMember.isAdmin);
+    this.polling = setInterval(() => {
+      if (this.isLoggedIn) {
+        const token = localStorage.getItem('token');
+        const decoded = jwt.decode(token);
+        if (Date.now() >= decoded.exp * 1000) {
+          clearInterval(this.polling);
+          this.logout();
+          this.$toasted.error('Token Expired', {
+            icon: 'exclamation-triangle',
+            duration: null,
+            action: {
+              text: 'CLOSE',
+              onClick: (e, toastObject) => {
+                this.$toasted.clear();
+              },
+            },
+          });
+        }
+      }
+    }, 1000 * 10);
   },
   destroyed() {
     window.removeEventListener('resize', this.setScreenWidth);
@@ -73,12 +95,10 @@ export default {
       this.$store.commit('LOADING_FALSE');
       this.$store.dispatch('logout');
       this.$router.push({ name: 'home' });
-      this.$toasted.clear();
-      this.$toasted.success('Logged Out - See ya!', { icon: 'sign-out-alt' });
     },
   },
   computed: {
-    ...mapGetters(['loggedInMember', 'menu']),
+    ...mapGetters(['loggedInMember', 'menu', 'isLoggedIn']),
   },
 };
 </script>
