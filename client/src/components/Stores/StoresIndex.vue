@@ -285,7 +285,7 @@ export default {
 
     td {
       img {
-        height: 45%;
+        max-width: 125px;
       }
     }
   }

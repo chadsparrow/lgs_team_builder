@@ -62,6 +62,10 @@ label {
   padding: 0;
 }
 
+.btn-info {
+  background-color: $blue-color;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-duration: 0.25s;
@@ -166,18 +170,17 @@ textarea {
   padding: $scrollbar-padding;
 
   .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 0.5rem;
     width: 100%;
     border-radius: $border-radius;
     color: $white-text;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     margin: 0 0 0.5rem 0;
   }
 
   .info-spans {
-    margin-bottom: 0.5rem;
     span {
       background-color: $info-spans-background;
       padding: 0.15rem 0.25rem;

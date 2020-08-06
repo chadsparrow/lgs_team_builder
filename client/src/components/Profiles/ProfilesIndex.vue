@@ -59,7 +59,7 @@
             <span class="text-white">{{ $t('formLabels.contact') }}</span>
           </div>
         </div>
-        <div class="row info-spans">
+        <div class="row info-spans mb-2">
           <div class="col-lg-6 col-xl-3">
             <label>{{ $t('formLabels.name') }}</label>
             <br />
@@ -120,7 +120,7 @@
             <span class="text-white">{{ $t('formLabels.billing') }}</span>
           </div>
         </div>
-        <div class="row info-spans">
+        <div class="row info-spans mb-2">
           <div class="col-lg-6 col-xl-3">
             <label>{{ $t('formLabels.name') }}</label>
             <br />
@@ -181,7 +181,7 @@
             <span class="text-white">{{ $t('formLabels.shipping') }}</span>
           </div>
         </div>
-        <div class="row info-spans">
+        <div class="row info-spans mb-2">
           <div class="col-lg-6 col-xl-3">
             <label>{{ $t('formLabels.name') }}</label>
             <br />
