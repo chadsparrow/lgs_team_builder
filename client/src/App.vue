@@ -177,25 +177,10 @@ textarea {
     width: 100%;
     border-radius: $border-radius;
     color: $white-text;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .info-spans {
-    span {
-      background-color: $info-spans-background;
-      padding: 0.15rem 0.25rem;
-      border-radius: $border-radius;
-      display: block;
-    }
-
-    label {
-      margin-left: 4px;
-      margin-top: 0.3rem;
-    }
   }
 
   .form-group {
-    margin: 0;
+    margin: 0 0 0.25rem 0;
   }
 }
 

@@ -48,56 +48,66 @@
         </div>
       </div>
       <div class="row px-1 info-spans">
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.name') }}</label>
-          <br />
-          <span>{{ member.name }}</span>
-        </div>
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.company') }}</label>
-          <br />
-          <span>{{ member.company || '--' }}</span>
-        </div>
-        <div class="col-xl-6">
-          <label>{{ $t('formLabels.email') }}</label>
-          <br />
-          <span>{{ member.email }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.address1') }}</label>
-          <br />
-          <span>{{ member.address1 }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.address2') }}</label>
-          <br />
-          <span>{{ member.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>{{ $t('formLabels.city') }}</label>
-          <br />
-          <span>{{ member.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label>{{ $t('formLabels.stateProv') }}</label>
-          <br />
-          <span>{{ member.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label>{{ $t('formLabels.country') }}</label>
-          <br />
-          <span>{{ member.country }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.zipPostal') }}</label>
-          <br />
-          <span>{{ member.zipPostal }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.phone') }}</label>
-          <br />
-          <span>{{ member.phone }}</span>
-        </div>
+        <InfoSpan
+          :labelText="$t('formLabels.name')"
+          :spanText="member.name"
+          name="name"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.company')"
+          :spanText="member.company || '--'"
+          name="company"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.email')"
+          :spanText="member.email"
+          name="email"
+          classInfo="col-xl-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address1')"
+          :spanText="member.address1"
+          name="address1"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address2')"
+          :spanText="member.address2 || '--'"
+          name="address2"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.city')"
+          :spanText="member.city"
+          name="city"
+          classInfo="col-sm-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.stateProv')"
+          :spanText="member.stateProv"
+          name="stateProv"
+          classInfo="col-sm-4"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.country')"
+          :spanText="member.country"
+          name="country"
+          classInfo="col-sm-2"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.zipPostal')"
+          :spanText="member.zipPostal"
+          name="zipPostal"
+          classInfo="col-md-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.phone')"
+          :spanText="member.phone"
+          name="phone"
+          classInfo="col-md-6"
+        />
       </div>
       <div class="row m-0">
         <div class="section-header mt-2 bg-secondary">
@@ -105,56 +115,66 @@
         </div>
       </div>
       <div class="row px-1 info-spans">
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.name') }}</label>
-          <br />
-          <span>{{ member.billing.name }}</span>
-        </div>
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.company') }}</label>
-          <br />
-          <span>{{ member.billing.company || '--' }}</span>
-        </div>
-        <div class="col-xl-6">
-          <label>{{ $t('formLabels.email') }}</label>
-          <br />
-          <span>{{ member.billing.email }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.address1') }}</label>
-          <br />
-          <span>{{ member.billing.address1 }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.address2') }}</label>
-          <br />
-          <span>{{ member.billing.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>{{ $t('formLabels.city') }}</label>
-          <br />
-          <span>{{ member.billing.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label>{{ $t('formLabels.stateProv') }}</label>
-          <br />
-          <span>{{ member.billing.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label>{{ $t('formLabels.country') }}</label>
-          <br />
-          <span>{{ member.billing.country }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.zipPostal') }}</label>
-          <br />
-          <span>{{ member.billing.zipPostal }}</span>
-        </div>
-        <div class="col-md-6">
-          <label>{{ $t('formLabels.phone') }}</label>
-          <br />
-          <span>{{ member.billing.phone }}</span>
-        </div>
+        <InfoSpan
+          :labelText="$t('formLabels.name')"
+          :spanText="member.billing.name"
+          name="billingName"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.company')"
+          :spanText="member.billing.company || '--'"
+          name="billingCompany"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.email')"
+          :spanText="member.billing.email"
+          name="billingEmail"
+          classInfo="col-xl-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address1')"
+          :spanText="member.billing.address1"
+          name="billingAddress1"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address2')"
+          :spanText="member.billing.address2 || '--'"
+          name="billingAddress2"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.city')"
+          :spanText="member.billing.city"
+          name="billingCity"
+          classInfo="col-sm-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.stateProv')"
+          :spanText="member.billing.stateProv"
+          name="billingStateProv"
+          classInfo="col-sm-4"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.country')"
+          :spanText="member.billing.country"
+          name="billingCountry"
+          classInfo="col-sm-2"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.zipPostal')"
+          :spanText="member.billing.zipPostal"
+          name="billingZipPostal"
+          classInfo="col-md-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.phone')"
+          :spanText="member.billing.phone"
+          name="billingPhone"
+          classInfo="col-md-6"
+        />
       </div>
       <div class="row m-0">
         <div class="section-header mt-2 bg-secondary">
@@ -162,56 +182,66 @@
         </div>
       </div>
       <div class="row mb-3 px-1 info-spans">
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.name') }}</label>
-          <br />
-          <span>{{ member.shipping.name }}</span>
-        </div>
-        <div class="col-lg-6 col-xl-3">
-          <label>{{ $t('formLabels.company') }}</label>
-          <br />
-          <span>{{ member.shipping.company || '--' }}</span>
-        </div>
-        <div class="col-xl-6">
-          <label>{{ $t('formLabels.email') }}</label>
-          <br />
-          <span>{{ member.shipping.email }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.address1') }}</label>
-          <br />
-          <span>{{ member.shipping.address1 }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.address2') }}</label>
-          <br />
-          <span>{{ member.shipping.address2 || '--' }}</span>
-        </div>
-        <div class="col-sm-6">
-          <label>{{ $t('formLabels.city') }}</label>
-          <br />
-          <span>{{ member.shipping.city }}</span>
-        </div>
-        <div class="col-sm-4">
-          <label>{{ $t('formLabels.stateProv') }}</label>
-          <br />
-          <span>{{ member.shipping.stateProv }}</span>
-        </div>
-        <div class="col-sm-2">
-          <label>{{ $t('formLabels.country') }}</label>
-          <br />
-          <span>{{ member.shipping.country }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.zipPostal') }}</label>
-          <br />
-          <span>{{ member.shipping.zipPostal }}</span>
-        </div>
-        <div class="col-lg-6">
-          <label>{{ $t('formLabels.phone') }}</label>
-          <br />
-          <span>{{ member.shipping.phone }}</span>
-        </div>
+        <InfoSpan
+          :labelText="$t('formLabels.name')"
+          :spanText="member.shipping.name"
+          name="shippingName"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.company')"
+          :spanText="member.shipping.company || '--'"
+          name="shippingCompany"
+          classInfo="col-lg-6 col-xl-3"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.email')"
+          :spanText="member.shipping.email"
+          name="shippingEmail"
+          classInfo="col-xl-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address1')"
+          :spanText="member.shipping.address1"
+          name="shippingAddress1"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.address2')"
+          :spanText="member.shipping.address2 || '--'"
+          name="shippingAddress2"
+          classInfo="col-lg-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.city')"
+          :spanText="member.shipping.city"
+          name="shippingCity"
+          classInfo="col-sm-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.stateProv')"
+          :spanText="member.shipping.stateProv"
+          name="shippingStateProv"
+          classInfo="col-sm-4"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.country')"
+          :spanText="member.shipping.country"
+          name="shippingCountry"
+          classInfo="col-sm-2"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.zipPostal')"
+          :spanText="member.shipping.zipPostal"
+          name="shippingZipPostal"
+          classInfo="col-md-6"
+        />
+        <InfoSpan
+          :labelText="$t('formLabels.phone')"
+          :spanText="member.billing.phone"
+          name="billingPhone"
+          classInfo="col-md-6"
+        />
       </div>
       <router-link
         :to="`/dashboard/members/${member._id}/edit`"
@@ -228,11 +258,13 @@
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import InfoSpan from '../Shared/InfoSpan';
 
 export default {
   name: 'MemberById',
   components: {
     Gravatar,
+    InfoSpan,
   },
   computed: {
     ...mapGetters(['loggedInMember', 'getMember', 'isLoading']),

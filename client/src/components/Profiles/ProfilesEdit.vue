@@ -28,7 +28,7 @@
             <span class="text-white">{{ $t('formLabels.contact') }}</span>
           </div>
         </div>
-        <div class="row p-1 mb-2">
+        <div class="row p-1">
           <div class="form-group col-sm-12 col-lg-6 col-xl-3">
             <label for="name">{{ $t('formLabels.name') }}</label>
             <input
@@ -163,9 +163,9 @@
                 ref="billingSame"
                 @change="copyContacttoBilling"
               />
-              <small class="form-check-label text-white" for="billingSame"
-                >Use Contact</small
-              >
+              <small class="form-check-label text-white" for="billingSame">{{
+                $t('formLabels.useContact')
+              }}</small>
             </div>
           </div>
         </div>
@@ -741,18 +741,10 @@ export default {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 1rem;
+  grid-gap: 1.5rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
-
-  .middle-section {
-    padding: $scrollbar-padding;
-
-    .form-group {
-      margin-bottom: 0.3rem;
-    }
-  }
 }
 
 /* Small devices (landscape phones, 576px and up) */
