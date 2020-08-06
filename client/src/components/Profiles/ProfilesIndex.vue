@@ -61,61 +61,61 @@
         </div>
         <div class="row info-spans mb-2">
           <InfoSpan
-            :labelText="$t('formLabels.name')"
+            labelText="formLabels.name"
             :spanText="memberDetails.name"
             name="name"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.company')"
+            labelText="formLabels.company"
             :spanText="memberDetails.company || '--'"
             name="company"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.email')"
+            labelText="formLabels.email"
             :spanText="memberDetails.email || '--'"
             name="email"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address1')"
+            labelText="formLabels.address1"
             :spanText="memberDetails.address1 || '--'"
             name="address1"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address2')"
+            labelText="formLabels.address2"
             :spanText="memberDetails.address2 || '--'"
             name="address2"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.city')"
+            labelText="formLabels.city"
             :spanText="memberDetails.city || '--'"
             name="city"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.stateProv')"
+            labelText="formLabels.stateProv"
             :spanText="memberDetails.stateProv || '--'"
             name="stateProv"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.country')"
+            labelText="formLabels.country"
             :spanText="memberDetails.country"
             name="country"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.zipPostal')"
+            labelText="formLabels.zipPostal"
             :spanText="memberDetails.zipPostal"
             name="zipPostal"
             classInfo="col-lg-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.phone')"
+            labelText="formLabels.phone"
             :spanText="memberDetails.phone"
             name="phone"
             classInfo="col-lg-6 mb-1"
@@ -132,61 +132,61 @@
         </div>
         <div class="row info-spans mb-2">
           <InfoSpan
-            :labelText="$t('formLabels.name')"
+            labelText="formLabels.name"
             :spanText="memberDetails.billing.name"
             name="billingName"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.company')"
+            labelText="formLabels.company"
             :spanText="memberDetails.billing.company || '--'"
             name="billingCompany"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.email')"
+            labelText="formLabels.email"
             :spanText="memberDetails.billing.email"
             name="billingEmail"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address1')"
+            labelText="formLabels.address1"
             :spanText="memberDetails.billing.address1"
             name="billingAddress1"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address2')"
+            labelText="formLabels.address2"
             :spanText="memberDetails.billing.address2 || '--'"
             name="billingAddress2"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.city')"
+            labelText="formLabels.city"
             :spanText="memberDetails.billing.city"
             name="billingCity"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.stateProv')"
+            labelText="formLabels.stateProv"
             :spanText="memberDetails.billing.stateProv"
             name="billingStateProv"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.country')"
+            labelText="formLabels.country"
             :spanText="memberDetails.billing.country"
             name="billingCountry"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.zipPostal')"
+            labelText="formLabels.zipPostal"
             :spanText="memberDetails.billing.zipPostal"
             name="billingZipPostal"
             classInfo="col-lg-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.phone')"
+            labelText="formLabels.phone"
             :spanText="memberDetails.billing.phone"
             name="billingPhone"
             classInfo="col-lg-6 mb-1"
@@ -195,7 +195,7 @@
       </div>
 
       <!-- SHIPPING SECTION -->
-      <div class="shippingSection">
+      <div class="shippingSection mb-3">
         <div class="row m-0">
           <div class="section-header bg-secondary">
             <span class="text-white">{{ $t('formLabels.shipping') }}</span>
@@ -203,64 +203,64 @@
         </div>
         <div class="row info-spans mb-2">
           <InfoSpan
-            :labelText="$t('formLabels.name')"
+            labelText="formLabels.name"
             :spanText="memberDetails.shipping.name"
             name="shippingName"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.company')"
+            labelText="formLabels.company"
             :spanText="memberDetails.shipping.company || '--'"
             name="shippingCompany"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.email')"
+            labelText="formLabels.email"
             :spanText="memberDetails.shipping.email || '--'"
             name="shippingEmail"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address1')"
+            labelText="formLabels.address1"
             :spanText="memberDetails.shipping.address1"
             name="shippingAddress1"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.address2')"
+            labelText="formLabels.address2"
             :spanText="memberDetails.shipping.address2 || '--'"
             name="shippingAddress2"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.city')"
+            labelText="formLabels.city"
             :spanText="memberDetails.shipping.city"
             name="shippingCity"
             classInfo="col-xl-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.stateProv')"
+            labelText="formLabels.stateProv"
             :spanText="memberDetails.shipping.stateProv"
             name="shippingStateProv"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.country')"
+            labelText="formLabels.country"
             :spanText="memberDetails.shipping.country"
             name="shippingCountry"
             classInfo="col-lg-6 col-xl-3"
           />
           <InfoSpan
-            :labelText="$t('formLabels.zipPostal')"
+            labelText="formLabels.zipPostal"
             :spanText="memberDetails.shipping.zipPostal"
             name="shippingZipPostal"
             classInfo="col-lg-6"
           />
           <InfoSpan
-            :labelText="$t('formLabels.phone')"
+            labelText="formLabels.phone"
             :spanText="memberDetails.shipping.phone"
             name="shippingPhone"
-            classInfo="col-lg-6 mb-3"
+            classInfo="col-lg-6"
           />
         </div>
       </div>
@@ -330,6 +330,7 @@ export default {
   }
 
   .middle-section {
+    padding: $scrollbar-padding;
     h3 {
       display: none;
     }
