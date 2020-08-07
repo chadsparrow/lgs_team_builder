@@ -11,12 +11,13 @@ Install_dependancies:
   stage: dependencies
   image: node:12.16.3-alpine
   script:
-    - npm install --silent
+    - npm install
   only:
     - develop
     - staging
   except:
-    paths: '/client'
+    changes:
+      - '/client'
   artifacts:
     paths:
       - node_modules/
@@ -28,7 +29,8 @@ Testing:
     - develop
     - staging
   except:
-    paths: '/client'
+    changes:
+      - '/client'
   script: npm run test
 
 Develop build:
@@ -39,7 +41,8 @@ Develop build:
   only:
     - develop
   except:
-    paths: '/client'
+    changes:
+      - '/client'
   cache:
     paths:
       - node_modules/
