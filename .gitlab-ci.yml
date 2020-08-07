@@ -17,7 +17,7 @@ Install_dependancies:
     - staging
   except:
     changes:
-      - '/client'
+      - client/*
   artifacts:
     paths:
       - node_modules/
@@ -30,7 +30,7 @@ Testing:
     - staging
   except:
     changes:
-      - '/client'
+      - client/*
   script: npm run test
 
 Develop build:
@@ -42,7 +42,7 @@ Develop build:
     - develop
   except:
     changes:
-      - '/client'
+      - client/*
   cache:
     paths:
       - node_modules/
@@ -69,7 +69,7 @@ Staging build:
     - staging
   except:
     changes:
-      - '/client'
+      - client/*
   cache:
     paths:
       - node_modules/
