@@ -2,12 +2,12 @@
   "name": "lgs-team-builder",
   "version": "1.0.0",
   "description": "Kit Order Replacement App for LG/Sugoi",
-  "main": "index.js",
+  "main": "index",
   "scripts": {
-    "server-dev": "cross-env NODE_ENV=development nodemon index.js",
+    "server-dev": "cross-env NODE_ENV=development nodemon index",
     "client-dev": "cross-env NODE_ENV=development npm run serve --prefix client",
     "client-build": "cross-env NODE_ENV=production npm run build --prefix client",
-    "start": "cross-env NODE_ENV=production node index.js",
+    "start": "cross-env NODE_ENV=production node index",
     "test": "jest",
     "test-watch": "jest --watchAll",
     "coverage": "jest --coverage"
