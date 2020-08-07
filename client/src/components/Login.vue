@@ -1,6 +1,6 @@
 <template>
   <div class="page container">
-    <form @submit.prevent="submit" novalidate v-if="verified && !emailSent">
+    <form @submit.prevent="submit" v-if="verified && !emailSent">
       <div class="text-center">
         <img
           id="tbLogo"
@@ -94,24 +94,37 @@
         </div>
       </div>
     </form>
-    <form
-      @submit.prevent="verify"
-      novalidate
-      v-else-if="!verified && !emailSent"
-    >
-      <div class="form-group">
-        <label for="email">{{ $t('login.emailAddress') }}</label>
+    <form @submit.prevent="verify" v-else-if="!verified && !emailSent">
+      <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
+        <label for="email" class="form__label">{{
+          $t('login.emailAddress')
+        }}</label>
         <input
           type="email"
           class="form-control"
           id="email"
-          ref="email"
-          v-model="email"
-          autofocus
+          ref="verifyEmail"
+          v-model.trim="$v.email.$model"
         />
+        <div v-if="$v.email.$error || $v.email.$dirty">
+          <span class="error" v-if="!$v.email.required">Email is required</span>
+          <span class="error" v-if="!$v.email.email"
+            >Must be a valid email</span
+          >
+        </div>
       </div>
-      <button type="submit" class="btn btn-lg btn-info btn-block">
-        {{ $t('login.verifyEmail') }}
+      <button
+        type="submit"
+        class="btn btn-lg btn-info btn-block"
+        :disabled="submitStatus === 'PENDING' || $v.$invalid"
+      >
+        {{ $t('login.verifyEmail')
+        }}<span
+          class="spinner-border spinner-border-sm ml-2"
+          role="status"
+          aria-hidden="true"
+          v-show="submitStatus === 'PENDING' || submitStatus === 'OK'"
+        ></span>
       </button>
     </form>
     <div class="result" v-else>
@@ -122,12 +135,7 @@
 </template>
 
 <script>
-import {
-  required,
-  minLength,
-  maxLength,
-  email,
-} from 'vuelidate/lib/validators';
+import { required, email } from 'vuelidate/lib/validators';
 
 export default {
   name: 'login',
@@ -169,10 +177,13 @@ export default {
 
           if (err.response.data[0].message.includes('not verified')) {
             this.verified = false;
+            this.$refs.verifyEmail.focus();
           }
 
           this.email = '';
           this.password = '';
+
+          this.$refs.email.focus();
 
           this.$toasted.error(err.response.data[0].message, {
             icon: 'exclamation-triangle',
@@ -181,18 +192,29 @@ export default {
       }
     },
     verify() {
-      this.axios
-        .post('/api/v1/auth/verifyemail', { email: this.email })
-        .then((res) => {
-          this.emailSent = true;
-        })
-        .catch((err) => {
-          this.email = '';
-          this.$refs.email.focus();
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.submitStatus = 'ERROR';
+      } else {
+        this.submitStatus = 'PENDING';
+        this.axios
+          .post('/api/v1/auth/verifyemail', { email: this.email })
+          .then((res) => {
+            this.emailSent = true;
+            this.submitStatus = 'OK';
+            this.$toasted.success(res.data[0].message, {
+              icon: 'check-circle',
+            });
+          })
+          .catch((err) => {
+            this.submitStatus = 'ERROR';
+            this.email = '';
+            this.$refs.verifyEmail.focus();
+            this.$toasted.error(err.response.data[0].message, {
+              icon: 'exclamation-triangle',
+            });
           });
-        });
+      }
     },
   },
 };
@@ -246,7 +268,7 @@ export default {
 
     button {
       margin: 2rem 0;
-      font-weight: 700;
+      font-weight: $font-weight-bold;
       display: flex;
       justify-content: center;
       align-items: center;

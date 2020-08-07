@@ -7,20 +7,38 @@
         alt="Team Builder Logo"
       />
     </div>
-    <form @submit.prevent="forgot" novalidate v-if="!linkSent">
-      <div class="form-group">
-        <label for="email">{{ $t('login.emailAddress') }}</label>
+    <form @submit.prevent="forgot" v-if="!linkSent">
+      <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
+        <label for="email" class="form__label">{{
+          $t('login.emailAddress')
+        }}</label>
         <input
           type="email"
           class="form-control"
           id="email"
           ref="email"
-          v-model="email"
+          v-model.trim="$v.email.$model"
           autofocus
         />
+        <div v-if="$v.email.$error || $v.email.$dirty">
+          <span class="error" v-if="!$v.email.required">Email is required</span>
+          <span class="error" v-if="!$v.email.email"
+            >Must be a valid email</span
+          >
+        </div>
       </div>
-      <button type="submit" class="btn btn-lg btn-info btn-block">
-        {{ $t('login.resetPass') }}
+      <button
+        type="submit"
+        class="btn btn-lg btn-info btn-block"
+        :disabled="submitStatus === 'PENDING' || $v.$invalid"
+      >
+        {{ $t('login.resetPass')
+        }}<span
+          class="spinner-border spinner-border-sm ml-2"
+          role="status"
+          aria-hidden="true"
+          v-show="submitStatus === 'PENDING' || submitStatus === 'OK'"
+        ></span>
       </button>
     </form>
     <div class="result" v-else>
@@ -31,30 +49,48 @@
 </template>
 
 <script>
+import { required, email } from 'vuelidate/lib/validators';
+
 export default {
   name: 'Forgot',
   data() {
     return {
       email: undefined,
       linkSent: false,
+      submitStatus: null,
     };
+  },
+  validations: {
+    email: {
+      required,
+      email,
+    },
   },
   methods: {
     forgot() {
-      this.axios
-        .post('/api/v1/auth/forgot', { email: this.email })
-        .then(({ data }) => {
-          if (data[0].message === 'Reset Link Sent!') {
-            this.linkSent = true;
-          }
-        })
-        .catch((err) => {
-          this.email = '';
-          this.$refs.email.focus();
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.submitStatus = 'ERROR';
+      } else {
+        this.submitStatus = 'PENDING';
+        this.axios
+          .post('/api/v1/auth/forgot', { email: this.email })
+          .then(({ data }) => {
+            if (data[0].message === 'Reset Link Sent!') {
+              this.linkSent = true;
+              this.$toasted.success(data[0].message, { icon: 'check-circle' });
+            }
+            this.submitStatus = 'OK';
+          })
+          .catch((err) => {
+            this.submitStatus = 'ERROR';
+            this.email = '';
+            this.$refs.email.focus();
+            this.$toasted.error(err.response.data[0].message, {
+              icon: 'exclamation-triangle',
+            });
           });
-        });
+      }
     },
   },
 };
@@ -81,20 +117,38 @@ export default {
     width: 100%;
     max-width: 400px;
 
-    input {
-      text-align: center;
-    }
+    .form-group {
+      .form__label {
+        font-size: $label-font-size;
+        line-height: 1rem;
+        margin-left: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
 
-    label {
-      font-size: 0.85rem;
-      line-height: 1rem;
-      margin-left: 0.25rem;
-      margin-bottom: 0.25rem;
+      input {
+        text-align: center;
+      }
+
+      .error {
+        color: red;
+        margin-left: 4px;
+        font-size: $label-font-size;
+        font-weight: $font-weight-bold;
+      }
+
+      &--error {
+        input {
+          border-color: red;
+        }
+      }
     }
 
     button {
       margin: 2rem 0;
       font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 

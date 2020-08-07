@@ -44,6 +44,9 @@
             <span class="error" v-if="!$v.newPassword.notSameAsOldPassword">
               New password cannot match old password
             </span>
+            <span class="error" v-if="!$v.newPassword.minLength">
+              New password must be more then 5 characters
+            </span>
           </div>
         </div>
         <div
@@ -99,7 +102,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
-import { required, sameAs, not } from 'vuelidate/lib/validators';
+import { required, sameAs, not, minLength } from 'vuelidate/lib/validators';
 
 export default {
   name: 'ProfilesPassword',
@@ -118,6 +121,7 @@ export default {
     },
     newPassword: {
       required,
+      minLength: minLength(6),
       notSameAsOldPassword: not(sameAs('oldPassword')),
     },
     confirmPassword: {
@@ -164,13 +168,11 @@ export default {
           confirmPassword: this.confirmPassword,
         };
 
-        this.$store.commit('LOADING_TRUE');
         try {
           await this.$store.dispatch('changePassword', {
             updatedPassword,
             id: this.loggedInMember._id,
           });
-          this.$store.commit('LOADING_FALSE');
           this.$router.push({ name: 'profile' });
           this.$toasted.success(i18n.t('profiles.passwordUpdated'), {
             icon: 'lock',
@@ -178,7 +180,6 @@ export default {
           this.submitStatus = 'OK';
         } catch (err) {
           this.submitStatus = 'ERROR';
-          this.$store.commit('LOADING_FALSE');
           if (err.response.data[0].context) {
             const key = err.response.data[0].context.key;
             this.$refs[key].focus();
@@ -225,7 +226,7 @@ export default {
 
     button {
       background-color: $blue-color;
-      font-weight: 700;
+      font-weight: $font-weight-bold;
       display: flex;
       justify-content: center;
       align-items: center;
