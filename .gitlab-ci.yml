@@ -68,7 +68,8 @@ Staging build:
   only:
     - staging
   except:
-    paths: '/client'
+    changes:
+      - '/client'
   cache:
     paths:
       - node_modules/
