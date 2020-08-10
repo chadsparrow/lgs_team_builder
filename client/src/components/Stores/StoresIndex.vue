@@ -261,10 +261,14 @@ export default {
 <style lang="scss" scoped>
 .page {
   .header {
-    padding: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
     .has-search .form-control {
       padding-left: 2rem;
-      max-width: 250px;
     }
 
     .has-search .form-control-feedback {
@@ -276,7 +280,7 @@ export default {
       line-height: 2rem;
       text-align: center;
       pointer-events: none;
-      color: $label-color;
+      color: #aaa;
     }
   }
 

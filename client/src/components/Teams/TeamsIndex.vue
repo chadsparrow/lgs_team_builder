@@ -1,15 +1,11 @@
 <template>
   <div v-if="!isLoading" class="page container">
     <div class="header mb-2">
-      <div class="form-group has-search m-0">
-        <span
-          class="fa fa-search form-control-feedback"
-          v-if="teams.length > 0"
-        ></span>
+      <div class="form-group has-search m-0" v-if="teams.length > 0">
+        <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
           id="teamSearch"
-          v-if="teams.length > 0"
           class="form-control form-control-sm"
           v-model="teamSearchText"
           :placeholder="$t('search')"

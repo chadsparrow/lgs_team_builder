@@ -1,18 +1,15 @@
 <template>
   <div v-if="!isLoading" class="page container">
     <div class="header mb-2">
-      <div class="form-group has-search m-0">
-        <span
-          class="fa fa-search form-control-feedback"
-          v-if="allMembers.length > 0"
-        ></span>
+      <div class="form-group has-search m-0" v-if="allMembers.length > 0">
+        <span class="fa fa-search form-control-feedback"></span>
         <input
           type="text"
           id="memberSearch"
-          v-if="allMembers.length > 0"
+          name="memberSearch"
           class="form-control form-control-sm m-0"
           v-model="memberSearchText"
-          placeholder="Search..."
+          :placeholder="$t('search')"
         />
       </div>
       <div v-if="loggedInMember.isAdmin">

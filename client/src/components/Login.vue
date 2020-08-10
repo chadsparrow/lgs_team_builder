@@ -8,8 +8,11 @@
           alt="Team Builder Logo"
         />
       </div>
-      <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
-        <label for="email" class="form__label">{{
+      <div
+        class="form-group mb-4"
+        :class="{ 'form-group--error': $v.email.$error }"
+      >
+        <label for="email" class="form__label sr-only">{{
           $t('login.emailAddress')
         }}</label>
         <input
@@ -19,6 +22,8 @@
           name="email"
           ref="email"
           v-model.trim="$v.email.$model"
+          placeholder="Email Address"
+          aria-placeholder="Email Address"
           autofocus
         />
         <div v-if="$v.email.$error || $v.email.$dirty">
@@ -29,7 +34,7 @@
         </div>
       </div>
       <div class="form-group" :class="{ 'form-group--error': $v.email.$error }">
-        <label for="password" class="form__label">{{
+        <label for="password" class="form__label sr-only">{{
           $t('login.password')
         }}</label>
         <input
@@ -38,6 +43,8 @@
           id="password"
           name="password"
           ref="password"
+          placeholder="Password"
+          aria-placeholder="Password"
           v-model.trim="$v.password.$model"
         />
         <div v-if="$v.password.$error || $v.password.$dirty">
