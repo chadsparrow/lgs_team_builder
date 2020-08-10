@@ -89,5 +89,3 @@ This will shut down all the Node.js container and delete the image so you are fo
 If you have any troubles or questions, feel free to contact Chad Sparrow (csparrow@sugoi.com)
 
 Gitlab Runner created on WebSrv02 (Staging) using a docker executor
-
-test
