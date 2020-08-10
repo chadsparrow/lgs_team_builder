@@ -1,12 +1,8 @@
-/**
- * @jest-environment node
- */
-
 const mongoose = require('mongoose');
 const {
   validateCatalogItem,
   validateCatalogItemEdit,
-  validateCatalogImg
+  validateCatalogImg,
 } = require('../../../../server/models/CatalogItem');
 
 let reqbody;
@@ -25,11 +21,11 @@ describe('validateCatalogItem function', () => {
       categoriesFR: ['BikingFR'],
       priceBreaks: {
         CAD: [{ priceBreak: '1', price: 5 }],
-        USD: [{ priceBreak: '1', price: 4 }]
+        USD: [{ priceBreak: '1', price: 4 }],
       },
       descriptionEN: 'description',
       descriptionFR: 'descriptionFR',
-      images: ['http://image.website.com']
+      images: ['http://image.website.com'],
     };
   });
 
@@ -237,7 +233,7 @@ describe('validateCatalogItem function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects do not include price', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1' }],
-      USD: [{ priceBreak: '1' }]
+      USD: [{ priceBreak: '1' }],
     };
     const result = validateCatalogItem(reqbody);
     expect(result.error).toBeTruthy();
@@ -247,7 +243,7 @@ describe('validateCatalogItem function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects priceBreak is not a string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: 1, price: 1 }],
-      USD: [{ priceBreak: 1, price: 1 }]
+      USD: [{ priceBreak: 1, price: 1 }],
     };
     const result = validateCatalogItem(reqbody);
     expect(result.error).toBeTruthy();
@@ -257,7 +253,7 @@ describe('validateCatalogItem function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects priceBreak is an empty string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '', price: 1 }],
-      USD: [{ priceBreak: '', price: 1 }]
+      USD: [{ priceBreak: '', price: 1 }],
     };
     const result = validateCatalogItem(reqbody);
     expect(result.error).toBeTruthy();
@@ -267,7 +263,7 @@ describe('validateCatalogItem function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects price is not a number', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1', price: 'a' }],
-      USD: [{ priceBreak: '1', price: 'a' }]
+      USD: [{ priceBreak: '1', price: 'a' }],
     };
     const result = validateCatalogItem(reqbody);
     expect(result.error).toBeTruthy();
@@ -277,7 +273,7 @@ describe('validateCatalogItem function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects price is an empty string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1', price: '' }],
-      USD: [{ priceBreak: '1', price: '' }]
+      USD: [{ priceBreak: '1', price: '' }],
     };
     const result = validateCatalogItem(reqbody);
     expect(result.error).toBeTruthy();
@@ -348,12 +344,12 @@ describe('validateCatalogItemEdit function', () => {
       categoriesFR: ['BikingFR'],
       priceBreaks: {
         CAD: [{ priceBreak: '1', price: 5 }],
-        USD: [{ priceBreak: '1', price: 4 }]
+        USD: [{ priceBreak: '1', price: 4 }],
       },
       descriptionEN: 'description',
       descriptionFR: 'descriptionFR',
       images: ['http://image.website.com'],
-      isActive: true
+      isActive: true,
     };
   });
 
@@ -542,7 +538,7 @@ describe('validateCatalogItemEdit function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects do not include price', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1' }],
-      USD: [{ priceBreak: '1' }]
+      USD: [{ priceBreak: '1' }],
     };
     const result = validateCatalogItemEdit(reqbody);
     expect(result.error).toBeTruthy();
@@ -552,7 +548,7 @@ describe('validateCatalogItemEdit function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects priceBreak is not a string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: 1, price: 1 }],
-      USD: [{ priceBreak: 1, price: 1 }]
+      USD: [{ priceBreak: 1, price: 1 }],
     };
     const result = validateCatalogItemEdit(reqbody);
     expect(result.error).toBeTruthy();
@@ -562,7 +558,7 @@ describe('validateCatalogItemEdit function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects priceBreak is an empty string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '', price: 1 }],
-      USD: [{ priceBreak: '', price: 1 }]
+      USD: [{ priceBreak: '', price: 1 }],
     };
     const result = validateCatalogItemEdit(reqbody);
     expect(result.error).toBeTruthy();
@@ -572,7 +568,7 @@ describe('validateCatalogItemEdit function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects price is not a number', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1', price: 'a' }],
-      USD: [{ priceBreak: '1', price: 'a' }]
+      USD: [{ priceBreak: '1', price: 'a' }],
     };
     const result = validateCatalogItemEdit(reqbody);
     expect(result.error).toBeTruthy();
@@ -582,7 +578,7 @@ describe('validateCatalogItemEdit function', () => {
   it('should return an error if priceBreaksCAD/USD arrays objects price is an empty string', () => {
     reqbody.priceBreaks = {
       CAD: [{ priceBreak: '1', price: '' }],
-      USD: [{ priceBreak: '1', price: '' }]
+      USD: [{ priceBreak: '1', price: '' }],
     };
     const result = validateCatalogItemEdit(reqbody);
     expect(result.error).toBeTruthy();
@@ -643,7 +639,7 @@ describe('validateCatalogItemEdit function', () => {
 describe('validateCatalogImg function', () => {
   beforeEach(() => {
     reqbody = {
-      imageUrl: 'http://image.web.com'
+      imageUrl: 'http://image.web.com',
     };
   });
 

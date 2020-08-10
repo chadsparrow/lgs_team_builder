@@ -1,10 +1,6 @@
-/**
- * @jest-environment node
- */
-
 const {
   validateCatalog,
-  validateCoverImage
+  validateCoverImage,
 } = require('../../../../server/models/Catalog');
 
 let reqbody;
@@ -15,7 +11,7 @@ describe('validateCatalog function', () => {
       brand: 'sugoi',
       season: 'CUSTOM',
       year: '2020',
-      coverImg: 'http://image.website.com'
+      coverImg: 'http://image.website.com',
     };
   });
 
@@ -108,7 +104,7 @@ describe('validateCatalog function', () => {
 describe('validateCoverImage function', () => {
   beforeEach(() => {
     reqbody = {
-      coverImg: 'http://image.website.com'
+      coverImg: 'http://image.website.com',
     };
   });
 

@@ -21,7 +21,8 @@
     "supertest": "^4.0.2"
   },
   "jest": {
-    "verbose": true
+    "verbose": true,
+    "testEnvironment": "node"
   },
   "nodemonConfig": {
     "ignore": [

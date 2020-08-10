@@ -1,9 +1,8 @@
-/**
- * @jest-environment node
- */
-
 const mongoose = require('mongoose');
-const { validateTeam, validateAddMember } = require('../../../../server/models/Team');
+const {
+  validateTeam,
+  validateAddMember,
+} = require('../../../../server/models/Team');
 const faker = require('faker');
 
 let reqbody;

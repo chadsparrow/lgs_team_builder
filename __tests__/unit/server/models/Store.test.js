@@ -1,13 +1,9 @@
-/**
- * @jest-environment node
- */
-
 const mongoose = require('mongoose');
 const { validateStore } = require('../../../../server/models/Store');
 
 let reqbody;
 
-const charArray = function(num) {
+const charArray = function (num) {
   return new Array(num).join('a');
 };
 
@@ -27,7 +23,7 @@ describe('validateStore function', () => {
       closingDate: new Date(),
       timezone: 'America/Vancouver',
       storeMessage: 'message',
-      shippingType: 'BULK'
+      shippingType: 'BULK',
     };
   });
 
