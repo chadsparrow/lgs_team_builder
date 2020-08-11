@@ -65,6 +65,12 @@ module.exports = {
       // generates an JSONWebToken once authenticated
       const token = member.generateAuthToken();
 
+      res.cookie('token', token, {
+        expires: new Date(Date.now() + 1000 * 60 * 2),
+        secure: false,
+        httpOnly: true,
+      });
+
       return res.send([
         {
           token,
