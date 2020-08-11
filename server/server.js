@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
 
@@ -9,16 +10,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
-const serveStatic = require('serve-static');
-const cookieParser = require('cookie-parser');
 
-const cors = require('cors'); // un-comment if calls will come from another domain
-app.use(
-  cors({
-    origin: ['http://localhost:5000', 'http://localhost:8080'],
-    credentials: true,
-  })
-); // un-comment if calls will come from another domain
+// const cors = require('cors'); // un-comment if calls will come from another domain
+// app.use(cors()); // un-comment if calls will come from another domain
 
 // cron module
 const cron = require('node-cron');
@@ -35,12 +29,6 @@ const requestLogger = require('./middleware/requestLogger');
 
 app.use(requestLogger);
 
-// Check if jwtPrivateKey env variable is set
-if (!process.env.JWT_PRIVATE_KEY) {
-  logger.error('FATAL ERROR: JWT_PRIVATE_KEY ENV VARIABLE is not defined.');
-  process.exit(1);
-}
-
 // Set up express & mongo sanitations and security
 app.use(helmet());
 app.use(mongoSanitize());
@@ -56,6 +44,9 @@ app.use(limiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// // sets public folder for static files
+// app.use(express.static(path.join(__dirname, 'static')));
 
 // allows calls if server is behind a proxy
 app.enable('trust proxy');
@@ -87,7 +78,11 @@ process.on('unhandledRejection', (ex) => {
   throw ex;
 });
 
-app.use(serveStatic(__dirname + '/dist'));
+// Check if jwtPrivateKey env variable is set
+if (!process.env.JWT_PRIVATE_KEY) {
+  logger.error('FATAL ERROR: JWT_PRIVATE_KEY ENV VARIABLE is not defined.');
+  process.exit(1);
+}
 
 // establishes all endpoints allowed from front end
 require('./startup/routes')(app);

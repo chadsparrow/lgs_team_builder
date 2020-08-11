@@ -3,8 +3,6 @@ import store from '../store';
 import router from '../router';
 
 export default function setup() {
-  Vue.axios.defaults.withCredentials = true;
-
   Vue.axios.interceptors.response.use(
     function(response) {
       return response;
