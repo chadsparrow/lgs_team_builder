@@ -6,7 +6,6 @@ module.exports = async function (DB_HOST) {
   // connects to mongodb
   const conn = await mongoose.connect(DB_HOST, {
     useNewUrlParser: true,
-    autoReconnect: true,
     useFindAndModify: false,
     useCreateIndex: true,
     useUnifiedTopology: true,
