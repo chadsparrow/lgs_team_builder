@@ -433,8 +433,8 @@ module.exports = {
 
       const salt = await bcrypt.genSalt(10);
       member.password = await bcrypt.hash(password, salt);
-      member.resetPasswordToken = undefined;
-      member.resetPasswordTokenExpires = undefined;
+      member.resetPasswordToken = null;
+      member.resetPasswordTokenExpires = null;
       member.isVerified = true;
 
       await member.save();
