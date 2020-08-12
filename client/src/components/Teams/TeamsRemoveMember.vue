@@ -4,23 +4,31 @@
       <span>You do not have access to Remove Members</span>
       <br />
       <br />
-      <router-link :to="`/dashboard/teams/${id}`" class="btn btn-dark">Return to Team</router-link>
+      <router-link
+        :to="`/dashboard/teams/${id}`"
+        class="large-btn danger-btn"
+        tag="button"
+        >Return to Team</router-link
+      >
     </div>
     <form @submit.prevent="removeMembers" novalidate v-else class="mb-4">
       <h5>Remove members from the team</h5>
       <div class="row">
         <div class="form-group col-sm-12 mt-2">
-          <label for="newMember">Type the email address or select from dropdown</label>
+          <label for="newMember"
+            >Type the email address or select from dropdown</label
+          >
           <vSelect
             multiple
             id="newMember"
             v-model="chosenMembers"
-            :reduce="member => member._id"
+            :reduce="(member) => member._id"
             label="email"
             :options="members"
           ></vSelect>
           <small id="newMemberHelp" class="form-text text-muted"
-            >In order to remove a team manager, you must select a new manager first.</small
+            >In order to remove a team manager, you must select a new manager
+            first.</small
           >
         </div>
       </div>
@@ -28,14 +36,17 @@
         <div class="col-sm-6">
           <button
             type="submit"
-            class="btn btn-block btn-info"
+            class="large-btn btn-block"
             :disabled="!access || chosenMembers.length === 0"
           >
             Remove Members
           </button>
         </div>
         <div class="col-sm-6">
-          <router-link tag="a" class="btn btn-danger btn-block" :to="`/dashboard/teams/${id}`"
+          <router-link
+            tag="button"
+            class="large-btn danger-btn btn-block"
+            :to="`/dashboard/teams/${id}`"
             >Cancel</router-link
           >
         </div>
@@ -57,11 +68,11 @@ export default {
       name: '',
       manager: '',
       members: [],
-      chosenMembers: []
+      chosenMembers: [],
     };
   },
   components: {
-    vSelect
+    vSelect,
   },
   computed: {
     ...mapGetters(['isLoading', 'loggedInMember']),
@@ -74,7 +85,7 @@ export default {
         if (this.manager._id === this.member._id) return true;
       }
       return false;
-    }
+    },
   },
   created: async function() {
     this.$store.commit('LOADING_TRUE');
@@ -88,16 +99,16 @@ export default {
       const breadcrumbs = [
         {
           text: 'Teams',
-          link: '/dashboard/teams'
+          link: '/dashboard/teams',
         },
         {
           text: `${this.name}`,
-          link: `/dashboard/teams/${this.id}`
+          link: `/dashboard/teams/${this.id}`,
         },
         {
           text: 'Remove Members',
-          link: '#'
-        }
+          link: '#',
+        },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
 
@@ -109,7 +120,9 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+      this.$toasted.error(err.response.data[0].message, {
+        icon: 'exclamation-triangle',
+      });
     }
   },
   methods: {
@@ -118,17 +131,21 @@ export default {
       try {
         const res = await this.$store.dispatch('removeTeamMembers', {
           chosenMembers: this.chosenMembers,
-          id: this.id
+          id: this.id,
         });
         this.$store.commit('LOADING_FALSE');
-        this.$router.push({ name: 'teamsById', params: { id: this.id } }).catch(() => {});
+        this.$router
+          .push({ name: 'teamsById', params: { id: this.id } })
+          .catch(() => {});
         this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, { icon: 'exclamation-triangle' });
+        this.$toasted.error(err.response.data[0].message, {
+          icon: 'exclamation-triangle',
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -11,10 +11,7 @@
           :placeholder="$t('search')"
         />
       </div>
-      <router-link
-        to="/dashboard/teams/add"
-        class="btn btn-sm btn-info addTeamBtn"
-      >
+      <router-link to="/dashboard/teams/add" class="small-btn" tag="button">
         <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
       </router-link>
     </div>
@@ -271,9 +268,6 @@ export default {
         .form-control {
           width: 100%;
         }
-      }
-      .addTeamBtn {
-        margin-bottom: 0.5rem;
       }
     }
   }

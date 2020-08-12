@@ -4,7 +4,10 @@
       <span>You do not have access to Add Members</span>
       <br />
       <br />
-      <router-link :to="`/dashboard/teams/${id}`" class="btn btn-dark"
+      <router-link
+        :to="`/dashboard/teams/${id}`"
+        class="large-btn danger-btn"
+        tag="button"
         >Return to Team</router-link
       >
     </div>
@@ -25,7 +28,7 @@
         <div class="col-sm-6">
           <button
             type="submit"
-            class="btn btn-block btn-info"
+            class="large-btn btn-block"
             :disabled="!chosenMember"
           >
             Add Member
@@ -33,8 +36,8 @@
         </div>
         <div class="col-sm-6">
           <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
+            tag="button"
+            class="large-btn danger-btn btn-block"
             :to="`/dashboard/teams/${id}`"
             >Cancel</router-link
           >

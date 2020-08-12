@@ -71,9 +71,7 @@
             <div class="itemInfo">
               {{ item.nameEN }}
               <br />
-              <small class="text-muted"
-                >{{ item.productCode }} / {{ item.styleCode }}</small
-              >
+              <small class="text-muted">{{ item.productCode }}</small>
             </div>
           </div>
         </draggable>
@@ -125,13 +123,13 @@
             </div>
             <div class="itemButtons">
               <button
-                class="btn btn-block btn-sm btn-info"
+                class="small-btn btn-block"
                 @click="showEditWindow(storeItem)"
               >
                 Edit Item
               </button>
               <button
-                class="btn btn-block btn-sm btn-danger"
+                class="small-btn danger-btn btn-block"
                 @click="removeStoreItem(storeItem._id)"
               >
                 Remove
@@ -329,11 +327,7 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-info"
-                    @click="closeModal"
-                  >
+                  <button type="button" class="small-btn" @click="closeModal">
                     Exit
                   </button>
                 </div>
@@ -633,6 +627,10 @@ export default {
 
     .catalogItemsSearchbar {
       grid-area: searchbar;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
       .form-control {
         width: 240px;
       }

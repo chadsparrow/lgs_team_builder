@@ -17,7 +17,7 @@
       <hr />
       <label>{{ $t('actions') }}</label>
       <button
-        class="btn btn-sm btn-block btn-danger mt-2 mb-4"
+        class="small-btn danger-btn btn-block mt-2 mb-4"
         @click.prevent="deleteMember"
         v-if="!member.isAdmin"
       >
@@ -150,7 +150,6 @@
             ref="phone"
             :clearable="true"
             @update="copyPhone"
-            :translations="translations"
           />
         </div>
       </div>
@@ -303,7 +302,6 @@
             :preferred-countries="['US', 'CA']"
             ref="billingPhone"
             :clearable="true"
-            :translations="translations"
           />
         </div>
       </div>
@@ -460,20 +458,20 @@
             :preferred-countries="['US', 'CA']"
             ref="shippingPhone"
             :clearable="true"
-            :translations="translations"
           />
         </div>
       </div>
-      <div class="row mt-4">
+      <div class="row my-4">
         <div class="col-lg-6">
-          <button class="btn btn-block btn-info" @click.prevent="updateMember">
+          <button class="large-btn btn-block" @click.prevent="updateMember">
             {{ $t('members.updateMember') }}
           </button>
         </div>
         <div class="col-lg-6">
           <router-link
             :to="`/dashboard/members/${this.member._id}`"
-            class="btn btn-block btn-danger"
+            class="large-btn danger-btn btn-block"
+            tag="button"
             >{{ $t('cancel') }}</router-link
           >
         </div>
@@ -769,12 +767,13 @@ export default {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 0.5rem;
+  grid-gap: 0.75rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';
 
   .middle-section {
+    padding: $scrollbar-padding;
     h3 {
       display: none;
     }

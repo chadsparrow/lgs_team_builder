@@ -192,7 +192,7 @@
             <div class="row mt-2">
               <div class="col-sm-6">
                 <button
-                  class="btn btn-block btn-info"
+                  class="large-btn btn-block"
                   @click.prevent="updateStore"
                 >
                   Update Store
@@ -200,8 +200,9 @@
               </div>
               <div class="col-sm-6">
                 <router-link
+                  tag="button"
                   :to="`/dashboard/stores/${store._id}`"
-                  class="btn btn-block btn-danger"
+                  class="large-btn danger-btn btn-block"
                   >Cancel</router-link
                 >
               </div>

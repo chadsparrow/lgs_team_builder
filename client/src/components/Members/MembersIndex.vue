@@ -15,7 +15,8 @@
       <div v-if="loggedInMember.isAdmin">
         <router-link
           to="/dashboard/members/add"
-          class="btn btn-sm btn-info addMemberBtn"
+          class="small-btn addMemberBtn"
+          tag="button"
         >
           <i class="fas fa-plus mr-2"></i>{{ $t('members.addMember') }}
         </router-link>
@@ -233,9 +234,6 @@ export default {
       .form-group {
         max-width: 100%;
         width: 100%;
-      }
-      .addMemberBtn {
-        margin-bottom: 0.5rem;
       }
     }
   }

@@ -78,6 +78,7 @@
                 :country="storeCountry"
                 class="form-control"
                 ref="storeCountry"
+                :usei18n="false"
               />
             </div>
           </div>
@@ -191,17 +192,15 @@
             </div>
             <div class="row mt-2">
               <div class="col-sm-6">
-                <button
-                  class="btn btn-block btn-info"
-                  @click.prevent="addStore"
-                >
+                <button class="large-btn btn-block" @click.prevent="addStore">
                   Add Store
                 </button>
               </div>
               <div class="col-sm-6">
                 <router-link
+                  tag="button"
                   :to="`/dashboard/teams/${team._id}`"
-                  class="btn btn-block btn-danger"
+                  class="large-btn danger-btn btn-block"
                   >Cancel</router-link
                 >
               </div>

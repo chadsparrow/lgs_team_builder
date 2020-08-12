@@ -38,6 +38,7 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap');
 
+// GLOBAL STYLES
 * {
   box-sizing: border-box;
 }
@@ -62,8 +63,41 @@ label {
   padding: 0;
 }
 
-.btn-info {
-  background-color: $blue-color;
+.small-btn,
+.large-btn,
+.danger-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: $blue-color;
+  color: $white-text;
+  user-select: none;
+  border: 1px solid $blue-color;
+  border-radius: $border-radius;
+  font-weight: $font-weight-regular;
+
+  &:hover {
+    background: $white-text;
+    color: $blue-color;
+    border: 1px solid $blue-color;
+    box-shadow: $box-shadow;
+  }
+}
+
+.large-btn {
+  padding: 0.3rem 1rem;
+  font-size: 1.1rem;
+}
+
+.danger-btn {
+  background: $danger-red !important;
+  color: white !important;
+  border: 1px solid $danger-red !important;
+
+  &:hover {
+    background: $danger-red-hover !important;
+  }
 }
 
 .fade-enter-active,

@@ -245,8 +245,9 @@
       </div>
       <router-link
         :to="`/dashboard/members/${member._id}/edit`"
-        class="btn btn-info"
+        class="large-btn"
         v-if="isAdmin"
+        tag="button"
       >
         <i class="fas fa-cog mr-3"></i>{{ $t('members.editMember') }}
       </router-link>
@@ -314,7 +315,7 @@ export default {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
-  grid-gap: 0.5rem;
+  grid-gap: 1rem;
   width: 100%;
   height: 100%;
   grid-template-areas: 'sidebar-left middle-section';

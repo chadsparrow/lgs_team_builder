@@ -232,10 +232,10 @@
               v-model="team.mainContact.phone"
               id="contactPhone"
               size="sm"
+              :default-country-code="team.mainContact.country || null"
               :preferred-countries="['US', 'CA']"
               ref="contactPhone"
               :clearable="true"
-              :no-use-browser-locale="true"
               @update="copyPhone"
             />
           </div>
@@ -410,22 +410,24 @@
               v-model="team.bulkShipping.phone"
               id="shippingPhone"
               size="sm"
+              :default-country-code="team.bulkShipping.country || null"
+              :preferred-countries="['US', 'CA']"
               ref="shippingPhone"
               :clearable="true"
-              :no-use-browser-locale="true"
             />
           </div>
         </div>
         <div class="row my-4">
           <div class="col-sm-6">
-            <button class="btn btn-block btn-info" @click.prevent="updateTeam">
+            <button class="large-btn btn-block" @click.prevent="updateTeam">
               Update Team Details
             </button>
           </div>
           <div class="col-sm-6">
             <router-link
+              tag="button"
               :to="`/dashboard/teams/${team._id}`"
-              class="btn btn-block btn-danger"
+              class="large-btn danger-btn btn-block"
               >Cancel</router-link
             >
           </div>

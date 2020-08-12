@@ -14,7 +14,7 @@
 
         <button
           type="button"
-          class="btn btn-sm btn-block btn-info mt-3"
+          class="small-btn btn-block mt-3"
           v-clipboard:copy="joinLink"
           v-clipboard:success="onCopy"
           v-clipboard:error="onError"
@@ -68,14 +68,16 @@
         <div class="col-sm-12">
           <router-link
             :to="`/dashboard/teams/${team._id}/addmember`"
-            class="btn btn-sm btn-block btn-info"
+            class="small-btn btn-block"
+            tag="button"
             >{{ $t('members.addMember') }}</router-link
           >
         </div>
         <div class="col-sm-12 mt-2">
           <router-link
             :to="`/dashboard/teams/${team._id}/removemember`"
-            class="btn btn-sm btn-block btn-danger"
+            class="small-btn danger-btn btn-block"
+            tag="button"
             >Remove Members</router-link
           >
         </div>
@@ -92,7 +94,8 @@
           <div v-if="access">
             <router-link
               :to="`/dashboard/teams/${team._id}/addstore`"
-              class="btn btn-sm btn-info"
+              class="small-btn"
+              tag="button"
             >
               <i class="fas fa-plus mr-2"></i>
               {{ $t('stores.addStore') }}

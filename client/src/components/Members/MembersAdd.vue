@@ -509,7 +509,7 @@
           <div class="row">
             <div class="col-lg-8">
               <button
-                class="btn btn-block btn-info mb-2"
+                class="large-btn btn-block mb-2"
                 @click.prevent="addMember"
               >
                 <i class="fas fa-plus mr-2" style="vertical-align: middle;"></i>
@@ -519,7 +519,8 @@
             <div class="col-lg-4">
               <router-link
                 to="/dashboard/members/"
-                class="btn btn-block btn-danger"
+                class="large-btn danger-btn btn-block"
+                tag="button"
               >
                 {{ $t('cancel') }}
               </router-link>

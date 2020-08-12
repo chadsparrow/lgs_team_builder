@@ -413,14 +413,15 @@
         </div>
         <div class="row mt-4 mb-5">
           <div class="col-sm-6">
-            <button class="btn btn-block btn-info" @click.prevent="addTeam">
+            <button class="large-btn btn-block" @click.prevent="addTeam">
               {{ $t('teams.addTeam') }}
             </button>
           </div>
           <div class="col-sm-6">
             <router-link
               to="/dashboard/teams"
-              class="btn btn-block btn-danger"
+              class="large-btn danger-btn btn-block"
+              tag="button"
               >{{ $t('cancel') }}</router-link
             >
           </div>
