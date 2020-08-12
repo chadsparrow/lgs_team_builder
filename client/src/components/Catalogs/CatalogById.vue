@@ -21,7 +21,7 @@
           <br />
           {{ currentCatalog.season }} - {{ currentCatalog.year }}
         </div>
-        <div class="col-lg-9 text-center my-2">
+        <div class="col-sm-6 col-lg-3 offset-sm-3 offset-lg-6">
           <div class="input-group">
             <input
               type="text"
@@ -47,7 +47,7 @@
             }}</small
           >
         </div>
-        <div class="col-lg-6 col-xl-4">
+        <div class="col-lg-6 col-xl-4 mt-2">
           <div class="row">
             <div class="col-md-6 mt-2">
               <router-link
@@ -71,39 +71,29 @@
         </div>
       </div>
     </div>
-    <div class="galleryList" v-if="filteredItems.length > 0">
+    <div class="galleryList my-3" v-if="filteredItems.length > 0">
       <router-link
-        class="thumbnail"
+        class="galleryList__thumbnail"
         v-for="item of filteredItems"
         :key="item._id"
         :to="`/dashboard/catalogItems/${item._id}`"
       >
-        <img
-          :src="getImgUrl(item)"
-          :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
-          loading="lazy"
-          class="thumbnail-img"
-        />
+        <div class="img-container">
+          <img
+            :src="getImgUrl(item)"
+            :alt="$i18n.locale === 'en' ? item.nameEN : item.nameFR"
+            loading="lazy"
+          />
+        </div>
 
-        <div class="thumbnail-body px-3">
-          <div class="row">
-            <div class="col-12">
-              <p class="productName mb-0">
-                {{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}
-              </p>
-            </div>
-            <div class="col-lg-6 col-xl-4">
-              <small class="text-muted mr-4"
-                >{{ $t('catalogs.product') }} : {{ item.productCode }}</small
-              >
-            </div>
-            <div class="col-lg-6 col-xl-4">
-              <small
-                class="text-muted"
-                v-if="item.productCode !== item.styleCode"
-                >{{ $t('catalogs.style') }} : {{ item.styleCode }}</small
-              >
-            </div>
+        <div class="thumbnail-body text-center">
+          <div>
+            <p class="productName mb-0">
+              {{ $i18n.locale === 'en' ? item.nameEN : item.nameFR }}
+            </p>
+          </div>
+          <div>
+            <small class="text-muted">{{ item.productCode }}</small>
           </div>
         </div>
       </router-link>
@@ -216,7 +206,6 @@ export default {
     position: relative;
     grid-area: header;
     font-weight: $font-weight-bold;
-    padding: 0.5rem;
     margin: 0;
 
     img {
@@ -235,39 +224,46 @@ export default {
   // LIST VIEW FOR CATALOG
   .galleryList {
     grid-area: gallery;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-rows: minmax(min-content, 250px);
+    gap: 1rem;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 0.5rem;
+    padding: 0 0.5rem 0 0;
 
-    .thumbnail {
+    &__thumbnail {
       display: flex;
+      flex-direction: column;
       justify-content: flex-start;
       align-items: center;
       background-color: $white-text;
       border-radius: $border-radius;
       color: $black-text;
-      margin: 0 0 0.5rem 0;
       width: 100%;
-      min-height: 125px;
+      max-height: min-content;
 
-      .thumbnail-img {
-        max-width: 100%;
-        min-width: 125px;
-        width: 125px;
+      .img-container {
+        width: 100%;
+        height: auto;
+
         img {
           width: 100%;
-          border-radius: 5px 0 0 5px;
+          height: 100%;
+          object-fit: cover;
+          border-radius: $border-radius $border-radius 0 0;
         }
       }
 
       .thumbnail-body {
         width: 100%;
+        padding: 1rem;
         p {
-          font-size: 1.25rem;
+          font-size: $span-font-size;
           font-weight: $font-weight-bold;
         }
         .text-muted {
-          font-size: $span-font-size;
+          font-size: $label-font-size;
         }
       }
 
@@ -281,9 +277,6 @@ export default {
 
 @media screen and (min-width: 0px) and (max-width: 449px) {
   .thumbnail-body {
-    p {
-      font-size: $span-font-size !important;
-    }
     .text-muted {
       display: none;
     }
@@ -292,9 +285,6 @@ export default {
 
 @media screen and (min-width: 450px) and (max-width: 700px) {
   .thumbnail-body {
-    p {
-      font-size: $base-font-size !important;
-    }
     .text-muted {
       font-size: $muted-font-size !important;
       margin: 0;

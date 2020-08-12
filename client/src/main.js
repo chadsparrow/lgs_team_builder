@@ -10,6 +10,7 @@ import 'vue-datetime/dist/vue-datetime.css';
 import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
+import ZoomOnHover from 'vue-zoom-on-hover';
 
 import axios from 'axios';
 import VueAxios from 'vue-axios';
@@ -43,6 +44,7 @@ Vue.use(VueClipboard);
 Vue.use(Vue2Filters);
 Vue.use(VueCurrencyInput);
 Vue.use(VueSidebarMenu);
+Vue.use(ZoomOnHover);
 
 Vue.config.productionTip = false;
 

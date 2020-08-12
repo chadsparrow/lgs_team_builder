@@ -140,9 +140,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-td {
-  img {
-    max-width: 150px;
+.page {
+  .table-responsive {
+    td {
+      img {
+        max-width: 125px;
+      }
+    }
   }
 }
 

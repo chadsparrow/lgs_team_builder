@@ -33,11 +33,10 @@ export default {
   margin-top: 1rem;
   background-color: none !important;
   padding: 0px 15px !important;
-  font-size: 0.8rem;
 
   .breadcrumb-item {
     .btn {
-      font-size: 0.7rem;
+      font-size: 0.8rem;
     }
   }
 }
