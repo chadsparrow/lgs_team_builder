@@ -4,7 +4,7 @@
       <div class="col-md-12 mb-2">
         <router-link
           :to="`/dashboard/stores/${store._id}`"
-          class="btn btn-danger mb-2"
+          class="small-btn danger-btn mb-2"
           ><i class="fas fa-arrow-left mr-2"></i>Go back to Store</router-link
         >
       </div>
@@ -69,7 +69,7 @@
               <div class="col-md-12 col-lg-2">
                 <div class="row m-0 mb-3" v-if="!item.mandatoryItem">
                   <button
-                    class="btn btn-block btn-danger"
+                    class="small-btn danger-btn btn-block"
                     @click="removeItem(item._id)"
                   >
                     <i class="fas fa-lg fa-trash mr-2"></i>Remove
@@ -91,12 +91,15 @@
       <div class="col-md-12 col-lg-4 cart-info">
         <h4 class="text-info text-center">Actions</h4>
         <div class="row m-0">
-          <button class="btn btn-block btn-danger" @click="removeAllItems">
+          <button
+            class="small-btn danger-btn btn-block"
+            @click="removeAllItems"
+          >
             <i class="fas fa-trash mr-2"></i>Remove All Items
           </button>
         </div>
         <div class="row m-0 mt-2" v-if="dataChanged">
-          <button class="btn btn-block btn-success" @click="updateCart">
+          <button class="small-btn btn-block" @click="updateCart">
             <i class="fas fa-pen mr-2"></i>Update Cart
           </button>
         </div>
@@ -112,7 +115,7 @@
           </div>
           <div class="col-md-12 mt-3 text-center">
             <button
-              class="btn btn-lg btn-block btn-warning"
+              class="large-btn btn-block"
               :disabled="dataChanged"
               @click="checkout"
             >

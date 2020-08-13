@@ -76,6 +76,7 @@ label {
   border: 1px solid $blue-color;
   border-radius: $border-radius;
   font-weight: $font-weight-regular;
+  cursor: pointer;
 
   &:hover {
     background: $white-text;

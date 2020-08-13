@@ -29,7 +29,7 @@
       </div>
       <button
         type="submit"
-        class="btn btn-lg btn-info btn-block"
+        class="large-btn btn-block"
         :disabled="submitStatus === 'PENDING' || $v.$invalid"
       >
         {{ $t('login.resetPass')

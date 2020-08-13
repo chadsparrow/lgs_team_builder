@@ -448,12 +448,12 @@
         </div>
         <div class="row mb-5 mt-2">
           <div class="col-sm-8 mb-2">
-            <button class="btn btn-block btn-info" @click.prevent="register">
+            <button class="small-btn btn-block" @click.prevent="register">
               Join Team
             </button>
           </div>
           <div class="col-sm-4">
-            <router-link to="/login" class="btn btn-block btn-danger"
+            <router-link to="/login" class="small-btn danger-btn btn-block"
               >Cancel</router-link
             >
           </div>

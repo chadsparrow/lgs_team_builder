@@ -74,7 +74,7 @@
         </div>
         <div class="col sm-6">
           <button
-            class="btn btn-block btn-info"
+            class="small-btn btn-block"
             type="submit"
             :disabled="submitStatus === 'PENDING' || $v.$invalid"
           >
@@ -90,7 +90,7 @@
         <div class="col sm-6">
           <router-link
             to="/dashboard/profile"
-            class="btn btn-block btn-danger"
+            class="small-btn danger-btn btn-block"
             >{{ $t('cancel') }}</router-link
           >
         </div>

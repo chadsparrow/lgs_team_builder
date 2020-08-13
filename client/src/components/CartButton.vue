@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="navItem">
-      <button class="btn btn-info" @click="openCart">
+      <button class="small-btn" @click="openCart">
         <i class="fas fa-shopping-cart fa-lg"></i>
         <span
           class="badge badge-danger ml-2"
           v-if="currentCart && currentCart.items.length > 0"
-        >{{ currentCart.items.length }}</span>
+          >{{ currentCart.items.length }}</span
+        >
       </button>
     </div>
   </div>
@@ -17,7 +18,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Cart',
   computed: {
-    ...mapGetters(['loggedInMember', 'currentCart'])
+    ...mapGetters(['loggedInMember', 'currentCart']),
   },
   methods: {
     openCart: function() {
@@ -25,10 +26,10 @@ export default {
         this.$router.push({
           name: 'cart',
           params: { id: this.currentCart._id },
-          query: { storeId: this.currentCart.storeId }
+          query: { storeId: this.currentCart.storeId },
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -6,7 +6,7 @@
         <a
           href="https://gravatar.com"
           target="_blank"
-          class="btn btn-sm btn-block btn-info mt-1"
+          class="small-btn btn-block mt-1"
           >{{ $t('profiles.updateGravatar') }}</a
         >
       </div>
@@ -30,21 +30,21 @@
       <div class="row mt-3 mx-0">
         <router-link
           :to="`/dashboard/profile/edit`"
-          class="btn btn-sm btn-block btn-info"
+          class="small-btn btn-block"
         >
           <i class="fas fa-cog mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.editProfile') }}
         </router-link>
         <router-link
           :to="`/dashboard/profile/password`"
-          class="btn btn-sm btn-block btn-danger"
+          class="small-btn danger-btn btn-block"
         >
           <i class="fas fa-lock mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.changePassword') }}
         </router-link>
         <router-link
           :to="`/dashboard/profile/email`"
-          class="btn btn-sm btn-block btn-danger"
+          class="small-btn danger-btn btn-block"
         >
           <i class="fas fa-envelope mr-2" style="vertical-align: middle;"></i
           >{{ $t('profiles.updateEmail') }}

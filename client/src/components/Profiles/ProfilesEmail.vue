@@ -36,14 +36,14 @@
           />
         </div>
         <div class="col sm-6">
-          <button class="btn btn-block btn-info" @click.prevent="updateEmail">
+          <button class="small-btn btn-block" @click.prevent="updateEmail">
             {{ $t('profiles.updateEmail') }}
           </button>
         </div>
         <div class="col sm-6">
           <router-link
             to="/dashboard/profile"
-            class="btn btn-block btn-danger"
+            class="small-btn danger-btn btn-block"
             >{{ $t('cancel') }}</router-link
           >
         </div>

@@ -34,7 +34,7 @@
               autofocus
             />
             <button
-              class="btn btn-sm bg-transparent"
+              class="small-btn bg-transparent"
               style="margin-left: -30px; z-index: 100;"
               @click.prevent="resetSearchBar"
             >

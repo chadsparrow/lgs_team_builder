@@ -469,17 +469,14 @@
       <div class="buttonsSection my-2">
         <div class="row">
           <div class="col-sm-6 mt-2">
-            <button
-              class="btn btn-block btn-info"
-              @click.prevent="updateProfile"
-            >
+            <button class="small-btn btn-block" @click.prevent="updateProfile">
               {{ $t('profiles.updateProfile') }}
             </button>
           </div>
           <div class="col-sm-6 mt-2">
             <router-link
               to="/dashboard/profile"
-              class="btn btn-block btn-danger"
+              class="small-btn danger-btn btn-block"
               >{{ $t('cancel') }}</router-link
             >
           </div>
