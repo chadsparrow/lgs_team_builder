@@ -17,12 +17,15 @@
     </div>
 
     <div class="member-list">
-      <span v-if="currentTeams.length === 0 && member.isAdmin"
-        >No Teams Found</span
+      <h5
+        class="text-center"
+        v-if="currentTeams.length === 0 && member.isAdmin"
       >
-      <span v-else-if="currentTeams.length === 0"
-        >No Teams Found - Contact your team manager to add you</span
-      >
+        No Teams Found
+      </h5>
+      <h5 class="text-center" v-else-if="currentTeams.length === 0">
+        No Teams Found - Contact your team manager to add you
+      </h5>
       <div class="table-responsive-sm" v-else>
         <table
           class="table table-hover table-striped"

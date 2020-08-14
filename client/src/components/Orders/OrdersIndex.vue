@@ -1,6 +1,8 @@
 <template>
   <div v-if="!isLoading" class="page container">
-    <span v-if="currentOrders.length === 0">No Orders Found</span>
+    <h5 class="text-center" v-if="currentOrders.length === 0">
+      No Orders Found
+    </h5>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

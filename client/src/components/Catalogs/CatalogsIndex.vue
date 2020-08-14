@@ -1,5 +1,3 @@
-// i18n finished // responsiveness finished
-
 <template>
   <div class="page container" v-if="!isLoading">
     <div class="mb-2 header">
@@ -7,9 +5,9 @@
         <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
       </router-link>
     </div>
-    <div class="mb-2" v-if="currentCatalogs.length === 0">
-      <span>No Catalogs Found</span>
-    </div>
+    <h5 class="text-center" v-if="currentCatalogs.length === 0">
+      No Catalogs Found
+    </h5>
     <div v-else>
       <div class="table-responsive">
         <table class="table table-hover table-striped">

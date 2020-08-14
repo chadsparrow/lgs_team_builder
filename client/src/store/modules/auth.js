@@ -7,6 +7,7 @@ export default {
     notificationsReady: false,
     status: '',
     token: localStorage.getItem('token') || '',
+    accessToken: '',
     loggedInMember: {},
     emails: [],
     notifications: [],
@@ -139,6 +140,7 @@ export default {
     AUTH_SUCCESS(state, { token, member, emails }) {
       state.status = 'success';
       state.token = token;
+      state.accessToken = token;
       state.loggedInMember = member;
       state.emails = emails;
     },
@@ -268,5 +270,6 @@ export default {
     emails: (state) => state.emails,
     notifications: (state) => state.notifications,
     menu: (state) => state.menu,
+    accessToken: (state) => state.accessToken,
   },
 };

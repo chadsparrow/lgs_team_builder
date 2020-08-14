@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>DASHBOARD INDEX</h1>
+    <h5 class="text-center">Dashboard</h5>
   </div>
 </template>
 

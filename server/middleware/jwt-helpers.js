@@ -1,29 +1,33 @@
 const jwt = require('jsonwebtoken');
-const logger = require('../middleware/logger');
 const createError = require('http-errors');
 const { Member } = require('../models/Member');
+const config = require('../config/config');
 
 module.exports = {
   signAccessToken: (userId) => {
     return new Promise((resolve, reject) => {
       const signOptions = {
-        expiresIn: '15m',
+        expiresIn: config.ACCESS_TOKEN_TTL,
         issuer: 'LGS TeamBuilder',
         audience: userId.toString(),
       };
 
-      jwt.sign({}, process.env.JWT_PRIVATE_KEY, signOptions, (err, token) => {
-        if (err) {
-          logger.error(err);
-          reject(createError.InternalServerError());
+      jwt.sign(
+        {},
+        process.env.ACCESS_TOKEN_SECRET,
+        signOptions,
+        (err, token) => {
+          if (err) {
+            reject(createError.InternalServerError());
+          }
+          resolve(token);
         }
-        resolve(token);
-      });
+      );
     });
   },
   verifyAccessToken: (token) => {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, process.env.JWT_PRIVATE_KEY, (err, decoded) => {
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
           const message =
             err.name === 'JsonWebTokenError'

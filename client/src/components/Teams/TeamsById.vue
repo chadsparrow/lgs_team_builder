@@ -191,7 +191,7 @@
           ></paginate>
         </div>
 
-        <h5 v-else>{{ $t('stores.noStores') }}</h5>
+        <h5 class="text-center" v-else>{{ $t('stores.noStores') }}</h5>
       </div>
 
       <!-- CONTACT BAR SECTION -->

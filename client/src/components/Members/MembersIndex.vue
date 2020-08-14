@@ -22,7 +22,7 @@
         </router-link>
       </div>
     </div>
-    <span v-if="allMembers.length === 0">No Members Found</span>
+    <h5 class="text-center" v-if="allMembers.length === 0">No Members Found</h5>
     <div class="table-responsive" v-else>
       <table class="table table-hover table-striped">
         <tbody>

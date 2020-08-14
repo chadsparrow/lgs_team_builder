@@ -15,8 +15,8 @@
   - MONGO_INITDB_ROOT_EMAIL=`root user login email`
   - MONGO_INITDB_ROOT_PORT=`port for your DB (ie. 27018)`
   - MONGO_INITDB_ROOT_DB=`name of db to use (ie. teambuilder-dev)`
-  - PORT=`port for the backend (ie. 5000)`
-  - JWT_PRIVATE_KEY=`string used for encrypting/decrypting json web tokens`
+  - ACCESS_TOKEN_SECRET=`string used for encrypting/decrypting json web tokens`
+  - REFRESH_TOKEN_SECRET=`string used for encrypting/decrypting json web tokens`
   - GEOCODER_PROVIDER=`obtain geocoder API key and insert provider name here (ie. mapquest)`
   - GEOCODER_API_KEY=`insert GEOCODER API KEY from above provider here`
   - TIMEZONEDB_KEY=`obtain API from timezonedb.com and insert here`
@@ -26,6 +26,8 @@
   - SES_AUTH_PASSWORD=`insert aws secret key id`
 
   - _\* request API keys from Chad Sparrow [csparrow@sugoi.com](mailto:csparrow@sugoi.com) if needed_
+
+- set all the keys in the `config/config.js` file to your liking
 
 ---
 
