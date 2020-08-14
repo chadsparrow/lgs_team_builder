@@ -2,7 +2,12 @@
   <div class="page container" v-if="!isLoading">
     <div class="sidebar-left">
       <div class="avatarWrapper">
-        <Gravatar :email="memberDetails.email" default-img="mp" :size="200" />
+        <a
+          href="https://gravatar.com"
+          target="_blank"
+          style="text-decoration: none;"
+          ><Gravatar :email="memberDetails.email" default-img="mp" :size="200"
+        /></a>
         <a
           href="https://gravatar.com"
           target="_blank"
