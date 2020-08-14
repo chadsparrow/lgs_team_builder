@@ -104,7 +104,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
+      this.$toasted.error(err.response.data[0].error.message, {
         icon: 'exclamation-triangle',
       });
     }

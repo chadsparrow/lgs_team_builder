@@ -1,5 +1,3 @@
-const error = require('../middleware/error');
-
 // all routes used by the front end - points to single route file in 'routes" folder which houses full endpoints
 module.exports = function (app) {
   app.use('/api/v1/members', require('../routes/members'));
@@ -13,5 +11,4 @@ module.exports = function (app) {
   app.use('/api/v1/orders', require('../routes/orders'));
   app.use('/api/v1/carts', require('../routes/carts'));
   app.use('/api/v1/uploads', require('../routes/uploads'));
-  app.use(error);
 };

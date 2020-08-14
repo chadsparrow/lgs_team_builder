@@ -10,6 +10,11 @@ module.exports = async function (DB_HOST) {
     useCreateIndex: true,
     useUnifiedTopology: true,
   });
+  if (!conn) {
+    logger.error('MongoDB Connection Error');
+    return process.exit(1);
+  }
+
   logger.info(
     `Connected to MongoDB Atlas - ${conn.connection.host}.${conn.connection.name}`
   );
@@ -18,7 +23,7 @@ module.exports = async function (DB_HOST) {
   process.on('SIGINT', async () => {
     logger.info('Disconnecting from MongoDB Atlas..');
     await mongoose.disconnect();
-    process.exit(0);
+    return process.exit(0);
   });
 
   // checks if the database has a single admin - if not it creates it from env variables

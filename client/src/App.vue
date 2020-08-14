@@ -78,11 +78,16 @@ label {
   font-weight: $font-weight-regular;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not([disabled]) {
     background: $white-text;
     color: $blue-color;
     border: 1px solid $blue-color;
     box-shadow: $box-shadow;
+  }
+
+  &:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
   }
 }
 
@@ -96,7 +101,7 @@ label {
   color: white !important;
   border: 1px solid $danger-red !important;
 
-  &:hover {
+  &:hover:not([disabled]) {
     background: $danger-red-hover !important;
   }
 }

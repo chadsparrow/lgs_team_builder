@@ -181,8 +181,7 @@ export default {
           this.submitStatus = 'OK';
         } catch (err) {
           this.submitStatus = 'ERROR';
-
-          if (err.response.data[0].message.includes('not verified')) {
+          if (err.response.data[0].error.message.includes('unverified')) {
             this.verified = false;
             this.$refs.verifyEmail.focus();
           }
@@ -190,11 +189,10 @@ export default {
           this.email = '';
           this.password = '';
 
-          this.$refs.email.focus();
-
-          this.$toasted.error(err.response.data[0].message, {
+          this.$toasted.error(err.response.data[0].error.message, {
             icon: 'exclamation-triangle',
           });
+          this.$refs.email.focus();
         }
       }
     },
@@ -217,7 +215,7 @@ export default {
             this.submitStatus = 'ERROR';
             this.email = '';
             this.$refs.verifyEmail.focus();
-            this.$toasted.error(err.response.data[0].message, {
+            this.$toasted.error(err.response.data[0].error.message, {
               icon: 'exclamation-triangle',
             });
           });

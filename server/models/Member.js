@@ -493,19 +493,6 @@ function validateNotification(notification) {
   return Joi.validate(notification, schema, joiOptions);
 }
 
-MemberSchema.methods.generateAuthToken = function () {
-  const signOptions = {
-    expiresIn: this.isAdmin ? '8h' : '1h',
-  };
-
-  const token = jwt.sign(
-    { _id: this._id },
-    process.env.JWT_PRIVATE_KEY,
-    signOptions
-  );
-  return token;
-};
-
 MemberSchema.pre('save', async function (next) {
   if (this.isNew) {
     try {

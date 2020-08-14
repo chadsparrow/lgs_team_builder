@@ -1,9 +1,9 @@
-const logger = require('../middleware/logger');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
 const mailer = require('../utils/mailer');
+const createError = require('http-errors');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -20,6 +20,7 @@ const {
 } = require('../models/Member');
 
 const { Team } = require('../models/Team');
+const { signAccessToken } = require('../middleware/jwt-helpers');
 
 module.exports = {
   // @desc    Member login
@@ -28,42 +29,29 @@ module.exports = {
   memberLogin: async (req, res, next) => {
     try {
       const { error } = validateLogin(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       // checks if user with email exists
       const member = await Member.findOne({ email: req.body.email });
-      if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Invalid email or password.' }]);
+      if (!member) throw createError(400, 'Invalid email or password.');
 
       // compares input password with db password
       const validPassword = await bcrypt.compare(
         req.body.password,
         member.password
       );
-      if (!validPassword)
-        return res.status(400).send([{ message: 'Invalid email or password' }]);
+      if (!validPassword) throw createError(400, 'Invalid email or password.');
 
       // checks if account is closed
       if (member.closedAccount)
-        return res.status(401).send([
-          {
-            message:
-              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
-          },
-        ]);
+        throw createError(401, 'Account Deactivated - contact admin/manager');
 
       // checks if account has not been verified
       if (!member.isVerified)
-        return res.status(403).send([
-          {
-            message: 'Account not verified yet, click "Resend" button',
-          },
-        ]);
+        throw createError(403, 'Account unverified, click "Resend"');
 
       // generates an JSONWebToken once authenticated
-      const token = member.generateAuthToken();
+      const token = await signAccessToken(member.id);
 
       return res.send([
         {
@@ -76,11 +64,11 @@ module.exports = {
             'timezone',
             'createdAt',
           ]),
-          message: 'Welcome Back!',
+          message: 'Logged In',
         },
       ]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -90,13 +78,10 @@ module.exports = {
   memberRegister: async (req, res, next) => {
     try {
       const { error } = validateNewRegister(req.body.member);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const team = await Team.findById(req.params.id);
-      if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID not found' }]);
+      if (!team) throw createError(400, 'Team with the given ID not found');
 
       const {
         email,
@@ -137,22 +122,16 @@ module.exports = {
       // checks if the word "password" or email address is in their password and denies creation
       const userEmail = email.split('@')[0];
       if (password.includes('password'))
-        return res
-          .status(400)
-          .send([{ message: "Please do not use 'password' in your password" }]);
+        throw createError(400, 'Please do not use "password" in your password');
       if (password.includes(userEmail))
-        return res.status(400).send([
-          {
-            message: 'Please do not use your email username in your password',
-          },
-        ]);
+        throw createError(
+          400,
+          'Please do not use your email username in your password'
+        );
 
       // checks if email already registered
       const member = await Member.findOne({ email });
-      if (member)
-        return res
-          .status(400)
-          .send([{ message: 'Member already registered.' }]);
+      if (member) throw createError(400, 'Member already registered.');
 
       const newMember = new Member({
         name,
@@ -301,7 +280,7 @@ module.exports = {
 
       return res.send([{ message: 'You are now registered!' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -311,23 +290,15 @@ module.exports = {
   forgotPassword: async (req, res, next) => {
     try {
       const { error } = validateForgotEmail(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       // checks if user with email exists
       const member = await Member.findOne({ email: req.body.email });
-      if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Invalid email or password.' }]);
+      if (!member) throw createError.BadRequest();
 
       // checks if account is closed
       if (member.closedAccount)
-        return res.status(401).send([
-          {
-            message:
-              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
-          },
-        ]);
+        throw createError(403, 'Account Deactived - contact admin/manager');
 
       // generates a resetToken
       const token = randomString.generate();
@@ -361,7 +332,7 @@ module.exports = {
         },
       ]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -370,26 +341,18 @@ module.exports = {
   // @access Public
   checkResetPasswordToken: async (req, res, next) => {
     const token = req.query.token;
-    if (!token)
-      return res
-        .status(400)
-        .send({ message: 'Reset Password Token not provided.' });
+    if (!token) throw createError(400, 'Reset Password Token not provided');
 
     try {
       const member = await Member.findOne({ resetPasswordToken: token });
-      if (!member)
-        return res
-          .status(404)
-          .send({ message: 'Reset token invalid - Try Again' });
+      if (!member) throw createError(400, 'Reset token invalid');
 
       if (member.resetPasswordTokenExpires < Date.now())
-        return res
-          .status(400)
-          .send({ message: 'Reset token expired - Try Again' });
+        throw createError(400, 'Reset token expired');
 
       return res.status(200).send({ member: _.pick(member, ['_id', 'email']) });
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -398,38 +361,29 @@ module.exports = {
   // @access Public
   resetPassword: async (req, res, next) => {
     const { error } = validatePasswordReset(req.body);
-    if (error) return res.status(400).send(error.details);
+    if (error) throw createError(400, error, error.details);
 
-    if (!req.params.id)
-      return res.status(400).send({ message: 'Member ID not provided' });
+    if (!req.params.id) throw createError(400, 'Member ID not provided');
 
     const id = req.params.id;
     const { password } = req.body;
 
     try {
       const member = await Member.findById(id);
-      if (!member)
-        return res
-          .status(404)
-          .send({ message: 'Member with the given ID not found' });
+      if (!member) throw createError(404, 'Member not found');
 
       if (!member.resetPasswordToken || member.resetPasswordToken === '')
-        return res.status(403).send({
-          message: 'Password already reset with token - Please try again',
-        });
+        throw createError(
+          403,
+          'Password already reset with token - Please try again'
+        );
 
       // checks if the word "password" or email address is in their password and denies creation
       const memberEmail = member.email.split('@')[0];
       if (password.includes('password'))
-        return res
-          .status(400)
-          .send([{ message: "Please do not use 'password' in your password" }]);
+        throw createError(400, "Password contains 'password'");
       if (password.includes(memberEmail))
-        return res.status(400).send([
-          {
-            message: 'Please do not use your email username in your password',
-          },
-        ]);
+        throw createError(400, "Password contains 'email'");
 
       const salt = await bcrypt.genSalt(10);
       member.password = await bcrypt.hash(password, salt);
@@ -453,7 +407,7 @@ module.exports = {
 
       return res.status(200).send({ message: 'Password has been reset' });
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -463,26 +417,16 @@ module.exports = {
   verifyEmail: async (req, res, next) => {
     try {
       const { error } = validateForgotEmail(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       // checks if user with email exists
       const member = await Member.findOne({ email: req.body.email });
-      if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Invalid email or password.' }]);
+      if (!member) throw createError(400, 'Invalid email/password');
 
       // checks if account is closed
       if (member.closedAccount)
-        return res.status(401).send([
-          {
-            message:
-              'Your account is currently deactivated, contact your Admin/Manager to reactivate',
-          },
-        ]);
-
-      if (member.isVerified)
-        return res.status(400).send([{ message: 'Account already verified' }]);
+        throw createError(403, 'Account deactivated - contact admin/manager');
+      if (member.isVerified) throw createError(400, 'Account already verified');
 
       // generates a resetToken
       const token = randomString.generate();
@@ -516,7 +460,7 @@ module.exports = {
         },
       ]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -525,22 +469,14 @@ module.exports = {
   // @access Public
   verifyAccount: async (req, res, next) => {
     const token = req.query.token;
-    if (!token)
-      return res
-        .status(400)
-        .send({ message: 'Verification Token not provided.' });
+    if (!token) throw createError(400, 'Verification Token not provided');
 
     try {
       const member = await Member.findOne({ verificationToken: token });
-      if (!member)
-        return res
-          .status(404)
-          .send({ message: 'Verification token invalid - Try Again' });
+      if (!member) throw createError(400, 'Verification token invalid');
 
       if (member.verificationTokenExpires < Date.now())
-        return res
-          .status(400)
-          .send({ message: 'Verification token expired - Try Again' });
+        throw createError(400, 'Verification token expired');
 
       member.isVerified = true;
       member.verificationToken = undefined;
@@ -550,7 +486,7 @@ module.exports = {
 
       return res.status(200).send({ message: 'Account verified' });
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 };

@@ -1,4 +1,10 @@
-module.exports = function(req, res, next) {
-  if (!req.member.isAdmin) return res.status(403).send([{ message: 'Access Denied.' }]);
-  next();
+const createError = require('http-errors');
+
+module.exports = function (req, res, next) {
+  try {
+    if (!req.member.isAdmin) throw createError(403, 'Access Denied');
+    next();
+  } catch (err) {
+    next(err);
+  }
 };
