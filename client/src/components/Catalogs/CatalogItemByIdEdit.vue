@@ -310,11 +310,12 @@
           </div>
           <div class="col-sm-12 my-4 text-right">
             <router-link
+              tag="button"
               :to="`/dashboard/catalogitems/${currentCatalogItem._id}`"
-              class="btn btn-danger mr-2"
+              class="small-btn danger-btn mr-2"
               >{{ $t('cancel') }}</router-link
             >
-            <button class="btn btn-success" @click.prevent="updateCatalogItem">
+            <button class="small-btn" @click.prevent="updateCatalogItem">
               {{ $t('saveChanges') }}
             </button>
           </div>

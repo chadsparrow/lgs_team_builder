@@ -61,14 +61,14 @@
       </div>
       <div class="row">
         <div class="col-sm-12 col-lg-8 mt-2">
-          <button type="submit" class="btn btn-block btn-info">
+          <button type="submit" class="small-btn btn-block">
             {{ $t('catalogs.add.addCatalog') }}
           </button>
         </div>
         <div class="col-sm-12 col-lg-4 mt-2">
           <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
+            tag="button"
+            class="small-btn danger-btn btn-block"
             to="/dashboard/catalogs"
             >{{ $t('cancel') }}</router-link
           >

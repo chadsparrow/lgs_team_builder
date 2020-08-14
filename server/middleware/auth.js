@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
 const { Member } = require('../models/Member');
 const createError = require('http-errors');
+const { verifyAccessToken } = require('../middleware/jwt-helpers');
 
-module.exports = function (req, res, next) {
+module.exports = async (req, res, next) => {
   try {
     const bearerToken = req.header('Authorization');
     if (!bearerToken)
@@ -10,26 +10,16 @@ module.exports = function (req, res, next) {
 
     const token = bearerToken.split(' ')[1];
 
-    jwt.verify(token, process.env.JWT_PRIVATE_KEY, async (err, decoded) => {
-      if (err) {
-        const message =
-          err.name === 'JsonWebTokenError'
-            ? 'Access Denied. Invalid Token'
-            : 'Access Token Expired';
+    const decoded = await verifyAccessToken(token);
+    req.member = decoded;
 
-        throw createError(401, message);
-      }
+    const member = await Member.findById(req.member.aud);
+    if (!member) throw createError(401, 'Invalid User ID');
 
-      req.member = decoded;
+    req.member.isAdmin = member.isAdmin;
+    req.member._id = member._id;
 
-      const member = await Member.findById(req.member.aud);
-      if (!member) throw createError(401, 'Invalid User ID');
-
-      req.member.isAdmin = member.isAdmin;
-      req.member._id = member._id;
-
-      next();
-    });
+    next();
   } catch (err) {
     next(err);
   }

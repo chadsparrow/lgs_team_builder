@@ -453,7 +453,10 @@
             </button>
           </div>
           <div class="col-sm-4">
-            <router-link to="/login" class="small-btn danger-btn btn-block"
+            <router-link
+              tag="button"
+              to="/login"
+              class="small-btn danger-btn btn-block"
               >Cancel</router-link
             >
           </div>

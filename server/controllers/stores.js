@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const swearjar = require('swearjar');
-const logger = require('../middleware/logger');
+const createError = require('http-errors');
 const { Store, validateStore } = require('../models/Store');
 const { Team } = require('../models/Team');
 const { Member } = require('../models/Member');
@@ -22,8 +22,7 @@ module.exports = {
           .populate({ path: 'teamId', select: 'name teamId' })
           .select('-updatedAt -__v -items');
 
-        if (stores && stores.length === 0)
-          return res.status(404).send([{ message: 'There are no stores.' }]);
+        if (stores && stores.length === 0) throw createError(404, 'No Stores');
 
         return res.send(stores);
       }
@@ -31,14 +30,17 @@ module.exports = {
       // Only gets stores for current member - cycles through teams they are a part of and adds to response
       const teams = await Team.find({ members: req.member._id });
       if (teams && teams.length === 0)
-        return res.status(400).send([{ message: 'You are currently not a member of any team' }]);
+        throw createError(400, 'You are currently not a member of any team');
 
-      teams.forEach(team => {
+      teams.forEach((team) => {
         stores.push(team.stores);
       });
 
       // only sends stores that are NOT on HOLD
-      const collectedStores = await Store.find({ _id: { $in: stores }, mode: { $ne: 'HOLD' } })
+      const collectedStores = await Store.find({
+        _id: { $in: stores },
+        mode: { $ne: 'HOLD' },
+      })
         .sort({ createdAt: -1 })
         .populate({ path: 'managerId', select: 'name email' })
         .populate({ path: 'adminId', select: 'name email' })
@@ -46,11 +48,11 @@ module.exports = {
         .select('-updatedAt -__v -items');
 
       if (collectedStores && collectedStores.length === 0)
-        return res.status(404).send([{ message: 'You have no open stores.' }]);
+        throw createError(404, 'No open stores');
 
       return res.send(collectedStores);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -63,13 +65,16 @@ module.exports = {
         .sort({ createdAt: -1 })
         .populate({ path: 'managerId', select: 'name email phone' })
         .populate({ path: 'adminId', select: 'name email' })
-        .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
+        .populate({
+          path: 'teamId',
+          select: 'name teamId mainContact bulkShipping',
+        })
         .select('-updatedAt -__v -items');
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       return res.send(store);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -88,21 +93,23 @@ module.exports = {
           .populate({ path: 'teamId', select: 'name teamId' })
           .select('-updatedAt -__v -items');
         if (stores && stores.length === 0)
-          return res.status(404).send([{ message: 'Team has no stores.' }]);
+          throw createError(404, 'Team has no stores');
 
         return res.send(stores);
       }
 
       // shows all stores NOT on hold for anyone else
-      stores = await Store.find({ teamId: req.params.id, mode: { $ne: 'HOLD' } }).sort({
-        createdAt: -1
+      stores = await Store.find({
+        teamId: req.params.id,
+        mode: { $ne: 'HOLD' },
+      }).sort({
+        createdAt: -1,
       });
-      if (stores && stores.length === 0)
-        return res.status(404).send([{ message: 'Team has no open stores.' }]);
+      if (stores && stores.length === 0) throw createError(404, 'No Stores');
 
       return res.send(stores);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -114,11 +121,12 @@ module.exports = {
       // checks store name for profanity and denies
       if (req.body.storeName) {
         if (swearjar.profane(req.body.storeName))
-          return res
-            .status(400)
-            .send([
-              { message: 'Store name must not contain profanity', context: { key: 'storeName' } }
-            ]);
+          return res.status(400).send([
+            {
+              message: 'Store name must not contain profanity',
+              context: { key: 'storeName' },
+            },
+          ]);
       }
 
       // checks store message for profanity and denies
@@ -127,13 +135,13 @@ module.exports = {
           return res.status(400).send([
             {
               message: 'Store message must not contain profanity',
-              context: { key: 'storeMessage' }
-            }
+              context: { key: 'storeMessage' },
+            },
           ]);
       }
 
       const { error } = validateStore(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const {
         teamId,
@@ -149,50 +157,62 @@ module.exports = {
         closingDate,
         timezone,
         storeMessage,
-        shippingType
+        shippingType,
       } = req.body;
 
       // checks if store already exists with the current name - denies duplicates
       let store = await Store.findOne({ storeName });
       if (store)
-        return res
-          .status(400)
-          .send([
-            { message: 'Store with that name already registered', context: { key: 'storeName' } }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Store with that name already registered',
+            context: { key: 'storeName' },
+          },
+        ]);
 
       if (!mongoose.Types.ObjectId.isValid(adminId))
         return res
           .status(400)
-          .send([{ message: 'Invalid ID. (Admin)', context: { key: 'adminId' } }]);
+          .send([
+            { message: 'Invalid ID. (Admin)', context: { key: 'adminId' } },
+          ]);
 
       const storeAdmin = await Member.findById(adminId);
 
       if (!storeAdmin)
-        return res
-          .status(400)
-          .send([{ message: 'Admin with the given ID not found', context: { key: 'adminId' } }]);
+        return res.status(400).send([
+          {
+            message: 'Admin with the given ID not found',
+            context: { key: 'adminId' },
+          },
+        ]);
 
       // checks if store has a valid manager
       if (!mongoose.Types.ObjectId.isValid(managerId))
         return res
           .status(400)
-          .send([{ message: 'Invalid ID. (Manager)', context: { key: 'managerId' } }]);
+          .send([
+            { message: 'Invalid ID. (Manager)', context: { key: 'managerId' } },
+          ]);
 
       const manager = await Member.findById(managerId);
 
       if (!manager)
-        return res
-          .status(400)
-          .send([
-            { message: 'Manager with the given ID not found', context: { key: 'managerId' } }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Manager with the given ID not found',
+            context: { key: 'managerId' },
+          },
+        ]);
 
       const team = await Team.findById(teamId);
       if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID not found', context: { key: 'teamId' } }]);
+        return res.status(400).send([
+          {
+            message: 'Team with the given ID not found',
+            context: { key: 'teamId' },
+          },
+        ]);
 
       store = new Store({
         teamId,
@@ -208,7 +228,7 @@ module.exports = {
         closingDate,
         timezone,
         storeMessage,
-        shippingType
+        shippingType,
       });
 
       // copies team bulkshipping info over to store bulkshipping
@@ -219,7 +239,7 @@ module.exports = {
       await Team.updateOne({ _id: teamId }, { $push: { stores: store._id } });
       return res.status(201).send([{ message: 'Team Store Added' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -233,7 +253,7 @@ module.exports = {
       let newStoreID = store._id.toString();
       newStoreID = newStoreID.substring(0, 7);
 
-      const dupStoreItems = store.items.map(el => {
+      const dupStoreItems = store.items.map((el) => {
         return {
           itemId: el.itemId,
           catalogId: el.catalogId,
@@ -257,7 +277,7 @@ module.exports = {
           priceBreaks: el.priceBreaks,
           upChargeType: el.upChargeType,
           upChargeAmount: el.upChargeAmount,
-          upChargeTotal: el.upChargeTotal
+          upChargeTotal: el.upChargeTotal,
         };
       });
 
@@ -282,16 +302,21 @@ module.exports = {
         extraCharges: store.extraCharges,
         collectedShippingCharges: [],
         bulkShipping: store.bulkShipping,
-        items: dupStoreItems
+        items: dupStoreItems,
       });
 
       await newStore.save();
 
-      await Team.updateOne({ _id: newStore.teamId }, { $push: { stores: newStore._id } });
+      await Team.updateOne(
+        { _id: newStore.teamId },
+        { $push: { stores: newStore._id } }
+      );
 
-      return res.status(200).send([{ message: 'Team Store duplicated', store: newStore }]);
+      return res
+        .status(200)
+        .send([{ message: 'Team Store duplicated', store: newStore }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -301,7 +326,7 @@ module.exports = {
   updateStore: async (req, res, next) => {
     try {
       const { error } = validateStore(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const {
         teamId,
@@ -317,32 +342,33 @@ module.exports = {
         closingDate,
         timezone,
         storeMessage,
-        shippingType
+        shippingType,
       } = req.body;
 
       if (swearjar.profane(storeName))
-        return res.status(400).send([{ message: 'Store name must not contain profanity.' }]);
+        throw createError(403, 'Store name must not contain profanity');
       if (swearjar.profane(storeMessage))
-        return res.status(400).send([{ message: 'Store message must not contain profanity.' }]);
+        throw createError(403, 'Store message must not contain profanity');
 
       const store = await Store.findById(req.params.id);
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found.' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       if (!mongoose.Types.ObjectId.isValid(adminId))
-        return res.status(400).send([{ message: 'Invalid ID. (Admin)' }]);
+        throw createError(400, 'Invalid ID. (Admin)');
 
       const storeAdmin = await Member.findById(adminId);
       if (!storeAdmin)
-        return res.status(400).send([{ message: 'Admin with the given ID not found.' }]);
+        throw createError(400, 'Admin with the given ID not found');
 
       if (!mongoose.Types.ObjectId.isValid(managerId))
-        return res.status(400).send([{ message: 'Invalid ID. (Manager)' }]);
+        throw createError(400, 'Invalid ID. (Manager)');
+
       const manager = await Member.findById(managerId);
       if (!manager)
-        return res.status(400).send([{ message: 'Manager with the given ID not found.' }]);
+        throw createError(400, 'Manager with the given ID not found');
 
       const team = await Team.findById(teamId);
-      if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+      if (!team) throw createError(400, 'Team with the given ID not found');
 
       store.teamId = teamId;
       store.storeName = storeName;
@@ -367,7 +393,7 @@ module.exports = {
       await store.save();
       return res.send([{ message: 'Store updated' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -377,12 +403,12 @@ module.exports = {
   getStoreItems: async (req, res, next) => {
     try {
       const store = await Store.findById(req.params.id).select('items');
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       const { items } = store;
       return res.status(200).send(items);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -399,9 +425,13 @@ module.exports = {
         { $upsert: true, new: true }
       ).select('items');
 
-      return res.status(200).send([{ message: 'Items Updated', items: store.items }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
+
+      return res
+        .status(200)
+        .send([{ message: 'Items Updated', items: store.items }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -419,12 +449,19 @@ module.exports = {
         .sort({ createdAt: -1 })
         .populate({ path: 'managerId', select: 'name email phone' })
         .populate({ path: 'adminId', select: 'name email' })
-        .populate({ path: 'teamId', select: 'name teamId mainContact bulkShipping' })
+        .populate({
+          path: 'teamId',
+          select: 'name teamId mainContact bulkShipping',
+        })
         .select('-updatedAt -__v -items');
 
-      return res.status(200).send([{ message: 'Extra Charges updated', store }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
+
+      return res
+        .status(200)
+        .send([{ message: 'Extra Charges updated', store }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

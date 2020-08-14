@@ -1,4 +1,4 @@
-const logger = require('../middleware/logger');
+const createError = require('http-errors');
 const { Order, validateOrder } = require('../models/Order');
 const { Store } = require('../models/Store');
 const { Member } = require('../models/Member');
@@ -19,7 +19,7 @@ module.exports = {
           .populate({ path: 'teamId', select: 'name' })
           .select('-updatedAt -__v ');
         if (orders && orders.length === 0)
-          return res.status(404).send([{ message: 'No orders found.' }]);
+          throw createError(404, 'No orders found');
 
         return res.send(orders);
       }
@@ -29,12 +29,11 @@ module.exports = {
         .populate({ path: 'memberId', select: 'name email' })
         .select('-updatedAt -__v');
 
-      if (orders && orders.length === 0)
-        return res.status(404).send([{ message: 'You currently do not have any orders.' }]);
+      if (orders && orders.length === 0) throw createError(404, 'No orders');
 
       return res.send(orders);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -44,15 +43,15 @@ module.exports = {
   getTeamOrders: async (req, res, next) => {
     try {
       const team = await Team.findById(req.params.id);
-      if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+      if (!team) throw createError(400, 'Team with the given ID not found');
 
       const orders = await Order.find({ teamId: req.params.id });
       if (orders && orders.length === 0)
-        return res.status(404).send([{ message: 'No orders found for the given team ID' }]);
+        throw createError(404, 'No orders found');
 
       return res.send(orders);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -62,15 +61,15 @@ module.exports = {
   getMemberOrders: async (req, res, next) => {
     try {
       const member = await Member.findById(req.params.id);
-      if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
+      if (!member) throw createError(400, 'Member with the given ID not found');
 
       const orders = await Order.find({ memberId: req.params.id });
       if (orders && orders.length === 0)
-        return res.status(404).send([{ message: 'No orders found for the given member ID' }]);
+        throw createError(404, 'No orders found');
 
       return res.send(orders);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -80,15 +79,14 @@ module.exports = {
   getStoreOrders: async (req, res, next) => {
     try {
       const store = await Store.findById(req.params.id);
-      if (!store) return res.status(400).send([{ message: 'Store with given ID not found' }]);
+      if (!store) throw createError(400, 'Store with given ID not found');
 
       const orders = await Order.find({ storeId: req.params.id });
-      if (orders && orders.length === 0)
-        return res.status(404).send([{ message: 'No orders found for the given store ID' }]);
+      if (orders && orders.length === 0) throw createError(404, 'No orders');
 
       return res.send(orders);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -98,16 +96,16 @@ module.exports = {
   addOrder: async (req, res, next) => {
     try {
       const { error } = validateOrder(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const member = await Member.findById(req.body.memberId);
-      if (!member) return res.status(400).send([{ message: 'Member with the given ID not found' }]);
+      if (!member) throw createError(400, 'Member with the given ID not found');
 
       const team = await Team.findById(req.body.teamId);
-      if (!team) return res.status(400).send([{ message: 'Team with the given ID not found' }]);
+      if (!team) throw createError(400, 'Team with the given ID not found');
 
       const store = await Store.findById(req.body.storeId);
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       const {
         storeId,
@@ -125,7 +123,7 @@ module.exports = {
         couponId,
         orderDiscount,
         taxPercentage,
-        items
+        items,
       } = req.body;
 
       const order = new Order({
@@ -136,7 +134,7 @@ module.exports = {
         orderDiscount,
         taxPercentage,
         orderDate: new Date(),
-        items
+        items,
       });
 
       if (store.shipping.shippingType === 'DROP') {
@@ -153,13 +151,14 @@ module.exports = {
       }
 
       let itemsTotal = 0;
-      items.forEach(item => {
+      items.forEach((item) => {
         itemsTotal += (item.price - item.discount) * item.quantity;
       });
 
       order.subTotal = itemsTotal;
       //  REPLACE TAX CALCULATIONS WITH AVALARA API CALLS
-      const taxAmount = (order.subTotal - order.discount) * (order.taxPercentage / 100);
+      const taxAmount =
+        (order.subTotal - order.discount) * (order.taxPercentage / 100);
       order.totalAmount = order.subTotal - order.discount + taxAmount;
 
       order.balanceOwing = order.totalAmount - order.amount_paid;
@@ -167,7 +166,7 @@ module.exports = {
       await order.save();
       return res.send(order);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

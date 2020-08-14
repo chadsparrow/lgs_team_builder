@@ -1,11 +1,17 @@
-const logger = require('../middleware/logger');
-const { CatalogItem, validateCatalogItem, validateCatalogImg } = require('../models/CatalogItem');
+const {
+  CatalogItem,
+  validateCatalogItem,
+  validateCatalogImg,
+} = require('../models/CatalogItem');
 const populateOptions = { path: 'catalogId', select: 'brand season year' };
+const createError = require('http-errors');
 
 // this function populates all the catalogitem reference fields
 function populateCatalogItem(catalogItem) {
-  return new Promise(async resolve => {
-    const populatedCatalogItem = await CatalogItem.findById(catalogItem).populate(populateOptions);
+  return new Promise(async (resolve) => {
+    const populatedCatalogItem = await CatalogItem.findById(
+      catalogItem
+    ).populate(populateOptions);
     resolve(populatedCatalogItem);
   });
 }
@@ -18,14 +24,14 @@ module.exports = {
     try {
       const items = await CatalogItem.find().populate({
         path: 'catalogId',
-        select: 'brand season year'
+        select: 'brand season year',
       });
       if (items && items.length === 0)
-        return res.status(404).send([{ message: 'There are no catalog items.' }]);
+        throw createError(404, 'There are no catalog items');
 
       return res.json(items);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -36,11 +42,11 @@ module.exports = {
     try {
       const items = await CatalogItem.find({ catalogId: req.params.id });
       if (items && items.length === 0)
-        return res.status(400).send([{ message: 'Catalog has no items.' }]);
+        throw createError(404, 'Catalog has no items');
 
       return res.send(items);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -49,13 +55,15 @@ module.exports = {
   // @access  Private
   getCatalogItem: async (req, res, next) => {
     try {
-      const item = await CatalogItem.findById(req.params.id).populate(populateOptions);
+      const item = await CatalogItem.findById(req.params.id).populate(
+        populateOptions
+      );
       if (!item)
-        return res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
+        throw createError(400, 'Catalog Item with the given ID not found');
 
       return res.send(item);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -65,7 +73,7 @@ module.exports = {
   addCatalogItem: async (req, res, next) => {
     try {
       const { error } = validateCatalogItem(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const {
         catalogId,
@@ -78,7 +86,7 @@ module.exports = {
         gender,
         descriptionEN,
         descriptionFR,
-        categories
+        categories,
       } = req.body;
 
       // Checks if catalog item with the same product code or stylecode in the current catalog exists and denies
@@ -88,13 +96,13 @@ module.exports = {
           {
             $or: [
               { productCode: productCode.toUpperCase() },
-              { styleCode: styleCode.toUpperCase() }
-            ]
-          }
-        ]
+              { styleCode: styleCode.toUpperCase() },
+            ],
+          },
+        ],
       });
 
-      if (item) return res.status(400).send([{ message: 'Product already exists.' }]);
+      if (item) throw createError(403, 'Product already exists');
 
       item = new CatalogItem({
         catalogId,
@@ -107,13 +115,13 @@ module.exports = {
         gender,
         descriptionEN,
         descriptionFR,
-        categories
+        categories,
       });
 
       await item.save();
       return res.status(200).send([{ message: 'Item added to Catalog' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -126,29 +134,33 @@ module.exports = {
 
       // checks if item exists
       const item = await CatalogItem.findById(req.params.id);
-      if (!item) return res.status(400).send([{ message: 'Item with the given ID not found.' }]);
+      if (!item) throw createError(400, 'Item with the given ID not found');
 
       // checks if there already is an item with the same product code & style code and denies
       const duplicateItem = await CatalogItem.findOne({
         _id: { $ne: req.params.id },
         catalog_id: item.catalog_id,
         productCode: productCode.toUpperCase(),
-        styleCode: styleCode.toUpperCase()
+        styleCode: styleCode.toUpperCase(),
       });
-      if (duplicateItem) return res.status(400).send([{ message: 'Product already exists.' }]);
+      if (duplicateItem) throw createError(403, 'Product already exists');
 
-      const updatedCatalogItem = await CatalogItem.updateOne({ _id: req.params.id }, req.body, {
-        new: true
-      });
+      const updatedCatalogItem = await CatalogItem.updateOne(
+        { _id: req.params.id },
+        req.body,
+        {
+          new: true,
+        }
+      );
 
       return res
         .status(200)
         .send([
           { message: 'Catalog item updated' },
-          { updatedItem: populateCatalogItem(updatedCatalogItem._id) }
+          { updatedItem: populateCatalogItem(updatedCatalogItem._id) },
         ]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -158,12 +170,12 @@ module.exports = {
   addCatalogItemImage: async (req, res, next) => {
     try {
       const { error } = validateCatalogImg(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       // checks if catalog item exists
       const item = await CatalogItem.findById(req.params.id);
       if (!item)
-        return res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
+        throw createError(400, 'Catalog Item with the given ID not found');
 
       // pushes image_url data into images array
       item.images.push(req.body.image_url);
@@ -171,7 +183,7 @@ module.exports = {
 
       return res.send(populateCatalogItem(item._id));
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -181,18 +193,18 @@ module.exports = {
   updateCatalogItemImage: async (req, res, next) => {
     try {
       const { error } = validateCatalogImg(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const item = await CatalogItem.findById(req.params.id);
       if (!item)
-        return res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
+        throw createError(400, 'Catalog Item with the given ID not found');
 
       item.images[req.params.index] = req.body.image_url;
       await item.save();
 
       return res.send(populateCatalogItem(item._id));
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -203,7 +215,8 @@ module.exports = {
     try {
       const item = await CatalogItem.findById(req.params.id);
       if (!item)
-        return res.status(400).json([{ message: 'Catalog Item with the given ID not found.' }]);
+        throw createError(400, 'Catalog Item with the given ID not found');
+
       const filteredImages = item.images.filter((image, index) => {
         return index !== req.params.index;
       });
@@ -212,7 +225,7 @@ module.exports = {
       await item.save();
       return res.status(200).send([{ message: 'Image removed.' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -222,11 +235,12 @@ module.exports = {
   deleteCatalogItem: async (req, res, next) => {
     try {
       const item = await CatalogItem.findByIdAndRemove(req.params.id);
-      if (!item) res.status(400).send([{ message: 'Catalog Item with the given ID not found.' }]);
+      if (!item)
+        throw createError(400, 'Catalog Item with the given ID not found');
 
       return res.status(200).send([{ message: 'Item Removed.' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

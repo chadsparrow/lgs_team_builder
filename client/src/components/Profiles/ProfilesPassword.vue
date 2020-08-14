@@ -89,6 +89,7 @@
         </div>
         <div class="col sm-6">
           <router-link
+            tag="button"
             to="/dashboard/profile"
             class="small-btn danger-btn btn-block"
             >{{ $t('cancel') }}</router-link

@@ -1,14 +1,14 @@
 const generator = require('generate-password');
-const logger = require('../middleware/logger');
 const bcrypt = require('bcryptjs');
-const Tzdb = require('timezonedb').Tzdb;
-const mailer = require('../utils/mailer');
 
+const Tzdb = require('timezonedb').Tzdb;
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
 });
 
+const mailer = require('../utils/mailer');
 const geocoder = require('../utils/geocoder');
+const createError = require('http-errors');
 
 const { Team } = require('../models/Team');
 const {
@@ -33,13 +33,11 @@ module.exports = {
         .sort({ name: 1 });
 
       if (members && members.length === 0)
-        return res
-          .status(404)
-          .send([{ message: 'There are no members in the database.' }]);
+        throw createError(404, 'There are no members in the database');
 
       return res.send(members);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -53,7 +51,7 @@ module.exports = {
         .select('_id name email isVerified');
       return res.status(200).send(admins);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -66,13 +64,11 @@ module.exports = {
         '_id name email createdAt timezone isAdmin'
       );
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       return res.send(member);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -90,13 +86,11 @@ module.exports = {
       );
 
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       return res.send({ member, teams });
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -110,7 +104,7 @@ module.exports = {
       );
       return res.status(200).send(me);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -120,7 +114,7 @@ module.exports = {
   adminRegisterMember: async (req, res, next) => {
     try {
       const { error } = validateNewMember(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const {
         name,
@@ -158,8 +152,7 @@ module.exports = {
       } = req.body;
 
       const member = await Member.findOne({ email });
-      if (member)
-        return res.status(400).send([{ message: 'Email already registered.' }]);
+      if (member) throw createError(400, 'Email already registered');
 
       let password;
       if (process.env.NODE_ENV === 'development') {
@@ -281,7 +274,7 @@ module.exports = {
 
       return res.status(201).send([{ message: 'Member Registered' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -291,7 +284,8 @@ module.exports = {
   updateMember: async (req, res, next) => {
     try {
       const { error } = validateUpdateMember(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
+
       const {
         name,
         company,
@@ -328,9 +322,7 @@ module.exports = {
 
       const updateMember = await Member.findById(req.params.id);
       if (!updateMember)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       updateMember.name = name;
       updateMember.company = company;
@@ -453,7 +445,7 @@ module.exports = {
 
       return res.status(200).send([{ message: 'Member Updated' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -463,15 +455,13 @@ module.exports = {
   updateEmailAddress: async (req, res, next) => {
     try {
       const { error } = validateEmail(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const { currentEmail, newEmail } = req.body;
 
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       if (member.email === newEmail) {
         return res.status(400).send([
@@ -525,7 +515,7 @@ module.exports = {
           { message: 'Email address updated - this will be your new login.' },
         ]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -535,37 +525,26 @@ module.exports = {
   updatePassword: async (req, res, next) => {
     try {
       const { error } = validatePassword(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const { oldPassword, newPassword } = req.body;
 
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       // checks to make sure the current password is correct
       const result = await bcrypt.compare(oldPassword, member.password);
-      if (!result)
-        return res.status(400).send([{ message: 'Old Password incorrect.' }]);
+      if (!result) throw createError(403, 'Password incorrect');
 
       const userEmail = member.email.split('@')[0];
 
       // doesnt allow member to use 'password' in their password or the email address in their password
       if (newPassword.includes('password'))
-        return res
-          .status(400)
-          .send([
-            { message: "Please do not use 'password' in your NEW password" },
-          ]);
+        throw createError(400, "Password contains 'password'");
+
       if (newPassword.includes(userEmail))
-        return res.status(400).send([
-          {
-            message:
-              'Please do not use your email username in your NEW password',
-          },
-        ]);
+        throw createError(400, 'Password contains your email address');
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(newPassword, salt);
@@ -575,7 +554,7 @@ module.exports = {
 
       return res.status(200).send([{ message: 'Member password updated' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -587,21 +566,17 @@ module.exports = {
       // if member is a manager of a team, will not allow - need to pick a new manager in team window first
       const teams = await Team.find({ 'managerId._id': req.params.id });
       if (teams && teams.length > 0)
-        return res.status(400).send([
-          {
-            message:
-              'Contact your Team Admin to select a new Team Manager first',
-          },
-        ]);
+        throw createError(
+          400,
+          'Contact your Team Admin to select a new Team Manager first'
+        );
 
       const member = await Member.updateOne(
         { _id: req.params.id },
         { closedAccount: true }
       );
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       // removes member from all teams that member was a part of
       await Team.updateMany(
@@ -611,7 +586,7 @@ module.exports = {
 
       return res.status(200).send([{ message: 'Member Account Cancelled' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -622,9 +597,7 @@ module.exports = {
     try {
       const member = await Member.findById(req.params.id);
       if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID was not found.' }]);
+        throw createError(400, 'Member with the given ID was not found');
 
       const filteredNotifications = member.notifications.filter(
         (notify) => notify._id != req.params.nId
@@ -633,7 +606,7 @@ module.exports = {
       await member.save();
       return res.status(200).send([{ message: 'Notification removed.' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 };

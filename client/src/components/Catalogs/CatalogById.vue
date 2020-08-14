@@ -34,7 +34,7 @@
               autofocus
             />
             <button
-              class="small-btn bg-transparent"
+              class="btn btn-sm"
               style="margin-left: -30px; z-index: 100;"
               @click.prevent="resetSearchBar"
             >
@@ -51,18 +51,18 @@
           <div class="row">
             <div class="col-md-6 mt-2">
               <router-link
-                class="btn btn-sm btn-block btn-outline-info"
+                class="small-btn btn-block"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/add`"
-                tag="a"
+                tag="button"
               >
                 <i class="fas fa-plus fa-lg mr-2"></i>Add Item
               </router-link>
             </div>
             <div class="col-md-6 mt-2">
               <router-link
-                class="btn btn-sm btn-block btn-outline-info"
+                class="small-btn btn-block"
                 :to="`/dashboard/catalogs/${currentCatalog._id}/edit`"
-                tag="a"
+                tag="button"
               >
                 <i class="fas fa-cog fa-lg mr-2"></i>Settings
               </router-link>

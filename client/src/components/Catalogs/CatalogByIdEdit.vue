@@ -61,14 +61,14 @@
       </div>
       <div class="row mt-2">
         <div class="col-lg-8 mt-2">
-          <button class="btn btn-block btn-info" @click="editCatalog">
+          <button class="small-btn btn-block" @click="editCatalog">
             {{ $t('submit') }}
           </button>
         </div>
         <div class="col-lg-4 mt-2">
           <router-link
-            tag="a"
-            class="btn btn-block btn-danger"
+            tag="button"
+            class="small-btn danger-btn btn-block"
             :to="`/dashboard/catalogs/${currentCatalog._id}`"
             >{{ $t('cancel') }}</router-link
           >

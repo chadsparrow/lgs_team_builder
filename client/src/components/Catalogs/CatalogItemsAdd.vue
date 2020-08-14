@@ -257,14 +257,14 @@
       </div>
       <div class="row mt-2">
         <div class="col-sm-12 col-lg-6 mt-2">
-          <button type="submit" class="btn btn-block btn-info">
+          <button type="submit" class="small-btn btn-block">
             Add Catalog Item
           </button>
         </div>
         <div class="col-sm-12 col-lg-6 mt-2">
           <router-link
-            tag="a"
-            class="btn btn-danger btn-block"
+            tag="button"
+            class="small-btn danger-btn btn-block"
             :to="`/dashboard/catalogs/${currentCatalog._id}`"
             >Cancel</router-link
           >

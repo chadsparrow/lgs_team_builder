@@ -1,7 +1,10 @@
-const logger = require('../middleware/logger');
 const aqp = require('api-query-params');
-const { Catalog, validateCatalog, validateCoverImage } = require('../models/Catalog');
-const fs = require('fs');
+const {
+  Catalog,
+  validateCatalog,
+  validateCoverImage,
+} = require('../models/Catalog');
+const createError = require('http-errors');
 
 module.exports = {
   // @desc    Collects all catalogs
@@ -13,16 +16,16 @@ module.exports = {
       if (filter.year) {
         const pattern = new RegExp(/^\d{4}$/);
         if (!pattern.test(filter.year))
-          return res.status(400).send([{ message: 'Invalid year requested.' }]);
+          throw createError(400, 'Invalid year requested');
       }
 
       const catalogs = await Catalog.find(filter).sort({ year: -1, brand: 1 });
       if (catalogs && catalogs.length === 0)
-        return res.status(404).send([{ message: 'No catalogs found.' }]);
+        throw createError(404, 'No catalogs found');
 
       return res.send(catalogs);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -33,11 +36,11 @@ module.exports = {
     try {
       const catalog = await Catalog.findById(req.params.id);
       if (!catalog)
-        return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
+        throw createError(400, 'Catalog with the given ID not found');
 
       return res.send(catalog);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -47,41 +50,30 @@ module.exports = {
   addCatalog: async (req, res, next) => {
     try {
       const { error } = validateCatalog(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
       const { brand, season, year, coverImg } = req.body;
 
       // checks if catalog already exists and denies
       let catalog = await Catalog.findOne({
         brand: brand.toUpperCase(),
         season: season.toUpperCase(),
-        year
+        year,
       });
 
-      if (catalog) return res.status(400).send([{ message: 'Catalog already exists.' }]);
+      if (catalog) throw createError(400, 'Catalog already exists');
 
       catalog = new Catalog({
         brand,
         season,
         year,
-        coverImg
+        coverImg,
       });
 
       await catalog.save();
 
-      const dir1 = `static/images/catalogs/${catalog._id}`;
-      const dir2 = `static/images/catalogs/${catalog._id}/300`;
-      const dir3 = `static/images/catalogs/${catalog._id}/800`;
-      try {
-        fs.mkdirSync(dir1);
-        fs.mkdirSync(dir2);
-        fs.mkdirSync(dir3);
-      } catch (err) {
-        if (err.code === 'EEXIST') logger.error(err);
-      }
-
       return res.send(catalog);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -91,21 +83,21 @@ module.exports = {
   updateCatalog: async (req, res, next) => {
     try {
       const { error } = validateCatalog(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const { brand, season, year, coverImg } = req.body;
 
       const catalog = await Catalog.findById(req.params.id);
       if (!catalog)
-        return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
+        throw createError(400, 'Catalog with the given ID not found');
 
       // checks to see if updated catalog already matches an existing catalog in the database and denies
       const duplicateCatalog = await Catalog.findOne({
         brand: brand.toUpperCase(),
         season: season.toUpperCase(),
-        year
+        year,
       });
-      if (duplicateCatalog) return res.status(400).send([{ message: 'Catalog already exists.' }]);
+      if (duplicateCatalog) throw createError(400, 'Catalog already exists');
 
       catalog.brand = brand;
       catalog.season = season;
@@ -115,7 +107,7 @@ module.exports = {
       await catalog.save();
       return res.send(catalog);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -125,7 +117,7 @@ module.exports = {
   updateCatalogCover: async (req, res, next) => {
     try {
       const { error } = validateCoverImage(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const catalog = await Catalog.findByIdAndUpdate(
         req.params.id,
@@ -133,11 +125,11 @@ module.exports = {
         { new: true }
       );
       if (!catalog)
-        return res.status(400).send([{ message: 'Catalog with the given ID not found.' }]);
+        throw createError(400, 'Catalog with the given ID not found');
 
       return res.json(catalog);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

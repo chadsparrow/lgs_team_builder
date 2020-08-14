@@ -1,6 +1,6 @@
-const logger = require('../middleware/logger');
 const { Cart } = require('../models/Cart');
 const { Store } = require('../models/Store');
+const createError = require('http-errors');
 
 module.exports = {
   // @desc    Get current members cart for specific store
@@ -9,18 +9,18 @@ module.exports = {
   getCart: async (req, res, next) => {
     try {
       const store = await Store.findById(req.params.id);
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       const cart = await Cart.findOne({
         memberId: req.member._id,
-        storeId: store._id
+        storeId: store._id,
       });
 
       if (!cart) return res.status(200).send(null);
 
       return res.status(200).send(cart);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -30,23 +30,26 @@ module.exports = {
   addToCart: async (req, res, next) => {
     try {
       const store = await Store.findById(req.params.id);
-      if (!store) return res.status(400).send([{ message: 'Store with the given ID not found' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
 
       const { storeItemId } = req.body;
 
-      store.items.forEach(el => {
+      store.items.forEach((el) => {
         if (el._id == storeItemId) {
           req.body = { ...req.body, storePrice: parseFloat(el.storePrice) };
         }
       });
 
-      let cart = await Cart.findOne({ storeId: store._id, memberId: req.member._id });
+      let cart = await Cart.findOne({
+        storeId: store._id,
+        memberId: req.member._id,
+      });
       if (!cart) {
         cart = new Cart({
           memberId: req.member._id,
           storeId: store._id,
           currency: store.currency,
-          items: []
+          items: [],
         });
       }
 
@@ -54,9 +57,11 @@ module.exports = {
 
       const updatedCart = await cart.save();
 
-      return res.status(201).send([{ message: 'Item added to cart', updatedCart }]);
+      return res
+        .status(201)
+        .send([{ message: 'Item added to cart', updatedCart }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -72,11 +77,11 @@ module.exports = {
       );
 
       if (!updatedCart)
-        return res.status(400).send([{ message: 'Cart with the given ID not found' }]);
+        throw createError(400, 'Cart with the given ID not found');
 
       return res.status(200).send([{ message: 'Cart Updated', updatedCart }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -86,24 +91,24 @@ module.exports = {
   deleteCartItem: async (req, res, next) => {
     try {
       if (!req.query.itemId)
-        return res
-          .status(400)
-          .send([{ message: "Please include a query with 'itemId' & an ID number" }]);
+        throw createError(400, 'itemId query not included');
 
       const updatedCart = await Cart.findByIdAndUpdate(
         req.params.id,
         {
-          $pull: { items: { _id: req.query.itemId } }
+          $pull: { items: { _id: req.query.itemId } },
         },
         { new: true }
       );
 
       if (!updatedCart)
-        return res.status(400).send([{ message: 'Cart with the given ID not found' }]);
+        throw createError(400, 'Cart with the given ID not found');
 
-      return res.status(200).send([{ message: 'Cart Item Removed', updatedCart }]);
+      return res
+        .status(200)
+        .send([{ message: 'Cart Item Removed', updatedCart }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -119,7 +124,7 @@ module.exports = {
 
       return res.status(200).send([{ message: 'Item removed from all carts' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

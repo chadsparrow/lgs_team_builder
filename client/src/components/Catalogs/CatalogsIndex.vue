@@ -3,7 +3,7 @@
 <template>
   <div class="page container" v-if="!isLoading">
     <div class="mb-2 header">
-      <router-link to="/dashboard/catalogs/add" class="btn btn-info">
+      <router-link tag="button" to="/dashboard/catalogs/add" class="small-btn">
         <i class="fas fa-plus mr-2"></i> {{ $t('catalogs.add.addCatalog') }}
       </router-link>
     </div>

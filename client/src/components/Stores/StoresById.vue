@@ -157,19 +157,18 @@
         </div>
         <div class="header-buttons" v-if="member.isAdmin">
           <router-link
-            class="btn btn-sm btn-outline-info mr-2"
+            tag="button"
+            class="small-btn mr-2"
             :to="`/dashboard/stores/${store._id}/edit`"
             >Store Settings</router-link
           >
           <router-link
-            class="btn btn-sm btn-outline-info mr-2"
+            tag="button"
+            class="small-btn mr-2"
             :to="`/dashboard/stores/${store._id}/add`"
             >Edit Items</router-link
           >
-          <button
-            @click="displayExtrasModal"
-            class="btn btn-sm btn-outline-info mr-2"
-          >
+          <button @click="displayExtrasModal" class="small-btn mr-2">
             Edit Extras
             <span
               class="badge badge-light ml-2"
@@ -178,8 +177,8 @@
               {{ extraCharges.length }}
             </span>
           </button>
-          <button class="btn btn-sm btn-outline-info mr-2">Edit Coupons</button>
-          <button @click="duplicateOrder" class="btn btn-sm btn-outline-info">
+          <button class="small-btn mr-2">Edit Coupons</button>
+          <button @click="duplicateOrder" class="small-btn">
             Duplicate Store
           </button>
         </div>
@@ -260,7 +259,7 @@
                 />
               </div>
               <button
-                class="btn btn-block btn-info mt-2"
+                class="small-btn btn-block mt-2"
                 @click="addToCart(index)"
                 v-if="!item.mandatoryItem"
               >
@@ -335,7 +334,7 @@
                     </div>
                     <div class="col-md-1">
                       <button
-                        class="btn btn-block btn-danger removeCharge"
+                        class="small-btn danger-btn btn-block removeCharge"
                         @click="removeExtraCharge(index)"
                       >
                         <i class="fas fa-times"></i>
@@ -387,7 +386,7 @@
                     </div>
                     <div class="col-md-2">
                       <button
-                        class="btn btn-block btn-success"
+                        class="small-btn btn-block"
                         :disabled="
                           !newChargeName ||
                             newChargePrice === 0 ||
@@ -398,7 +397,7 @@
                         <i class="fas fa-check mr-2"></i>Add
                       </button>
                       <button
-                        class="btn btn-block btn-danger"
+                        class="small-btn danger-btn btn-block"
                         @click="cancelNewCharge"
                       >
                         <i class="fas fa-times"></i>
@@ -407,7 +406,7 @@
                   </div>
                 </div>
                 <button
-                  class="btn btn-block btn-info mt-3"
+                  class="small-btn btn-block mt-3"
                   @click="showNewCharge = true"
                   v-if="!showNewCharge"
                 >
@@ -418,7 +417,7 @@
               <div class="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-success"
+                  class="small-btn"
                   @click="closeExtrasModal"
                   :disabled="showNewCharge"
                 >
@@ -892,6 +891,12 @@ export default {
     .form-control {
       width: 250px;
       max-width: 400px;
+    }
+
+    .header-buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
   }
 

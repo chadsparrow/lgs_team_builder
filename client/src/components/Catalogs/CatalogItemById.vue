@@ -158,8 +158,9 @@
           </div>
           <div class="col-sm-12 mt-4">
             <router-link
+              tag="button"
               :to="`/dashboard/catalogitems/edit/${currentCatalogItem._id}`"
-              class="btn btn-block btn-lg btn-info"
+              class="large-btn btn-block"
               >{{ $t('editItem') }}</router-link
             >
           </div>

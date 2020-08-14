@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-md-12 mb-2">
         <router-link
+          tag="button"
           :to="`/dashboard/stores/${store._id}`"
           class="small-btn danger-btn mb-2"
           ><i class="fas fa-arrow-left mr-2"></i>Go back to Store</router-link

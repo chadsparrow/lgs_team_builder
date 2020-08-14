@@ -327,7 +327,11 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="small-btn" @click="closeModal">
+                  <button
+                    type="button"
+                    class="small-btn danger-btn"
+                    @click="closeModal"
+                  >
                     Exit
                   </button>
                 </div>

@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
+const createError = require('http-errors');
 
-module.exports = function(req, res, next) {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(400).send([{ message: 'Invalid ID.' }]);
+module.exports = function (req, res, next) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id))
+      throw createError(400, 'Invalid ID');
 
-  next();
+    next();
+  } catch (err) {
+    next(err);
+  }
 };

@@ -1,4 +1,4 @@
-const logger = require('../middleware/logger');
+const createError = require('http-errors');
 const mongoose = require('mongoose');
 const swearjar = require('swearjar');
 const Tzdb = require('timezonedb').Tzdb;
@@ -7,7 +7,7 @@ const { Member } = require('../models/Member');
 const { Store } = require('../models/Store');
 
 const tzdb = new Tzdb({
-  apiToken: process.env.TIMEZONEDB_KEY
+  apiToken: process.env.TIMEZONEDB_KEY,
 });
 
 const geocoder = require('../utils/geocoder');
@@ -30,7 +30,7 @@ module.exports = {
           .select('-updatedAt -__v ');
 
         if (teams && teams.length === 0)
-          return res.status(404).send([{ message: 'No Teams Found.' }]);
+          throw createError(404, 'No Teams found');
 
         return res.send(teams);
       }
@@ -44,12 +44,11 @@ module.exports = {
         .select('-updatedAt -__v');
 
       if (teams.length === 0)
-        return res
-          .status(404)
-          .send([{ message: 'You are currently not a member of any teams' }]);
+        throw createError(400, 'You are currently not a member of any teams');
+
       return res.send(teams);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -63,14 +62,11 @@ module.exports = {
         .populate({ path: 'adminId', select: 'name email' })
         .populate({ path: 'members', select: 'name email' })
         .select('-updatedAt -__v');
-      if (!team)
-        return res
-          .status(404)
-          .send([{ message: 'Team with the given ID not found.' }]);
+      if (!team) throw createError(404, 'Team with the given ID not found');
 
       return res.send(team);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -80,14 +76,11 @@ module.exports = {
   getTeamRegister: async (req, res, next) => {
     try {
       const team = await Team.findById(req.params.id).select('_id name');
-      if (!team)
-        return res
-          .status(404)
-          .send([{ message: 'Team with the given ID not found.' }]);
+      if (!team) throw createError(404, 'Team with the given ID not found');
 
       return res.send(team);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -97,14 +90,11 @@ module.exports = {
   getTeamRegister: async (req, res, next) => {
     try {
       const team = await Team.findById(req.params.id).select('_id name');
-      if (!team)
-        return res
-          .status(404)
-          .send([{ message: 'Team with the given ID not found.' }]);
+      if (!team) throw createError(404, 'Team with the given ID not found');
 
       return res.send(team);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -114,7 +104,7 @@ module.exports = {
   addTeam: async (req, res, next) => {
     try {
       const { error } = validateTeam(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       let { name, teamId } = req.body;
       const {
@@ -140,19 +130,17 @@ module.exports = {
         shippingCountry,
         shippingZipPostal,
         shippingPhone,
-        shippingEmail
+        shippingEmail,
       } = req.body;
 
       // checks team name for profanity and denies
       if (swearjar.profane(name))
-        return res
-          .status(400)
-          .send([
-            {
-              message: 'Team name must not contain profanity.',
-              context: { key: 'name' }
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Team name must not contain profanity.',
+            context: { key: 'name' },
+          },
+        ]);
 
       name = name.toUpperCase();
       if (teamId) {
@@ -163,55 +151,46 @@ module.exports = {
       let team = await Team.findOne({ $or: [{ name }, { teamId }] });
       if (team)
         if (team.name === name) {
-          return res
-            .status(400)
-            .send([
-              {
-                message: 'Team name already registered',
-                context: { key: 'name' }
-              }
-            ]);
+          return res.status(400).send([
+            {
+              message: 'Team name already registered',
+              context: { key: 'name' },
+            },
+          ]);
         } else if (team.teamId === teamId) {
-          return res
-            .status(400)
-            .send([
-              {
-                message: 'Team ID already registered',
-                context: { key: 'teamId' }
-              }
-            ]);
+          return res.status(400).send([
+            {
+              message: 'Team ID already registered',
+              context: { key: 'teamId' },
+            },
+          ]);
         }
 
       team = new Team({
         name,
-        teamId
+        teamId,
       });
 
       const teamAdmin = await Member.findById(adminId);
       if (!teamAdmin)
-        return res
-          .status(400)
-          .send([{ message: 'Admin: Member with the given ID was not found' }]);
+        throw createError(400, 'Admin: Member with the given ID was not found');
+
       if (!teamAdmin.isAdmin)
-        return res
-          .status(403)
-          .send([{ message: 'Admin: Member must have admin status' }]);
+        throw createError(403, 'Admin: Member must have admin status');
 
       team.adminId = adminId;
 
       const manager = await Member.findById(managerId);
       if (!manager)
-        return res
-          .status(400)
-          .send([
-            { message: 'Manager: Member with the given ID was not found' }
-          ]);
-      if (manager.isAdmin)
-        return res
-          .status(403)
-          .send([{ message: 'Manager: Member cannot be an admin' }]);
-      team.managerId = managerId;
+        throw createError(
+          400,
+          'Manager: Member with the given ID was not found'
+        );
 
+      if (manager.isAdmin)
+        throw createError(403, 'Manager: Member cannot be an admin');
+
+      team.managerId = managerId;
       team.members.push(managerId);
 
       if (logo !== '' || logo) {
@@ -228,7 +207,7 @@ module.exports = {
         country: contactCountry,
         zipPostal: contactZipPostal,
         phone: contactPhone,
-        email: contactEmail
+        email: contactEmail,
       };
 
       team.bulkShipping = {
@@ -241,7 +220,7 @@ module.exports = {
         country: shippingCountry,
         zipPostal: shippingZipPostal,
         phone: shippingPhone,
-        email: shippingEmail
+        email: shippingEmail,
       };
 
       const geoCodeAddress = `${team.bulkShipping.address1} ${team.bulkShipping.address2} ${team.bulkShipping.city} ${team.bulkShipping.stateProv} ${team.bulkShipping.country} ${team.bulkShipping.zipPostal}`;
@@ -249,19 +228,21 @@ module.exports = {
 
       const data = await tzdb.getTimeZoneByPosition({
         lat: loc[0].latitude,
-        lng: loc[0].longitude
+        lng: loc[0].longitude,
       });
 
       team.location = {
         type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude]
+        coordinates: [loc[0].longitude, loc[0].latitude],
       };
 
       team.timezone = data.zoneName;
 
       await team.save();
       return res.send([{ message: 'Team Added' }]);
-    } catch (err) {}
+    } catch (err) {
+      next(err);
+    }
   },
 
   // @desc    Update a team
@@ -270,8 +251,7 @@ module.exports = {
   updateTeam: async (req, res, next) => {
     try {
       const { error } = validateTeam(req.body);
-      if (error)
-        return res.status(400).send([{ message: error.details[0].message }]);
+      if (error) throw createError(400, error, error.details);
 
       let { name, teamId } = req.body;
       const {
@@ -297,25 +277,20 @@ module.exports = {
         shippingCountry,
         shippingZipPostal,
         shippingPhone,
-        shippingEmail
+        shippingEmail,
       } = req.body;
 
       let team = await Team.findById(req.params.id);
-      if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID was not found' }]);
+      if (!team) throw createError(400, 'Team with the given ID was not found');
 
       // checks if new team name has profanity and denies
       if (swearjar.profane(name))
-        return res
-          .status(400)
-          .send([
-            {
-              message: 'Team name must not contain profanity.',
-              context: { key: 'name' }
-            }
-          ]);
+        return res.status(400).send([
+          {
+            message: 'Team name must not contain profanity.',
+            context: { key: 'name' },
+          },
+        ]);
 
       name = name.toUpperCase();
       if (teamId) {
@@ -327,52 +302,43 @@ module.exports = {
         team = await Team.findOne({ $or: [{ name }, { teamId }] });
         if (team) {
           if (team.name === name) {
-            return res
-              .status(400)
-              .send([
-                {
-                  message: 'Team name already registered',
-                  context: { key: 'name' }
-                }
-              ]);
+            return res.status(400).send([
+              {
+                message: 'Team name already registered',
+                context: { key: 'name' },
+              },
+            ]);
           }
 
           if (team.teamId === teamId) {
-            return res
-              .status(400)
-              .send([
-                {
-                  message: 'Team ID already registered',
-                  context: { key: 'teamId' }
-                }
-              ]);
+            return res.status(400).send([
+              {
+                message: 'Team ID already registered',
+                context: { key: 'teamId' },
+              },
+            ]);
           }
         }
       }
 
       const teamAdmin = await Member.findById(adminId);
       if (!teamAdmin)
-        return res
-          .status(400)
-          .send([{ message: 'Admin: Member with the given ID was not found' }]);
+        throw createError(400, 'Admin: Member with the given ID was not found');
+
       if (!teamAdmin.isAdmin)
-        return res
-          .status(403)
-          .send([{ message: 'Admin: Member must have admin status' }]);
+        throw createError(403, 'Admin: Member must have admin status');
 
       team.adminId = adminId;
 
       const manager = await Member.findById(managerId);
       if (!manager)
-        return res
-          .status(400)
-          .send([
-            { message: 'Manager: Member with the given ID was not found' }
-          ]);
+        throw createError(
+          400,
+          'Manager: Member with the given ID was not found'
+        );
       if (manager.isAdmin)
-        return res
-          .status(403)
-          .send([{ message: 'Manager: Member cannot be an admin' }]);
+        throw createError(403, 'Manager: Member cannot be an admin');
+
       team.managerId = managerId;
       team.name = name;
       team.teamId = teamId;
@@ -390,7 +356,7 @@ module.exports = {
         country: contactCountry,
         zipPostal: contactZipPostal,
         phone: contactPhone,
-        email: contactEmail
+        email: contactEmail,
       };
 
       team.bulkShipping = {
@@ -403,7 +369,7 @@ module.exports = {
         country: shippingCountry,
         zipPostal: shippingZipPostal,
         phone: shippingPhone,
-        email: shippingEmail
+        email: shippingEmail,
       };
 
       const geoCodeAddress = `${team.bulkShipping.address1} ${team.bulkShipping.address2} ${team.bulkShipping.city} ${team.bulkShipping.stateProv} ${team.bulkShipping.country} ${team.bulkShipping.zipPostal}`;
@@ -411,12 +377,12 @@ module.exports = {
 
       const data = await tzdb.getTimeZoneByPosition({
         lat: loc[0].latitude,
-        lng: loc[0].longitude
+        lng: loc[0].longitude,
       });
 
       team.location = {
         type: 'Point',
-        coordinates: [loc[0].longitude, loc[0].latitude]
+        coordinates: [loc[0].longitude, loc[0].latitude],
       };
 
       team.timezone = data.zoneName;
@@ -426,19 +392,19 @@ module.exports = {
       // updates the bulkshipping info for all team stores
       const stores = await Store.find({
         teamId: team._id,
-        mode: { $ne: 'CLOSED' }
+        mode: { $ne: 'CLOSED' },
       });
       if (stores.length > 0) {
-        stores.forEach(async store => {
+        stores.forEach(async (store) => {
           await Store.findByIdAndUpdate(store._id, {
-            bulkShipping: team.bulkShipping
+            bulkShipping: team.bulkShipping,
           });
         });
       }
 
       return res.status(200).send([{ message: 'Team Updated' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -448,27 +414,19 @@ module.exports = {
   addMemberToTeam: async (req, res, next) => {
     try {
       const team = await Team.findById(req.params.id);
-      if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID was not found.' }]);
+      if (!team) throw createError(400, 'Team with the given ID was not found');
 
       const { error } = validateAddMember(req.body);
-      if (error) return res.status(400).send(error.details);
+      if (error) throw createError(400, error, error.details);
 
       const { memberId } = req.body;
 
       const member = await Member.findById(memberId);
-      if (!member)
-        return res
-          .status(400)
-          .send([{ message: 'Member with the given ID not found' }]);
+      if (!member) throw createError(400, 'Member with the given ID not found');
 
       const alreadyRegistered = team.members.includes(memberId);
       if (alreadyRegistered)
-        return res
-          .status(400)
-          .send([{ message: 'Member already part of the team' }]);
+        throw createError(400, 'Member already part of the team');
 
       team.members.push(mongoose.Types.ObjectId(memberId));
       await team.save();
@@ -476,14 +434,14 @@ module.exports = {
       const notification = {
         date: Date.now(),
         message: `You are now part of team ${team.name}`,
-        clickTo: `/dashboard/teams/${team._id}`
+        clickTo: `/dashboard/teams/${team._id}`,
       };
       member.notifications.push(notification);
       await member.save();
 
       return res.status(200).send([{ message: 'Member Added to Team' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
   },
 
@@ -493,10 +451,7 @@ module.exports = {
   removeMembers: async (req, res, next) => {
     try {
       const team = await Team.findById(req.params.id);
-      if (!team)
-        return res
-          .status(400)
-          .send([{ message: 'Team with the given ID was not found.' }]);
+      if (!team) throw createError(400, 'Team with the given ID was not found');
 
       const { members } = req.body;
       const deleteMembers = members;
@@ -507,7 +462,7 @@ module.exports = {
 
       return res.status(200).send([{ message: 'Members Removed from Team' }]);
     } catch (err) {
-      logger.error(err);
+      next(err);
     }
-  }
+  },
 };

@@ -7,6 +7,7 @@
           href="https://gravatar.com"
           target="_blank"
           class="small-btn btn-block mt-1"
+          style="text-decoration: none;"
           >{{ $t('profiles.updateGravatar') }}</a
         >
       </div>
@@ -29,6 +30,7 @@
       </div>
       <div class="row mt-3 mx-0">
         <router-link
+          tag="button"
           :to="`/dashboard/profile/edit`"
           class="small-btn btn-block"
         >
@@ -36,6 +38,7 @@
           >{{ $t('profiles.editProfile') }}
         </router-link>
         <router-link
+          tag="button"
           :to="`/dashboard/profile/password`"
           class="small-btn danger-btn btn-block"
         >
@@ -43,6 +46,7 @@
           >{{ $t('profiles.changePassword') }}
         </router-link>
         <router-link
+          tag="button"
           :to="`/dashboard/profile/email`"
           class="small-btn danger-btn btn-block"
         >
