@@ -32,7 +32,6 @@ module.exports = async function (DB_HOST) {
     logger.info('No admin users detected - creating root user.');
     const rootPass = process.env.MONGO_INITDB_ROOT_PASSWORD;
     const rootEmail = process.env.MONGO_INITDB_ROOT_EMAIL;
-    console.log(rootPass, rootEmail);
 
     const newAdmin = new Member({
       email: rootEmail,

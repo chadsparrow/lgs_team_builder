@@ -134,6 +134,10 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import toast from '../helpers/toast';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
+
 export default {
   name: 'CartPage',
   data() {
@@ -190,9 +194,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -208,15 +210,13 @@ export default {
           itemId,
         });
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
+        toast.success(get(res, 'data[0].message', 'Success'));
         if (this.cart.items && this.cart.items.length === 0) {
           this.$router.push({ path: `/dashboard/stores/${this.store._id}` });
         }
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     updateCart: async function() {
@@ -227,13 +227,11 @@ export default {
           items: this.cart.items,
         });
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
+        toast.success(get(res, 'data[0].message', 'Success'));
         this.dataChanged = false;
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     removeAllItems: async function() {
@@ -248,7 +246,7 @@ export default {
             items: [...mandatoryItems],
           });
           this.$store.commit('LOADING_FALSE');
-          this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
+          toast.success(get(res, 'data[0].message', 'Success'));
           this.dataChanged = false;
           if (this.cart.items.length === 0) {
             this.$router.push({ path: `/dashboard/stores/${this.store._id}` });
@@ -256,9 +254,7 @@ export default {
         }
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     checkout: function() {

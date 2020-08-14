@@ -277,6 +277,8 @@
 <script>
 import VueTagsInput from '@johmun/vue-tags-input';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'CatalogItemsAdd',
@@ -389,7 +391,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
+      this.$toasted.error(err.response.data[0].error.message, {
         icon: 'exclamation-triangle',
       });
     }
@@ -451,18 +453,19 @@ export default {
             params: { id: this.currentCatalog._id },
           })
           .catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        toast.success(get(res, 'data[0].message', 'Success'));
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
-        if (err.response.data[0].message === 'Product already exists.') {
+        toast.error(err);
+        if (
+          get(err.response, 'data[0].error.message') ===
+          'Product already exists.'
+        ) {
           this.$refs['productCode'].value = '';
           this.$refs['styleCode'].value = '';
           this.$refs['productCode'].focus();
         } else {
-          if (err.response.data[0].context.key !== 'sizes') {
-            const key = err.response.data[0].context.key;
+          if (get(err.response, 'data[0].context.key') !== 'sizes') {
+            const key = get(err.response, 'data[0].context.key');
             this.$refs[key].focus();
           }
         }

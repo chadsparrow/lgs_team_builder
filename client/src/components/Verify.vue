@@ -3,21 +3,19 @@
 </template>
 
 <script>
+import toast from '../helpers/toast';
+
 export default {
   name: 'Verify',
   created() {
     this.axios
       .get(`/api/v1/auth/verify?token=${this.$route.query.token}`)
       .then((res) => {
-        this.$toasted.success('Account Verified - please login', {
-          icon: 'check-circle',
-        });
+        toast.success('Account Verified - please login');
         this.$router.push({ path: '/' });
       })
       .catch((err) => {
-        this.$toasted.error('Account Verification Error - please try again', {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
         this.$router.push({ path: '/' });
       });
   },

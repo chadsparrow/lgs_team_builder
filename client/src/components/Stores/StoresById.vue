@@ -434,6 +434,9 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
+
 export default {
   name: 'StoresById',
   data() {
@@ -474,9 +477,7 @@ export default {
       this.addMandatoryItemsToCart();
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   beforeDestroy: function() {
@@ -578,13 +579,11 @@ export default {
           this.$router
             .push({ name: 'teamsById', params: { id: this.store.teamId._id } })
             .catch(() => {});
-          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+          toast.success(get(res, 'data[0].message', 'Success'));
           this.$store.commit('LOADING_FALSE');
         } catch (err) {
           this.$store.commit('LOADING_FALSE');
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
-          });
+          toast.error(err);
         }
       }
     },
@@ -601,9 +600,7 @@ export default {
         this.showNewCharge = false;
       } catch (err) {
         this.showNewCharge = false;
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     addNewCharge: function() {
@@ -630,13 +627,9 @@ export default {
             id: this.store._id,
             extraCharges: this.extraCharges,
           });
-          this.$toasted.success('Extra Charge removed', {
-            icon: 'check-circle',
-          });
+          toast.success('Extra Charge removed');
         } catch (err) {
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
-          });
+          toast.error(err);
         }
       }
     },
@@ -670,9 +663,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     addLike: async function(id) {
@@ -688,9 +679,7 @@ export default {
           });
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     addToCart: async function(index) {
@@ -698,11 +687,9 @@ export default {
         !this.$refs.quantity[index].value ||
         this.$refs.quantity[index].value == 0
       ) {
-        this.$toasted.error('quantity must be greater than 0', {
-          icon: 'exclamation-triangle',
-        });
         this.$refs.quantity[index].value = 0;
         return this.$refs.quantity[index].focus();
+        toast.error(err);
       }
 
       const {
@@ -736,12 +723,10 @@ export default {
           storeId: this.store._id,
           item,
         });
-        this.$toasted.success(res.data[0].message, { icon: 'shopping-cart' });
+        toast.success(get(res, 'data[0].message', 'Success'));
         this.$refs.quantity[index].value = null;
       } catch (err) {
-        return this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     addMandatoryItemsToCart: async function() {
@@ -787,9 +772,7 @@ export default {
               });
             }
           } catch (err) {
-            return this.$toasted.error(err.response.data[0].message, {
-              icon: 'exclamation-triangle',
-            });
+            toast.error(err);
           }
         });
       }

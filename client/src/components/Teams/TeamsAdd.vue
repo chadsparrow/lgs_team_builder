@@ -438,6 +438,8 @@ import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'TeamsAdd',
@@ -517,9 +519,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -553,16 +553,14 @@ export default {
       };
       try {
         const res = await this.$store.dispatch('addTeam', newTeam);
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        toast.success(get(res, 'data[0].message', 'Success'));
         this.$router.push({ name: 'teams' });
       } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     getManagerDetails: async function() {
@@ -614,9 +612,7 @@ export default {
           this.bulkUseDetails = 'other';
         }
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     copyManagertoMain: async function() {

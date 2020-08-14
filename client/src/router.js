@@ -369,7 +369,7 @@ router.beforeEach(async (to, from, next) => {
     if (!store.getters.isLoggedIn) {
       Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
       next({
-        path: '/home',
+        path: '/',
         params: { nextUrl: to.fullPath },
       });
       return;

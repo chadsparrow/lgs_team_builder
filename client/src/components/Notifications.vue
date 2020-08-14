@@ -49,6 +49,9 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
+
 export default {
   name: 'Notifications',
   data() {
@@ -66,9 +69,7 @@ export default {
       this.getNotifications();
       this.$store.dispatch('setNotificationsReadyTrue');
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
       this.$store.dispatch('setNotificationsReadyTrue');
     }
   },
@@ -82,9 +83,7 @@ export default {
         try {
           await this.$store.dispatch('getMe', this.loggedInMember._id);
         } catch (err) {
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
-          });
+          toast.error(err);
         }
       }, 60000 * 10);
     },
@@ -92,11 +91,9 @@ export default {
       try {
         const res = await this.$store.dispatch('removeNotification', { nId });
         await this.$store.dispatch('getMe', this.loggedInMember._id);
-        this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
+        toast.success(get(res, 'data[0].message', 'Success'));
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     clickTo: function(clickTo) {

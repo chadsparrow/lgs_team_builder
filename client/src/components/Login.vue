@@ -110,7 +110,6 @@
           type="email"
           class="form-control"
           id="email"
-          ref="verifyEmail"
           v-model.trim="$v.email.$model"
         />
         <div v-if="$v.email.$error || $v.email.$dirty">
@@ -143,6 +142,8 @@
 
 <script>
 import { required, email } from 'vuelidate/lib/validators';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'login',
@@ -177,21 +178,20 @@ export default {
         try {
           const res = await this.$store.dispatch('login', { email, password });
           this.$router.push({ name: 'dashboardIndex' }).catch(() => {});
-          this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+          toast.success(get(res, 'data[0].message', 'Success'));
           this.submitStatus = 'OK';
         } catch (err) {
           this.submitStatus = 'ERROR';
-          if (err.response.data[0].error.message.includes('unverified')) {
+          if (
+            get(err.response, 'data[0].error.message').includes('unverified')
+          ) {
             this.verified = false;
-            this.$refs.verifyEmail.focus();
+            return toast.error(err);
           }
 
           this.email = '';
           this.password = '';
-
-          this.$toasted.error(err.response.data[0].error.message, {
-            icon: 'exclamation-triangle',
-          });
+          toast.error(err);
           this.$refs.email.focus();
         }
       }
@@ -207,17 +207,12 @@ export default {
           .then((res) => {
             this.emailSent = true;
             this.submitStatus = 'OK';
-            this.$toasted.success(res.data[0].message, {
-              icon: 'check-circle',
-            });
+            toast.success(get(res, 'data[0].message', 'Success'));
           })
           .catch((err) => {
             this.submitStatus = 'ERROR';
             this.email = '';
-            this.$refs.verifyEmail.focus();
-            this.$toasted.error(err.response.data[0].error.message, {
-              icon: 'exclamation-triangle',
-            });
+            return toast.error(err);
           });
       }
     },

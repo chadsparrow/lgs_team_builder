@@ -75,6 +75,8 @@
 
 <script>
 import { required, sameAs, minLength } from 'vuelidate/lib/validators';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'ResetPassword',
@@ -103,9 +105,7 @@ export default {
         this.member = data.member;
       })
       .catch((err) => {
-        this.$toasted.error(err.response.data.message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
         this.$router.push({ path: '/forgot' });
       });
   },
@@ -126,15 +126,13 @@ export default {
             confirmPassword: this.confirmPassword,
           })
           .then(({ data }) => {
-            this.$toasted.success(data.message, { icon: 'check-circle' });
+            toast.success(get(data, 'message', 'Success'));
             this.$router.push({ path: '/' });
             this.submitStatus = 'OK';
           })
           .catch((err) => {
             this.submitStatus = 'ERROR';
-            this.$toasted.error(err.response.data[0].message, {
-              icon: 'exclamation-triangle',
-            });
+            toast.error(err);
           });
       }
     },

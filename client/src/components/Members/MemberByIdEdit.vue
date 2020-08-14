@@ -486,6 +486,7 @@ import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'MemberByIdEdit',
@@ -535,10 +536,8 @@ export default {
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
       this.$store.commit('LOADING_FALSE');
+      toast.error(err);
     }
   },
   methods: {
@@ -554,7 +553,7 @@ export default {
         }
         this.$store.commit('LOADING_FALSE');
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
+        this.$toasted.error(err.response.data[0].error.message, {
           icon: 'exclamation-triangle',
         });
         this.$store.commit('LOADING_FALSE');
@@ -753,7 +752,7 @@ export default {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
+        this.$toasted.error(err.response.data[0].error.message, {
           icon: 'exclamation-triangle',
         });
       }

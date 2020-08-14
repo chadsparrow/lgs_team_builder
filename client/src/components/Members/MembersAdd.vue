@@ -536,6 +536,8 @@
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'MembersAdd',
@@ -595,9 +597,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   computed: {
@@ -644,18 +644,17 @@ export default {
       try {
         await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
-        this.$toasted.success(i18n.t('members.successAdd'), {
-          icon: 'check-circle',
-        });
+        toast.success(i18n.t('members.successAdd'));
       } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
-        if (err.response.data[0].message === 'Member already registered.') {
+        toast.error(err);
+        if (
+          get(err.response, 'data[0].error.message') ===
+          'Member already registered.'
+        ) {
           this.$refs['email'].value = '';
           this.$refs['email'].focus();
         }

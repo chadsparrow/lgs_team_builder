@@ -76,6 +76,7 @@ import Paginate from 'vuejs-paginate';
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'MembersIndex',
@@ -104,9 +105,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].error.message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   computed: {

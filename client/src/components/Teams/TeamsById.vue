@@ -301,6 +301,7 @@
 import Avatar from 'vue-avatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'TeamById',
@@ -375,9 +376,7 @@ export default {
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
       if (err.response.data[0].message !== 'Team has no stores.')
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
     }
   },
   methods: {
@@ -410,14 +409,10 @@ export default {
           memberId: id,
         });
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.success(i18n.t('teams.removeMemberSuccess'), {
-          icon: 'circle-check',
-        });
+        toast.success(i18n.t('teams.removeMemberSuccess'));
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(i18n.t('teams.removeMemberError'), {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     loadStore: function(id) {

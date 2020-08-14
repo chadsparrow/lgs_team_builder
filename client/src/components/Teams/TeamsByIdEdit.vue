@@ -442,6 +442,8 @@ import Avatar from 'vue-avatar';
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'TeamByIdEdit',
@@ -500,9 +502,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -539,16 +539,14 @@ export default {
           updatedTeam,
           id: this.team._id,
         });
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        toast.success(get(res, 'data[0].message', 'Success'));
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
       } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     getManagerDetails: async function() {
@@ -597,9 +595,7 @@ export default {
         this.$store.commit('LOADING_FALSE');
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
     copyManagertoMain: async function() {

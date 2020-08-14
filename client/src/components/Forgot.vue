@@ -50,6 +50,8 @@
 
 <script>
 import { required, email } from 'vuelidate/lib/validators';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'Forgot',
@@ -78,7 +80,7 @@ export default {
           .then(({ data }) => {
             if (data[0].message === 'Reset Link Sent!') {
               this.linkSent = true;
-              this.$toasted.success(data[0].message, { icon: 'check-circle' });
+              toast.success(data[0].message);
             }
             this.submitStatus = 'OK';
           })
@@ -86,9 +88,7 @@ export default {
             this.submitStatus = 'ERROR';
             this.email = '';
             this.$refs.email.focus();
-            this.$toasted.error(err.response.data[0].message, {
-              icon: 'exclamation-triangle',
-            });
+            toast.error(err);
           });
       }
     },

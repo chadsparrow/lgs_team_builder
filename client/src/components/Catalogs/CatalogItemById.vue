@@ -1,5 +1,3 @@
-// i18n finished // responsive finished
-
 <template>
   <div class="page container" v-if="!isLoading">
     <div class="row">
@@ -173,6 +171,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'CatalogItemById',
@@ -291,9 +290,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
 };

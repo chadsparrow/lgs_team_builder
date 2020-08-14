@@ -253,6 +253,8 @@
 <script>
 import Avatar from 'vue-avatar';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'TeamsAddStore',
@@ -306,9 +308,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -343,16 +343,13 @@ export default {
       try {
         const res = await this.$store.dispatch('addTeamStore', newStore);
         this.$router.push({ name: 'teamsById', params: { id: this.team._id } });
-        this.$toasted.success(res.data[0].message, { icon: 'circle-check' });
+        toast.success(get(res, 'data[0].message', 'Success'));
       } catch (err) {
-        if (err.response.data[0].context) {
-          console.log(err.response.data[0].context.key);
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
   },

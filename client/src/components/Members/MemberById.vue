@@ -260,6 +260,7 @@ import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import InfoSpan from '../Shared/InfoSpan';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'MemberById',
@@ -297,9 +298,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {

@@ -6,6 +6,7 @@
 
 <script>
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   data() {
@@ -15,9 +16,7 @@ export default {
     try {
       await this.$store.dispatch('setBreadcrumbs', []);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
 };

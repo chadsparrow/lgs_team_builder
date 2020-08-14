@@ -56,6 +56,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'ProfilesEmail',
@@ -82,9 +83,7 @@ export default {
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -111,13 +110,9 @@ export default {
         });
 
         this.$router.push({ name: 'profile' });
-        this.$toasted.success(i18n.t('profiles.newEmailSuccess'), {
-          icon: 'envelope',
-        });
+        toast.success(i18n.t('profiles.newEmailSuccess'));
       } catch (err) {
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
         this.newEmail = '';
         this.confirmEmail = '';
         this.$refs['newEmail'].focus();

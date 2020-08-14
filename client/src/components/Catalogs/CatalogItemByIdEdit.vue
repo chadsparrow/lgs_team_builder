@@ -329,6 +329,7 @@
 import VueTagsInput from '@johmun/vue-tags-input';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'CatalogItemByIdEdit',
@@ -532,9 +533,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -571,7 +570,7 @@ export default {
           icon: 'check-circle',
         });
       } catch (err) {
-        if (err.response.data[0].message === 'Product already exists.') {
+        if (err.response.data[0].error.message === 'Product already exists.') {
           this.$toasted.error(i18n.t('catalogs.productExists'), {
             icon: 'exclamation-triangle',
           });
@@ -579,7 +578,7 @@ export default {
           this.$refs['styleCode'].value = '';
           this.$refs['productCode'].focus();
         } else {
-          this.$toasted.error(err.response.data[0].message, {
+          this.$toasted.error(err.response.data[0].error.message, {
             icon: 'exclamation-triangle',
           });
           if (err.response.data[0].context.key !== 'sizes') {

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
+import router from '../../router';
 
 export default {
   state: {
@@ -23,7 +24,6 @@ export default {
           localStorage.setItem('token', token);
           localStorage.setItem('member', member._id);
           commit('AUTH_SUCCESS', { token, member, emails });
-          commit('SET_MENU', member.isAdmin);
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
@@ -75,6 +75,7 @@ export default {
       commit('CLEAR_STORES');
       commit('CLEAR_ORDERS');
       commit('CLEAR_ALL_NOTIFICATIONS');
+      router.push({ path: '/' });
     },
     changePassword(context, { updatedPassword, id }) {
       return new Promise(async (resolve, reject) => {

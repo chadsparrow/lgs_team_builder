@@ -81,6 +81,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
+
 export default {
   name: 'CatalogByIdEdit',
   computed: {
@@ -112,9 +115,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -128,20 +129,17 @@ export default {
             year: this.currentCatalog.year,
           },
         });
-        this.$toasted.success(i18n.t('catalogs.add.updated'), {
-          icon: 'check-circle',
-        });
+        toast.success(i18n.t('catalogs.add.updated'));
+
         this.$router
           .push({ name: 'catalogsById', params: this.currentCatalog._id })
           .catch(() => {});
       } catch (err) {
-        if (err.response.data[0].context) {
+        if (get(err.response, 'data[0].context')) {
           const key = err.response.data[0].context.key;
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
   },

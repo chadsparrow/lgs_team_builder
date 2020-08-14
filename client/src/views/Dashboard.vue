@@ -50,6 +50,9 @@ export default {
       polling: null,
     };
   },
+  computed: {
+    ...mapGetters(['loggedInMember', 'menu', 'isLoggedIn']),
+  },
   created() {
     this.setScreenWidth();
     window.addEventListener('resize', this.setScreenWidth);
@@ -94,11 +97,7 @@ export default {
     logout: function() {
       this.$store.commit('LOADING_FALSE');
       this.$store.dispatch('logout');
-      this.$router.push({ name: 'home' });
     },
-  },
-  computed: {
-    ...mapGetters(['loggedInMember', 'menu', 'isLoggedIn']),
   },
 };
 </script>

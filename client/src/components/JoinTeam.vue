@@ -471,6 +471,8 @@
 import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import { mapGetters } from 'vuex';
+import toast from '../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'JoinTeam',
@@ -520,10 +522,8 @@ export default {
       await this.$store.dispatch('getTeamForRegister', this.$route.params.id);
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
       this.$store.commit('LOADING_FALSE');
+      toast.error(err);
     }
   },
   computed: {
@@ -572,19 +572,18 @@ export default {
           member,
           teamId: this.currentTeam._id,
         });
-        this.$router.push({ name: 'home' });
-        this.$toasted.success('You are now registered - go ahead and login!', {
-          icon: 'check-circle',
-        });
+        this.$router.push({ path: '/' });
+        toast.success('You are now registered - go ahead and login!');
       } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
-        if (err.response.data[0].message === 'Member already registered.') {
+        toast.error(err);
+        if (
+          get(err.response, 'data[0].error.message') ===
+          'Member already registered.'
+        ) {
           this.email = '';
           this.$refs['email'].focus();
         }

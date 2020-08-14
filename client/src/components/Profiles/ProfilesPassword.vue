@@ -104,6 +104,8 @@
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import { required, sameAs, not, minLength } from 'vuelidate/lib/validators';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'ProfilesPassword',
@@ -150,9 +152,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -174,20 +174,16 @@ export default {
             updatedPassword,
             id: this.loggedInMember._id,
           });
-          this.$router.push({ name: 'profile' });
-          this.$toasted.success(i18n.t('profiles.passwordUpdated'), {
-            icon: 'lock',
-          });
+          toast.success(i18n.t('profiles.passwordUpdated'));
           this.submitStatus = 'OK';
+          this.$router.push({ name: 'profile' });
         } catch (err) {
           this.submitStatus = 'ERROR';
-          if (err.response.data[0].context) {
-            const key = err.response.data[0].context.key;
+          if (get(err.response, 'data[0].context')) {
+            const key = get(err.response, 'data[0].context.key');
             this.$refs[key].focus();
           }
-          this.$toasted.error(err.response.data[0].message, {
-            icon: 'exclamation-triangle',
-          });
+          toast.error(err);
         }
       }
     },

@@ -42,6 +42,7 @@
 <script>
 import Paginate from 'vuejs-paginate';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'OrdersIndex',
@@ -91,9 +92,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {

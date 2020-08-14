@@ -31,7 +31,6 @@
               v-model="catalogItemSearch"
               :placeholder="`${$t('search')}...`"
               ref="searchBar"
-              autofocus
             />
             <button
               class="btn btn-sm"
@@ -104,6 +103,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
+import toast from '../../helpers/toast';
 
 export default {
   name: 'CatalogById',
@@ -171,9 +171,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {

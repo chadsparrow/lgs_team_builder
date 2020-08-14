@@ -59,6 +59,8 @@
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'TeamsRemoveMembers',
@@ -120,9 +122,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -137,12 +137,11 @@ export default {
         this.$router
           .push({ name: 'teamsById', params: { id: this.id } })
           .catch(() => {});
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+
+        toast.success(get(res, 'data[0].message', 'Success'));
       } catch (err) {
         this.$store.commit('LOADING_FALSE');
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
   },

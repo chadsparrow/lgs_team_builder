@@ -8,21 +8,15 @@ export default function setup() {
       return response;
     },
     async function(error) {
-      if (error.response.status !== 401 && error.response.status !== 500) {
-        return new Promise((resolve, reject) => {
-          reject(error);
-        });
-      }
-      if (error.response.status === 401) {
-        store.dispatch('logout');
-        router.push({ path: '/' });
-      }
-
-      if (error.response.status === 500) {
-        router.push({ name: '500' });
-      }
-
       return new Promise((resolve, reject) => {
+        if (error.response.status === 401) {
+          store.dispatch('logout');
+        }
+
+        if (error.response.status === 500) {
+          router.push({ name: '500' });
+        }
+
         reject(error);
       });
     }

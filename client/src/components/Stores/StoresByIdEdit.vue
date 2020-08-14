@@ -288,6 +288,8 @@
 <script>
 import Avatar from 'vue-avatar';
 import { mapGetters } from 'vuex';
+import toast from '../../helpers/toast';
+import { get } from 'lodash';
 
 export default {
   name: 'StoresByIdEdit',
@@ -340,9 +342,7 @@ export default {
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
       this.$store.commit('LOADING_FALSE');
-      this.$toasted.error(err.response.data[0].message, {
-        icon: 'exclamation-triangle',
-      });
+      toast.error(err);
     }
   },
   methods: {
@@ -386,19 +386,18 @@ export default {
           id: this.store._id,
           updatedStore,
         });
-        this.$toasted.success(res.data[0].message, { icon: 'check-circle' });
+        toast.success(get(res, 'data[0].message', 'Success'));
+
         this.$router.push({
           name: 'storesById',
           params: { id: this.store._id },
         });
       } catch (err) {
-        if (err.response.data[0].context) {
-          const key = err.response.data[0].context.key;
+        if (get(err.response, 'data[0].context')) {
+          const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
         }
-        this.$toasted.error(err.response.data[0].message, {
-          icon: 'exclamation-triangle',
-        });
+        toast.error(err);
       }
     },
   },
