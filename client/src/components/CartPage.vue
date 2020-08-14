@@ -135,7 +135,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import toast from '../helpers/toast';
-import toast from '../helpers/toast';
 import { get } from 'lodash';
 
 export default {
