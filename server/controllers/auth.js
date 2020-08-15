@@ -20,7 +20,10 @@ const {
 } = require('../models/Member');
 
 const { Team } = require('../models/Team');
-const { signAccessToken } = require('../middleware/jwt-helpers');
+const {
+  signAccessToken,
+  signRefreshToken,
+} = require('../middleware/jwt-helpers');
 
 module.exports = {
   // @desc    Member login
@@ -52,6 +55,13 @@ module.exports = {
 
       // generates an JSONWebToken once authenticated
       const token = await signAccessToken(member.id);
+      const rtoken = await signRefreshToken(member.id);
+      res.cookie('tb_rtoken', rtoken, {
+        sameSite: 'Lax',
+        secure: process.env.NODE_ENV === 'development' ? false : true,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
 
       return res.send([
         {

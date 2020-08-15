@@ -41,6 +41,26 @@ module.exports = {
       });
     });
   },
-  signRefreshToken: () => {},
+  signRefreshToken: (userId) => {
+    return new Promise((resolve, reject) => {
+      const signOptions = {
+        expiresIn: config.REFRESH_TOKEN_TTL,
+        issuer: 'LGS TeamBuilder',
+        audience: userId.toString(),
+      };
+
+      jwt.sign(
+        {},
+        process.env.REFRESH_TOKEN_SECRET,
+        signOptions,
+        (err, token) => {
+          if (err) {
+            reject(createError.InternalServerError());
+          }
+          resolve(token);
+        }
+      );
+    });
+  },
   verifyRefreshToken: () => {},
 };
