@@ -56,16 +56,11 @@ module.exports = {
       // generates an JSONWebToken once authenticated
       const token = await signAccessToken(member.id);
       const rtoken = await signRefreshToken(member.id);
-      res.cookie('tb_rtoken', rtoken, {
-        sameSite: 'Lax',
-        secure: process.env.NODE_ENV === 'development' ? false : true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
-      });
 
       return res.send([
         {
           token,
+          rtoken,
           member: _.pick(member, [
             '_id',
             'email',

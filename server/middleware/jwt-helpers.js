@@ -62,5 +62,20 @@ module.exports = {
       );
     });
   },
-  verifyRefreshToken: () => {},
+  verifyRefreshToken: (rtoken) => {
+    return new Promise((resolve, reject) => {
+      jwt.verify(rtoken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          const message =
+            err.name === 'JsonWebTokenError'
+              ? 'Access Denied. Invalid Token'
+              : 'Access Token Expired';
+
+          reject(createError(401, message));
+        }
+
+        resolve(decoded);
+      });
+    });
+  },
 };

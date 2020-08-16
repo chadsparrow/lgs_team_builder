@@ -11,9 +11,10 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+app.disable('x-powered-by');
 
-const cors = require('cors'); // un-comment if calls will come from another domain
-app.use(cors({ credentials: true })); // un-comment if calls will come from another domain
+// const cors = require('cors'); // un-comment if calls will come from another domain
+// app.use(cors()); // un-comment if calls will come from another domain
 
 // cron module
 const cron = require('node-cron');
