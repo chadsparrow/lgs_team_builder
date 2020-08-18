@@ -71,7 +71,7 @@
       </div>
       <div class="row p-1 mt-1" v-if="currentDateTime">
         <label class="col-sm-12">Current Store Time:</label>
-        <span class="col-sm-12 currentDateTime">{{
+        <span class="col-sm-12">{{
           currentDateTime
             | moment('timezone', store.timezone, 'MMM Do YYYY / hh:mm:ss a - z')
         }}</span>
@@ -856,15 +856,6 @@ export default {
   overflow-y: auto;
   img {
     width: 100%;
-  }
-
-  .currentDateTime {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: $blue-color;
-    padding: 0.25rem;
-    color: white;
   }
 }
 
