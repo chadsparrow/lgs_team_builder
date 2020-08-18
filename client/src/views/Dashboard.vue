@@ -1,6 +1,5 @@
 <template>
   <div :class="sideCollapsed ? 'dashboard-collapsed' : 'dashboard'">
-    <!-- <SideNav /> -->
     <sidebar-menu
       @toggle-collapse="onToggleCollapse"
       :menu="menu"
@@ -105,15 +104,14 @@ export default {
 <style lang="scss">
 .dashboard {
   display: grid;
+  grid-template-columns: 150px 1fr;
   grid-template-rows: 60px 1fr;
-  margin-left: 150px;
-  width: calc(100% - 150px);
-  transition: width 1s;
-  height: 100vh;
-
   grid-template-areas:
-    'topnav'
-    'content';
+    'sidebar topnav'
+    'sidebar content';
+  width: 100%;
+  transition: all 200ms ease;
+  height: 100vh;
 
   background-image: linear-gradient(
     to bottom right,
@@ -121,39 +119,42 @@ export default {
     $background-grey
   );
 
-  .logoutBtn {
-    display: inline-block;
-    white-space: nowrap;
-    i {
-      margin-left: 0.5rem;
-    }
-
-    .logoutSpan {
+  .sidebar-menu {
+    grid-area: sidebar;
+    .logoutBtn {
       display: inline-block;
-    }
-  }
+      white-space: nowrap;
+      i {
+        margin-left: 0.5rem;
+      }
 
-  .tbLogo {
-    width: 65%;
-    padding: 0.25rem;
-    margin: 0 auto;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    transition: width 0.25s;
+      .logoutSpan {
+        display: inline-block;
+      }
+    }
+
+    .tbLogo {
+      width: 65%;
+      padding: 0.25rem;
+      margin: 0 auto;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      transition: width 0.25s;
+    }
   }
 }
 
 .dashboard-collapsed {
   display: grid;
+  grid-template-columns: 50px 1fr;
   grid-template-rows: 60px 1fr;
-  margin-left: 50px;
-  height: 100vh;
-  width: calc(100%-50px);
-  transition: width 1s;
   grid-template-areas:
-    'topnav'
-    'content';
+    'sidebar topnav'
+    'sidebar content';
+  height: 100vh;
+  width: 100%;
+  transition: all 200ms ease;
 
   background-image: linear-gradient(
     to bottom right,
@@ -161,25 +162,28 @@ export default {
     $background-grey
   );
 
-  .logoutBtn {
-    display: inline-block;
-    white-space: nowrap;
-    i {
-      margin-left: 0;
+  .sidebar-menu {
+    grid-area: sidebar;
+    .logoutBtn {
+      display: inline-block;
+      white-space: nowrap;
+      i {
+        margin-left: 0;
+      }
+
+      .logoutSpan {
+        display: none;
+      }
     }
 
-    .logoutSpan {
-      display: none;
+    .tbLogo {
+      width: 85%;
+      margin: 0 auto;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      transition: width 0.25s;
     }
-  }
-
-  .tbLogo {
-    width: 85%;
-    margin: 0 auto;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    transition: width 0.25s;
   }
 }
 

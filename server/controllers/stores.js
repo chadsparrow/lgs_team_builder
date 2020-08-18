@@ -350,9 +350,6 @@ module.exports = {
       if (swearjar.profane(storeMessage))
         throw createError(403, 'Store message must not contain profanity');
 
-      const store = await Store.findById(req.params.id);
-      if (!store) throw createError(400, 'Store with the given ID not found');
-
       if (!mongoose.Types.ObjectId.isValid(adminId))
         throw createError(400, 'Invalid ID. (Admin)');
 
@@ -370,28 +367,14 @@ module.exports = {
       const team = await Team.findById(teamId);
       if (!team) throw createError(400, 'Team with the given ID not found');
 
-      store.teamId = teamId;
-      store.storeName = storeName;
-      store.brand = brand;
-      store.storeCountry = storeCountry;
-      store.currency = currency;
-      store.refOrder = refOrder;
-      store.adminId = adminId;
-      store.managerId = managerId;
-      store.mode = mode;
-      store.openingDate = openingDate;
-      store.closingDate = closingDate;
-      store.timezone = timezone;
-      store.storeMessage = storeMessage;
-      store.shippingType = shippingType;
+      const store = await Store.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: req.body },
+        { new: true }
+      );
 
-      // updates stores bulkshipping with current team bulkshipping info
-      if (store.mode !== 'CLOSED') {
-        store.bulkShipping = team.bulkShipping;
-      }
-
-      await store.save();
-      return res.send([{ message: 'Store updated' }]);
+      if (!store) throw createError(400, 'Store with the given ID not found');
+      res.send([{ message: 'Updated' }]);
     } catch (err) {
       next(err);
     }

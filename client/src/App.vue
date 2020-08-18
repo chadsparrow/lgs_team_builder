@@ -49,6 +49,7 @@ html {
   font-family: $base-font-family;
   background: $black-text;
   font-size: $base-font-size;
+  overflow: hidden;
   scroll-behavior: smooth;
   a {
     cursor: pointer;

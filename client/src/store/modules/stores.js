@@ -56,7 +56,6 @@ export default {
     updateStoreItems({ commit }, { id, items }) {
       return new Promise(async (resolve, reject) => {
         try {
-          commit('CLEAR_STORE_ITEMS');
           const res = await Vue.axios.put(`/api/v1/stores/${id}/items`, {
             items,
           });

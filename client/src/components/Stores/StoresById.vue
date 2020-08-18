@@ -139,7 +139,7 @@
       </div>
     </div>
     <div class="middle-section">
-      <div class="header mb-3">
+      <div class="header">
         <div class="form-group form-inline">
           <label for="storeItemsSearchText" class="mr-2">Search:</label>
           <input
@@ -214,7 +214,7 @@
           </div>
           <div class="card-footer">
             <div
-              class="likes-section mb-3"
+              class="likes-section"
               v-if="(store.mode === 'SURVEY' && !access) || access"
             >
               <i
@@ -232,7 +232,7 @@
               }}</span>
             </div>
             <div
-              class="cart-section mb-2"
+              class="cart-section mt-3 mb-2"
               v-if="
                 store.mode === 'OPEN' && !member.isAdmin && !item.mandatoryItem
               "
@@ -869,11 +869,22 @@ export default {
 }
 
 .middle-section {
-  padding: $scrollbar-padding;
   grid-area: middle-section;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content 1fr;
+  grid-template-areas:
+    'header'
+    'storeitems';
+  grid-gap: 0.5rem;
+  height: 100%;
   width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  padding: 0 !important;
 
   .header {
+    grid-area: header;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -893,13 +904,16 @@ export default {
   }
 
   .gallery-list {
+    grid-area: storeitems;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-auto-rows: min-content;
     grid-gap: 0.5rem;
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 0.5rem;
+    padding: $scrollbar-padding;
+    height: 100%;
 
     .card {
       .card-image {
@@ -945,6 +959,7 @@ export default {
           justify-content: center;
           align-items: center;
           width: 100%;
+          height: max-content;
 
           i {
             cursor: pointer;
@@ -975,6 +990,11 @@ export default {
         &:empty {
           display: none;
         }
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: whitesmoke;
       }
     }
   }

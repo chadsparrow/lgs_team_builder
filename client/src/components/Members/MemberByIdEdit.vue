@@ -27,455 +27,466 @@
 
     <!-- CONTACT SECTION -->
     <div class="middle-section">
-      <h3 class="text-center">{{ $t('formLabels.information') }}</h3>
-      <div class="row m-0">
-        <div class="section-header bg-secondary">
-          <span class="text-white">{{ $t('formLabels.contact') }}</span>
-        </div>
-      </div>
-      <div class="row mb-2">
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="name">{{ $t('formLabels.name') }}</label>
-          <input
-            id="name"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.name"
-            @change="changeDetails"
-            ref="name"
-          />
-        </div>
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="company">{{ $t('formLabels.company') }}</label>
-          <input
-            id="company"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.company"
-            @change="changeDetails"
-            ref="company"
-          />
-        </div>
-        <div class="form-group col-xl-6">
-          <label for="email">{{ $t('formLabels.email') }}</label>
-          <input
-            id="email"
-            type="email"
-            class="form-control form-control-sm"
-            v-model="member.email"
-            ref="email"
-            readonly
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="address1">{{ $t('formLabels.address1') }}</label>
-          <input
-            id="address1"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.address1"
-            @change="changeDetails"
-            ref="address1"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="address2">{{ $t('formLabels.address2') }}</label>
-          <input
-            id="address2"
-            type="text"
-            class="form-control form-control-sm"
-            ref="address2"
-            v-model="member.address2"
-            @change="changeDetails"
-          />
-        </div>
-        <div class="form-group col-xl-6">
-          <label for="city">{{ $t('formLabels.city') }}</label>
-          <input
-            id="city"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.city"
-            @change="changeDetails"
-            ref="city"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="country">{{ $t('formLabels.country') }}</label>
-          <country-select
-            id="country"
-            v-model="member.country"
-            :country="member.country"
-            class="form-control form-control-sm"
-            @input="checkCountry"
-            ref="country"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectCountry')"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="stateProv">{{ $t('formLabels.stateProv') }}</label>
-          <region-select
-            id="stateProv"
-            v-model="member.stateProv"
-            :country="member.country"
-            :region="member.stateProv"
-            class="form-control form-control-sm"
-            @input="checkRegion"
-            :regionName="true"
-            ref="stateProv"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectRegion')"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="zipPostal">{{ $t('formLabels.zipPostal') }}</label>
-          <input
-            id="zipPostal"
-            type="text"
-            class="form-control form-control-sm"
-            ref="zipPostal"
-            v-model="member.zipPostal"
-            @change="changeDetails"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="phone">{{ $t('formLabels.phone') }}</label>
-          <VuePhoneNumberInput
-            v-model="member.phone"
-            id="phone"
-            size="sm"
-            :default-country-code="member.country || null"
-            :preferred-countries="['US', 'CA']"
-            ref="phone"
-            :clearable="true"
-            @update="copyPhone"
-          />
-        </div>
-      </div>
-
-      <!-- BILLING SECTION -->
-      <div class="row m-0">
-        <div class="section-header bg-secondary">
-          <span class="text-white">{{ $t('formLabels.billing') }}</span>
-          <div class="form-check">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="billingSame"
-              v-model="billingSame"
-              ref="billingSame"
-              @change="copyContacttoBilling"
-            />
-            <small class="form-check-label text-white" for="billingSame">
-              {{ $t('formLabels.useContact') }}
-            </small>
+      <form>
+        <h3 class="text-center">{{ $t('formLabels.information') }}</h3>
+        <div class="row m-0">
+          <div class="section-header bg-secondary">
+            <span class="text-white">{{ $t('formLabels.contact') }}</span>
           </div>
         </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="billingName">{{ $t('formLabels.name') }}</label>
-          <input
-            id="billingName"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.name"
-            ref="billingName"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="billingCompany">{{ $t('formLabels.company') }}</label>
-          <input
-            id="billingCompany"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.company"
-            ref="billingCompany"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-xl-6">
-          <label for="billingName">{{ $t('formLabels.email') }}</label>
-          <input
-            id="billingEmail"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.email"
-            ref="billingEmail"
-            readonly
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="billingAddress1">{{ $t('formLabels.address1') }}</label>
-          <input
-            id="billingAddress1"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.address1"
-            ref="billingAddress1"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="billingAddress2">{{ $t('formLabels.address2') }}</label>
-          <input
-            id="billingAddress2"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.address2"
-            ref="billingAddress2"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-xl-6">
-          <label for="billingCity">{{ $t('formLabels.city') }}</label>
-          <input
-            id="billingCity"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.city"
-            ref="billingCity"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="billingCountry">{{ $t('formLabels.country') }}</label>
-          <country-select
-            id="billingCountry"
-            v-model="member.billing.country"
-            :country="member.billing.country"
-            class="form-control form-control-sm"
-            :readonly="billingSame"
-            @input="checkBillingCountry"
-            ref="billingCountry"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectCountry')"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="billingStateProv">{{ $t('formLabels.stateProv') }}</label>
-          <region-select
-            id="billingStateProv"
-            v-model="member.billing.stateProv"
-            :country="member.billing.country"
-            :region="member.billing.stateProv"
-            class="form-control form-control-sm"
-            :readonly="billingSame"
-            :regionName="true"
-            ref="billingStateProv"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectRegion')"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="billingZipPostal">{{ $t('formLabels.zipPostal') }}</label>
-          <input
-            id="billingZipPostal"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.zipPostal"
-            ref="billingZipPostal"
-            :readonly="billingSame"
-          />
-        </div>
-        <div class="form-group col-lg-6" v-if="billingSame">
-          <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
-          <input
-            id="billingPhone"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.billing.phone"
-            ref="billingPhone"
-            readonly
-          />
-        </div>
-        <div class="form-group col-sm-12 col-lg-6" v-else>
-          <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
-          <VuePhoneNumberInput
-            v-model="member.billing.phone"
-            size="sm"
-            id="billingPhone"
-            :default-country-code="member.billing.country || null"
-            :preferred-countries="['US', 'CA']"
-            ref="billingPhone"
-            :clearable="true"
-          />
-        </div>
-      </div>
-
-      <!-- SHIPPING SECTION -->
-      <div class="row m-0">
-        <div class="section-header bg-secondary">
-          <span class="text-white">{{ $t('formLabels.shipping') }}</span>
-          <div class="form-check">
+        <div class="row mb-2">
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="name">{{ $t('formLabels.name') }}</label>
             <input
-              type="checkbox"
-              class="form-check-input"
-              id="shippingSame"
-              v-model="shippingSame"
-              ref="shippingSame"
-              @change="copyContacttoShipping"
+              id="name"
+              name="name"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.name"
+              @change="changeDetails"
+              ref="name"
             />
-            <small class="form-check-small text-white" for="shippingSame">
-              {{ $t('formLabels.useContact') }}
-            </small>
+          </div>
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="company">{{ $t('formLabels.company') }}</label>
+            <input
+              id="company"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.company"
+              @change="changeDetails"
+              ref="company"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="email">{{ $t('formLabels.email') }}</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control form-control-sm"
+              v-model="member.email"
+              ref="email"
+              readonly
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="address1">{{ $t('formLabels.address1') }}</label>
+            <input
+              id="address1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.address1"
+              @change="changeDetails"
+              ref="address1"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="address2">{{ $t('formLabels.address2') }}</label>
+            <input
+              id="address2"
+              type="text"
+              class="form-control form-control-sm"
+              ref="address2"
+              v-model="member.address2"
+              @change="changeDetails"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="city">{{ $t('formLabels.city') }}</label>
+            <input
+              id="city"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.city"
+              @change="changeDetails"
+              ref="city"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="country">{{ $t('formLabels.country') }}</label>
+            <country-select
+              id="country"
+              v-model="member.country"
+              :country="member.country"
+              class="form-control form-control-sm"
+              @input="checkCountry"
+              ref="country"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectCountry')"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="stateProv">{{ $t('formLabels.stateProv') }}</label>
+            <region-select
+              id="stateProv"
+              v-model="member.stateProv"
+              :country="member.country"
+              :region="member.stateProv"
+              class="form-control form-control-sm"
+              @input="checkRegion"
+              :regionName="true"
+              ref="stateProv"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectRegion')"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="zipPostal">{{ $t('formLabels.zipPostal') }}</label>
+            <input
+              id="zipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              ref="zipPostal"
+              v-model="member.zipPostal"
+              @change="changeDetails"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="phone">{{ $t('formLabels.phone') }}</label>
+            <VuePhoneNumberInput
+              v-model="member.phone"
+              id="phone"
+              size="sm"
+              :default-country-code="member.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="phone"
+              :clearable="true"
+              @update="copyPhone"
+            />
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="shippingName">{{ $t('formLabels.name') }}</label>
-          <input
-            id="shippingName"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.name"
-            ref="shippingName"
-            :readonly="shippingSame"
-          />
+
+        <!-- BILLING SECTION -->
+        <div class="row m-0">
+          <div class="section-header bg-secondary">
+            <span class="text-white">{{ $t('formLabels.billing') }}</span>
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="billingSame"
+                v-model="billingSame"
+                ref="billingSame"
+                @change="copyContacttoBilling"
+              />
+              <small class="form-check-label text-white" for="billingSame">
+                {{ $t('formLabels.useContact') }}
+              </small>
+            </div>
+          </div>
         </div>
-        <div class="form-group col-lg-6 col-xl-3">
-          <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
-          <input
-            id="shippingCompany"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.company"
-            ref="shippingCompany"
-            :readonly="shippingSame"
-          />
+
+        <div class="row mb-2">
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="billingName">{{ $t('formLabels.name') }}</label>
+            <input
+              id="billingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.name"
+              ref="billingName"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="billingCompany">{{ $t('formLabels.company') }}</label>
+            <input
+              id="billingCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.company"
+              ref="billingCompany"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="billingName">{{ $t('formLabels.email') }}</label>
+            <input
+              id="billingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.email"
+              ref="billingEmail"
+              readonly
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="billingAddress1">{{ $t('formLabels.address1') }}</label>
+            <input
+              id="billingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.address1"
+              ref="billingAddress1"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="billingAddress2">{{ $t('formLabels.address2') }}</label>
+            <input
+              id="billingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.address2"
+              ref="billingAddress2"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="billingCity">{{ $t('formLabels.city') }}</label>
+            <input
+              id="billingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.city"
+              ref="billingCity"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="billingCountry">{{ $t('formLabels.country') }}</label>
+            <country-select
+              id="billingCountry"
+              v-model="member.billing.country"
+              :country="member.billing.country"
+              class="form-control form-control-sm"
+              :readonly="billingSame"
+              @input="checkBillingCountry"
+              ref="billingCountry"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectCountry')"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="billingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
+            <region-select
+              id="billingStateProv"
+              v-model="member.billing.stateProv"
+              :country="member.billing.country"
+              :region="member.billing.stateProv"
+              class="form-control form-control-sm"
+              :readonly="billingSame"
+              :regionName="true"
+              ref="billingStateProv"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectRegion')"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="billingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
+            <input
+              id="billingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.zipPostal"
+              ref="billingZipPostal"
+              :readonly="billingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6" v-if="billingSame">
+            <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
+            <input
+              id="billingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.billing.phone"
+              ref="billingPhone"
+              readonly
+            />
+          </div>
+          <div class="form-group col-sm-12 col-lg-6" v-else>
+            <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
+            <VuePhoneNumberInput
+              v-model="member.billing.phone"
+              size="sm"
+              id="billingPhone"
+              :default-country-code="member.billing.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="billingPhone"
+              :clearable="true"
+            />
+          </div>
         </div>
-        <div class="form-group col-xl-6">
-          <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
-          <input
-            id="shippingEmail"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.email"
-            ref="shippingEmail"
-            readonly
-          />
+
+        <!-- SHIPPING SECTION -->
+        <div class="row m-0">
+          <div class="section-header bg-secondary">
+            <span class="text-white">{{ $t('formLabels.shipping') }}</span>
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="shippingSame"
+                v-model="shippingSame"
+                ref="shippingSame"
+                @change="copyContacttoShipping"
+              />
+              <small class="form-check-small text-white" for="shippingSame">
+                {{ $t('formLabels.useContact') }}
+              </small>
+            </div>
+          </div>
         </div>
-        <div class="form-group col-lg-6">
-          <label for="shippingAddress1">{{ $t('formLabels.address1') }}</label>
-          <input
-            id="shippingAddress1"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.address1"
-            ref="shippingAddress1"
-            :readonly="shippingSame"
-          />
+        <div class="row">
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="shippingName">{{ $t('formLabels.name') }}</label>
+            <input
+              id="shippingName"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.name"
+              ref="shippingName"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6 col-xl-3">
+            <label for="shippingCompany">{{ $t('formLabels.company') }}</label>
+            <input
+              id="shippingCompany"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.company"
+              ref="shippingCompany"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
+            <input
+              id="shippingEmail"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.email"
+              ref="shippingEmail"
+              readonly
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingAddress1">{{
+              $t('formLabels.address1')
+            }}</label>
+            <input
+              id="shippingAddress1"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.address1"
+              ref="shippingAddress1"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingAddress2">{{
+              $t('formLabels.address2')
+            }}</label>
+            <input
+              id="shippingAddress2"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.address2"
+              ref="shippingAddress2"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-xl-6">
+            <label for="shippingCity">{{ $t('formLabels.city') }}</label>
+            <input
+              id="shippingCity"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.city"
+              ref="shippingCity"
+              @change="changeDetails"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
+            <country-select
+              id="shippingCountry"
+              v-model="member.shipping.country"
+              :country="member.shipping.country"
+              class="form-control form-control-sm"
+              @input="checkShippingCountry"
+              :readonly="shippingSame"
+              ref="shippingCountry"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectCountry')"
+            />
+          </div>
+          <div class="form-group col-sm-6 col-xl-3">
+            <label for="shippingStateProv">{{
+              $t('formLabels.stateProv')
+            }}</label>
+            <region-select
+              id="shippingStateProv"
+              v-model="member.shipping.stateProv"
+              :country="member.shipping.country"
+              :region="member.shipping.stateProv"
+              class="form-control form-control-sm"
+              :readonly="shippingSame"
+              :regionName="true"
+              ref="shippingStateProv"
+              :usei18n="false"
+              :placeholder="$t('formLabels.selectRegion')"
+            />
+          </div>
+          <div class="form-group col-lg-6">
+            <label for="shippingZipPostal">{{
+              $t('formLabels.zipPostal')
+            }}</label>
+            <input
+              id="shippingZipPostal"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.zipPostal"
+              ref="shippingZipPostal"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6" v-if="shippingSame">
+            <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
+            <input
+              id="shippingPhone"
+              type="text"
+              class="form-control form-control-sm"
+              v-model="member.shipping.phone"
+              ref="shippingPhone"
+              :readonly="shippingSame"
+            />
+          </div>
+          <div class="form-group col-lg-6" v-else>
+            <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
+            <VuePhoneNumberInput
+              v-model="member.shipping.phone"
+              id="shippingPhone"
+              size="sm"
+              :default-country-code="member.shipping.country || null"
+              :preferred-countries="['US', 'CA']"
+              ref="shippingPhone"
+              :clearable="true"
+            />
+          </div>
         </div>
-        <div class="form-group col-lg-6">
-          <label for="shippingAddress2">{{ $t('formLabels.address2') }}</label>
-          <input
-            id="shippingAddress2"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.address2"
-            ref="shippingAddress2"
-            :readonly="shippingSame"
-          />
+        <div class="row my-4">
+          <div class="col-lg-6">
+            <button class="large-btn btn-block" @click.prevent="updateMember">
+              {{ $t('members.updateMember') }}
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <router-link
+              :to="`/dashboard/members/${this.member._id}`"
+              class="large-btn danger-btn btn-block"
+              tag="button"
+              >{{ $t('cancel') }}</router-link
+            >
+          </div>
         </div>
-        <div class="form-group col-xl-6">
-          <label for="shippingCity">{{ $t('formLabels.city') }}</label>
-          <input
-            id="shippingCity"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.city"
-            ref="shippingCity"
-            @change="changeDetails"
-            :readonly="shippingSame"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="shippingCountry">{{ $t('formLabels.country') }}</label>
-          <country-select
-            id="shippingCountry"
-            v-model="member.shipping.country"
-            :country="member.shipping.country"
-            class="form-control form-control-sm"
-            @input="checkShippingCountry"
-            :readonly="shippingSame"
-            ref="shippingCountry"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectCountry')"
-          />
-        </div>
-        <div class="form-group col-sm-6 col-xl-3">
-          <label for="shippingStateProv">{{
-            $t('formLabels.stateProv')
-          }}</label>
-          <region-select
-            id="shippingStateProv"
-            v-model="member.shipping.stateProv"
-            :country="member.shipping.country"
-            :region="member.shipping.stateProv"
-            class="form-control form-control-sm"
-            :readonly="shippingSame"
-            :regionName="true"
-            ref="shippingStateProv"
-            :usei18n="false"
-            :placeholder="$t('formLabels.selectRegion')"
-          />
-        </div>
-        <div class="form-group col-lg-6">
-          <label for="shippingZipPostal">{{
-            $t('formLabels.zipPostal')
-          }}</label>
-          <input
-            id="shippingZipPostal"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.zipPostal"
-            ref="shippingZipPostal"
-            :readonly="shippingSame"
-          />
-        </div>
-        <div class="form-group col-lg-6" v-if="shippingSame">
-          <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
-          <input
-            id="shippingPhone"
-            type="text"
-            class="form-control form-control-sm"
-            v-model="member.shipping.phone"
-            ref="shippingPhone"
-            :readonly="shippingSame"
-          />
-        </div>
-        <div class="form-group col-lg-6" v-else>
-          <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
-          <VuePhoneNumberInput
-            v-model="member.shipping.phone"
-            id="shippingPhone"
-            size="sm"
-            :default-country-code="member.shipping.country || null"
-            :preferred-countries="['US', 'CA']"
-            ref="shippingPhone"
-            :clearable="true"
-          />
-        </div>
-      </div>
-      <div class="row my-4">
-        <div class="col-lg-6">
-          <button class="large-btn btn-block" @click.prevent="updateMember">
-            {{ $t('members.updateMember') }}
-          </button>
-        </div>
-        <div class="col-lg-6">
-          <router-link
-            :to="`/dashboard/members/${this.member._id}`"
-            class="large-btn danger-btn btn-block"
-            tag="button"
-            >{{ $t('cancel') }}</router-link
-          >
-        </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -772,7 +783,6 @@ export default {
   grid-template-areas: 'sidebar-left middle-section';
 
   .middle-section {
-    padding: $scrollbar-padding;
     h3 {
       display: none;
     }

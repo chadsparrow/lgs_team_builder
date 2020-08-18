@@ -31,7 +31,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin-top: 1rem;
-  background-color: none !important;
+  background: transparent;
   padding: 0px 15px !important;
 
   .breadcrumb-item {

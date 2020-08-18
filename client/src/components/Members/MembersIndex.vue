@@ -247,5 +247,9 @@ export default {
   .priority-3 {
     display: none;
   }
+
+  .addMemberBtn {
+    margin-bottom: 1rem;
+  }
 }
 </style>
