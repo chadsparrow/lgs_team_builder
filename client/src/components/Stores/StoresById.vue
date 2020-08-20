@@ -205,16 +205,14 @@
             <div class="price-box">{{ item.storePrice | currency }}</div>
           </div>
           <div class="card-body text-center">
-            <h6 class="card-title mb-2">{{ item.nameEN }}</h6>
-            <span class="card-text text-muted">{{ item.productCode }}</span>
-            <br />
-            <span class="card-text text-muted" v-if="member.isAdmin">{{
-              item.styleCode
-            }}</span>
+            <div class="card-body__title">{{ item.nameEN }}</div>
+            <div class="card-body__product text-muted">
+              {{ item.productCode }}
+            </div>
           </div>
           <div class="card-footer">
             <div
-              class="likes-section"
+              class="card-footer__likes"
               v-if="(store.mode === 'SURVEY' && !access) || access"
             >
               <i
@@ -232,7 +230,7 @@
               }}</span>
             </div>
             <div
-              class="cart-section mt-3 mb-2"
+              class="card-footer__cart mt-3 mb-2"
               v-if="
                 store.mode === 'OPEN' && !member.isAdmin && !item.mandatoryItem
               "
@@ -276,7 +274,7 @@
               </span>
             </div>
             <div
-              class="progressBar text-center"
+              class="card-footer__progressBar text-center"
               v-if="access && store.mode === 'OPEN'"
             >
               <label for="progress" class="mt-2">Price Break Goal</label>
@@ -896,7 +894,7 @@ export default {
       max-width: 400px;
     }
 
-    .header-buttons {
+    &-buttons {
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -916,7 +914,7 @@ export default {
     height: 100%;
 
     .card {
-      .card-image {
+      &-image {
         position: relative;
 
         .mandatoryItem {
@@ -933,28 +931,33 @@ export default {
           position: absolute;
           z-index: 2;
           bottom: 0.5rem;
-          right: 1rem;
-          font-size: 1.75rem;
+          right: 0.5rem;
+          font-size: 1.25rem;
           font-weight: $font-weight-light;
           color: $white-text;
-          text-shadow: 2px 2px 6px rgba($color: $black-text, $alpha: 0.65);
+          text-shadow: 2px 2px 4px rgba($color: $black-text, $alpha: 0.8);
         }
       }
 
-      .card-body {
+      &-body {
         padding: 0.5rem;
+        font-size: 0.8rem;
+
+        &__product {
+          font-size: 0.7rem;
+        }
       }
 
-      .card-footer {
+      &-footer {
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
         justify-content: center;
         align-items: center;
-        padding: 1rem;
+        padding: 0.5rem;
         width: 100%;
 
-        .likes-section {
+        &__likes {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -972,7 +975,7 @@ export default {
           }
         }
 
-        .cart-section {
+        &__cart {
           width: 100%;
           display: flex;
           flex-direction: column;
@@ -983,7 +986,7 @@ export default {
           }
         }
 
-        .progressBar {
+        &__progress {
           width: 100%;
         }
 
