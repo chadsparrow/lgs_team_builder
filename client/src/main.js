@@ -11,6 +11,7 @@ import vueCountryRegionSelect from 'vue-country-region-select';
 import VueClipboard from 'vue-clipboard2';
 import Vue2Filters from 'vue2-filters';
 import ZoomOnHover from 'vue-zoom-on-hover';
+import VueCookies from 'vue-cookies';
 
 import axios from 'axios';
 import VueAxios from 'vue-axios';
@@ -25,6 +26,7 @@ import Vuelidate from 'vuelidate';
 Vue.use(Vuelidate);
 
 Vue.use(VueAxios, axios);
+axios.defaults.withCredentials = true;
 interceptorsSetup();
 
 Vue.use(VueMoment, { moment });
@@ -45,6 +47,7 @@ Vue.use(Vue2Filters);
 Vue.use(VueCurrencyInput);
 Vue.use(VueSidebarMenu);
 Vue.use(ZoomOnHover);
+Vue.use(VueCookies);
 
 Vue.config.productionTip = false;
 

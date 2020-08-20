@@ -1,7 +1,9 @@
 const express = require('express');
 const compression = require('compression');
+const cookieParser = require('cookie-parser');
 const createError = require('http-errors');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
+
 const serveStatic = require('serve-static');
 
 const app = express();
@@ -14,8 +16,8 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 app.disable('x-powered-by');
 
-// const cors = require('cors'); // un-comment if calls will come from another domain
-// app.use(cors()); // un-comment if calls will come from another domain
+const cors = require('cors'); // un-comment if calls will come from another domain
+app.use(cors({ credentials: true, origin: 'http://localhost:8080' })); // un-comment if calls will come from another domain
 
 // cron module
 const cron = require('node-cron');
@@ -33,8 +35,8 @@ const requestLogger = require('./middleware/requestLogger');
 app.use(requestLogger);
 
 // allows calls if server is behind a proxy
-app.enable('trust proxy');
-
+app.enable('trust proxy', 1);
+app.use(cookieParser());
 // Set up express & mongo sanitations and security
 app.use(helmet());
 app.use(mongoSanitize());
@@ -42,10 +44,10 @@ app.use(xss());
 app.use(hpp());
 app.use(compression());
 
-// rate Limiting - 250 requests per 10 mins
+// rate Limiting - 250 requests per 1 mins
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 1000,
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 250,
 });
 app.use(limiter);
 

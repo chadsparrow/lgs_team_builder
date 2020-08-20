@@ -4,6 +4,7 @@ const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
 const mailer = require('../utils/mailer');
 const createError = require('http-errors');
+const config = require('../config/config');
 
 const tzdb = new Tzdb({
   apiToken: process.env.TIMEZONEDB_KEY,
@@ -56,6 +57,27 @@ module.exports = {
       // generates an JSONWebToken once authenticated
       const token = await signAccessToken(member.id);
       const rtoken = await signRefreshToken(member.id);
+
+      res.cookie('tb_access_token', token, {
+        maxAge: config.ACCESS_TOKEN_TTL_NUMBER,
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'production' ? false : true,
+      });
+
+      res.cookie('tb_refresh_token', rtoken, {
+        maxAge: config.REFRESH_TOKEN_TTL_NUMBER,
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'production' ? false : true,
+      });
+
+      res.cookie(
+        'tb_member',
+        { aud: member._id },
+        {
+          maxAge: 1000 * 60 * 60 * 24 * 31,
+          secure: process.env.NODE_ENV !== 'production' ? false : true,
+        }
+      );
 
       return res.send([
         {
