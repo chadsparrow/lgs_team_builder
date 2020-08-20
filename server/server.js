@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const createError = require('http-errors');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
 const serveStatic = require('serve-static');
@@ -39,6 +40,7 @@ app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
+app.use(compression());
 
 // rate Limiting - 250 requests per 10 mins
 const limiter = rateLimit({
