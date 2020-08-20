@@ -2,6 +2,7 @@ version: '3'
 services:
   server:
     container_name: team_builder_app_dev
+    ## will need to change this when testing new branch before merge
     image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
     restart: always
     ports:
