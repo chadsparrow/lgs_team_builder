@@ -56,6 +56,7 @@
       <div class="catalogItemsList" v-if="currentCatalog._id">
         <draggable
           class="list-group"
+          ghost-class="catalog-item-ghost"
           :list="filteredItems"
           :clone="clone"
           :group="{ name: 'items', pull: 'clone', put: false }"
@@ -81,10 +82,13 @@
       <div class="store-items-list">
         <draggable
           class="dragArea list-group"
-          ghost-class="ghost"
+          ghostClass="store-item-ghost"
           :list="storeItems"
+          filter=".small-btn"
           group="items"
           @change="updateStoreItems"
+          animation="200"
+          draggable=".list-group-item"
         >
           <div
             class="list-group-item mb-1"
@@ -533,7 +537,7 @@ export default {
       }
     },
     async updateStoreItems() {
-      const items = this.currentStoreItems;
+      const items = this.storeItems;
       try {
         await this.$store.dispatch('updateStoreItems', {
           id: this.store._id,
@@ -593,6 +597,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.catalog-item-ghost {
+  opacity: 0.4;
+  background: #c8ebfb;
+  border: 1px dotted blue;
+}
+
+.store-item-ghost {
+  opacity: 0.4;
+  background: #c8ebfb;
+  border: 2px dotted red;
+}
+
 .page {
   display: grid;
   grid-template-columns: 400px 1fr;
@@ -683,11 +699,6 @@ export default {
     width: 100%;
     height: 100%;
     grid-template-areas: 'store-items-list';
-
-    .ghost {
-      opacity: 0.4;
-      background: #c8ebfb;
-    }
 
     .store-items-list {
       grid-area: store-items-list;
