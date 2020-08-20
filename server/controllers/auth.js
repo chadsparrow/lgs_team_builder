@@ -29,7 +29,7 @@ module.exports = {
   // @desc    Member login
   // @route   POST /api/v1/auth/login
   // @access  Public
-  memberLogin: async (req, res, next) => {
+  login: async (req, res, next) => {
     try {
       const { error } = validateLogin(req.body);
       if (error) throw createError(400, error, error.details);
@@ -80,7 +80,7 @@ module.exports = {
   // @desc    Member Register
   // @route   POST /api/v1/auth/register
   // @access  Public
-  memberRegister: async (req, res, next) => {
+  register: async (req, res, next) => {
     try {
       const { error } = validateNewRegister(req.body.member);
       if (error) throw createError(400, error, error.details);
