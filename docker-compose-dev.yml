@@ -2,8 +2,7 @@ version: '3'
 services:
   server:
     container_name: team_builder_app_dev
-    # image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
-    image: 41-token-cookies
+    image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
     restart: always
     ports:
       - 5000:5000
