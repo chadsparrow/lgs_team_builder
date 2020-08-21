@@ -72,7 +72,10 @@ module.exports = {
 
       res.cookie(
         'tb_member',
-        { aud: member._id },
+        JSON.stringify({
+          aud: member._id,
+          exp: config.ACCESS_TOKEN_TTL_NUMBER,
+        }),
         {
           maxAge: 1000 * 60 * 60 * 24 * 31,
           secure: process.env.NODE_ENV !== 'production' ? false : true,
