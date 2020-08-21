@@ -33,8 +33,10 @@ module.exports = {
         throw createError(400, 'You are currently not a member of any team');
 
       teams.forEach((team) => {
-        stores.push(team.stores);
+        stores.push(...team.stores);
       });
+
+      console.log(stores);
 
       // only sends stores that are NOT on HOLD
       const collectedStores = await Store.find({
