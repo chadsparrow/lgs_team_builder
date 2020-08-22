@@ -74,18 +74,23 @@ module.exports = {
         'tb_member',
         JSON.stringify({
           aud: member._id,
-          exp: config.ACCESS_TOKEN_TTL_NUMBER,
+          exp: new Date().getTime() + config.ACCESS_TOKEN_TTL_NUMBER,
+          email: member.email,
+          name: member.name,
+          isAdmin: member.isAdmin,
+          timezone: member.timezone,
+          createdAt: member.createdAt,
         }),
         {
           maxAge: 1000 * 60 * 60 * 24 * 31,
           secure: process.env.NODE_ENV !== 'production' ? false : true,
+          httpOnly: false,
         }
       );
 
       return res.send([
         {
           token,
-          rtoken,
           member: _.pick(member, [
             '_id',
             'email',
@@ -97,6 +102,22 @@ module.exports = {
           message: 'Logged In',
         },
       ]);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  logout: async (req, res, next) => {
+    try {
+      const id = req.params.id;
+
+      const member = await Member.findById(id);
+      if (!member) throw createError(400, 'Member with the given ID not found');
+
+      res.clearCookie('tb_member');
+      res.clearCookie('tb_access_token');
+      res.clearCookie('tb_refresh_token');
+      res.end();
     } catch (err) {
       next(err);
     }

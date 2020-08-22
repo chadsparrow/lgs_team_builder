@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import store from './store';
+import toast from './helpers/toast';
+import { get } from 'lodash';
 
 Vue.use(Router);
 
@@ -367,7 +369,7 @@ let router = new Router({
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!store.getters.isLoggedIn) {
-      Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
+      toast.error('Access Denied');
       next({
         path: '/',
         params: { nextUrl: to.fullPath },
@@ -375,19 +377,13 @@ router.beforeEach(async (to, from, next) => {
       return;
     }
 
-    const memberId = localStorage.getItem('member');
-    let member = store.getters.loggedInMember;
-    if (memberId && !member.name) {
-      await store.dispatch('setLoggedInMember', memberId);
-      member = store.getters.loggedInMember;
-      next();
-    }
+    const member = $cookies.get('tb_member') || {};
 
     if (to.matched.some((record) => record.meta.isAdmin)) {
-      if (member && member.isAdmin) {
+      if (get(member, 'isAdmin', false)) {
         next();
       } else {
-        Vue.toasted.error('Access Denied', { icon: 'exclamation-triangle' });
+        toast.error('Access Denied');
         next({ name: from.name });
       }
     } else {

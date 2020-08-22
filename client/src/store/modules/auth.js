@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import i18n from '../../i18n';
 import router from '../../router';
+import VueCookies from 'vue-cookies';
+Vue.use(VueCookies);
 
 export default {
   state: {
@@ -8,7 +10,7 @@ export default {
     status: '',
     token: localStorage.getItem('token') || '',
     accessToken: '',
-    loggedInMember: {},
+    loggedInMember: Vue.$cookies.get('tb_member') || false,
     emails: [],
     notifications: [],
     menu: [],
@@ -20,10 +22,9 @@ export default {
           commit('AUTH_REQUEST');
           const res = await Vue.axios.post('/api/v1/auth/login', loginCreds);
           const token = res.data[0].token;
-          const member = res.data[0].member;
           const emails = res.data[0].emails;
+          const member = $cookies.get('tb_member');
           localStorage.setItem('token', token);
-          localStorage.setItem('member', member._id);
           commit('AUTH_SUCCESS', { token, member, emails });
           resolve(res);
         } catch (err) {
@@ -33,13 +34,17 @@ export default {
         }
       });
     },
-    setLoggedInMember({ commit }, id) {
-      return new Promise(async (resolve, reject) => {
+    logout: ({ commit }) => {
+      return new Promise((resolve, reject) => {
         try {
-          const res = await Vue.axios.get(`/api/v1/members/${id}`);
-          const member = res.data;
-          commit('SET_LOGGED_IN', member);
-          resolve(res);
+          localStorage.removeItem('token');
+          commit('LOGOUT');
+          commit('CLEAR_CURRENTS');
+          commit('CLEAR_TEAMS');
+          commit('CLEAR_STORES');
+          commit('CLEAR_ORDERS');
+          commit('CLEAR_ALL_NOTIFICATIONS');
+          resolve();
         } catch (err) {
           reject(err);
         }
@@ -66,17 +71,6 @@ export default {
           reject(err);
         }
       });
-    },
-    logout({ commit }) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('member');
-      commit('LOGOUT');
-      commit('CLEAR_CURRENTS');
-      commit('CLEAR_TEAMS');
-      commit('CLEAR_STORES');
-      commit('CLEAR_ORDERS');
-      commit('CLEAR_ALL_NOTIFICATIONS');
-      router.push({ path: '/' });
     },
     changePassword(context, { updatedPassword, id }) {
       return new Promise(async (resolve, reject) => {
@@ -147,13 +141,10 @@ export default {
     AUTH_ERROR(state) {
       state.status = 'error';
     },
-    SET_LOGGED_IN(state, member) {
-      state.loggedInMember = member;
-    },
     LOGOUT(state) {
       state.status = '';
       state.token = '';
-      state.loggedInMember = { isAdmin: null };
+      state.loggedInMember = false;
     },
     CLEAR_CURRENTS(state) {
       state.currentMember = null;
@@ -264,7 +255,7 @@ export default {
   },
   getters: {
     notificationsReady: (state) => state.notificationsReady,
-    isLoggedIn: (state) => !!state.token,
+    isLoggedIn: (state) => !!state.loggedInMember,
     authStatus: (state) => state.status,
     loggedInMember: (state) => state.loggedInMember,
     emails: (state) => state.emails,

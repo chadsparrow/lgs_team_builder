@@ -58,11 +58,10 @@ export default {
     this.$store.commit('SET_MENU', this.loggedInMember.isAdmin);
     this.polling = setInterval(() => {
       if (this.isLoggedIn) {
-        const token = localStorage.getItem('token');
-        const decoded = jwt.decode(token);
-        if (Date.now() >= decoded.exp * 1000) {
+        const exp = $cookies.get('tb_member').exp;
+        console.log(exp - Date.now());
+        if (Date.now() >= exp) {
           clearInterval(this.polling);
-          this.logout();
           this.$toasted.error('Token Expired', {
             icon: 'exclamation-triangle',
             duration: null,
@@ -73,12 +72,15 @@ export default {
               },
             },
           });
+
+          this.logout();
         }
       }
     }, 1000 * 10);
   },
   destroyed() {
     window.removeEventListener('resize', this.setScreenWidth);
+    clearInterval(this.polling);
   },
   methods: {
     onToggleCollapse(collapsed) {
@@ -93,9 +95,17 @@ export default {
         this.sideCollapsed = false;
       }
     },
-    logout: function() {
-      this.$store.commit('LOADING_FALSE');
-      this.$store.dispatch('logout');
+    logout: async function() {
+      this.$store.commit('LOADING_TRUE');
+      clearInterval(this.polling);
+      try {
+        await this.$store.dispatch('logout');
+        this.$store.commit('LOADING_FALSE');
+        this.$router.push({ path: '/' });
+      } catch (err) {
+        this.$store.commit('LOADING_FALSE');
+        toast.error(err);
+      }
     },
   },
 };

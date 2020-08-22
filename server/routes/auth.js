@@ -5,6 +5,8 @@ const authController = require('../controllers/auth');
 
 router.route('/login').post(authController.login);
 
+router.route('/logout/:id').get(validateObjectId, authController.logout);
+
 router.route('/register/:id').post(validateObjectId, authController.register);
 
 router.route('/forgot').post(authController.forgotPassword);
