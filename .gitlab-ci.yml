@@ -7,7 +7,7 @@ cache:
   paths:
     - node_modules/
 
-Install_dependancies:
+Install:
   stage: dependencies
   image: node:12.16.3-alpine
   script:
@@ -15,7 +15,6 @@ Install_dependancies:
   only:
     - develop
     - staging
-    - merge_requests
   except:
     changes:
       - client/*
@@ -23,19 +22,46 @@ Install_dependancies:
     paths:
       - node_modules/
 
-Testing:
+MR_Install:
+  stage: dependencies
+  image: node:12.16.3-alpine
+  script:
+    - npm install
+  only:
+    - merge_requests
+  tags:
+    - merge
+  except:
+    changes:
+      - client/*
+  artifacts:
+    paths:
+      - node_modules/
+
+Test:
   stage: test
   image: node:12.16.3-alpine
   only:
     - develop
     - staging
-    - merge_requests
   except:
     changes:
       - client/*
   script: npm run test
 
-Develop build:
+MR_Test:
+  stage: test
+  image: node:12.16.3-alpine
+  only:
+    - merge_requests
+  tags:
+    - merge
+  except:
+    changes:
+      - client/*
+  script: npm run test
+
+Build Develop Image:
   stage: build
   image: docker:18
   services:
