@@ -59,7 +59,6 @@ export default {
     this.polling = setInterval(() => {
       if (this.isLoggedIn) {
         const exp = $cookies.get('tb_member').exp;
-        console.log(exp - Date.now());
         if (Date.now() >= exp) {
           clearInterval(this.polling);
           this.$toasted.error('Token Expired', {
@@ -99,7 +98,7 @@ export default {
       this.$store.commit('LOADING_TRUE');
       clearInterval(this.polling);
       try {
-        await this.$store.dispatch('logout');
+        await this.$store.dispatch('logout', { id: this.loggedInMember.aud });
         this.$store.commit('LOADING_FALSE');
         this.$router.push({ path: '/' });
       } catch (err) {
