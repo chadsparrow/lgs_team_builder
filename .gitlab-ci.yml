@@ -15,6 +15,7 @@ Install_dependancies:
   only:
     - develop
     - staging
+    - merge_requests
   except:
     changes:
       - client/*
@@ -28,6 +29,7 @@ Testing:
   only:
     - develop
     - staging
+    - merge_requests
   except:
     changes:
       - client/*
@@ -59,31 +61,31 @@ Develop build:
       --tag $CI_REGISTRY_IMAGE/app:develop
       .
     - docker push $CI_REGISTRY_IMAGE/app:develop
+# Staging build:
+#   stage: build
+#   image: docker:18
+#   services:
+#     - docker:dind
+#   only:
+#     - staging
+#   except:
+#     changes:
+#       - client/*
+#   cache:
+#     paths:
+#       - node_modules/
+#   before_script:
+#     - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+#     - docker info
+#   script:
+#     - docker pull $CI_REGISTRY_IMAGE/app:staging || true
+#     - >
+#       docker build
+#       --pull
+#       --build-arg VCS_REF=staging
+#       --build-arg VCS_URL=$CI_PROJECT_URL
+#       --cache-from $CI_REGISTRY_IMAGE/app:staging
+#       --tag $CI_REGISTRY_IMAGE/app:staging
+#       .
+#     - docker push $CI_REGISTRY_IMAGE/app:staging
 
-Staging build:
-  stage: build
-  image: docker:18
-  services:
-    - docker:dind
-  only:
-    - staging
-  except:
-    changes:
-      - client/*
-  cache:
-    paths:
-      - node_modules/
-  before_script:
-    - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker info
-  script:
-    - docker pull $CI_REGISTRY_IMAGE/app:staging || true
-    - >
-      docker build
-      --pull
-      --build-arg VCS_REF=staging
-      --build-arg VCS_URL=$CI_PROJECT_URL
-      --cache-from $CI_REGISTRY_IMAGE/app:staging
-      --tag $CI_REGISTRY_IMAGE/app:staging
-      .
-    - docker push $CI_REGISTRY_IMAGE/app:staging
