@@ -15,6 +15,7 @@ Install_dependancies:
   only:
     - develop
     - staging
+    - merge_requests
   except:
     changes:
       - client/*
@@ -44,6 +45,7 @@ Testing:
   only:
     - develop
     - staging
+    - merge_requests
   except:
     changes:
       - client/*
