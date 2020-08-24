@@ -15,22 +15,7 @@ Install_dependancies:
   only:
     - develop
     - staging
-  except:
-    changes:
-      - client/*
-  artifacts:
-    paths:
-      - node_modules/
-
-Install_dependancies_MR:
-  stage: dependencies
-  image: node:12.16.3-alpine
-  script:
-    - npm install
-  only:
     - merge_requests
-  tags:
-    - merge-request
   except:
     changes:
       - client/*
@@ -44,18 +29,7 @@ Testing:
   only:
     - develop
     - staging
-  except:
-    changes:
-      - client/*
-  script: npm run test
-
-Testing_MR:
-  stage: test
-  image: node:12.16.3-alpine
-  only:
     - merge_requests
-  tags:
-    - merge-request
   except:
     changes:
       - client/*
