@@ -8,8 +8,6 @@ export default {
   state: {
     notificationsReady: false,
     status: '',
-    token: localStorage.getItem('token') || '',
-    accessToken: '',
     loggedInMember: Vue.$cookies.get('tb_member') || false,
     emails: [],
     notifications: [],
@@ -21,23 +19,20 @@ export default {
         try {
           commit('AUTH_REQUEST');
           const res = await Vue.axios.post('/api/v1/auth/login', loginCreds);
-          const token = res.data[0].token;
           const emails = res.data[0].emails;
           const member = $cookies.get('tb_member');
-          localStorage.setItem('token', token);
-          commit('AUTH_SUCCESS', { token, member, emails });
+          commit('AUTH_SUCCESS', { member, emails });
           resolve(res);
         } catch (err) {
           commit('AUTH_ERROR');
-          localStorage.removeItem('token');
           reject(err);
         }
       });
     },
-    logout: ({ commit }) => {
-      return new Promise((resolve, reject) => {
+    logout: ({ commit }, { id }) => {
+      return new Promise(async (resolve, reject) => {
         try {
-          localStorage.removeItem('token');
+          await Vue.axios.get(`/api/v1/auth/logout/${id}`);
           commit('LOGOUT');
           commit('CLEAR_CURRENTS');
           commit('CLEAR_TEAMS');
@@ -131,10 +126,8 @@ export default {
     AUTH_REQUEST(state) {
       state.status = 'loading';
     },
-    AUTH_SUCCESS(state, { token, member, emails }) {
+    AUTH_SUCCESS(state, { member, emails }) {
       state.status = 'success';
-      state.token = token;
-      state.accessToken = token;
       state.loggedInMember = member;
       state.emails = emails;
     },
@@ -143,7 +136,6 @@ export default {
     },
     LOGOUT(state) {
       state.status = '';
-      state.token = '';
       state.loggedInMember = false;
     },
     CLEAR_CURRENTS(state) {
@@ -261,6 +253,5 @@ export default {
     emails: (state) => state.emails,
     notifications: (state) => state.notifications,
     menu: (state) => state.menu,
-    accessToken: (state) => state.accessToken,
   },
 };
