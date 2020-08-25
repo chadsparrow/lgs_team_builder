@@ -1,5 +1,7 @@
 const generator = require('generate-password');
+const randomstring = require('randomstring');
 const bcrypt = require('bcryptjs');
+const clone = require('lodash/clone');
 
 const Tzdb = require('timezonedb').Tzdb;
 const tzdb = new Tzdb({
@@ -116,42 +118,9 @@ module.exports = {
       const { error } = validateNewMember(req.body);
       if (error) throw createError(400, error, error.details);
 
-      const {
-        name,
-        company,
-        address1,
-        address2,
-        city,
-        stateProv,
-        country,
-        zipPostal,
-        phone,
-        email,
-        shippingSame,
-        shippingName,
-        shippingCompany,
-        shippingAddress1,
-        shippingAddress2,
-        shippingCity,
-        shippingStateProv,
-        shippingCountry,
-        shippingZipPostal,
-        shippingPhone,
-        shippingEmail,
-        billingSame,
-        billingName,
-        billingCompany,
-        billingAddress1,
-        billingAddress2,
-        billingCity,
-        billingStateProv,
-        billingCountry,
-        billingZipPostal,
-        billingPhone,
-        billingEmail,
-      } = req.body;
+      const { contact } = req.body;
 
-      const member = await Member.findOne({ email });
+      const member = await Member.findOne({ email: contact.email });
       if (member) throw createError(400, 'Email already registered');
 
       let password;
@@ -162,17 +131,17 @@ module.exports = {
       }
 
       const newMember = new Member({
-        name,
+        name: contact.name,
         password,
-        company,
-        address1,
-        address2,
-        city,
-        stateProv,
-        country,
-        zipPostal,
-        phone,
-        email,
+        company: contact.company,
+        address1: contact.address1,
+        address2: contact.address2,
+        city: contact.city,
+        stateProv: contact.stateProv,
+        country: contact.country,
+        zipPostal: contact.zipPostal,
+        phone: contact.phone,
+        email: contact.email,
         isAdmin: false,
       });
 
@@ -181,53 +150,8 @@ module.exports = {
         message: 'Welcome to Team Builder!',
       });
 
-      if (shippingSame) {
-        newMember.shipping.name = newMember.name;
-        newMember.shipping.company = newMember.company;
-        newMember.shipping.address1 = newMember.address1;
-        newMember.shipping.address2 = newMember.address2;
-        newMember.shipping.city = newMember.city;
-        newMember.shipping.stateProv = newMember.stateProv;
-        newMember.shipping.country = newMember.country;
-        newMember.shipping.zipPostal = newMember.zipPostal;
-        newMember.shipping.phone = newMember.phone;
-        newMember.shipping.email = newMember.email;
-      } else {
-        newMember.shipping.name = shippingName;
-        newMember.shipping.company = shippingCompany;
-        newMember.shipping.address1 = shippingAddress1;
-        newMember.shipping.address2 = shippingAddress2;
-        newMember.shipping.city = shippingCity;
-        newMember.shipping.stateProv = shippingStateProv;
-        newMember.shipping.country = shippingCountry;
-        newMember.shipping.zipPostal = shippingZipPostal;
-        newMember.shipping.phone = shippingPhone;
-        newMember.shipping.email = shippingEmail;
-      }
-
-      if (billingSame) {
-        newMember.billing.name = newMember.name;
-        newMember.billing.company = newMember.company;
-        newMember.billing.address1 = newMember.address1;
-        newMember.billing.address2 = newMember.address2;
-        newMember.billing.city = newMember.city;
-        newMember.billing.stateProv = newMember.stateProv;
-        newMember.billing.country = newMember.country;
-        newMember.billing.zipPostal = newMember.zipPostal;
-        newMember.billing.phone = newMember.phone;
-        newMember.billing.email = newMember.email;
-      } else {
-        newMember.billing.name = billingName;
-        newMember.billing.company = billingCompany;
-        newMember.billing.address1 = billingAddress1;
-        newMember.billing.address2 = billingAddress2;
-        newMember.billing.city = billingCity;
-        newMember.billing.stateProv = billingStateProv;
-        newMember.billing.country = billingCountry;
-        newMember.billing.zipPostal = billingZipPostal;
-        newMember.billing.phone = billingPhone;
-        newMember.billing.email = billingEmail;
-      }
+      newMember.billing = clone(req.body.billing);
+      newMember.shipping = clone(req.body.shipping);
 
       const geoCodeAddress = `${newMember.shipping.address1} ${newMember.shipping.address2} ${newMember.shipping.city} ${newMember.shipping.stateProv} ${newMember.shipping.country} ${newMember.shipping.zipPostal}`;
       const loc = await geocoder.geocode(geoCodeAddress);
@@ -245,17 +169,17 @@ module.exports = {
       newMember.timezone = data.zoneName;
 
       // generates a resetToken
-      const token = randomString.generate();
+      const token = randomstring.generate();
 
       // saves reset token and expiry to member
-      member.resetPasswordToken = token;
-      member.resetPasswordTokenExpires = Date.now() + 3600 * 1000;
+      newMember.resetPasswordToken = token;
+      newMember.resetPasswordTokenExpires = Date.now() + 3600 * 1000;
 
       await newMember.save();
 
       // SEND EMAIL TO USER TO ALLOW PASSWORD RESET USING TOKEN
       await mailer.sendEmail({
-        to: member.email,
+        to: newMember.email,
         subject: 'TeamBuilder Password Reset',
         text: `Hello, You've been added as a member on TeamBuilder and we just need you to verify your account and setup your password!
         You can go ahead and do so by clicking the link below:

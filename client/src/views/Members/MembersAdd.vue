@@ -604,11 +604,14 @@ export default {
         shipping: this.shipping,
       };
 
+      this.$store.commit('LOADING_TRUE');
       try {
         await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
         toast.success(i18n.t('members.successAdd'));
+        this.$store.commit('LOADING_FALSE');
       } catch (err) {
+        this.$store.commit('LOADING_FALSE');
         if (get(err.response, 'data[0].context')) {
           const key = get(err.response, 'data[0].context.key');
           this.$refs[key].focus();
