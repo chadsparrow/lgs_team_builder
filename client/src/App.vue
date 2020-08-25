@@ -163,9 +163,8 @@ textarea {
 }
 
 .avatarWrapper {
-  img {
-    border-radius: 0.8rem;
-  }
+  border-radius: 7px 7px 0 0;
+  overflow: hidden;
 }
 
 .sidebar-left {

@@ -268,6 +268,7 @@ export default {
 
     .has-search .form-control {
       padding-left: 2rem;
+      max-width: 400px;
     }
 
     .has-search .form-control-feedback {
@@ -288,7 +289,7 @@ export default {
 
     td {
       img {
-        max-width: 125px;
+        max-height: 20px;
       }
     }
   }
@@ -395,7 +396,7 @@ export default {
 @media screen and (min-width: 0px) and (max-width: 399px) {
   .header {
     .has-search .form-control {
-      max-width: 500px !important;
+      max-width: 100%;
     }
   }
 

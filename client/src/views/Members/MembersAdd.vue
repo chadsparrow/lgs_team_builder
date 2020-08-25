@@ -3,17 +3,14 @@
     <div class="middle-section">
       <div class="row">
         <div class="form-group col mb-3">
-          <label for="email"
-            >{{ $t('formLabels.emailAddress') }} /
-            {{ $t('formLabels.login') }}</label
-          >
-          <input
-            id="email"
-            type="text"
-            class="form-control form-control-lg"
-            v-model="email"
+          <InputField
+            name="email"
+            label="formLabels.emailAddress"
+            v-model="contact.email"
+            inputType="email"
             ref="email"
-            @change="changeDetails"
+            classNames="form-control form-control-lg"
+            :readOnly="false"
           />
         </div>
 
@@ -24,66 +21,61 @@
           </div>
           <div class="row">
             <div class="form-group col-lg-6">
-              <label for="name">{{ $t('formLabels.name') }}</label>
-              <input
-                id="name"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="name"
-                ref="name"
-                @change="changeDetails"
+              <InputField
+                name="name"
+                label="formLabels.name"
+                v-model="contact.name"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="address1">{{ $t('formLabels.company') }}</label>
-              <input
-                id="company"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="company"
-                ref="company"
-                @change="changeDetails"
+              <InputField
+                name="company"
+                label="formLabels.company"
+                v-model="contact.company"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="address1">{{ $t('formLabels.address1') }}</label>
-              <input
-                id="address1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="address1"
-                ref="address1"
-                @change="changeDetails"
+              <InputField
+                name="address1"
+                label="formLabels.address1"
+                v-model="contact.address1"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="address2">{{ $t('formLabels.address2') }}</label>
-              <input
-                id="address2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="address2"
-                ref="address2"
-                @change="changeDetails"
+              <InputField
+                name="address2"
+                label="formLabels.address2"
+                v-model="contact.address2"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-xl-6">
-              <label for="city">{{ $t('formLabels.city') }}</label>
-              <input
-                id="city"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="city"
-                ref="city"
-                @change="changeDetails"
+              <InputField
+                name="city"
+                label="formLabels.city"
+                v-model="contact.city"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3">
               <label for="country">{{ $t('formLabels.country') }}</label>
               <country-select
                 id="country"
-                v-model="country"
-                :country="country"
+                v-model="contact.country"
+                :country="contact.country"
                 class="form-control form-control-sm"
                 @input="checkCountry"
                 :placeholder="$t('formLabels.selectCountry')"
@@ -95,11 +87,10 @@
               <label for="stateProv">{{ $t('formLabels.stateProv') }}</label>
               <region-select
                 id="stateProv"
-                v-model="stateProv"
-                :country="country"
-                :region="stateProv"
+                v-model="contact.stateProv"
+                :country="contact.country"
+                :region="contact.stateProv"
                 class="form-control form-control-sm"
-                @input="checkRegion"
                 :regionName="true"
                 :placeholder="$t('formLabels.selectRegion')"
                 ref="stateProv"
@@ -107,28 +98,26 @@
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="zipPostal">{{ $t('formLabels.zipPostal') }}</label>
-              <input
-                id="zipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="zipPostal"
-                ref="zipPostal"
-                @change="changeDetails"
+              <InputField
+                name="zipPostal"
+                label="formLabels.zipPostal"
+                v-model="contact.zipPostal"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="false"
               />
             </div>
             <div class="form-group col-lg-6">
               <label for="phone">{{ $t('formLabels.phone') }}</label>
               <VuePhoneNumberInput
-                v-model="phone"
+                v-model="contact.phone"
                 id="phone"
                 size="sm"
                 :preferred-countries="['US', 'CA']"
                 ref="phone"
                 :clearable="true"
                 :no-use-browser-locale="true"
-                :translations="translations"
-                @update="copyPhone"
+                valid-color="#168091"
               />
             </div>
           </div>
@@ -144,7 +133,6 @@
                 class="form-check-input"
                 id="billingSame"
                 v-model="billingSame"
-                @change="copyMembertoBilling"
                 ref="billingSame"
               />
               <small class="form-check-label text-white" for="billingSame">
@@ -154,81 +142,71 @@
           </div>
           <div class="row">
             <div class="form-group col-lg-6 col-xl-3">
-              <label for="billingName">{{ $t('formLabels.name') }}</label>
-              <input
-                id="billingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingName"
-                :readonly="billingSame"
-                ref="billingName"
+              <InputField
+                name="billingName"
+                label="formLabels.name"
+                v-model="billing.name"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-lg-6 col-xl-3">
-              <label for="billingCompany">{{ $t('formLabels.company') }}</label>
-              <input
-                id="billingCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingCompany"
-                :readonly="billingSame"
-                ref="billingCompany"
+              <InputField
+                name="billingCompany"
+                label="formLabels.company"
+                v-model="billing.company"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-xl-6">
-              <label for="billingEmail">{{ $t('formLabels.email') }}</label>
-              <input
-                id="billingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingEmail"
-                :readonly="billingSame"
-                ref="billingEmail"
+              <InputField
+                name="billingEmail"
+                label="formLabels.email"
+                v-model="billing.email"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="billingAddress1">{{
-                $t('formLabels.address1')
-              }}</label>
-              <input
-                id="billingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingAddress1"
-                :readonly="billingSame"
-                ref="billingAddress1"
+              <InputField
+                name="billingAddress1"
+                label="formLabels.address1"
+                v-model="billing.address1"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="billingAddress2">{{
-                $t('formLabels.address2')
-              }}</label>
-              <input
-                id="billingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingAddress2"
-                :readonly="billingSame"
-                ref="billingAddress2"
+              <InputField
+                name="billingAddress2"
+                label="formLabels.address2"
+                v-model="billing.address2"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-xl-6">
-              <label for="billingCity">{{ $t('formLabels.city') }}</label>
-              <input
-                id="billingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingCity"
-                :readonly="billingSame"
-                ref="billingCity"
+              <InputField
+                name="billingCity"
+                label="formLabels.city"
+                v-model="billing.city"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-if="!billingSame">
               <label for="billingCountry">{{ $t('formLabels.country') }}</label>
               <country-select
                 id="billingCountry"
-                v-model="billingCountry"
-                :country="billingCountry"
+                v-model="billing.country"
+                :country="billing.country"
                 class="form-control form-control-sm"
                 :readonly="billingSame"
                 @input="checkBillingCountry"
@@ -238,14 +216,13 @@
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-else>
-              <label for="billingCountry">{{ $t('formLabels.country') }}</label>
-              <input
-                id="billingCountry"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingCountry"
-                :readonly="billingSame"
-                ref="billingCountry"
+              <InputField
+                name="billingCountry"
+                label="formLabels.country"
+                v-model="billing.country"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-if="!billingSame">
@@ -254,9 +231,9 @@
               }}</label>
               <region-select
                 id="billingStateProv"
-                v-model="billingStateProv"
-                :country="billingCountry"
-                :region="billingStateProv"
+                v-model="billing.stateProv"
+                :country="billing.country"
+                :region="billing.stateProv"
                 class="form-control form-control-sm"
                 :readonly="billingSame"
                 :regionName="true"
@@ -266,52 +243,47 @@
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-else>
-              <label for="billingStateProv">{{
-                $t('formLabels.stateProv')
-              }}</label>
-              <input
-                id="billingStateProv"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingStateProv"
-                :readonly="billingSame"
-                ref="billingStateProv"
+              <InputField
+                name="billingStateProv"
+                label="formLabels.stateProv"
+                v-model="billing.stateProv"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="billingZipPostal">{{
-                $t('formLabels.zipPostal')
-              }}</label>
-              <input
-                id="billingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="billingZipPostal"
-                :readonly="billingSame"
-                ref="billingZipPostal"
+              <InputField
+                name="billingZipPostal"
+                label="formLabels.zipPostal"
+                v-model="billing.zipPostal"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="billingPhone">{{ $t('formLabels.phone') }}</label>
-              <input
-                type="text"
-                id="billingPhone"
-                class="form-control form-control-sm"
-                v-model="billingPhone"
-                ref="billingPhone"
-                :readonly="billingSame"
-                v-if="billingSame"
+              <InputField
+                name="billingPhone"
+                label="formLabels.phone"
+                v-model="billing.phone"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="billingSame"
+                v-show="billingSame"
               />
+              <label for="billingPhone" v-if="!billingSame">{{
+                $t('formLabels.phone')
+              }}</label>
               <VuePhoneNumberInput
-                v-model="billingPhone"
+                v-model="billing.phone"
                 id="billingPhone"
                 size="sm"
                 :preferred-countries="['US', 'CA']"
                 ref="billingPhone"
                 :clearable="true"
                 :no-use-browser-locale="true"
-                :translations="translations"
-                v-else
+                v-show="!billingSame"
               />
             </div>
           </div>
@@ -327,7 +299,6 @@
                 class="form-check-input"
                 id="shippingSame"
                 v-model="shippingSame"
-                @change="copyMemberToShipping"
                 ref="shippingSame"
               />
               <small class="form-check-label text-white" for="shippingSame">
@@ -337,75 +308,63 @@
           </div>
           <div class="row">
             <div class="form-group col-lg-6 col-xl-3">
-              <label for="shippingName">{{ $t('formLabels.name') }}</label>
-              <input
-                id="shippingName"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingName"
-                :readonly="shippingSame"
-                ref="shippingName"
+              <InputField
+                name="shippingName"
+                label="formLabels.name"
+                v-model="shipping.name"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-lg-6 col-xl-3">
-              <label for="shippingCompany">{{
-                $t('formLabels.company')
-              }}</label>
-              <input
-                id="shippingCompany"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingCompany"
-                :readonly="shippingSame"
-                ref="shippingCompany"
+              <InputField
+                name="shippingCompany"
+                label="formLabels.company"
+                v-model="shipping.company"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-xl-6">
-              <label for="shippingEmail">{{ $t('formLabels.email') }}</label>
-              <input
-                id="shippingEmail"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingEmail"
-                :readonly="shippingSame"
-                ref="shippingEmail"
+              <InputField
+                name="shippingEmail"
+                label="formLabels.email"
+                v-model="shipping.email"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="shippingAddress1">{{
-                $t('formLabels.address1')
-              }}</label>
-              <input
-                id="shippingAddress1"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingAddress1"
-                :readonly="shippingSame"
-                ref="shippingAddress1"
+              <InputField
+                name="shippingAddress1"
+                label="formLabels.address1"
+                v-model="shipping.address1"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="shippingAddress2">{{
-                $t('formLabels.address2')
-              }}</label>
-              <input
-                id="shippingAddress2"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingAddress2"
-                :readonly="shippingSame"
-                ref="shippingAddress2"
+              <InputField
+                name="shippingAddress2"
+                label="formLabels.address2"
+                v-model="shipping.address2"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-xl-6">
-              <label for="shippingCity">{{ $t('formLabels.city') }}</label>
-              <input
-                id="shippingCity"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingCity"
-                :readonly="shippingSame"
-                ref="shippingCity"
+              <InputField
+                name="shippingCity"
+                label="formLabels.city"
+                v-model="shipping.city"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-if="!shippingSame">
@@ -414,8 +373,8 @@
               }}</label>
               <country-select
                 id="shippingCountry"
-                v-model="shippingCountry"
-                :country="shippingCountry"
+                v-model="shipping.country"
+                :country="shipping.country"
                 class="form-control form-control-sm"
                 @input="checkShippingCountry"
                 :readonly="shippingSame"
@@ -425,16 +384,13 @@
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-else>
-              <label for="shippingCountry">{{
-                $t('formLabels.country')
-              }}</label>
-              <input
-                id="shippingCountry"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingCountry"
-                :readonly="shippingSame"
-                ref="shippingCountry"
+              <InputField
+                name="shippingCountry"
+                label="formLabels.country"
+                v-model="shipping.country"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-if="!shippingSame">
@@ -443,9 +399,9 @@
               }}</label>
               <region-select
                 id="shippingStateProv"
-                v-model="shippingStateProv"
-                :country="shippingCountry"
-                :region="shippingStateProv"
+                v-model="shipping.stateProv"
+                :country="shipping.country"
+                :region="shipping.stateProv"
                 class="form-control form-control-sm"
                 :readonly="shippingSame"
                 :regionName="true"
@@ -455,52 +411,47 @@
               />
             </div>
             <div class="form-group col-sm-6 col-xl-3" v-else>
-              <label for="shippingStateProv">{{
-                $t('formLabels.stateProv')
-              }}</label>
-              <input
-                id="shippingStateProv"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingStateProv"
-                :readonly="shippingSame"
-                ref="shippingStateProv"
-              />
-            </div>
-
-            <div class="form-group col-lg-6">
-              <label for="shippingZipPostal">{{
-                $t('formLabels.zipPostal')
-              }}</label>
-              <input
-                id="shippingZipPostal"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="shippingZipPostal"
-                :readonly="shippingSame"
-                ref="shippingZipPostal"
+              <InputField
+                name="shippingStateProv"
+                label="formLabels.stateProv"
+                v-model="shipping.stateProv"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
             </div>
             <div class="form-group col-lg-6">
-              <label for="shippingPhone">{{ $t('formLabels.phone') }}</label>
-              <input
-                type="text"
-                id="shippingPhone"
-                class="form-control form-control-sm"
-                v-model="shippingPhone"
-                ref="shippingPhone"
-                :readonly="shippingSame"
-                v-if="shippingSame"
+              <InputField
+                name="shippingZipPostal"
+                label="formLabels.zipPostal"
+                v-model="shipping.zipPostal"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
               />
+            </div>
+            <div class="form-group col-lg-6">
+              <InputField
+                name="shippingPhone"
+                label="formLabels.phone"
+                v-model="shipping.phone"
+                inputType="text"
+                classNames="form-control form-control-sm"
+                :readOnly="shippingSame"
+                v-show="shippingSame"
+              />
+              <label for="shippingPhone" v-show="!shippingSame">{{
+                $t('formLabels.phone')
+              }}</label>
               <VuePhoneNumberInput
-                v-model="shippingPhone"
+                v-model="shipping.phone"
                 id="shippingPhone"
                 size="sm"
                 :preferred-countries="['US', 'CA']"
                 ref="shippingPhone"
                 :clearable="true"
-                v-else
-                :translations="translations"
+                :no-use-browser-locale="true"
+                v-show="!shippingSame"
               />
             </div>
           </div>
@@ -538,46 +489,56 @@ import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
 import get from 'lodash/get';
+import clone from 'lodash/clone';
+import mapValues from 'lodash/mapValues';
+import InputField from '../../components/Shared/InputField';
 
 export default {
   name: 'MembersAdd',
   components: {
     VuePhoneNumberInput,
+    InputField,
   },
   data() {
     return {
-      name: '',
-      company: '',
-      email: '',
-      address1: '',
-      address2: '',
-      city: '',
-      stateProv: '',
-      country: '',
-      zipPostal: '',
-      phone: '',
-      shippingSame: true,
-      shippingName: '',
-      shippingCompany: '',
-      shippingAddress1: '',
-      shippingAddress2: '',
-      shippingCity: '',
-      shippingStateProv: '',
-      shippingCountry: '',
-      shippingZipPostal: '',
-      shippingPhone: '',
-      shippingEmail: '',
+      contact: {
+        name: '',
+        company: '',
+        address1: '',
+        address2: '',
+        city: '',
+        stateProv: '',
+        country: '',
+        zipPostal: '',
+        phone: '',
+        email: '',
+      },
       billingSame: true,
-      billingName: '',
-      billingCompany: '',
-      billingAddress1: '',
-      billingAddress2: '',
-      billingCity: '',
-      billingStateProv: '',
-      billingCountry: '',
-      billingZipPostal: '',
-      billingPhone: '',
-      billingEmail: '',
+      billing: {
+        name: '',
+        company: '',
+        address1: '',
+        address2: '',
+        city: '',
+        stateProv: '',
+        country: '',
+        zipPostal: '',
+        phone: '',
+        email: '',
+      },
+      shippingSame: true,
+      shipping: {
+        name: '',
+        company: '',
+        address1: '',
+        address2: '',
+        city: '',
+        stateProv: '',
+        country: '',
+        zipPostal: '',
+        phone: '',
+        email: '',
+      },
     };
   },
   created: async function() {
@@ -605,42 +566,44 @@ export default {
       return this.$store.getters.phoneTranslations;
     },
   },
+  watch: {
+    billingSame(val) {
+      if (val) {
+        this.billing = clone(this.contact);
+      } else {
+        this.billing = mapValues(this.billing, (v) => '');
+      }
+    },
+    shippingSame(val) {
+      if (val) {
+        this.shipping = clone(this.billing);
+      } else {
+        this.shipping = mapValues(this.shipping, (v) => '');
+      }
+    },
+    contact: {
+      deep: true,
+      handler() {
+        if (this.billingSame) {
+          this.billing = clone(this.contact);
+        }
+
+        if (this.shippingSame) {
+          this.shipping = clone(this.contact);
+        }
+      },
+    },
+  },
   methods: {
     addMember: async function() {
       const member = {
-        email: this.email,
-        name: this.name,
-        company: this.company,
-        address1: this.address1,
-        address2: this.address2,
-        city: this.city,
-        stateProv: this.stateProv,
-        country: this.country,
-        zipPostal: this.zipPostal,
-        phone: this.phone,
-        shippingSame: this.shippingSame,
-        shippingName: this.shippingName,
-        shippingCompany: this.shippingCompany,
-        shippingAddress1: this.shippingAddress1,
-        shippingAddress2: this.shippingAddress2,
-        shippingCity: this.shippingCity,
-        shippingStateProv: this.shippingStateProv,
-        shippingCountry: this.shippingCountry,
-        shippingZipPostal: this.shippingZipPostal,
-        shippingPhone: this.shippingPhone,
-        shippingEmail: this.shippingEmail,
+        contact: this.contact,
         billingSame: this.billingSame,
-        billingName: this.billingName,
-        billingCompany: this.billingCompany,
-        billingAddress1: this.billingAddress1,
-        billingAddress2: this.billingAddress2,
-        billingCity: this.billingCity,
-        billingStateProv: this.billingStateProv,
-        billingCountry: this.billingCountry,
-        billingZipPostal: this.billingZipPostal,
-        billingPhone: this.billingPhone,
-        billingEmail: this.billingEmail,
+        billing: this.billing,
+        shippingSame: this.shippingSame,
+        shipping: this.shipping,
       };
+
       try {
         await this.$store.dispatch('addMember', member);
         this.$router.push({ name: 'members' });
@@ -655,154 +618,30 @@ export default {
           get(err.response, 'data[0].error.message') ===
           'Member already registered.'
         ) {
-          this.$refs['email'].value = '';
-          this.$refs['email'].focus();
+          this.contact.email = '';
         }
-      }
-    },
-    copyMemberToShipping: function() {
-      if (this.shippingSame) {
-        this.shippingName = this.name;
-        this.shippingCompany = this.company;
-        this.shippingAddress1 = this.address1;
-        this.shippingAddress2 = this.address2;
-        this.shippingCity = this.city;
-        this.shippingStateProv = this.stateProv;
-        this.shippingCountry = this.country;
-        this.shippingZipPostal = this.zipPostal;
-        this.shippingPhone = this.phone;
-        this.shippingEmail = this.email;
-      } else {
-        this.shippingName = '';
-        this.shippingCompany = '';
-        this.shippingAddress1 = '';
-        this.shippingAddress2 = '';
-        this.shippingCity = '';
-        this.shippingStateProv = '';
-        this.shippingCountry = '';
-        this.shippingZipPostal = '';
-        this.shippingPhone = '';
-        this.shippingEmail = '';
-      }
-    },
-    copyMembertoBilling: function() {
-      if (this.billingSame) {
-        this.billingName = this.name;
-        this.billingCompany = this.company;
-        this.billingAddress1 = this.address1;
-        this.billingAddress2 = this.address2;
-        this.billingCity = this.city;
-        this.billingStateProv = this.stateProv;
-        this.billingCountry = this.country;
-        this.billingZipPostal = this.zipPostal;
-        this.billingPhone = this.phone;
-        this.billingEmail = this.email;
-      } else {
-        this.billingName = '';
-        this.billingCompany = '';
-        this.billingAddress1 = '';
-        this.billingAddress2 = '';
-        this.billingCity = '';
-        this.billingStateProv = '';
-        this.billingCountry = '';
-        this.billingZipPostal = '';
-        this.billingPhone = '';
-        this.billingEmail = '';
-      }
-    },
-    changeDetails: async function(event) {
-      const target = event.target.id;
-      if (this.shippingSame) {
-        switch (target) {
-          case 'email':
-            this.shippingEmail = this.email;
-            break;
-          case 'name':
-            this.shippingName = this.name;
-            break;
-          case 'company':
-            this.shippingCompany = this.company;
-            break;
-          case 'address1':
-            this.shippingAddress1 = this.address1;
-            break;
-          case 'address2':
-            this.shippingAddress2 = this.address2;
-            break;
-          case 'city':
-            this.shippingCity = this.city;
-            break;
-          case 'zipPostal':
-            this.shippingZipPostal = this.zipPostal;
-            break;
-        }
-      }
-      if (this.billingSame) {
-        switch (target) {
-          case 'email':
-            this.billingEmail = this.email;
-            break;
-          case 'name':
-            this.billingName = this.name;
-            break;
-          case 'company':
-            this.billingCompany = this.company;
-            break;
-          case 'address1':
-            this.billingAddress1 = this.address1;
-            break;
-          case 'address2':
-            this.billingAddress2 = this.address2;
-            break;
-          case 'city':
-            this.billingCity = this.city;
-            break;
-          case 'zipPostal':
-            this.billingZipPostal = this.zipPostal;
-            break;
-        }
-      }
-    },
-    copyPhone: function(event) {
-      if (event.phoneNumber && this.shippingSame) {
-        this.shippingPhone = event.phoneNumber;
-      }
-
-      if (event.phoneNumber && this.billingSame) {
-        this.billingPhone = event.phoneNumber;
-      }
-    },
-    checkRegion: function() {
-      if (this.billingSame) {
-        this.billingStateProv = this.stateProv;
-      }
-
-      if (this.shippingSame) {
-        this.shippingStateProv = this.stateProv;
       }
     },
     checkCountry: function() {
-      this.$refs.phone.countryCode = this.country;
-      this.stateProv = '';
+      this.$refs.phone.countryCode = this.contact.country;
+      this.contact.stateProv = '';
       this.$refs.stateProv.$el.focus();
       if (this.billingSame) {
-        this.billingCountry = this.country;
-        this.billingStateProv = '';
+        this.billing.stateProv = '';
       }
 
       if (this.shippingSame) {
-        this.shippingCountry = this.country;
-        this.shippingStateProv = '';
+        this.shipping.stateProv = '';
       }
     },
     checkBillingCountry: function() {
-      this.$refs.billingPhone.countryCode = this.billingCountry;
-      this.billingStateProv = '';
+      this.$refs.billingPhone.countryCode = this.billing.country;
+      this.billing.stateProv = '';
       this.$refs.billingStateProv.$el.focus();
     },
     checkShippingCountry: function() {
-      this.$refs.shippingPhone.countryCode = this.shippingCountry;
-      this.shippingStateProv = '';
+      this.$refs.shippingPhone.countryCode = this.shipping.country;
+      this.shipping.stateProv = '';
       this.$refs.shippingStateProv.$el.focus();
     },
   },
@@ -812,7 +651,7 @@ export default {
 <style lang="scss" scoped>
 .page {
   .middle-section {
-    padding: $scrollbar-padding;
+    padding: 0 0.25rem;
   }
 }
 

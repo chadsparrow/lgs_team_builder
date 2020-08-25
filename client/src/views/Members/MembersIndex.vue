@@ -1,21 +1,18 @@
 <template>
   <div v-if="!isLoading" class="page container">
     <div class="header mb-2">
-      <div class="form-group has-search m-0" v-if="allMembers.length > 0">
-        <span class="fa fa-search form-control-feedback"></span>
-        <input
-          type="text"
-          id="memberSearch"
-          name="memberSearch"
-          class="form-control form-control-sm m-0"
-          v-model="memberSearchText"
-          :placeholder="$t('search')"
-        />
-      </div>
-      <div v-if="loggedInMember.isAdmin">
+      <SearchInput
+        v-model="memberSearchText"
+        id="memberSearch"
+        name="memberSearch"
+        translation="search"
+        class="form-group has-search m-0"
+        v-if="allMembers.length > 0"
+      />
+      <div v-show="loggedInMember.isAdmin">
         <router-link
           to="/dashboard/members/add"
-          class="small-btn addMemberBtn"
+          class="small-btn addButton"
           tag="button"
         >
           <i class="fas fa-plus mr-2"></i>{{ $t('members.addMember') }}
@@ -77,12 +74,14 @@ import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
+import SearchInput from '../../components/Shared/SearchInput';
 
 export default {
   name: 'MembersIndex',
   components: {
     Paginate,
     Gravatar,
+    SearchInput,
   },
   data() {
     return {
@@ -164,30 +163,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page {
-  .header {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.25rem;
-
-    .has-search .form-control {
-      padding-left: 2rem;
-    }
-
-    .has-search .form-control-feedback {
-      position: absolute;
-      z-index: 2;
-      display: block;
-      width: 2rem;
-      height: 2rem;
-      line-height: 2rem;
-      text-align: center;
-      pointer-events: none;
-      color: #aaa;
-    }
-  }
+.header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem;
 }
 
 /* Large */
@@ -225,16 +206,13 @@ export default {
 
 /* Extra Small */
 @media screen and (min-width: 0px) and (max-width: 397px) {
-  .page {
-    .header {
-      justify-content: center;
-      flex-direction: column-reverse;
+  .header {
+    justify-content: center;
+    flex-direction: column-reverse;
+  }
 
-      .form-group {
-        max-width: 100%;
-        width: 100%;
-      }
-    }
+  .addButton {
+    margin-bottom: 0.5rem;
   }
 
   .priority-5 {
@@ -244,12 +222,9 @@ export default {
   .priority-4 {
     display: none;
   }
+
   .priority-3 {
     display: none;
-  }
-
-  .addMemberBtn {
-    margin-bottom: 1rem;
   }
 }
 </style>

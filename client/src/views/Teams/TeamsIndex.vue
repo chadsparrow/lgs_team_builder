@@ -1,19 +1,23 @@
 <template>
   <div v-if="!isLoading" class="page container">
     <div class="header mb-2">
-      <div class="form-group has-search m-0" v-if="teams.length > 0">
-        <span class="fa fa-search form-control-feedback"></span>
-        <input
-          type="text"
-          id="teamSearch"
-          class="form-control form-control-sm"
-          v-model="teamSearchText"
-          :placeholder="$t('search')"
-        />
+      <SearchInput
+        v-model="teamSearchText"
+        id="teamSearch"
+        name="teamSearch"
+        translation="search"
+        class="form-group has-search m-0"
+        v-if="teams.length > 0"
+      />
+      <div v-show="loggedInMember.isAdmin">
+        <router-link
+          to="/dashboard/teams/add"
+          class="small-btn addButton"
+          tag="button"
+        >
+          <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
+        </router-link>
       </div>
-      <router-link to="/dashboard/teams/add" class="small-btn" tag="button">
-        <i class="fas fa-plus mr-2"></i>{{ $t('teams.addTeam') }}
-      </router-link>
     </div>
 
     <div class="member-list">
@@ -95,11 +99,13 @@ import Paginate from 'vuejs-paginate';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
+import SearchInput from '../../components/Shared/SearchInput';
 
 export default {
   name: 'TeamsIndex',
   components: {
     Paginate,
+    SearchInput,
   },
   data() {
     return {
@@ -191,29 +197,12 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-  width: 100%;
-
   .header {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    .has-search .form-control {
-      padding-left: 2rem;
-    }
-
-    .has-search .form-control-feedback {
-      position: absolute;
-      z-index: 2;
-      display: block;
-      width: 2rem;
-      height: 2rem;
-      line-height: 2rem;
-      text-align: center;
-      pointer-events: none;
-      color: #aaa;
-    }
+    padding: 0.25rem;
   }
 }
 
@@ -263,26 +252,23 @@ export default {
     .header {
       justify-content: center;
       flex-direction: column-reverse;
-
-      .form-group {
-        max-width: 100%;
-        width: 100%;
-
-        .form-control {
-          width: 100%;
-        }
-      }
     }
   }
 
   .priority-5 {
     display: none;
   }
+
   .priority-4 {
     display: none;
   }
+
   .priority-3 {
     display: none;
+  }
+
+  .addButton {
+    margin-bottom: 1rem;
   }
 }
 </style>
