@@ -274,7 +274,7 @@
 
 <script>
 import Gravatar from 'vue-gravatar';
-import InfoSpan from '../Shared/InfoSpan';
+import InfoSpan from '../../components/Shared/InfoSpan';
 import { mapGetters } from 'vuex';
 import toast from '../../helpers/toast';
 
@@ -295,10 +295,9 @@ export default {
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
-      const res = await this.$store.dispatch(
-        'getMemberDetails',
-        this.loggedInMember._id
-      );
+      const res = await this.$store.dispatch('getMemberDetails', {
+        id: this.loggedInMember.aud,
+      });
       this.memberDetails = res.data.member;
       const breadcrumbs = [
         {

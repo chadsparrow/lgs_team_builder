@@ -50,7 +50,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import toast from '../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'Notifications',
@@ -65,7 +65,7 @@ export default {
   },
   created: async function() {
     try {
-      await this.$store.dispatch('getMe', this.loggedInMember._id);
+      await this.$store.dispatch('getMe', this.loggedInMember.aud);
       this.getNotifications();
       this.$store.dispatch('setNotificationsReadyTrue');
     } catch (err) {
@@ -81,7 +81,7 @@ export default {
     getNotifications: function() {
       this.polling = setInterval(async () => {
         try {
-          await this.$store.dispatch('getMe', this.loggedInMember._id);
+          await this.$store.dispatch('getMe', this.loggedInMember.aud);
         } catch (err) {
           toast.error(err);
         }
@@ -90,7 +90,7 @@ export default {
     deleteNotification: async function(nId) {
       try {
         const res = await this.$store.dispatch('removeNotification', { nId });
-        await this.$store.dispatch('getMe', this.loggedInMember._id);
+        await this.$store.dispatch('getMe', this.loggedInMember.aud);
         toast.success(get(res, 'data[0].message', 'Success'));
       } catch (err) {
         toast.error(err);

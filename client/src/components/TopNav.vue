@@ -1,6 +1,6 @@
 <template>
   <div id="topNav">
-    <Breadcrumbs class="breadCrumbs" />
+    <Breadcrumbs class="breadcrumbs-container" />
     <div class="navBar">
       <!-- <Notifications /> -->
       <CartButton class="ml-2" v-if="member && !member.isAdmin && showCart" />
@@ -18,7 +18,7 @@ export default {
   components: {
     Breadcrumbs,
     Notifications,
-    CartButton
+    CartButton,
   },
   computed: {
     member: function() {
@@ -26,8 +26,8 @@ export default {
     },
     showCart: function() {
       return this.$store.getters.showCart;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -35,14 +35,26 @@ export default {
 #topNav {
   grid-area: topnav;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0 1rem !important;
+
+  .breadcrumbs-container {
+    display: flex;
+    height: max-content;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
 
   .navBar {
     display: flex;
-    flex-wrap: nowrap;
+    height: max-content;
+    flex-direction: row;
+    justify-content: flex-end;
     align-items: center;
+    flex-wrap: nowrap;
   }
 }
 </style>

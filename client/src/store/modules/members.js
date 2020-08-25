@@ -27,7 +27,7 @@ export default {
         }
       });
     },
-    getMemberDetails({ commit }, id) {
+    getMemberDetails({ commit }, { id }) {
       return new Promise(async (resolve, reject) => {
         try {
           const res = await Vue.axios.get(`/api/v1/members/${id}/details`);

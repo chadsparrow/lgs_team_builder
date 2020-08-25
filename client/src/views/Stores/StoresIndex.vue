@@ -364,7 +364,7 @@ export default {
 }
 
 /* Small */
-@media screen and (min-width: 398px) and (max-width: 575px) {
+@media screen and (min-width: 400px) and (max-width: 575px) {
   .priority-12 {
     display: none;
   }
@@ -392,7 +392,7 @@ export default {
 }
 
 /* Extra Small */
-@media screen and (min-width: 0px) and (max-width: 450px) {
+@media screen and (min-width: 0px) and (max-width: 399px) {
   .header {
     .has-search .form-control {
       max-width: 500px !important;

@@ -4,18 +4,16 @@ const { verifyAccessToken } = require('../middleware/jwt-helpers');
 
 module.exports = async (req, res, next) => {
   try {
-    const accessToken =
-      req.cookies['tb_access_token'] ||
-      req.header('Authorization').split(' ')[1] ||
-      null;
+    const accessToken = req.cookies['tb_access_token'];
 
-    const refreshToken = req.cookies['tb_refresh_token'] || null;
-
-    if (!accessToken)
-      throw createError(401, 'Access Denied. No token provided');
+    const refreshToken = req.cookies['tb_refresh_token'];
 
     /* if access Token is not valid but refreshToken is valid re-sign 
     access token and refresh token and send back to client */
+
+    //otherwise send 401 - Unauthorized Error
+    if (!accessToken && !refreshToken)
+      throw createError(401, 'Access Denied. No token provided');
 
     const decoded = await verifyAccessToken(accessToken);
     req.member = decoded;

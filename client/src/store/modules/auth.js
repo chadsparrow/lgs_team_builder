@@ -8,7 +8,7 @@ export default {
   state: {
     notificationsReady: false,
     status: '',
-    loggedInMember: Vue.$cookies.get('tb_member') || false,
+    loggedInMember: Vue.$cookies.get('tb_member') || null,
     emails: [],
     notifications: [],
     menu: [],
@@ -136,7 +136,7 @@ export default {
     },
     LOGOUT(state) {
       state.status = '';
-      state.loggedInMember = false;
+      state.loggedInMember = null;
     },
     CLEAR_CURRENTS(state) {
       state.currentMember = null;

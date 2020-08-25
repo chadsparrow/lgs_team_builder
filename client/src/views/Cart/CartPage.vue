@@ -134,8 +134,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import toast from '../helpers/toast';
-import { get } from 'lodash';
+import toast from '../../helpers/toast';
+import get from 'lodash/get';
 
 export default {
   name: 'CartPage',

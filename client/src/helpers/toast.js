@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 const toast = {
   error: (error) => {

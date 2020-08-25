@@ -81,7 +81,7 @@
 <script>
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'CatalogsAdd',

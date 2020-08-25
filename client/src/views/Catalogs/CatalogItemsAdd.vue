@@ -278,7 +278,7 @@
 import VueTagsInput from '@johmun/vue-tags-input';
 import { mapGetters } from 'vuex';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'CatalogItemsAdd',

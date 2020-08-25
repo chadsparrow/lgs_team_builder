@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const pick = require('lodash/pick');
 const bcrypt = require('bcryptjs');
 const Tzdb = require('timezonedb').Tzdb;
 const randomString = require('randomstring');
@@ -59,12 +59,14 @@ module.exports = {
       const rtoken = await signRefreshToken(member.id);
 
       res.cookie('tb_access_token', token, {
+        sameSite: 'Strict',
         maxAge: config.ACCESS_TOKEN_TTL_NUMBER,
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'production' ? false : true,
       });
 
       res.cookie('tb_refresh_token', rtoken, {
+        sameSite: 'Strict',
         maxAge: config.REFRESH_TOKEN_TTL_NUMBER,
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'production' ? false : true,
@@ -82,7 +84,7 @@ module.exports = {
           createdAt: member.createdAt,
         }),
         {
-          maxAge: 1000 * 60 * 60 * 24 * 31,
+          sameSite: 'Strict',
           secure: process.env.NODE_ENV !== 'production' ? false : true,
           httpOnly: false,
         }
@@ -91,7 +93,7 @@ module.exports = {
       return res.send([
         {
           token,
-          member: _.pick(member, [
+          member: pick(member, [
             '_id',
             'email',
             'name',
@@ -117,7 +119,7 @@ module.exports = {
       res.clearCookie('tb_member');
       res.clearCookie('tb_access_token');
       res.clearCookie('tb_refresh_token');
-      res.end();
+      res.send({ message: 'Logged out' });
     } catch (err) {
       next(err);
     }
@@ -401,7 +403,7 @@ module.exports = {
       if (member.resetPasswordTokenExpires < Date.now())
         throw createError(400, 'Reset token expired');
 
-      return res.status(200).send({ member: _.pick(member, ['_id', 'email']) });
+      return res.status(200).send({ member: pick(member, ['_id', 'email']) });
     } catch (err) {
       next(err);
     }

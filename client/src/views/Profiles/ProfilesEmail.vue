@@ -106,7 +106,7 @@ export default {
       try {
         const res = await this.$store.dispatch('updateEmail', {
           updatedEmail,
-          id: this.loggedInMember._id,
+          id: this.loggedInMember.aud,
         });
 
         this.$router.push({ name: 'profile' });

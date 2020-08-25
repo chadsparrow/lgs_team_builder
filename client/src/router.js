@@ -2,56 +2,12 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import store from './store';
 import toast from './helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 Vue.use(Router);
 
-const Login = () => import('./components/Login.vue');
-const Forgot = () => import('./components/Forgot.vue');
-const Reset = () => import('./components/Reset.vue');
-const Verify = () => import('./components/Verify.vue');
-const JoinTeam = () => import('./components/JoinTeam.vue');
+const Login = () => import('./views/Login.vue');
 const Dashboard = () => import('./views/Dashboard.vue');
-const DashboardIndex = () =>
-  import('./components/Dashboard/DashboardIndex.vue');
-const PageNotFound = () => import('./views/PageNotFound.vue');
-const ServerError = () => import('./views/ServerError.vue');
-const ProfilesIndex = () => import('./components/Profiles/ProfilesIndex.vue');
-const ProfilesEdit = () => import('./components/Profiles/ProfilesEdit.vue');
-const ProfilesPassword = () =>
-  import('./components/Profiles/ProfilesPassword.vue');
-const ProfilesEmail = () => import('./components/Profiles/ProfilesEmail.vue');
-const CartPage = () => import('./components/CartPage.vue');
-const CatalogsIndex = () => import('./components/Catalogs/CatalogsIndex.vue');
-const CatalogsAdd = () => import('./components/Catalogs/CatalogsAdd.vue');
-const CatalogById = () => import('./components/Catalogs/CatalogById.vue');
-const CatalogByIdEdit = () =>
-  import('./components/Catalogs/CatalogByIdEdit.vue');
-const CatalogItemsAdd = () =>
-  import('./components/Catalogs/CatalogItemsAdd.vue');
-const CatalogItemById = () =>
-  import('./components/Catalogs/CatalogItemById.vue');
-const CatalogItemByIdEdit = () =>
-  import('./components/Catalogs/CatalogItemByIdEdit.vue');
-const OrdersIndex = () => import('./components/Orders/OrdersIndex.vue');
-const MembersIndex = () => import('./components/Members/MembersIndex.vue');
-const MembersAdd = () => import('./components/Members/MembersAdd.vue');
-const MemberById = () => import('./components/Members/MemberById.vue');
-const MemberByIdEdit = () => import('./components/Members/MemberByIdEdit.vue');
-const StoresIndex = () => import('./components/Stores/StoresIndex.vue');
-const StoresById = () => import('./components/Stores/StoresById.vue');
-const StoresByIdEdit = () => import('./components/Stores/StoresByIdEdit.vue');
-const StoresByIdAddItem = () =>
-  import('./components/Stores/StoresByIdAddItem.vue');
-const TeamsIndex = () => import('./components/Teams/TeamsIndex.vue');
-const TeamsAdd = () => import('./components/Teams/TeamsAdd.vue');
-const TeamsAddMember = () => import('./components/Teams/TeamsAddMember.vue');
-const TeamsRemoveMember = () =>
-  import('./components/Teams/TeamsRemoveMember.vue');
-const TeamsById = () => import('./components/Teams/TeamsById.vue');
-const TeamsByIdEdit = () => import('./components/Teams/TeamsByIdEdit.vue');
-const TeamsByIdAddStore = () =>
-  import('./components/Teams/TeamsByIdAddStore.vue');
 
 let router = new Router({
   mode: 'history',
@@ -68,7 +24,8 @@ let router = new Router({
     {
       path: '/forgot',
       name: 'forgot',
-      component: Forgot,
+      component: () =>
+        import(/* webpackChunkName: "Forgot" */ './views/Forgot.vue'),
       meta: {
         guest: true,
       },
@@ -76,7 +33,8 @@ let router = new Router({
     {
       path: '/reset',
       name: 'reset',
-      component: Reset,
+      component: () =>
+        import(/* webpackChunkName: "Reset" */ './views/Reset.vue'),
       meta: {
         guest: true,
       },
@@ -84,7 +42,8 @@ let router = new Router({
     {
       path: '/verify',
       name: 'verify',
-      component: Verify,
+      component: () =>
+        import(/* webpackChunkName: "Verify" */ './views/Verify.vue'),
       meta: {
         guest: true,
       },
@@ -92,7 +51,8 @@ let router = new Router({
     {
       path: '/join/:id',
       name: 'jointeam',
-      component: JoinTeam,
+      component: () =>
+        import(/* webpackChunkName: "JoinTeam" */ './views/JoinTeam.vue'),
     },
     {
       path: '/dashboard',
@@ -105,7 +65,10 @@ let router = new Router({
         {
           path: 'index',
           name: 'dashboardIndex',
-          component: DashboardIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "DashboardIndex" */ './views/Dashboard/DashboardIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -113,7 +76,10 @@ let router = new Router({
         {
           path: 'profile',
           name: 'profile',
-          component: ProfilesIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "ProfilesIndex" */ './views/Profiles/ProfilesIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -121,7 +87,10 @@ let router = new Router({
         {
           path: 'profile/edit',
           name: 'profileedit',
-          component: ProfilesEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "ProfilesEdit" */ './views/Profiles/ProfilesEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -129,7 +98,10 @@ let router = new Router({
         {
           path: 'profile/password',
           name: 'profilepassword',
-          component: ProfilesPassword,
+          component: () =>
+            import(
+              /* webpackChunkName: "ProfilesPassword" */ './views/Profiles/ProfilesPassword.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -137,7 +109,10 @@ let router = new Router({
         {
           path: 'profile/email',
           name: 'profileemail',
-          component: ProfilesEmail,
+          component: () =>
+            import(
+              /* webpackChunkName: "ProfilesEmail" */ './views/Profiles/ProfilesEmail.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -145,7 +120,10 @@ let router = new Router({
         {
           path: 'cart/:id',
           name: 'cart',
-          component: CartPage,
+          component: () =>
+            import(
+              /* webpackChunkName: "CartPage" */ './views/Cart/CartPage.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -153,7 +131,10 @@ let router = new Router({
         {
           path: 'catalogs',
           name: 'catalogs',
-          component: CatalogsIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogsIndex" */ './views/Catalogs/CatalogsIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -162,7 +143,10 @@ let router = new Router({
         {
           path: 'catalogs/add',
           name: 'catalogsAdd',
-          component: CatalogsAdd,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogsAdd" */ './views/Catalogs/CatalogsAdd.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -171,7 +155,10 @@ let router = new Router({
         {
           path: 'catalogs/:id',
           name: 'catalogsById',
-          component: CatalogById,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogById" */ './views/Catalogs/CatalogById.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -180,7 +167,10 @@ let router = new Router({
         {
           path: 'catalogs/:id/edit',
           name: 'catalogsByIdEdit',
-          component: CatalogByIdEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogByIdEdit" */ './views/Catalogs/CatalogByIdEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -189,7 +179,10 @@ let router = new Router({
         {
           path: 'catalogs/:id/add',
           name: 'catalogsItemsAdd',
-          component: CatalogItemsAdd,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogItemsAdd" */ './views/Catalogs/CatalogItemsAdd.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -198,7 +191,10 @@ let router = new Router({
         {
           path: 'catalogitems/:id',
           name: 'catalogItemById',
-          component: CatalogItemById,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogItemById" */ './views/Catalogs/CatalogItemById.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -207,7 +203,10 @@ let router = new Router({
         {
           path: 'catalogitems/edit/:id',
           name: 'catalogItemByIdEdit',
-          component: CatalogItemByIdEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "CatalogItemByIdEdit" */ './views/Catalogs/CatalogItemByIdEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -216,7 +215,10 @@ let router = new Router({
         {
           path: 'orders',
           name: 'orders',
-          component: OrdersIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "OrdersIndex" */ './views/Orders/OrdersIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -224,7 +226,10 @@ let router = new Router({
         {
           path: 'stores',
           name: 'stores',
-          component: StoresIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "StoresIndex" */ './views/Stores/StoresIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -232,7 +237,10 @@ let router = new Router({
         {
           path: 'stores/:id',
           name: 'storesById',
-          component: StoresById,
+          component: () =>
+            import(
+              /* webpackChunkName: "StoresById" */ './views/Stores/StoresById.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -240,7 +248,10 @@ let router = new Router({
         {
           path: 'stores/:id/edit',
           name: 'storesByIdEdit',
-          component: StoresByIdEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "StoresByIdEdit" */ './views/Stores/StoresByIdEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -249,7 +260,10 @@ let router = new Router({
         {
           path: 'stores/:id/add',
           name: 'storesByIdAddItem',
-          component: StoresByIdAddItem,
+          component: () =>
+            import(
+              /* webpackChunkName: "StoresByIdAddItem" */ './views/Stores/StoresByIdAddItem.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -258,7 +272,21 @@ let router = new Router({
         {
           path: 'teams',
           name: 'teams',
-          component: TeamsIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsIndex" */ './views/Teams/TeamsIndex.vue'
+            ),
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          path: 'teams/:id',
+          name: 'teamsById',
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsById" */ './views/Teams/TeamsById.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -266,24 +294,10 @@ let router = new Router({
         {
           path: 'teams/add',
           name: 'teamsAdd',
-          component: TeamsAdd,
-          meta: {
-            requiresAuth: true,
-            isAdmin: true,
-          },
-        },
-        {
-          path: 'teams/:id',
-          name: 'teamsById',
-          component: TeamsById,
-          meta: {
-            requiresAuth: true,
-          },
-        },
-        {
-          path: 'teams/:id/edit',
-          name: 'teamsByIdEdit',
-          component: TeamsByIdEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsAdd" */ './views/Teams/TeamsAdd.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -292,7 +306,22 @@ let router = new Router({
         {
           path: 'teams/:id/addmember',
           name: 'teamsAddMember',
-          component: TeamsAddMember,
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsAddMember" */ './views/Teams/TeamsAddMember.vue'
+            ),
+          meta: {
+            requiresAuth: true,
+            isAdmin: true,
+          },
+        },
+        {
+          path: 'teams/:id/edit',
+          name: 'teamsByIdEdit',
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsByIdEdit" */ './views/Teams/TeamsByIdEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -301,7 +330,10 @@ let router = new Router({
         {
           path: 'teams/:id/removemember',
           name: 'teamsRemoveMember',
-          component: TeamsRemoveMember,
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsRemoveMember" */ './views/Teams/TeamsRemoveMember.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -310,7 +342,10 @@ let router = new Router({
         {
           path: 'teams/:id/addstore',
           name: 'teamsAddStore',
-          component: TeamsByIdAddStore,
+          component: () =>
+            import(
+              /* webpackChunkName: "TeamsByIdAddStore" */ './views/Teams/TeamsByIdAddStore.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -319,7 +354,10 @@ let router = new Router({
         {
           path: 'members',
           name: 'members',
-          component: MembersIndex,
+          component: () =>
+            import(
+              /* webpackChunkName: "MembersIndex" */ './views/Members/MembersIndex.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -328,7 +366,10 @@ let router = new Router({
         {
           path: 'members/add',
           name: 'membersAdd',
-          component: MembersAdd,
+          component: () =>
+            import(
+              /* webpackChunkName: "MembersAdd" */ './views/Members/MembersAdd.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -337,7 +378,10 @@ let router = new Router({
         {
           path: 'members/:id',
           name: 'membersById',
-          component: MemberById,
+          component: () =>
+            import(
+              /* webpackChunkName: "MemberById" */ './views/Members/MemberById.vue'
+            ),
           meta: {
             requiresAuth: true,
           },
@@ -345,7 +389,10 @@ let router = new Router({
         {
           path: 'members/:id/edit',
           name: 'membersByIdEdit',
-          component: MemberByIdEdit,
+          component: () =>
+            import(
+              /* webpackChunkName: "MemberByIdEdit" */ './views/Members/MemberByIdEdit.vue'
+            ),
           meta: {
             requiresAuth: true,
             isAdmin: true,
@@ -356,12 +403,16 @@ let router = new Router({
     {
       path: '/500',
       name: '500',
-      component: ServerError,
+      component: () =>
+        import(/* webpackChunkName: "ServerError" */ './views/ServerError.vue'),
     },
     {
       path: '*',
       name: '404',
-      component: PageNotFound,
+      component: () =>
+        import(
+          /* webpackChunkName: "PageNotFound" */ './views/PageNotFound.vue'
+        ),
     },
   ],
 });

@@ -656,7 +656,7 @@ export default {
     .catalogItemsList {
       padding: $scrollbar-padding;
       grid-area: catalogitem-list;
-      overflow-x: none;
+      overflow-x: hidden;
       overflow-y: auto;
       max-height: calc(100vh - 245px);
 
@@ -715,7 +715,7 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: none;
+      background-color: transparent;
       border: 2px dotted grey;
       color: grey;
       font-weight: $font-weight-black;

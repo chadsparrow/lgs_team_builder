@@ -7,7 +7,7 @@
           v-for="breadcrumb of breadcrumbs"
           :key="breadcrumb.text"
         >
-          <router-link class="btn btn-sm" tag="a" :to="breadcrumb.link">{{
+          <router-link class="btn btn-sm" tag="button" :to="breadcrumb.link">{{
             breadcrumb.text
           }}</router-link>
         </li>
@@ -30,13 +30,18 @@ export default {
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1rem;
   background: transparent;
-  padding: 0px 15px !important;
+  padding: 0;
+  margin: 0;
 
   .breadcrumb-item {
     .btn {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
+      color: $blue-color;
+      &:hover {
+        background: $blue-color;
+        color: $white-text;
+      }
     }
   }
 }

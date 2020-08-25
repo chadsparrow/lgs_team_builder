@@ -15,7 +15,6 @@
             />
           </div>
 
-          <!-- ADMIN SELECTOR -->
           <div class="form-group col-md-2">
             <label for="teamId">{{ $t('teams.erpId') }}</label>
             <input
@@ -26,6 +25,8 @@
               ref="teamId"
             />
           </div>
+
+          <!-- ADMIN SELECTOR -->
           <div class="form-group col-md-4">
             <label for="adminId">{{ $t('teams.teamAdmin') }}</label>
             <select
@@ -42,6 +43,7 @@
               >
             </select>
           </div>
+
           <!-- MANAGER SELECTOR -->
           <div class="form-group col-md-6" v-if="members.length > 0">
             <label for="managerId">{{ $t('teams.teamManager') }}</label>
@@ -55,6 +57,7 @@
             ></vSelect>
           </div>
         </div>
+
         <!-- MAIN CONTACT -->
         <div class="section-header bg-secondary">
           <span>{{ $t('formLabels.mainContact') }}</span>
@@ -439,7 +442,7 @@ import 'vue-select/dist/vue-select.css';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'TeamsAdd',
@@ -480,7 +483,7 @@ export default {
       adminsList: [],
       backupContact: {},
       backupShipping: {},
-      chosenMember: '',
+      chosenMember: null,
     };
   },
   computed: {
@@ -504,7 +507,7 @@ export default {
       this.adminsList = admins.data;
 
       await this.$store.dispatch('getMembers');
-      this.adminId = this.member._id;
+      this.adminId = this.loggedInMember.aud;
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.teams'),
@@ -566,10 +569,9 @@ export default {
     getManagerDetails: async function() {
       try {
         if (this.chosenMember !== null) {
-          const res = await this.$store.dispatch(
-            'getMemberDetails',
-            this.chosenMember._id
-          );
+          const res = await this.$store.dispatch('getMemberDetails', {
+            id: this.chosenMember._id,
+          });
           const manager = res.data.member;
 
           const {

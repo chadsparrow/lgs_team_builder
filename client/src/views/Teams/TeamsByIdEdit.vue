@@ -443,7 +443,7 @@ import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import { mapGetters } from 'vuex';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'TeamByIdEdit',
@@ -552,10 +552,9 @@ export default {
     getManagerDetails: async function() {
       this.$store.commit('LOADING_TRUE');
       try {
-        const res = await this.$store.dispatch(
-          'getMemberDetails',
-          this.team.managerId._id
-        );
+        const res = await this.$store.dispatch('getMemberDetails', {
+          id: this.team.managerId._id,
+        });
         const manager = res.data.member;
 
         const {

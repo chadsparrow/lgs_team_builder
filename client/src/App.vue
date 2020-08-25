@@ -108,7 +108,7 @@ label {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition-duration: 0.25s;
+  transition-duration: 150ms;
   transition-property: opacity;
   transition-timing-function: ease;
 }

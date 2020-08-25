@@ -76,7 +76,7 @@
 <script>
 import { required, sameAs, minLength } from 'vuelidate/lib/validators';
 import toast from '../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'ResetPassword',

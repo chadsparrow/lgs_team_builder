@@ -160,16 +160,16 @@
             tag="button"
             class="small-btn mr-2"
             :to="`/dashboard/stores/${store._id}/edit`"
-            >Store Settings</router-link
+            >Settings</router-link
           >
           <router-link
             tag="button"
             class="small-btn mr-2"
             :to="`/dashboard/stores/${store._id}/add`"
-            >Edit Items</router-link
+            >Items</router-link
           >
           <button @click="displayExtrasModal" class="small-btn mr-2">
-            Edit Extras
+            Charges
             <span
               class="badge badge-light ml-2"
               v-if="extraCharges && extraCharges.length > 0"
@@ -177,7 +177,7 @@
               {{ extraCharges.length }}
             </span>
           </button>
-          <button class="small-btn mr-2">Edit Coupons</button>
+          <button class="small-btn mr-2">Coupons</button>
           <button @click="duplicateOrder" class="small-btn">
             Duplicate Store
           </button>
@@ -433,7 +433,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'StoresById',

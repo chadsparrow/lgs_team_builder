@@ -25,7 +25,7 @@
         </button>
       </div>
     </sidebar-menu>
-    <TopNav class="topNavBar" />
+    <TopNav class="top-nav" />
     <transition name="fade" mode="out-in">
       <router-view class="mainContent"></router-view>
     </transition>
@@ -35,7 +35,6 @@
 <script>
 import TopNav from '../components/TopNav';
 import { mapGetters } from 'vuex';
-import jwt from 'jsonwebtoken';
 
 export default {
   name: 'Dashboard',
@@ -58,10 +57,10 @@ export default {
     this.$store.commit('SET_MENU', this.loggedInMember.isAdmin);
     this.polling = setInterval(() => {
       if (this.isLoggedIn) {
-        const exp = $cookies.get('tb_member').exp;
-        if (Date.now() >= exp) {
+        const cookie = $cookies.get('tb_member');
+        if (!cookie) {
           clearInterval(this.polling);
-          this.$toasted.error('Token Expired', {
+          this.$toasted.error('Token Missing', {
             icon: 'exclamation-triangle',
             duration: null,
             action: {
@@ -73,6 +72,23 @@ export default {
           });
 
           this.logout();
+        } else {
+          const exp = $cookies.get('tb_member').exp;
+          if (Date.now() >= exp) {
+            clearInterval(this.polling);
+            this.$toasted.error('Token Expired', {
+              icon: 'exclamation-triangle',
+              duration: null,
+              action: {
+                text: 'CLOSE',
+                onClick: (e, toastObject) => {
+                  this.$toasted.clear();
+                },
+              },
+            });
+
+            this.logout();
+          }
         }
       }
     }, 1000 * 10);
@@ -114,7 +130,7 @@ export default {
 .dashboard {
   display: grid;
   grid-template-columns: 150px 1fr;
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: 50px 1fr;
   grid-template-areas:
     'sidebar topnav'
     'sidebar content';
@@ -127,6 +143,12 @@ export default {
     $white-text,
     $background-grey
   );
+
+  .top-nav {
+    grid-area: topnav;
+    width: 100%;
+    height: 100%;
+  }
 
   .sidebar-menu {
     grid-area: sidebar;
@@ -204,8 +226,6 @@ export default {
 }
 
 .v-sidebar-menu {
-  padding-bottom: 1.25rem;
-
   .vsm--link,
   .vsm--header {
     font-size: 0.85rem;

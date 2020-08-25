@@ -105,7 +105,7 @@ import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import { required, sameAs, not, minLength } from 'vuelidate/lib/validators';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'ProfilesPassword',
@@ -172,7 +172,7 @@ export default {
         try {
           await this.$store.dispatch('changePassword', {
             updatedPassword,
-            id: this.loggedInMember._id,
+            id: this.loggedInMember.aud,
           });
           toast.success(i18n.t('profiles.passwordUpdated'));
           this.submitStatus = 'OK';

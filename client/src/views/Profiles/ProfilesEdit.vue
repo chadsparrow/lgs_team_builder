@@ -493,7 +493,7 @@ import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
 import toast from '../../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'ProfilesEdit',
@@ -526,10 +526,9 @@ export default {
         },
       ];
       await this.$store.dispatch('setBreadcrumbs', breadcrumbs);
-      const res = await this.$store.dispatch(
-        'getMemberDetails',
-        this.loggedInMember._id
-      );
+      const res = await this.$store.dispatch('getMemberDetails', {
+        id: this.loggedInMember.aud,
+      });
       this.memberDetails = res.data.member;
       this.$store.commit('LOADING_FALSE');
     } catch (err) {
@@ -716,7 +715,7 @@ export default {
       try {
         const res = await this.$store.dispatch('updateMember', {
           updatedMember,
-          id: this.loggedInMember._id,
+          id: this.loggedInMember.aud,
         });
         toast.succes(get(res, 'data[0].message', 'Success'));
         this.$router.push({ name: 'profile' });

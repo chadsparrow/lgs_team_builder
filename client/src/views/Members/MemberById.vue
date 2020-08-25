@@ -259,7 +259,7 @@
 import Gravatar from 'vue-gravatar';
 import { mapGetters } from 'vuex';
 import i18n from '../../i18n';
-import InfoSpan from '../Shared/InfoSpan';
+import InfoSpan from '../../components/Shared/InfoSpan';
 import toast from '../../helpers/toast';
 
 export default {
@@ -283,7 +283,9 @@ export default {
   created: async function() {
     this.$store.commit('LOADING_TRUE');
     try {
-      await this.$store.dispatch('getMemberDetails', this.$route.params.id);
+      await this.$store.dispatch('getMemberDetails', {
+        id: this.$route.params.id,
+      });
       const breadcrumbs = [
         {
           text: i18n.t('menu.adminOnly.members'),

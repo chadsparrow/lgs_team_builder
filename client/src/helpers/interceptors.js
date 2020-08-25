@@ -8,9 +8,13 @@ export default function setup() {
       return response;
     },
     async function(error) {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         if (error.response.status === 401) {
-          store.dispatch('logout');
+          console.log(error.response.data);
+          await store.dispatch('logout', {
+            id: store.getters.loggedInMember.aud,
+          });
+          router.push({ path: '/' });
         }
 
         if (error.response.status === 500) {

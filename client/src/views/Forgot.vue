@@ -51,7 +51,7 @@
 <script>
 import { required, email } from 'vuelidate/lib/validators';
 import toast from '../helpers/toast';
-import { get } from 'lodash';
+import get from 'lodash/get';
 
 export default {
   name: 'Forgot',
