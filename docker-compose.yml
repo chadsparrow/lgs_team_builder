@@ -6,10 +6,10 @@ services:
     image: registry.gitlab.com/garneau-dev/sugoi/team-builder/app:develop
     restart: always
     ports:
-      - 5000:5000
+      - ${PORT}:${PORT}
     volumes:
       - ./:/usr/src/app/
       - /usr/src/app/node_modules
     env_file:
-      - .env.development
+      - .env
     command: npm run server-dev

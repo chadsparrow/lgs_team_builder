@@ -3,6 +3,7 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const createError = require('http-errors');
 require('express-async-errors'); // handle all async promise rejections and uncaught exception errors without trycatch blocks
+require('dotenv').config();
 
 const serveStatic = require('serve-static');
 

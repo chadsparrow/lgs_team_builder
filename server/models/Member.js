@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const joiOptions = { language: { key: '{{key}} ' } };
@@ -228,8 +227,8 @@ const MemberSchema = new mongoose.Schema(
 
 function validateLogin(login) {
   const schema = {
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required().trim(false),
+    email: Joi.string().trim().required().email(),
+    password: Joi.string().required().min(8),
   };
 
   return Joi.validate(login, schema, joiOptions);
@@ -237,39 +236,45 @@ function validateLogin(login) {
 
 function validateNewRegister(member) {
   const schema = {
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required().trim(),
-    name: Joi.string().min(5).max(50).required().trim(),
-    company: Joi.string().allow('', null),
-    address1: Joi.string().min(10).required().trim(),
-    address2: Joi.string().trim().allow('', null),
-    city: Joi.string().required().trim(),
-    stateProv: Joi.string().min(2).required().trim(),
-    country: Joi.string().min(2).required().trim(),
-    zipPostal: Joi.string().required().trim(),
-    phone: Joi.string().trim().required(),
-    shippingSame: Joi.boolean(),
-    shippingName: Joi.string().required().trim(),
-    shippingCompany: Joi.string().allow('', null),
-    shippingAddress1: Joi.string().required().trim(),
-    shippingAddress2: Joi.string().allow('', null).trim(),
-    shippingCity: Joi.string().required().trim(),
-    shippingStateProv: Joi.string().min(2).required().trim(),
-    shippingCountry: Joi.string().min(2).required().trim(),
-    shippingZipPostal: Joi.string().required().trim(),
-    shippingPhone: Joi.string().required().trim(),
-    shippingEmail: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+    contact: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required(),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
+    }),
     billingSame: Joi.boolean(),
-    billingName: Joi.string().required().trim(),
-    billingCompany: Joi.string().allow('', null),
-    billingAddress1: Joi.string().required().trim(),
-    billingAddress2: Joi.string().allow('', null).trim(),
-    billingCity: Joi.string().required().trim(),
-    billingStateProv: Joi.string().min(2).required().trim(),
-    billingCountry: Joi.string().min(2).required().trim(),
-    billingZipPostal: Joi.string().required().trim(),
-    billingPhone: Joi.string().required().trim(),
-    billingEmail: Joi.string().required().email(),
+    billing: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required(),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
+    }),
+    shippingSame: Joi.boolean(),
+    shipping: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required(),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
+    }),
   };
 
   return Joi.validate(member, schema, joiOptions);
@@ -278,42 +283,42 @@ function validateNewRegister(member) {
 function validateNewMember(member) {
   const schema = {
     contact: Joi.object({
-      name: Joi.string().min(5).max(50).required().trim(),
-      email: Joi.string().email().required(),
-      company: Joi.string().allow('', null),
-      address1: Joi.string().min(10).required().trim(),
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required().min(10),
       address2: Joi.string().trim().allow('', null),
-      city: Joi.string().required().trim(),
-      stateProv: Joi.string().min(2).required().trim(),
-      country: Joi.string().min(2).required().trim(),
-      zipPostal: Joi.string().required().trim(),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
       phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
     }),
     billingSame: Joi.boolean(),
     billing: Joi.object({
-      name: Joi.string().min(5).max(50).required().trim(),
-      email: Joi.string().email().required(),
-      company: Joi.string().allow('', null),
-      address1: Joi.string().min(10).required().trim(),
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required().min(10),
       address2: Joi.string().trim().allow('', null),
-      city: Joi.string().required().trim(),
-      stateProv: Joi.string().min(2).required().trim(),
-      country: Joi.string().min(2).required().trim(),
-      zipPostal: Joi.string().required().trim(),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
       phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
     }),
     shippingSame: Joi.boolean(),
     shipping: Joi.object({
-      name: Joi.string().min(5).max(50).required().trim(),
-      email: Joi.string().email().required(),
-      company: Joi.string().allow('', null),
-      address1: Joi.string().min(10).required().trim(),
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().min(10).required(),
       address2: Joi.string().trim().allow('', null),
-      city: Joi.string().required().trim(),
-      stateProv: Joi.string().min(2).required().trim(),
-      country: Joi.string().min(2).required().trim(),
-      zipPostal: Joi.string().required().trim(),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().min(2).required(),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
       phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
     }),
   };
 
@@ -322,116 +327,42 @@ function validateNewMember(member) {
 
 function validateUpdateMember(member) {
   const schema = {
-    name: Joi.string().min(5).max(50).required().trim(),
-    company: Joi.string().allow('', null),
-    address1: Joi.string().min(10).required().trim(),
-    address2: Joi.string().trim().allow('', null),
-    city: Joi.string().required().trim(),
-    stateProv: Joi.string().min(2).required().trim(),
-    country: Joi.string().min(2).required().trim(),
-    zipPostal: Joi.string().required().trim(),
-    phone: Joi.string().required().trim(),
-    shippingSame: Joi.boolean().required(),
-    shippingName: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('name'),
-      otherwise: Joi.string().min(5).max(50).required().trim(),
-    }),
-    shippingCompany: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('company'),
-      otherwise: Joi.string().allow('', null),
-    }),
-    shippingAddress1: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('address1'),
-      otherwise: Joi.string().min(10).required().trim(),
-    }),
-    shippingAddress2: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('address2'),
-      otherwise: Joi.string().trim().allow('', null),
-    }),
-    shippingCity: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('city'),
-      otherwise: Joi.string().required().trim(),
-    }),
-    shippingStateProv: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('stateProv'),
-      otherwise: Joi.string().min(2).required().trim(),
-    }),
-    shippingCountry: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('country'),
-      otherwise: Joi.string().min(2).required().trim(),
-    }),
-    shippingZipPostal: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('zipPostal'),
-      otherwise: Joi.string().required().trim(),
-    }),
-    shippingPhone: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.ref('phone'),
-      otherwise: Joi.string().trim().required(),
-    }),
-    shippingEmail: Joi.when('shippingSame', {
-      is: true,
-      then: Joi.string().trim().allow('', null).email(),
-      otherwise: Joi.string().trim().email().required(),
+    contact: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required().min(10),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
     }),
     billingSame: Joi.boolean().required(),
-    billingName: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('name'),
-      otherwise: Joi.string().min(5).max(50).required().trim(),
+    billing: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required().min(10),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
     }),
-    billingCompany: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('company'),
-      otherwise: Joi.string().allow('', null),
-    }),
-    billingAddress1: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('address1'),
-      otherwise: Joi.string().min(10).required().trim(),
-    }),
-    billingAddress2: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('address2'),
-      otherwise: Joi.string().trim().allow('', null),
-    }),
-    billingCity: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('city'),
-      otherwise: Joi.string().required().trim(),
-    }),
-    billingStateProv: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('stateProv'),
-      otherwise: Joi.string().min(2).required().trim(),
-    }),
-    billingCountry: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('country'),
-      otherwise: Joi.string().min(2).required().trim(),
-    }),
-    billingZipPostal: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('zipPostal'),
-      otherwise: Joi.string().required().trim(),
-    }),
-    billingPhone: Joi.when('billingSame', {
-      is: true,
-      then: Joi.ref('phone'),
-      otherwise: Joi.string().trim().required(),
-    }),
-    billingEmail: Joi.when('billingSame', {
-      is: true,
-      then: Joi.string().trim().allow('', null).email(),
-      otherwise: Joi.string().trim().email().required(),
+    shippingSame: Joi.boolean().required(),
+    shipping: Joi.object({
+      name: Joi.string().trim().required().min(5).max(50),
+      company: Joi.string().trim().allow('', null),
+      address1: Joi.string().trim().required().min(10),
+      address2: Joi.string().trim().allow('', null),
+      city: Joi.string().trim().required(),
+      stateProv: Joi.string().trim().required().min(2),
+      country: Joi.string().trim().required().min(2),
+      zipPostal: Joi.string().trim().required(),
+      phone: Joi.string().trim().required(),
+      email: Joi.string().trim().required().email(),
     }),
   };
   return Joi.validate(member, schema, joiOptions);
@@ -439,9 +370,14 @@ function validateUpdateMember(member) {
 
 function validateEmail(member) {
   const schema = {
-    currentEmail: Joi.string().required().email(),
-    newEmail: Joi.string().required().email().invalid(Joi.ref('currentEmail')),
+    currentEmail: Joi.string().trim().required().email(),
+    newEmail: Joi.string()
+      .trim()
+      .required()
+      .email()
+      .invalid(Joi.ref('currentEmail')),
     confirmEmail: Joi.string()
+      .trim()
       .required()
       .email()
       .valid(Joi.ref('newEmail'))
@@ -455,7 +391,7 @@ function validateEmail(member) {
 
 function validateForgotEmail(req) {
   const schema = {
-    email: Joi.string().email().required(),
+    email: Joi.string().trim().email().required(),
   };
 
   return Joi.validate(req, schema, joiOptions);
@@ -492,8 +428,8 @@ function validatePasswordReset(req) {
 function validateNotification(notification) {
   const schema = {
     recipients: Joi.array().required().items(Joi.objectId().required()),
-    message: Joi.string().required(),
-    clickTo: Joi.string().allow('', null),
+    message: Joi.string().trim().required(),
+    clickTo: Joi.string().trim().allow('', null),
   };
 
   return Joi.validate(notification, schema, joiOptions);

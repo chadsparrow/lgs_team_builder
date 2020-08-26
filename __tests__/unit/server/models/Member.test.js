@@ -1,5 +1,4 @@
 const {
-  Member,
   validateNewRegister,
   validateNewMember,
   validateUpdateMember,
@@ -13,7 +12,6 @@ const {
 
 const faker = require('faker');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 
 const email = faker.internet.email();
 const newEmail = faker.internet.email();
@@ -36,58 +34,50 @@ const charArray = function (num) {
 describe('validateNewRegister function', () => {
   beforeEach(() => {
     reqbody = {
-      email,
       password,
-      name,
-      company,
-      address1,
-      address2,
-      city,
-      stateProv,
-      country,
-      zipPostal,
-      phone,
-      shippingSame: true,
-      shippingName: name,
-      shippingCompany: company,
-      shippingAddress1: address1,
-      shippingAddress2: address2,
-      shippingCity: city,
-      shippingStateProv: stateProv,
-      shippingCountry: country,
-      shippingZipPostal: zipPostal,
-      shippingPhone: phone,
-      shippingEmail: email,
+      contact: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
       billingSame: true,
-      billingName: name,
-      billingCompany: company,
-      billingAddress1: address1,
-      billingAddress2: address2,
-      billingCity: city,
-      billingStateProv: stateProv,
-      billingCountry: country,
-      billingZipPostal: zipPostal,
-      billingPhone: phone,
-      billingEmail: email,
+      billing: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
+      shippingSame: true,
+      shipping: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
     };
   });
 
-  it('should return error if email is invalid', () => {
-    reqbody.email = 'x';
-    const result = validateNewRegister(reqbody);
-    expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/email/);
-  });
-
-  it('should return error if email is not provided', () => {
-    delete reqbody.email;
-    const result = validateNewRegister(reqbody);
-    expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/email/);
-  });
-
-  it('should return error if password is less than 8 chars', () => {
-    reqbody.password = charArray(8);
+  it('should return error if trimmed password becomes empty', () => {
+    reqbody.password = '   ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/password/);
@@ -100,228 +90,731 @@ describe('validateNewRegister function', () => {
     expect(result.error.details[0].message).toMatch(/password/);
   });
 
-  it('should return error if name is less than 5 chars', () => {
-    reqbody.name = charArray(5);
+  it('should return error if password is not a string', () => {
+    reqbody.password = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  it('should return error if password is less than 8 chars', () => {
+    reqbody.password = charArray(8);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/password/);
+  });
+
+  // CONTACT
+
+  it('should return error if contact.email is invalid', () => {
+    reqbody.contact.email = 'x';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if contact.email is not provided', () => {
+    delete reqbody.contact.email;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if contact.email is not a string', () => {
+    reqbody.contact.email = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if contact.name is less than 5 chars', () => {
+    reqbody.contact.name = charArray(5);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return error if name is greater than 50 chars', () => {
-    reqbody.name = charArray(52);
+  it('should return error if trimmed contact.name is less than 5 chars', () => {
+    reqbody.contact.name = ' 12 4 ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return error if name is not provided', () => {
-    delete reqbody.name;
+  it('should return error if contact.name is greater than 50 chars', () => {
+    reqbody.contact.name = charArray(52);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return an error if address1 is less than 10 chars', () => {
-    reqbody.address1 = charArray(10);
+  it('should return error if contact.name is not provided', () => {
+    delete reqbody.contact.name;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if contact.name is not a string', () => {
+    reqbody.contact.name = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if trimmed contact.name is empty', () => {
+    reqbody.contact.name = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if contact.company is not a string', () => {
+    reqbody.contact.company = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/company/);
+  });
+
+  it('should return error if contact.address1 is not provided', () => {
+    delete reqbody.contact.address1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
-  it('should return error if address1 is not provided', () => {
-    delete reqbody.address1;
+  it('should return error if trimmed contact.address1 is empty', () => {
+    reqbody.contact.address1 = '   ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
-  it('should return an error if city is not provided', () => {
-    delete reqbody.city;
+  it('should return error if contact.address1 is not a string', () => {
+    reqbody.contact.address1 = 2;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address1/);
+  });
+
+  it('should return error if contact.address2 is not a string', () => {
+    reqbody.contact.address2 = 2;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address2/);
+  });
+
+  it('should return an error if contact.city is not provided', () => {
+    delete reqbody.contact.city;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/city/);
   });
 
-  it('should return an error if stateProv is less than 2 chars', () => {
-    reqbody.stateProv = charArray(2);
+  it('should return an error if trimmed contact.city is empty', () => {
+    reqbody.contact.city = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/city/);
+  });
+
+  it('should return an error if contact.city is not a string', () => {
+    reqbody.contact.city = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/city/);
+  });
+
+  it('should return an error if contact.stateProv is less than 2 chars', () => {
+    reqbody.contact.stateProv = charArray(2);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
-  it('should return an error if stateProv is not provided', () => {
-    delete reqbody.stateProv;
+  it('should return an error if trimmed contact.stateProv is less than 2 chars', () => {
+    reqbody.contact.stateProv = ' 1 ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
-  it('should return an error if country is less than 2 chars', () => {
-    reqbody.country = charArray(2);
+  it('should return an error if contact.stateProv is not provided', () => {
+    delete reqbody.contact.stateProv;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if trimmed contact.stateProv is empty', () => {
+    reqbody.contact.stateProv = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if contact.stateProv is not a string', () => {
+    reqbody.contact.stateProv = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if contact.country is less than 2 chars', () => {
+    reqbody.contact.country = charArray(2);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
-  it('should return an error if country is not provided', () => {
-    delete reqbody.country;
+  it('should return an error if trimmed contact.country is less than 2 chars', () => {
+    reqbody.contact.country = ' 1 ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
-  it('should return an error if zipPostal is not provided', () => {
-    delete reqbody.zipPostal;
+  it('should return an error if contact.country is not provided', () => {
+    delete reqbody.contact.country;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if trimmed contact.country is empty', () => {
+    reqbody.contact.country = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if contact.country is not a string', () => {
+    reqbody.contact.country = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if contact.zipPostal is not provided', () => {
+    delete reqbody.contact.zipPostal;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/zipPostal/);
   });
 
-  it('should return an error if phone is not provided', () => {
-    delete reqbody.phone;
+  it('should return an error if trimmed contact.zipPostal is empty', () => {
+    reqbody.contact.zipPostal = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if contact.zipPostal is not a string', () => {
+    reqbody.contact.zipPostal = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if contact.phone is not provided', () => {
+    delete reqbody.contact.phone;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/phone/);
   });
 
-  it('should return an error if shippingName is not provided', () => {
-    delete reqbody.shippingName;
+  it('should return an error if trimmed contact.phone is empty', () => {
+    reqbody.contact.phone = '  ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingName/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
-  it('should return an error if shippingAddress1 is not provided', () => {
-    delete reqbody.shippingAddress1;
+  it('should return an error if contact.phone is not a string', () => {
+    reqbody.contact.phone = 1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingAddress1/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
-  it('should return an error if shippingCity is not provided', () => {
-    delete reqbody.shippingCity;
+  // BILLING
+
+  it('should return error if billingSame is invalid', () => {
+    reqbody.billingSame = 1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCity/);
+    expect(result.error.details[0].message).toMatch(/billingSame/);
   });
 
-  it('should return an error if shippingStateProv is less than 2 chars', () => {
-    reqbody.shippingStateProv = charArray(2);
+  it('should return error if billing.name is less than 5 chars', () => {
+    reqbody.billing.name = charArray(5);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return an error if shippingStateProv is not provided', () => {
-    delete reqbody.shippingStateProv;
+  it('should return error if trimmed billing.name is less than 5 chars', () => {
+    reqbody.billing.name = ' 12 4 ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return an error if shippingCountry is less than 2 chars', () => {
-    reqbody.shippingCountry = charArray(2);
+  it('should return error if billing.name is greater than 50 chars', () => {
+    reqbody.billing.name = charArray(52);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return an error if shippingCountry is not provided', () => {
-    delete reqbody.shippingCountry;
+  it('should return error if billing.name is not provided', () => {
+    delete reqbody.billing.name;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return an error if shippingPhone is not provided', () => {
-    delete reqbody.shippingPhone;
+  it('should return error if billing.name is not a string', () => {
+    reqbody.billing.name = 1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingPhone/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return error if shippingEmail is invalid', () => {
-    reqbody.shippingEmail = 'x';
+  it('should return error if trimmed billing.name is empty', () => {
+    reqbody.billing.name = '  ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
-  it('should return error if shippingEmail is not provided', () => {
-    delete reqbody.shippingEmail;
+  it('should return error if billing.company is not a string', () => {
+    reqbody.billing.company = 1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/company/);
   });
 
-  it('should return an error if billingName is not provided', () => {
-    delete reqbody.billingName;
+  it('should return error if billing.address1 is not provided', () => {
+    delete reqbody.billing.address1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingName/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
-  it('should return an error if billingAddress1 is not provided', () => {
-    delete reqbody.billingAddress1;
+  it('should return error if trimmed billing.address1 is empty', () => {
+    reqbody.billing.address1 = '   ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingAddress1/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
-  it('should return an error if billingCity is not provided', () => {
-    delete reqbody.billingCity;
+  it('should return error if billing.address1 is not a string', () => {
+    reqbody.billing.address1 = 2;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCity/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
-  it('should return an error if billingStateProv is less than 2 chars', () => {
-    reqbody.billingStateProv = charArray(2);
+  it('should return error if billing.address2 is not a string', () => {
+    reqbody.billing.address2 = 2;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/address2/);
   });
 
-  it('should return an error if billingStateProv is not provided', () => {
-    delete reqbody.billingStateProv;
+  it('should return an error if billing.city is not provided', () => {
+    delete reqbody.billing.city;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
-  it('should return an error if billingCountry is less than 2 chars', () => {
-    reqbody.billingCountry = charArray(2);
+  it('should return an error if trimmed billing.city is empty', () => {
+    reqbody.billing.city = '  ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
-  it('should return an error if billingCountry is not provided', () => {
-    delete reqbody.billingCountry;
+  it('should return an error if billing.city is not a string', () => {
+    reqbody.billing.city = 1;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
-  it('should return an error if billingPhone is not provided', () => {
-    delete reqbody.billingPhone;
+  it('should return an error if billing.stateProv is less than 2 chars', () => {
+    reqbody.billing.stateProv = charArray(2);
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingPhone/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
-  it('should return error if billingEmail is invalid', () => {
-    reqbody.billingEmail = 'x';
+  it('should return an error if trimmed billing.stateProv is less than 2 chars', () => {
+    reqbody.billing.stateProv = ' 1 ';
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
-  it('should return error if billingEmail is not provided', () => {
-    delete reqbody.billingEmail;
+  it('should return an error if billing.stateProv is not provided', () => {
+    delete reqbody.billing.stateProv;
     const result = validateNewRegister(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if trimmed billing.stateProv is empty', () => {
+    reqbody.billing.stateProv = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if billing.stateProv is not a string', () => {
+    reqbody.billing.stateProv = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if billing.country is less than 2 chars', () => {
+    reqbody.billing.country = charArray(2);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if trimmed billing.country is less than 2 chars', () => {
+    reqbody.billing.country = ' 1 ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if billing.country is not provided', () => {
+    delete reqbody.billing.country;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if trimmed billing.country is empty', () => {
+    reqbody.billing.country = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if billing.country is not a string', () => {
+    reqbody.billing.country = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if billing.zipPostal is not provided', () => {
+    delete reqbody.billing.zipPostal;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if trimmed billing.zipPostal is empty', () => {
+    reqbody.billing.zipPostal = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if billing.zipPostal is not a string', () => {
+    reqbody.billing.zipPostal = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if billing.phone is not provided', () => {
+    delete reqbody.billing.phone;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return an error if trimmed billing.phone is empty', () => {
+    reqbody.billing.phone = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return an error if billing.phone is not a string', () => {
+    reqbody.billing.phone = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return error if billing.email is invalid', () => {
+    reqbody.billing.email = 'x';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if billing.email is not provided', () => {
+    delete reqbody.billing.email;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if billing.email is not a string', () => {
+    reqbody.billing.email = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  // SHIPPING
+
+  it('should return error if shippingSame is invalid', () => {
+    reqbody.shippingSame = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/shippingSame/);
+  });
+
+  it('should return error if shipping.name is less than 5 chars', () => {
+    reqbody.shipping.name = charArray(5);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if trimmed shipping.name is less than 5 chars', () => {
+    reqbody.shipping.name = ' 12 4 ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if shipping.name is greater than 50 chars', () => {
+    reqbody.shipping.name = charArray(52);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if shipping.name is not provided', () => {
+    delete reqbody.shipping.name;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if shipping.name is not a string', () => {
+    reqbody.shipping.name = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if trimmed shipping.name is empty', () => {
+    reqbody.shipping.name = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/name/);
+  });
+
+  it('should return error if shipping.company is not a string', () => {
+    reqbody.shipping.company = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/company/);
+  });
+
+  it('should return error if shipping.address1 is not provided', () => {
+    delete reqbody.shipping.address1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address1/);
+  });
+
+  it('should return error if trimmed shipping.address1 is empty', () => {
+    reqbody.shipping.address1 = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address1/);
+  });
+
+  it('should return error if shipping.address1 is not a string', () => {
+    reqbody.shipping.address1 = 2;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address1/);
+  });
+
+  it('should return error if shipping.address2 is not a string', () => {
+    reqbody.shipping.address2 = 2;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/address2/);
+  });
+
+  it('should return an error if shipping.city is not provided', () => {
+    delete reqbody.shipping.city;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/city/);
+  });
+
+  it('should return an error if trimmed shipping.city is empty', () => {
+    reqbody.shipping.city = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/city/);
+  });
+
+  it('should return an error if shipping.city is not a string', () => {
+    reqbody.shipping.city = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/city/);
+  });
+
+  it('should return an error if shipping.stateProv is less than 2 chars', () => {
+    reqbody.shipping.stateProv = charArray(2);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if trimmed shipping.stateProv is less than 2 chars', () => {
+    reqbody.shipping.stateProv = ' 1 ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if shipping.stateProv is not provided', () => {
+    delete reqbody.shipping.stateProv;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if trimmed shipping.stateProv is empty', () => {
+    reqbody.shipping.stateProv = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if shipping.stateProv is not a string', () => {
+    reqbody.shipping.stateProv = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/stateProv/);
+  });
+
+  it('should return an error if shipping.country is less than 2 chars', () => {
+    reqbody.shipping.country = charArray(2);
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if trimmed shipping.country is less than 2 chars', () => {
+    reqbody.shipping.country = ' 1 ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if shipping.country is not provided', () => {
+    delete reqbody.shipping.country;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if trimmed shipping.country is empty', () => {
+    reqbody.shipping.country = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if shipping.country is not a string', () => {
+    reqbody.shipping.country = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/country/);
+  });
+
+  it('should return an error if shipping.zipPostal is not provided', () => {
+    delete reqbody.shipping.zipPostal;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if trimmed shipping.zipPostal is empty', () => {
+    reqbody.shipping.zipPostal = '   ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if shipping.zipPostal is not a string', () => {
+    reqbody.shipping.zipPostal = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/zipPostal/);
+  });
+
+  it('should return an error if shipping.phone is not provided', () => {
+    delete reqbody.shipping.phone;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return an error if trimmed shipping.phone is empty', () => {
+    reqbody.shipping.phone = '  ';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return an error if shipping.phone is not a string', () => {
+    reqbody.shipping.phone = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/phone/);
+  });
+
+  it('should return error if shipping.email is invalid', () => {
+    reqbody.shipping.email = 'x';
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if shipping.email is not provided', () => {
+    delete reqbody.shipping.email;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
+  });
+
+  it('should return error if shipping.email is not a string', () => {
+    reqbody.shipping.email = 1;
+    const result = validateNewRegister(reqbody);
+    expect(result.error).toBeTruthy();
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   // HAPPY PATH
@@ -336,277 +829,283 @@ describe('validateNewRegister function', () => {
 describe('validateNewMember function', () => {
   beforeEach(() => {
     reqbody = {
-      email,
-      name,
-      company,
-      address1,
-      address2,
-      city,
-      stateProv,
-      country,
-      zipPostal,
-      phone,
-      shippingSame: true,
-      shippingName: name,
-      shippingCompany: company,
-      shippingAddress1: address1,
-      shippingAddress2: address2,
-      shippingCity: city,
-      shippingStateProv: stateProv,
-      shippingCountry: country,
-      shippingZipPostal: zipPostal,
-      shippingPhone: phone,
-      shippingEmail: email,
+      contact: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
       billingSame: true,
-      billingName: name,
-      billingCompany: company,
-      billingAddress1: address1,
-      billingAddress2: address2,
-      billingCity: city,
-      billingStateProv: stateProv,
-      billingCountry: country,
-      billingZipPostal: zipPostal,
-      billingPhone: phone,
-      billingEmail: email,
+      billing: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
+      shippingSame: true,
+      shipping: {
+        email,
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
     };
   });
 
   it('should return error if email is invalid', () => {
-    reqbody.email = 'x';
+    reqbody.contact.email = 'x';
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if email is not provided', () => {
-    delete reqbody.email;
+    delete reqbody.contact.email;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if name is less than 5 chars', () => {
-    reqbody.name = charArray(5);
+    reqbody.contact.name = charArray(5);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return error if name is greater than 50 chars', () => {
-    reqbody.name = charArray(52);
+    reqbody.contact.name = charArray(52);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return error if name is not provided', () => {
-    delete reqbody.name;
+    delete reqbody.contact.name;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if address1 is less than 10 chars', () => {
-    reqbody.address1 = charArray(10);
+    reqbody.contact.address1 = charArray(10);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return error if address1 is not provided', () => {
-    delete reqbody.address1;
+    delete reqbody.contact.address1;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if city is not provided', () => {
-    delete reqbody.city;
+    delete reqbody.contact.city;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if stateProv is less than 2 chars', () => {
-    reqbody.stateProv = charArray(2);
+    reqbody.contact.stateProv = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if stateProv is not provided', () => {
-    delete reqbody.stateProv;
+    delete reqbody.contact.stateProv;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if country is less than 2 chars', () => {
-    reqbody.country = charArray(2);
+    reqbody.contact.country = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if country is not provided', () => {
-    delete reqbody.country;
+    delete reqbody.contact.country;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if zipPostal is not provided', () => {
-    delete reqbody.zipPostal;
+    delete reqbody.contact.zipPostal;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/zipPostal/);
   });
 
   it('should return an error if phone is not provided', () => {
-    delete reqbody.phone;
+    delete reqbody.contact.phone;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return an error if shippingName is not provided', () => {
-    delete reqbody.shippingName;
+    delete reqbody.shipping.name;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingName/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if shippingAddress1 is not provided', () => {
-    delete reqbody.shippingAddress1;
+    delete reqbody.shipping.address1;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingAddress1/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if shippingCity is not provided', () => {
-    delete reqbody.shippingCity;
+    delete reqbody.shipping.city;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCity/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if shippingStateProv is less than 2 chars', () => {
-    reqbody.shippingStateProv = charArray(2);
+    reqbody.shipping.stateProv = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if shippingStateProv is not provided', () => {
-    delete reqbody.shippingStateProv;
+    delete reqbody.shipping.stateProv;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if shippingCountry is less than 2 chars', () => {
-    reqbody.shippingCountry = charArray(2);
+    reqbody.shipping.country = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if shippingCountry is not provided', () => {
-    delete reqbody.shippingCountry;
+    delete reqbody.shipping.country;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if shippingPhone is not provided', () => {
-    delete reqbody.shippingPhone;
+    delete reqbody.shipping.phone;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingPhone/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return error if shippingEmail is invalid', () => {
-    reqbody.shippingEmail = 'x';
+    reqbody.shipping.email = 'x';
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if shippingEmail is not provided', () => {
-    delete reqbody.shippingEmail;
+    delete reqbody.shipping.email;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return an error if billingName is not provided', () => {
-    delete reqbody.billingName;
+    delete reqbody.billing.name;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingName/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if billingAddress1 is not provided', () => {
-    delete reqbody.billingAddress1;
+    delete reqbody.billing.address1;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingAddress1/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if billingCity is not provided', () => {
-    delete reqbody.billingCity;
+    delete reqbody.billing.city;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCity/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if billingStateProv is less than 2 chars', () => {
-    reqbody.billingStateProv = charArray(2);
+    reqbody.billing.stateProv = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if billingStateProv is not provided', () => {
-    delete reqbody.billingStateProv;
+    delete reqbody.billing.stateProv;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if billingCountry is less than 2 chars', () => {
-    reqbody.billingCountry = charArray(2);
+    reqbody.billing.country = charArray(2);
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if billingCountry is not provided', () => {
-    delete reqbody.billingCountry;
+    delete reqbody.billing.country;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if billingPhone is not provided', () => {
-    delete reqbody.billingPhone;
+    delete reqbody.billing.phone;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingPhone/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return error if billingEmail is invalid', () => {
-    reqbody.billingEmail = 'x';
+    reqbody.billing.email = 'x';
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if billingEmail is not provided', () => {
-    delete reqbody.billingEmail;
+    delete reqbody.billing.email;
     const result = validateNewMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   // HAPPY PATH
@@ -621,262 +1120,268 @@ describe('validateNewMember function', () => {
 describe('validateUpdateMember function', () => {
   beforeEach(() => {
     reqbody = {
-      name,
-      company,
-      address1,
-      address2,
-      city,
-      stateProv,
-      country,
-      zipPostal,
-      phone,
-      shippingSame: false,
-      shippingName: name,
-      shippingCompany: company,
-      shippingAddress1: address1,
-      shippingAddress2: address2,
-      shippingCity: city,
-      shippingStateProv: stateProv,
-      shippingCountry: country,
-      shippingZipPostal: zipPostal,
-      shippingPhone: phone,
-      shippingEmail: email,
+      contact: {
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+      },
       billingSame: false,
-      billingName: name,
-      billingCompany: company,
-      billingAddress1: address1,
-      billingAddress2: address2,
-      billingCity: city,
-      billingStateProv: stateProv,
-      billingCountry: country,
-      billingZipPostal: zipPostal,
-      billingPhone: phone,
-      billingEmail: email,
+      billing: {
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+        email,
+      },
+      shippingSame: false,
+      shipping: {
+        name,
+        company,
+        address1,
+        address2,
+        city,
+        stateProv,
+        country,
+        zipPostal,
+        phone,
+        email,
+      },
     };
   });
 
   it('should return error if name is less than 5 chars', () => {
-    reqbody.name = charArray(5);
+    reqbody.contact.name = charArray(5);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return error if name is greater than 50 chars', () => {
-    reqbody.name = charArray(52);
+    reqbody.contact.name = charArray(52);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return error if name is not provided', () => {
-    delete reqbody.name;
+    delete reqbody.contact.name;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if address1 is less than 10 chars', () => {
-    reqbody.address1 = charArray(10);
+    reqbody.contact.address1 = charArray(10);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return error if address1 is not provided', () => {
-    delete reqbody.address1;
+    delete reqbody.contact.address1;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if city is not provided', () => {
-    delete reqbody.city;
+    delete reqbody.contact.city;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if stateProv is less than 2 chars', () => {
-    reqbody.stateProv = charArray(2);
+    reqbody.contact.stateProv = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if stateProv is not provided', () => {
-    delete reqbody.stateProv;
+    delete reqbody.contact.stateProv;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if country is less than 2 chars', () => {
-    reqbody.country = charArray(2);
+    reqbody.contact.country = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if country is not provided', () => {
-    delete reqbody.country;
+    delete reqbody.contact.country;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if zipPostal is not provided', () => {
-    delete reqbody.zipPostal;
+    delete reqbody.contact.zipPostal;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/zipPostal/);
   });
 
   it('should return an error if phone is not provided', () => {
-    delete reqbody.phone;
+    delete reqbody.contact.phone;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
     expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return an error if shippingName is not provided', () => {
-    delete reqbody.shippingName;
+    delete reqbody.shipping.name;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingName/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if shippingAddress1 is not provided', () => {
-    delete reqbody.shippingAddress1;
+    delete reqbody.shipping.address1;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingAddress1/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if shippingCity is not provided', () => {
-    delete reqbody.shippingCity;
+    delete reqbody.shipping.city;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCity/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if shippingStateProv is less than 2 chars', () => {
-    reqbody.shippingStateProv = charArray(2);
+    reqbody.shipping.stateProv = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if shippingStateProv is not provided', () => {
-    delete reqbody.shippingStateProv;
+    delete reqbody.shipping.stateProv;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if shippingCountry is less than 2 chars', () => {
-    reqbody.shippingCountry = charArray(2);
+    reqbody.shipping.country = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if shippingCountry is not provided', () => {
-    delete reqbody.shippingCountry;
+    delete reqbody.shipping.country;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if shippingPhone is not provided', () => {
-    delete reqbody.shippingPhone;
+    delete reqbody.shipping.phone;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingPhone/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return error if shippingEmail is invalid', () => {
-    reqbody.shippingEmail = 'x';
+    reqbody.shipping.email = 'x';
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if shippingEmail is not provided', () => {
-    delete reqbody.shippingEmail;
+    delete reqbody.shipping.email;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/shippingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return an error if billingName is not provided', () => {
-    delete reqbody.billingName;
+    delete reqbody.billing.name;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingName/);
+    expect(result.error.details[0].message).toMatch(/name/);
   });
 
   it('should return an error if billingAddress1 is not provided', () => {
-    delete reqbody.billingAddress1;
+    delete reqbody.billing.address1;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingAddress1/);
+    expect(result.error.details[0].message).toMatch(/address1/);
   });
 
   it('should return an error if billingCity is not provided', () => {
-    delete reqbody.billingCity;
+    delete reqbody.billing.city;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCity/);
+    expect(result.error.details[0].message).toMatch(/city/);
   });
 
   it('should return an error if billingStateProv is less than 2 chars', () => {
-    reqbody.billingStateProv = charArray(2);
+    reqbody.billing.stateProv = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if billingStateProv is not provided', () => {
-    delete reqbody.billingStateProv;
+    delete reqbody.billing.stateProv;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingStateProv/);
+    expect(result.error.details[0].message).toMatch(/stateProv/);
   });
 
   it('should return an error if billingCountry is less than 2 chars', () => {
-    reqbody.billingCountry = charArray(2);
+    reqbody.billing.country = charArray(2);
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if billingCountry is not provided', () => {
-    delete reqbody.billingCountry;
+    delete reqbody.billing.country;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingCountry/);
+    expect(result.error.details[0].message).toMatch(/country/);
   });
 
   it('should return an error if billingPhone is not provided', () => {
-    delete reqbody.billingPhone;
+    delete reqbody.billing.phone;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingPhone/);
+    expect(result.error.details[0].message).toMatch(/phone/);
   });
 
   it('should return error if billingEmail is invalid', () => {
-    reqbody.billingEmail = 'x';
+    reqbody.billing.email = 'x';
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   it('should return error if billingEmail is not provided', () => {
-    delete reqbody.billingEmail;
+    delete reqbody.billing.email;
     const result = validateUpdateMember(reqbody);
     expect(result.error).toBeTruthy();
-    expect(result.error.details[0].message).toMatch(/billingEmail/);
+    expect(result.error.details[0].message).toMatch(/email/);
   });
 
   // HAPPY PATH
