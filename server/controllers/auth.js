@@ -56,7 +56,7 @@ module.exports = {
 
       // generates an JSONWebToken once authenticated
       const token = await signAccessToken(member.id);
-      const rtoken = await signRefreshToken(member.id);
+      // const rtoken = await signRefreshToken(member.id);
 
       res.cookie('tb_access_token', token, {
         sameSite: 'Strict',
@@ -65,12 +65,12 @@ module.exports = {
         secure: process.env.NODE_ENV !== 'production' ? false : true,
       });
 
-      res.cookie('tb_refresh_token', rtoken, {
-        sameSite: 'Strict',
-        maxAge: config.REFRESH_TOKEN_TTL_NUMBER,
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'production' ? false : true,
-      });
+      // res.cookie('tb_refresh_token', rtoken, {
+      //   sameSite: 'Strict',
+      //   maxAge: config.REFRESH_TOKEN_TTL_NUMBER,
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV !== 'production' ? false : true,
+      // });
 
       res.cookie(
         'tb_member',

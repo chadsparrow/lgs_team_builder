@@ -10,7 +10,6 @@ export default function setup() {
     async function(error) {
       return new Promise(async (resolve, reject) => {
         if (error.response.status === 401) {
-          console.log(error.response.data);
           await store.dispatch('logout', {
             id: store.getters.loggedInMember.aud,
           });

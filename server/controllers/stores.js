@@ -36,8 +36,6 @@ module.exports = {
         stores.push(...team.stores);
       });
 
-      console.log(stores);
-
       // only sends stores that are NOT on HOLD
       const collectedStores = await Store.find({
         _id: { $in: stores },

@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
-const { Member } = require('../models/Member');
 const config = require('../config/config');
+const fs = require('fs');
+const path = require('path');
+const privateKey = fs.readFileSync(
+  path.join(__dirname, '../config/private_key.pem'),
+  'utf8'
+);
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -10,24 +15,25 @@ module.exports = {
         expiresIn: config.ACCESS_TOKEN_TTL,
         issuer: 'LGS TeamBuilder',
         audience: userId.toString(),
+        algorithm: 'RS256',
       };
 
-      jwt.sign(
-        {},
-        process.env.ACCESS_TOKEN_SECRET,
-        signOptions,
-        (err, token) => {
-          if (err) {
-            reject(createError.InternalServerError());
-          }
-          resolve(token);
+      jwt.sign({}, privateKey, signOptions, (err, token) => {
+        if (err) {
+          reject(createError.InternalServerError());
         }
-      );
+        resolve(token);
+      });
     });
   },
+
   verifyAccessToken: (token) => {
+    const verifyOptions = {
+      issuer: 'LGS TeamBuilder',
+      algorithms: ['RS256'],
+    };
     return new Promise((resolve, reject) => {
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      jwt.verify(token, privateKey, verifyOptions, (err, decoded) => {
         if (err) {
           const message =
             err.name === 'JsonWebTokenError'
